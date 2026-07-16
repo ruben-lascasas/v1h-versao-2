@@ -1,0 +1,323 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  composes: marketplaceModalFormRootStyles from global;
+
+  justify-content: flex-start;
+
+  @media (--viewportMedium) {
+    justify-content: space-between;
+  }
+}
+
+.defaultUserFields {
+}
+
+/* ── Wizard ──────────────────────────────────────────────────────────── */
+
+.step {
+}
+
+.stepHidden {
+  display: none;
+}
+
+.wizardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorGrey500);
+
+  &:hover {
+    color: #baa38a;
+  }
+}
+
+.stepCount {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--colorGrey400);
+}
+
+.progressTrack {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--colorGrey100);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 2px;
+  background-color: #baa38a;
+  transition: width 0.25s ease;
+}
+
+.stepTitle {
+  margin: 16px 0 0 0;
+  font-size: 18px;
+  font-weight: var(--fontWeightBold);
+  color: var(--colorGrey700);
+}
+
+/* ── Indicador de força da password ──────────────────────────────────── */
+
+.strengthMeter {
+  margin-top: 10px;
+}
+
+.strengthHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.strengthTrack {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--colorGrey100);
+  overflow: hidden;
+}
+
+.strengthFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.strengthFillWeak {
+  background-color: var(--colorFail);
+}
+
+.strengthFillMedium {
+  background-color: #e0a800;
+}
+
+.strengthFillStrong {
+  background-color: var(--colorSuccess);
+}
+
+.strengthLabel {
+  font-size: 12px;
+  font-weight: var(--fontWeightSemiBold);
+  min-width: 44px;
+  text-align: right;
+}
+
+.strengthLabelWeak {
+  color: var(--colorFail);
+}
+
+.strengthLabelMedium {
+  color: #b08800;
+}
+
+.strengthLabelStrong {
+  color: var(--colorSuccess);
+}
+
+.strengthChecklist {
+  list-style: none;
+  margin: 6px 0 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 12px;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.checkOk {
+  color: var(--colorSuccess);
+}
+
+.checkPending {
+  color: var(--colorGrey400);
+}
+
+.termsWrapper {
+  margin-top: 24px;
+}
+
+/* Nota dark mode: o painel de autenticação fica branco em dark mode por
+   convenção global (ver landingDark.css) — o wizard herda essas cores e não
+   precisa de overrides aqui. */
+
+.name {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @media (--viewportMedium) {
+    gap: 32px;
+  }
+}
+
+.locationWrapper {
+  margin-top: 24px;
+
+  & [class*="icon"] {
+    display: none;
+  }
+  & input {
+    padding-left: 12px !important;
+  }
+
+  @media (--viewportMedium) {
+    margin-top: 32px;
+  }
+}
+
+.row,
+.customFields {
+  margin-top: 24px;
+
+  @media (--viewportMedium) {
+    margin-top: 32px;
+  }
+}
+
+.firstNameRoot {
+  width: 100%;
+}
+
+.lastNameRoot {
+  width: 100%;
+}
+
+.password {
+  composes: marketplaceModalPasswordMargins from global;
+
+  & input {
+    padding-right: 44px !important;
+  }
+}
+
+/* Hide native browser password reveal button */
+.passwordWrapper input::-ms-reveal,
+.passwordWrapper input::-ms-clear {
+  display: none;
+}
+
+.passwordWrapper {
+  position: relative;
+}
+
+.eyeButton {
+  position: absolute;
+  right: 12px;
+  /* Input height is 36px on mobile (line-height 24 + padding 6+4 + border 2),
+     48px on viewportMedium+ (line-height 32 + padding 7+7 + border 2). The
+     button is centered vertically on each baseline. */
+  top: 18px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--colorGrey400);
+  display: flex;
+  align-items: center;
+  line-height: 0;
+
+  @media (--viewportMedium) {
+    top: 24px;
+  }
+
+  &:hover {
+    color: #BAA38A;
+  }
+}
+
+.bottomWrapper {
+  composes: marketplaceModalBottomWrapper from global;
+  margin-top: 24px;
+
+  @media (--viewportMedium) {
+    margin-top: 32px;
+  }
+}
+
+/* Black filled CTA — matches the ListingPage "SEGUIR" button style. */
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 24px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.submitButton:focus {
+  outline: none;
+}
+
+@media (hover: hover) {
+  .submitButton:hover {
+    background-color: #BAA38A;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+.submitButton:disabled {
+  background-color: var(--colorGrey300);
+  cursor: not-allowed;
+}
+
+.switchAuthText {
+  text-align: center;
+  margin-top: 18px;
+  margin-bottom: 0;
+  font-size: 13px;
+  color: var(--colorGrey500);
+}
+
+.switchAuthLink {
+  composes: a from global;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorBlack);
+  text-decoration: underline;
+
+  &:hover {
+    color: #BAA38A;
+  }
+}
+
+.error {
+  composes: textXSmall from global;
+  color: var(--colorFail);
+  font-weight: var(--fontWeightBold);
+  text-align: left;
+  padding: 6px 0;
+
+  @media (--viewportMedium) {
+    padding: 8px 0;
+  }
+}

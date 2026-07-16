@@ -1,0 +1,153 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  position: relative;
+  padding-top: 24px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid var(--colorGrey100);
+
+  @media (--viewportMedium) {
+    padding-top: 16px;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+}
+
+.filterHeader {
+  line-height: 24px;
+}
+
+.labelButton {
+  /* Override button styles */
+  width: 100%;
+  outline: none;
+  line-height: 24px;
+  text-align: left;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  color: inherit;
+
+  &:hover .label,
+  &:hover .labelSelected,
+  &:hover .openSign,
+  &:hover .openSign * {
+    color: #BAA38A;
+    stroke: #BAA38A;
+  }
+}
+
+.labelButtonContent {
+  display: inline-block;
+  width: 100%;
+}
+
+.labelWrapper {
+  display: inline-block;
+  max-width: calc(100% - 16px);
+}
+
+.label,
+.labelSelected {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: 0.02em;
+  margin-top: 0;
+  margin-bottom: 12px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 8px;
+  }
+}
+
+.label {
+  color: var(--colorBlack);
+}
+
+.labelSelected {
+  color: var(--colorBlack);
+  margin-left: 5px;
+}
+
+.openSign {
+  float: right;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 8px;
+  margin: 17px 0 0 0;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (--viewportMedium) {
+    /* Desktop sidebar: extend 16px past container right edge to match the
+       REPOR TUDO button that uses the same trick. */
+    margin: 24px -16px 0 0;
+    width: calc(100% + 16px);
+  }
+}
+
+.clearButton,
+.confirmButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 24px;
+
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-indent: 0.08em;
+  text-transform: uppercase;
+
+  border-radius: var(--borderRadiusMedium);
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transitionStyleButton);
+}
+
+.clearButton {
+  color: #2E2E2E;
+  background-color: #ffffff;
+  border: 2px solid #2E2E2E;
+
+  &:focus-visible,
+  &:hover {
+    color: #ffffff;
+    background-color: #BAA38A;
+    border-color: #BAA38A;
+  }
+}
+
+.confirmButton {
+  color: var(--colorWhite);
+  background-color: var(--colorPrimaryButton);
+  border: 2px solid var(--colorPrimaryButton);
+
+  &:focus-visible,
+  &:hover {
+    background-color: #BAA38A;
+    border-color: #BAA38A;
+    color: var(--colorWhite);
+  }
+}
+
+.plain {
+  width: 100%;
+  display: none;
+
+  @media (--viewportMedium) {
+    padding-bottom: 16px;
+  }
+}
+
+.isOpen {
+  display: block;
+}

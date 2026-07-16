@@ -1,0 +1,369 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  /* Clearfix */
+  composes: clearfix from global;
+}
+
+.messageItem {
+  margin-bottom: 20px;
+  display: flex;
+
+  @media (--viewportMedium) {
+    margin-bottom: 17px;
+  }
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.message {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 70%;
+}
+
+.ownMessage {
+  margin-left: auto;
+  max-width: 70%;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+}
+
+.messageContent {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  background-color: #f5f0eb;
+  color: #2E2E2E;
+  padding: 10px 16px 6px;
+  border-radius: 20px 20px 20px 4px;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.messageText {
+  margin: 0 0 4px;
+  line-height: 1.5;
+}
+
+.ownMessageContent {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  background-color: #3F3131;
+  color: #ffffff;
+  padding: 10px 16px 6px;
+  border-radius: 20px 20px 4px 20px;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.ownMessageText {
+  margin: 0 0 4px;
+  line-height: 1.5;
+}
+
+.ownMessageContentLink {
+  color: #BAA38A;
+  text-decoration: underline;
+  word-break: break-word;
+  hyphens: auto;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.messageDate,
+.ownMessageDate {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  color: #BAA38A;
+  display: block;
+  text-align: right;
+  margin: 0;
+}
+
+.transitionItem {
+  margin-bottom: 18px;
+
+  /* Clearfix */
+  composes: clearfix from global;
+
+  @media (--viewportMedium) {
+    margin-bottom: 16px;
+  }
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.transition {
+  display: flex;
+  flex-direction: row;
+  padding: 3px 0 2px 0;
+
+  @media (--viewportMedium) {
+    padding: 0;
+  }
+}
+
+.transitionContent {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #7C6350;
+  margin: 0;
+}
+
+.reviewLink {
+  composes: a from global;
+}
+
+.transitionDate {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  color: #BAA38A;
+  margin: 5px 0 0 0;
+
+  @media (--viewportMedium) {
+    margin: 4px 0 0;
+  }
+}
+
+.bullet {
+  margin-right: 6px;
+}
+
+.reviewContent {
+  composes: h4 from global;
+  font-style: italic;
+  white-space: pre-line;
+  margin: 8px 0 0 0;
+
+  @media (--viewportMedium) {
+    max-width: 500px;
+    margin: 7px 0 0 0;
+  }
+}
+
+.reviewStars {
+  display: block;
+  margin-top: 4px;
+
+  @media (--viewportMedium) {
+    margin: 5px 0;
+  }
+}
+
+.reviewStar {
+  width: 12px;
+  height: 12px;
+  margin-right: 2px;
+  font-styles: initial;
+}
+
+.showOlderWrapper {
+  text-align: center;
+  margin-bottom: 1px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 0;
+  }
+}
+
+.showOlderButton {
+}
+
+.longWord {
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* ── Image gallery in messages ───────────────────────── */
+.gallery {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.gallerySingle {
+  grid-template-columns: 1fr;
+  max-width: 320px;
+  /* Center the gallery within the bubble width */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gallerySingle .galleryImage {
+  max-height: 240px;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  margin: 0 auto;
+}
+
+.galleryTwo {
+  grid-template-columns: 1fr 1fr;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.galleryTwo .galleryImage {
+  height: 130px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.galleryMany {
+  grid-template-columns: 1fr 1fr 1fr;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.galleryMany .galleryImage {
+  height: 90px;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Mobile: shrink single image so it fits comfortably in the chat bubble */
+@media (max-width: 767px) {
+  .gallerySingle {
+    max-width: 220px;
+  }
+  .gallerySingle .galleryImage {
+    max-height: 200px;
+  }
+  .galleryTwo .galleryImage {
+    height: 100px;
+  }
+  .galleryMany .galleryImage {
+    height: 70px;
+  }
+}
+
+.galleryImageButton {
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+  border-radius: 10px;
+  overflow: hidden;
+  line-height: 0;
+  transition: transform 0.2s ease;
+}
+
+.galleryImageButton:hover {
+  transform: scale(1.02);
+}
+
+.galleryImage {
+  display: block;
+  border-radius: 10px;
+}
+
+/* ── Lightbox ─────────────────────────────────────────── */
+.lightboxBackdrop {
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: zoom-out;
+  animation: lightboxFadeIn 0.15s ease-out;
+}
+
+@keyframes lightboxFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.lightboxImg {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
+  border-radius: 6px;
+  cursor: default;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.lightboxClose {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.2s ease;
+  z-index: 10000;
+}
+
+.lightboxClose:hover {
+  background-color: #BAA38A;
+}
+
+.lightboxNav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.2s ease;
+  z-index: 10000;
+}
+
+.lightboxNav:hover {
+  background-color: #BAA38A;
+}
+
+.lightboxNavPrev {
+  left: 24px;
+}
+
+.lightboxNavNext {
+  right: 24px;
+}
+
+.lightboxCounter {
+  position: fixed;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffffff;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 14px;
+  border-radius: 20px;
+  z-index: 10000;
+}

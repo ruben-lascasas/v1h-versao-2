@@ -1,0 +1,294 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  position: relative;
+  padding-top: 24px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid var(--colorGrey100);
+
+  @media (--viewportMedium) {
+    padding-top: 16px;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+}
+
+.filterHeader {
+  line-height: 24px;
+}
+
+.labelButton {
+  width: 100%;
+  outline: none;
+  line-height: 24px;
+  text-align: left;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  color: inherit;
+
+  &:hover .label,
+  &:hover .labelSelected,
+  &:hover .openSign,
+  &:hover .openSign * {
+    color: #BAA38A;
+    stroke: #BAA38A;
+  }
+}
+
+.labelButtonContent {
+  display: inline-block;
+  width: 100%;
+}
+
+.label {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: 0.02em;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: var(--colorBlack);
+
+  @media (--viewportMedium) {
+    margin-bottom: 8px;
+  }
+}
+
+.labelSelected {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-size: 24px;
+  color: var(--colorBlack);
+}
+
+.openSign {
+  float: right;
+}
+
+.plain {
+  padding-bottom: 4px;
+
+  @media (--viewportMedium) {
+    padding-bottom: 16px;
+  }
+}
+
+/* ── Top-level: same look as FieldSelectTree ─────────── */
+
+.optionList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.option {
+  padding-left: 0;
+  list-style: none;
+}
+
+.optionBtn {
+  composes: h4 from global;
+  font-weight: var(--fontWeightMedium);
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--colorGrey700);
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 5px 0 7px 0;
+
+  background: none;
+  outline: none;
+  border: none;
+  cursor: pointer;
+
+  &:focus,
+  &:hover {
+    color: var(--colorBlack);
+  }
+
+  @media (--viewportMedium) {
+    padding: 5px 0;
+  }
+}
+
+.optionBtnSelected {
+  composes: optionBtn;
+  color: var(--colorBlack);
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.optionCheckbox {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.optionLabelText {
+  flex: 1;
+  text-align: left;
+}
+
+.optionCount {
+  color: var(--colorGrey500);
+  font-size: 0.9em;
+  flex-shrink: 0;
+}
+
+/* ── Subcategories: full-width clickable rows ─────────── */
+
+.subOptionList {
+  list-style: none;
+  margin: 2px 0 8px 0;
+  padding: 0;
+}
+
+.subOption {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.subOptionBtn {
+  composes: h4 from global;
+  font-weight: var(--fontWeightMedium);
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--colorGrey700);
+  text-align: left;
+
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 5px 0 7px 36px;
+
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.12s ease, color 0.12s ease;
+
+  &:hover {
+    color: #7C6350;
+    background-color: transparent;
+    font-weight: 700;
+  }
+
+  @media (--viewportMedium) {
+    padding: 5px 0 5px 36px;
+  }
+}
+
+.subOptionBtnSelected {
+  composes: subOptionBtn;
+  background-color: transparent;
+  color: #7C6350;
+  font-weight: 700;
+
+  &:hover {
+    background-color: transparent;
+    color: #7C6350;
+    font-weight: 700;
+  }
+
+  & .subOptionLabel {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.subOptionRow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.subOptionLabel {
+  flex: 1;
+  text-align: left;
+}
+
+.subOptionCount {
+  color: var(--colorGrey500);
+  font-size: 0.9em;
+  flex-shrink: 0;
+  font-weight: var(--fontWeightMedium);
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+
+.actionsRow {
+  display: flex;
+  gap: 8px;
+  margin: 17px 0 0 0;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (--viewportMedium) {
+    margin: 24px -16px 0 0;
+    width: calc(100% + 16px);
+  }
+}
+
+.clearButton,
+.confirmButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 24px;
+
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-indent: 0.08em;
+  text-transform: uppercase;
+
+  border-radius: var(--borderRadiusMedium);
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transitionStyleButton);
+}
+
+.clearButton {
+  color: #2E2E2E;
+  background-color: #ffffff;
+  border: 2px solid #2E2E2E;
+
+  &:focus-visible,
+  &:hover {
+    color: #ffffff;
+    background-color: #BAA38A;
+    border-color: #BAA38A;
+  }
+}
+
+.confirmButton {
+  color: var(--colorWhite);
+  background-color: var(--colorPrimaryButton);
+  border: 2px solid var(--colorPrimaryButton);
+
+  &:focus-visible,
+  &:hover {
+    background-color: #BAA38A;
+    border-color: #BAA38A;
+    color: var(--colorWhite);
+  }
+}

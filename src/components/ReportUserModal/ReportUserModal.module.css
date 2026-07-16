@@ -1,0 +1,303 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.modal {
+  background-color: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Force the scrollbar and overflow content to be clipped by the rounded
+     corners so both right edges stay rounded instead of going "bicudo". */
+  clip-path: inset(0 round 16px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollArea {
+  display: contents;
+}
+
+.limitsBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 24px 8px;
+  padding: 10px 14px;
+  background: #f6f0e8;
+  border: 1px solid #e5d8c4;
+  border-radius: 8px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #5C3317;
+}
+
+.limitsCounter {
+  font-weight: 700;
+  white-space: nowrap;
+  color: #2E2E2E;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+.close {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: #2E2E2E;
+  padding: 0 4px;
+  transition: color 0.2s ease;
+}
+
+.close:hover {
+  color: #BAA38A;
+}
+
+.form {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.intro {
+  font-size: 14px;
+  color: var(--colorGrey700);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.labelText {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2E2E2E;
+  letter-spacing: 0.02em;
+}
+
+.select,
+.input,
+.textarea {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--colorGrey200);
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #2E2E2E;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.select:focus,
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #BAA38A;
+}
+
+.error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #c62828;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.btnPrimary,
+.btnSecondary {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  letter-spacing: 0.02em;
+}
+
+.btnPrimary {
+  background-color: #2E2E2E;
+  color: #ffffff;
+  border: 1px solid #2E2E2E;
+}
+
+.btnPrimary:hover {
+  background-color: #BAA38A;
+  border-color: #BAA38A;
+}
+
+.btnSecondary {
+  background-color: #ffffff;
+  color: #2E2E2E;
+  border: 1px solid var(--colorGrey200);
+}
+
+.btnSecondary:hover {
+  background-color: #f5f5f5;
+}
+
+.successWrapper {
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.successText {
+  margin: 0;
+  font-size: 15px;
+  color: #2E2E2E;
+  font-weight: 600;
+}
+
+.successFallback {
+  margin: 0;
+  font-size: 13px;
+  color: var(--colorGrey700);
+  line-height: 1.5;
+}
+
+.emailLink {
+  color: #7C6350;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.fileInputHidden {
+  display: none;
+}
+
+.fileButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px dashed var(--colorGrey200);
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #2E2E2E;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.fileButton:hover {
+  border-color: #BAA38A;
+  background-color: #faf7f2;
+  color: #7C6350;
+}
+
+.fileButton svg path {
+  fill: none !important;
+  stroke: currentColor;
+}
+
+.thumbsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.thumb {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--colorGrey200);
+  background-color: #f5f5f5;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbRemove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 2px 0;
+  transition: background-color 0.2s ease;
+}
+
+.thumbRemove:hover {
+  background-color: #c62828;
+}
+
+@media (max-width: 480px) {
+  .actions {
+    flex-direction: column-reverse;
+  }
+  .btnPrimary,
+  .btnSecondary {
+    width: 100%;
+  }
+}

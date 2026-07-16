@@ -1,0 +1,9 @@
+.root {
+  fill: none;
+  stroke: #FFD700;
+  stroke-width: 2px;
+}
+
+.filled {
+  fill: #FFD700;
+}

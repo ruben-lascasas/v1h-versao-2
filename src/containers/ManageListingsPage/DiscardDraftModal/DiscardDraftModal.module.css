@@ -1,0 +1,59 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  composes: marketplaceModalBaseStyles from global;
+  padding-top: 70px;
+  border-bottom: none;
+
+  @media (--viewportMedium) {
+    flex-basis: 567px;
+  }
+}
+
+.modalContent {
+  flex-grow: 1;
+}
+
+.modalTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.25;
+  color: #3F3131;
+  margin: 0 0 16px 0;
+  letter-spacing: 0.01em;
+
+  @media (--viewportMedium) {
+    font-size: 26px;
+  }
+}
+
+.modalMessage {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  font-weight: 400;
+  color: #3F3131;
+  margin: 0 0 24px 0;
+
+  @media (--viewportMedium) {
+    font-size: 15px;
+  }
+}
+
+.submitButton {
+  margin-top: 8px;
+  background-color: #2E2E2E;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+
+  &:focus,
+  &:hover {
+    background-color: #BAA38A;
+  }
+
+  @media (--viewportMedium) {
+    margin-top: 12px;
+  }
+}

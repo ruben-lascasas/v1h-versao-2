@@ -1,0 +1,317 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+}
+
+.avatar {
+  flex-shrink: 0;
+  margin-right: 36px;
+}
+
+.info {
+  flex: 1;
+  /* Without min-width: 0, long content (name, location) would force the flex
+     parent to grow beyond its container and break the page layout instead of
+     wrapping inside the .info column. */
+  min-width: 0;
+}
+
+.heading {
+  composes: p from global;
+  margin: 0;
+
+  @media (--viewportMedium) {
+    margin: 0;
+  }
+}
+
+.link {
+  white-space: nowrap;
+}
+
+.mobileBio,
+.desktopBio {
+  /* Preserve newlines, but collapse other whitespace */
+  white-space: pre-line;
+  margin: 18px 0 0 0;
+  transition: all 1s ease-in;
+
+  @media (--viewportMedium) {
+    margin: 0;
+  }
+}
+
+.mobileBio {
+  @media (--viewportMedium) {
+    display: none;
+  }
+}
+
+.desktopBio {
+  display: none;
+
+  @media (--viewportMedium) {
+    display: inline;
+
+    &::before {
+      content: ' ';
+    }
+  }
+}
+
+.longWord {
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.showMore {
+  /* Position and dimensions */
+  display: inline;
+  padding: 0;
+
+  /* Borders */
+  border: none;
+
+  /* Colors */
+  color: var(--marketplaceColor);
+
+  /* Text size should be inherited */
+  text-decoration: none;
+
+  font-weight: var(--fontWeightMedium);
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0;
+
+  margin: 0 0 0 5px;
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  @media (--viewportMedium) {
+    font-weight: var(--fontWeightMedium);
+    /* margin-top + n * line-height + margin-bottom => x * 8px */
+    margin-top: 17px;
+    margin-bottom: 15px;
+  }
+}
+
+.links {
+  margin-top: 13px;
+
+  @media (--viewportMedium) {
+    margin: 16px 0 0 0;
+  }
+}
+
+.withBioMissingAbove {
+  @media (--viewportMedium) {
+    /* Fix baseline alignment if bio is missing from above */
+    margin-top: 16px;
+  }
+}
+
+.linkSeparator {
+  margin: 0 10px;
+  color: var(--marketplaceColor);
+}
+
+.headingRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.editProfileDesktop {
+  composes: p from global;
+  display: none;
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+
+  @media (--viewportMedium) {
+    display: inline;
+  }
+}
+
+.editProfileMobile {
+  composes: p from global;
+  display: inline;
+
+  @media (--viewportMedium) {
+    display: none;
+  }
+}
+
+.contact {
+  composes: a from global;
+  font-weight: var(--fontWeightMedium);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 13px;
+
+  @media (--viewportMedium) {
+    margin-top: 16px;
+  }
+}
+
+/* Mobile-only stacked variant — full-width follow button below the avatar +
+   name row so it doesn't get squeezed next to the avatar on narrow screens. */
+.actionsMobile {
+  display: block;
+  margin-top: 12px;
+
+  @media (--viewportMedium) {
+    display: none;
+  }
+}
+
+/* Desktop variant — keeps the original inline placement to the right of the
+   name (composed with `.actions`). Hidden on mobile so we don't render the
+   button twice. */
+.actionsDesktop {
+  composes: actions;
+  display: none;
+
+  @media (--viewportMedium) {
+    display: flex;
+  }
+}
+
+.authorLocation {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #7C6350;
+  /* Allow long addresses to wrap inside the flex row instead of forcing the
+     parent to overflow horizontally. */
+  min-width: 0;
+  flex-shrink: 1;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.lastOnline {
+  display: block;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #BAA38A;
+  font-style: italic;
+  margin-top: 10px;
+  text-align: left;
+}
+
+/* Inline status line: "Esteve online há X · Responde em ~Yh · N seguidores" */
+.authorMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  margin-top: 10px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.metaSeparator {
+  color: #BAA38A;
+}
+
+.metaOnline {
+  color: #BAA38A;
+  font-style: italic;
+}
+
+.metaReply {
+  color: #7C6350;
+  font-style: italic;
+}
+
+.metaFollowers {
+  color: #5C3317;
+
+  & strong {
+    color: #2E2E2E;
+    font-weight: 700;
+  }
+}
+
+.metaRating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #5C3317;
+
+  & strong {
+    color: #2E2E2E;
+    font-weight: 700;
+  }
+}
+
+.metaRatingStar {
+  width: 14px;
+  height: 14px;
+  fill: #f5c518;
+  flex-shrink: 0;
+}
+
+.metaRatingCount {
+  color: #7C6350;
+}
+
+.followButton {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 6px;
+  padding: 14px 24px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+  }
+}
+
+.followingButton {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2E2E2E;
+  background-color: #ffffff;
+  border: 2px solid #2E2E2E;
+  border-radius: 6px;
+  padding: 12px 24px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+    border-color: #BAA38A;
+    color: #ffffff;
+  }
+}

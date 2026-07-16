@@ -1,0 +1,415 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  flex-grow: 1;
+  background-color: #ffffff;
+}
+
+.container {
+  width: 100%;
+}
+
+/* ── Two-column layout ───────────────────────────── */
+.card {
+  display: flex;
+  flex-direction: column;
+
+  @media (--viewportLarge) {
+    display: grid;
+    grid-template-columns: 300px 1px 1fr;
+    align-items: start;
+  }
+}
+
+/* ── Divider ─────────────────────────────────────── */
+.divider {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+    background-color: var(--colorGrey100);
+    height: auto;
+    width: 1px;
+    align-self: stretch;
+  }
+}
+
+/* ── Left info panel (desktop sidebar only) ──────── */
+.info {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+    padding: 46px 24px 60px 36px;
+  }
+}
+
+/* ── Mobile avatar block (between header and form) ── */
+.mobileAvatarBlock {
+  width: 100%;
+  margin: 0 0 24px 0;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.infoTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+  color: var(--colorBlack);
+  margin: 0 0 12px -17px;
+  text-align: center;
+}
+
+.infoTitleDesktop {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+.infoText {
+  font-size: 14px;
+  color: var(--colorGrey600);
+  line-height: 1.7;
+  margin: 0 0 32px 0;
+}
+
+.infoTextDesktop {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+.infoItem {
+  position: relative;
+  padding-left: 0;
+  margin-bottom: 24px;
+}
+
+.infoIcon {
+  position: absolute;
+  left: 0px;
+  top: 2px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infoLabel {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--colorBlack);
+  margin-bottom: 4px;
+  padding-left: 30px;
+}
+
+.infoValue {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: var(--colorGrey600);
+  line-height: 1.6;
+  text-decoration: none;
+  pointer-events: none;
+}
+
+.infoNote {
+  padding: 12px 14px;
+  background-color: #faf7f4;
+  border-left: 3px solid #BAA38A;
+  border-radius: 2px;
+  font-size: 13px;
+  color: var(--colorGrey600);
+  line-height: 1.6;
+}
+
+/* ── Avatar in left panel ────────────────────────── */
+.avatarSection {
+  margin-top: 0;
+  margin-left: -12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatarSection label {
+  align-self: center;
+  margin-left: 0;
+}
+
+.avatarLabel {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--colorBlack);
+  margin: 0 0 12px 0;
+  display: block;
+  cursor: pointer;
+  text-align: center;
+}
+
+.uploadAvatarInput {
+  display: none;
+}
+
+.avatarContainer {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: var(--colorGrey50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--colorGrey200);
+  border-radius: 50%;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: var(--colorGrey400);
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.uploadingImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.uploadingImageOverlay {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-color: rgba(255,255,255,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.changeAvatar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.52);
+  color: #fff;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.avatarHint {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: var(--colorGrey500);
+  margin: 0;
+  text-align: center;
+}
+
+.avatarHintSub {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  color: var(--colorGrey400);
+  margin: 2px 0 0 0;
+  text-align: center;
+}
+
+.avatarPositioner {
+  position: relative;
+  display: inline-block;
+  align-self: center;
+}
+
+.removeAvatarBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  z-index: 2;
+
+  &:hover {
+    background-color: #c62828;
+    transform: scale(1.08);
+  }
+}
+
+/* ── Form panel ─────────────────────────────────── */
+.formWrapper {
+  flex-grow: 1;
+  min-width: 0;
+  padding: 24px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (--viewportMedium) {
+    padding: 32px 48px 60px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 40px 48px 60px;
+  }
+}
+
+/* ── Header (title area) ─────────────────────────── */
+.header {
+  text-align: center;
+  padding: 0 0 24px;
+  width: 100%;
+  max-width: 1000px;
+
+  @media (--viewportLarge) {
+    padding: 0 0 36px 0;
+  }
+}
+
+.pageTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 36px;
+  color: var(--colorBlack);
+  margin: 0 0 12px 0;
+
+  @media (min-width: 480px) {
+    font-size: 52px;
+  }
+
+  @media (--viewportMedium) {
+    font-size: 68px;
+  }
+}
+
+.pageSubtitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--colorGrey500);
+  margin: 0;
+}
+
+.pageSubtitleMobile {
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.pageSubtitleDesktop {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+.profileLink {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  white-space: nowrap;
+  margin-top: 16px;
+  display: block;
+  text-align: center;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+/* Hide the in-avatar "VER O MEU PERFIL" link on mobile (replaced by
+   .viewProfileMobileButton rendered after the form on mobile). */
+.viewProfileDesktopWrapper {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+/* Mobile-only "VER O MEU PERFIL" button shown after the Save button. */
+.viewProfileMobileButton {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 12px;
+  padding: 13px 32px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #2E2E2E;
+  background-color: #ffffff;
+  border: 1px solid var(--colorGrey200);
+  border-radius: 4px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+    border-color: #BAA38A;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.form {
+  width: 100%;
+  max-width: 1000px;
+}

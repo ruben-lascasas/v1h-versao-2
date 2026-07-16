@@ -1,0 +1,473 @@
+@import '../../../styles/customMediaQueries.css';
+
+.coverEverything {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.root {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.root:hover {
+  text-decoration: none;
+}
+
+.cardHovered .title {
+  color: #BAA38A;
+}
+
+.cardHovered .priceValue {
+  color: #BAA38A;
+}
+
+.cardHovered .perUnit {
+  color: #BAA38A;
+}
+
+.cardHovered .noPrice {
+  color: #BAA38A;
+}
+
+.menuOverlayWrapper {
+  /* Positioning */
+  composes: coverEverything;
+}
+
+.menuOverlay {
+  /* Positioning */
+  composes: coverEverything;
+
+  /* Overlay */
+  background-color: var(--colorGrey300);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: var(--transitionStyleButton);
+}
+
+.menuOverlayOpen {
+  opacity: 0.4;
+}
+
+.clickWrapper {
+  /* Layout */
+  display: block;
+  width: 100%;
+  position: relative;
+  transition: var(--transitionStyleButton);
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.imageContainer {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: var(--transitionStyleButton);
+
+  @media (--viewportMedium) {
+    .cardHovered & {
+      transform: scale(1.02);
+      box-shadow: var(--boxShadowListingCard);
+    }
+  }
+}
+
+.imageContainerDraft {
+  background: rgba(186, 163, 138, 0.15);
+}
+
+.aspectRatioWrapper {
+  transition: var(--transitionStyleButton);
+  background: #7C6350;
+  border-radius: 12px;
+  border: 6px solid #7C6350;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.aspectRatioWrapperDraft {
+  transition: var(--transitionStyleButton);
+  background: rgba(186, 163, 138, 0.15);
+  border-radius: 12px;
+  border: 6px solid rgba(186, 163, 138, 0.15);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.rootForImage {
+  /* Layout - image will take space defined by aspect ratio wrapper */
+  composes: coverEverything;
+  width: 100%;
+  border-radius: 0;
+}
+
+.menubarWrapper {
+  /* Position */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 56px;
+}
+
+
+.menubar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 6px 6px 0 0;
+  gap: 6px;
+}
+
+
+.iconWrapperEdit,
+.iconWrapperClose,
+.iconWrapperDelete {
+  padding: 0;
+  margin: 4px;
+  color: var(--colorWhite);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.7));
+  transition: color 0.15s ease;
+}
+
+.iconWrapperEdit:hover {
+  color: #BAA38A;
+}
+
+.iconWrapperClose:hover {
+  color: #e03030;
+}
+
+.iconWrapperDelete:hover {
+  color: #e03030;
+}
+
+.deleteConfirmActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.deleteConfirmButton {
+  min-height: 40px;
+  padding: 0 18px;
+  background-color: #c02020;
+  border-color: #c02020;
+  font-size: 13px;
+
+  &:hover {
+    background-color: #8a1010;
+    border-color: #8a1010;
+  }
+}
+
+.deleteCancelLink {
+  composes: a textSmall from global;
+  margin-top: 4px;
+}
+
+
+.info {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0 2px 0;
+
+  @media (--viewportMedium) {
+    padding: 14px 0 2px 0;
+  }
+}
+
+.price {
+  composes: textSmall from global;
+
+  /* Layout */
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+  font-family: var(--fontFamily);
+  color: var(--colorGrey700);
+}
+
+.priceValue {
+  /* Font */
+  font-family: var(--fontFamily);
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorGrey700);
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.perUnit {
+  /* Font */
+  font-family: var(--fontFamily);
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorGrey700);
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.noPrice {
+  composes: textSmall from global;
+  font-family: var(--fontFamily);
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorGrey700);
+  margin-bottom: 4px;
+}
+
+.mainInfo {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.locationRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-top: 2px;
+  min-width: 0;
+  min-height: 16px;
+}
+
+.locationIcon {
+  flex-shrink: 0;
+}
+
+.locationCity {
+  composes: marketplaceTinyFontStyles from global;
+  font-weight: var(--fontWeightMedium);
+  color: var(--colorGrey700);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.locationCityMissing {
+  composes: marketplaceTinyFontStyles from global;
+  font-weight: var(--fontWeightMedium);
+  color: var(--colorGrey400);
+  font-style: italic;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-top: 2px;
+}
+
+.ratingStar {
+  width: 12px;
+  height: 12px;
+  fill: #FFD700;
+}
+
+.ratingStarEmpty {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: #FFD700;
+  stroke-width: 2px;
+}
+
+.ratingValue {
+  font-family: var(--fontFamily);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--colorGrey700);
+  margin: 0;
+}
+
+.titleWrapper {
+  line-height: 24px;
+}
+
+.title {
+  composes: p from global;
+
+  /* Position and dimensions */
+  display: inline;
+
+  /* Borders */
+  border: none;
+
+  /* Text size should be inherited */
+  text-decoration: none;
+
+  /* Font */
+  font-family: var(--fontFamilyHeading);
+  font-weight: var(--fontWeightSemiBold);
+  line-height: 24px;
+
+  color: var(--colorGrey700);
+  text-align: left;
+
+  padding: 3px 0;
+
+  /* Remove default margins from font */
+  margin: 0;
+
+  &:hover {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  @media (--viewportMedium) {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.titleDraft {
+  margin-right: 8px;
+}
+
+/* Solid gray background for draft listings without image */
+.draftNoImage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--colorGrey700);
+  border-radius: 12px;
+}
+
+
+.openListingButton,
+.finishListingDraftLink {
+  display: inline-block;
+  align-self: center;
+  padding: 8px 20px;
+  background-color: #2E2E2E;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+  margin-bottom: 8px;
+
+  &:hover {
+    background-color: #BAA38A;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  @media (--viewportMedium) {
+    margin-top: 10px;
+    margin-bottom: 14px;
+    line-height: 16px;
+  }
+}
+
+
+
+.alternativeActionText {
+  composes: h5 from global;
+  margin: 0px 24px;
+}
+
+.alternativeActionLink {
+  composes: a textSmall from global;
+}
+
+.editarDestaqueButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 13px 0;
+  background-color: #fff;
+  color: #2E2E2E;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 2px solid #2E2E2E;
+  cursor: default;
+}
+
+.editarDestaqueIcon {
+  width: 13px;
+  height: 13px;
+  fill: #2E2E2E;
+}
+
+.destacarButton {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 13px 0;
+  background-color: #BAA38A;
+  color: #2E2E2E;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background-color: #7C6350;
+    color: #ffffff;
+  }
+}

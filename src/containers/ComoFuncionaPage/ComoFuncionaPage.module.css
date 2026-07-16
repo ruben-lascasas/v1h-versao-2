@@ -1,0 +1,418 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  flex-grow: 1;
+  background-color: #ffffff;
+}
+
+/* ── Hero ──────────────────────────────────────────── */
+
+.hero {
+  text-align: center;
+  padding: 64px 24px 48px;
+  background-color: #3F3131;
+
+  @media (--viewportMedium) {
+    padding: 88px 40px 64px;
+  }
+}
+
+.heroTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 40px;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  letter-spacing: 0.04em;
+
+  @media (--viewportMedium) {
+    font-size: 56px;
+  }
+}
+
+.heroSubtitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.8;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ── Sections ──────────────────────────────────────── */
+
+.section {
+  padding: 56px 0;
+
+  @media (--viewportMedium) {
+    padding: 72px 0;
+  }
+}
+
+.sectionInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+
+  @media (--viewportMedium) {
+    padding: 0 48px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 0 64px;
+  }
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+/* The FAQ has its own intro paragraph immediately under the title, so we
+   pull the header gap right down — the intro text supplies its own breathing
+   room (.intro margin-bottom 32px). */
+.faqSectionHeader {
+  margin-bottom: 12px;
+}
+
+.sectionTag {
+  display: inline-block;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #BAA38A;
+  margin-bottom: 12px;
+}
+
+.sectionTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 28px;
+  color: #3F3131;
+  margin: 0 0 14px 0;
+  letter-spacing: 0.03em;
+
+  @media (--viewportMedium) {
+    font-size: 36px;
+  }
+}
+
+.sectionSubtitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #7C6350;
+  line-height: 1.75;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ── Steps Grid ────────────────────────────────────── */
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+}
+
+.stepCard {
+  background-color: #3F3131;
+  border-radius: 8px;
+  padding: 32px 24px 36px;
+}
+
+.stepTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.stepIcon {
+  display: flex;
+}
+
+.stepNumber {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 36px;
+  color: rgba(255, 255, 255, 0.15);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.stepTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+}
+
+.stepText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* ── Section CTA ───────────────────────────────────── */
+
+.sectionCta {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.ctaBtn {
+  display: inline-block;
+  padding: 11px 28px;
+  background-color: #3F3131;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+/* ── Divider ───────────────────────────────────────── */
+
+.dividerWrap {
+  padding: 0 24px;
+
+  @media (--viewportMedium) {
+    padding: 0 48px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 0 64px;
+  }
+}
+
+.divider {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 1px;
+  background-color: #e8e0d8;
+}
+
+/* ── Guarantee Section ─────────────────────────────── */
+
+.guaranteeSection {
+  background-color: #2E2E2E;
+  padding: 56px 0;
+
+  @media (--viewportMedium) {
+    padding: 72px 0;
+  }
+}
+
+.guaranteeGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+}
+
+.guaranteeCard {
+  text-align: center;
+  padding: 32px 24px;
+}
+
+.guaranteeIcon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.guaranteeTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+}
+
+.guaranteeText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* ── FAQ Section ───────────────────────────────────── */
+
+.faqSection {
+  padding: 56px 0;
+
+  @media (--viewportMedium) {
+    padding: 72px 0;
+  }
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.faqItem {
+  padding: 28px 0;
+  border-bottom: 1px solid #e8e0d8;
+
+  &:first-child {
+    border-top: 1px solid #e8e0d8;
+  }
+}
+
+.faqQ {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #3F3131;
+  margin: 0 0 10px 0;
+}
+
+.faqA {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #7C6350;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.faqMoreLink {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.faqMoreLink a {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #7C6350;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid #BAA38A;
+  padding-bottom: 2px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.faqMoreLink a:hover {
+  color: #3F3131;
+  border-bottom-color: #3F3131;
+}
+
+/* ── CTA Final ─────────────────────────────────────── */
+
+.ctaSection {
+  text-align: center;
+  background-color: #f5f0eb;
+  padding: 64px 24px 72px;
+}
+
+.ctaTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 28px;
+  color: #3F3131;
+  margin: 0 0 14px 0;
+  letter-spacing: 0.03em;
+
+  @media (--viewportMedium) {
+    font-size: 36px;
+  }
+}
+
+.ctaText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #7C6350;
+  margin: 0 0 36px 0;
+}
+
+.ctaButtons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+
+  @media (min-width: 480px) {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.ctaBtnPrimary {
+  display: inline-block;
+  padding: 12px 32px;
+  background-color: #3F3131;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+.ctaBtnSecondary {
+  display: inline-block;
+  padding: 12px 32px;
+  background-color: transparent;
+  border: 2px solid #3F3131;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3F3131;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background-color: #3F3131;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}

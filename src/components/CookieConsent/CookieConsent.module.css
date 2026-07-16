@@ -1,0 +1,333 @@
+@import '../../styles/customMediaQueries.css';
+
+/* ── Banner ─────────────────────────────────────────────── */
+
+.banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border-top: 2px solid #2E2E2E;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.14);
+  padding: 16px 16px 18px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+
+  @media (--viewportMedium) {
+    padding: 18px 24px;
+  }
+}
+
+.bannerInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  @media (--viewportMedium) {
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+  }
+}
+
+.bannerText {
+  flex: 1;
+}
+
+.bannerTitle {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin-bottom: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.bannerBody {
+  margin: 0 0 6px 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #4d4d4d;
+}
+
+.bannerLink {
+  font-size: 13px;
+  color: #7C6350;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.bannerLink:hover {
+  color: #BAA38A;
+}
+
+.bannerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: stretch;
+
+  @media (--viewportMedium) {
+    flex-wrap: nowrap;
+  }
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+
+.btnPrimary,
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+  border: 2px solid transparent;
+  flex: 1;
+
+  @media (--viewportMedium) {
+    flex: 0 0 auto;
+  }
+}
+
+.btnPrimary {
+  background: #2E2E2E;
+  color: #ffffff;
+  border-color: #2E2E2E;
+}
+
+.btnPrimary:hover {
+  background: #BAA38A;
+  border-color: #BAA38A;
+}
+
+.btnSecondary {
+  background: #ffffff;
+  color: #2E2E2E;
+  border-color: #2E2E2E;
+}
+
+.btnSecondary:hover {
+  background: #BAA38A;
+  border-color: #BAA38A;
+  color: #ffffff;
+}
+
+/* ── Modal ──────────────────────────────────────────────── */
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.18s ease-out;
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Match the report modal: clip-path forces the inner scrollbar to follow the
+     rounded corners on the right side, otherwise it pokes out as a sharp edge. */
+  clip-path: inset(0 round 16px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  animation: scaleIn 0.18s ease-out;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 8px;
+}
+
+.modalTitle {
+  margin: 0;
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-size: 24px;
+  color: #2E2E2E;
+  font-weight: 400;
+}
+
+.modalClose {
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: #2E2E2E;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.modalClose:hover {
+  background: #f0ebe5;
+}
+
+.modalIntro {
+  padding: 0 24px;
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #4d4d4d;
+}
+
+.categoryList {
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.categoryRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid #f0ebe5;
+}
+
+.categoryRow:first-child {
+  border-top: none;
+}
+
+.categoryText {
+  flex: 1;
+  min-width: 0;
+}
+
+.categoryHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.categoryTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2E2E2E;
+  letter-spacing: 0.02em;
+}
+
+.categoryBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(186, 163, 138, 0.18);
+  color: #7C6350;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.categoryDesc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #555;
+}
+
+.modalActions {
+  display: flex;
+  gap: 8px;
+  padding: 16px 24px 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.modalActions .btnPrimary,
+.modalActions .btnSecondary {
+  flex: 1 1 100%;
+}
+
+@media (--viewportMedium) {
+  .modalActions {
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+  .modalActions .btnPrimary,
+  .modalActions .btnSecondary {
+    flex: 0 0 auto;
+  }
+}
+
+/* ── Toggle switch ──────────────────────────────────────── */
+
+.toggle {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  background: #d1d1d1;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.toggle:focus {
+  outline: 2px solid #BAA38A;
+  outline-offset: 2px;
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggleOn {
+  background: #BAA38A;
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(18px);
+}
+
+.toggleDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ── Animations ─────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}

@@ -1,0 +1,94 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.listingCardsMapVariant {
+  padding: 0 8px 96px 8px;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  align-items: start;
+  gap: 24px;
+  width: 100%;
+
+  @media (--viewportMedium) {
+    padding: 0 0 96px 0;
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (--viewportXLarge) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.resultItem {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listingCards {
+  padding: 0 8px 72px 8px;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  column-gap: 16px;
+  row-gap: 18px;
+  width: 100%;
+
+  @media (min-width: 550px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (--viewportMedium) {
+    padding: 0 0 96px 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 20px;
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 24px;
+  }
+
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    row-gap: 26px;
+  }
+  /* Removed the 5-column breakpoint at >=1921px so the layout stays
+     at a maximum of 4 columns even when the user zooms out. */
+}
+
+.listingCard {
+  width: 100%;
+}
+
+.pagination {
+  /* margin-top: auto; pushes pagination to the end of the page. */
+  margin-top: auto;
+  background-color: transparent;
+}
+
+.showingRange {
+  text-align: center;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--colorGrey700);
+  /* The .listingCards <ul> above has 72-96px of bottom padding to keep the
+     cards from sticking to the next section. We undo most of it for this
+     small caption so it sits right below the cards. */
+  margin: -64px 0 16px 0;
+
+  @media (--viewportMedium) {
+    margin: -88px 0 20px 0;
+  }
+}

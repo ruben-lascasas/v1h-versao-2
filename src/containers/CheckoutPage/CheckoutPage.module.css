@@ -1,0 +1,561 @@
+@import '../../styles/customMediaQueries.css';
+
+:global(body):has(.contentContainer) {
+  background-color: var(--colorWhite);
+}
+
+/* Dummy Topbar */
+
+.topbar {
+  width: 100%;
+  height: var(--topbarHeight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--colorWhite);
+  box-shadow: var(--boxShadow);
+
+  @media (--viewportMedium) {
+    height: var(--topbarHeightDesktop);
+    justify-content: center;
+  }
+}
+
+/* /Dummy Topbar */
+
+.contentContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+
+  @media (--viewportLarge) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 48px;
+  }
+}
+
+.orderFormContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+
+  @media (--viewportLarge) {
+    flex-grow: 0;
+    flex-basis: 519px;
+    margin-top: 73px;
+    margin-right: 132px;
+  }
+}
+
+.listingImageMobile {
+  position: relative;
+  background-color: var(--colorWhite);
+  /* White space around the hero image + thick dark-brown frame, matching
+     the listing card border on the search page. AspectRatioWrapper sets
+     width:100% so we constrain it with calc to leave room for the margins. */
+  width: calc(100% - 48px) !important;
+  margin: 24px 24px 0 24px;
+  border: 6px solid #7C6350;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.rootForImage {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+
+  @media (--viewportLarge) {
+    border-radius: 2px 2px 0 0;
+  }
+}
+
+.avatarWrapper {
+  margin-left: 0;
+  margin-top: 16px;
+  /* Align with the heading text below (which has padding: 0 24px). */
+  padding-left: 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  &.noListingImage {
+    margin-top: 24px;
+    @media (--viewportMedium) {
+      margin-top: 32px;
+    }
+    @media (--viewportLarge) {
+      margin-top: 40px;
+    }
+  }
+}
+
+.avatarMobile {
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.headingContainer {
+  margin-top: 29px;
+  margin-bottom: 34px;
+  padding: 0 24px;
+
+  @media (--viewportMedium) {
+    margin-top: 27px;
+    margin-bottom: 30px;
+  }
+
+  @media (--viewportLarge) {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0;
+  }
+}
+
+.heading {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 7px;
+  font-family: 'Britannic Bold', 'Georgia', serif;
+  color: #3F3131;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+}
+
+.listingDetailsWrapper {
+  margin: 0 48px;
+
+  /* The shared .avatarWrapper has padding-left:24px for the mobile heading
+     alignment. Inside the desktop sidecard the wrapper is already padded by
+     the 48px margin above, so cancel the extra padding to align the avatar
+     with the listing title that follows. */
+  & .avatarWrapper {
+    padding-left: 0;
+  }
+}
+
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.authorName {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #3F3131;
+  margin: 0;
+}
+
+.authorOnline {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #BAA38A;
+  font-style: italic;
+}
+
+.detailsHeadingMobile {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  color: #7C6350;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.author {
+  width: 100%;
+  composes: h4 from global;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  color: #2E2E2E;
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.bookingPriceVariant {
+  margin-bottom: 16px;
+}
+
+.bookingPriceVariantMobile {
+  margin-bottom: 12px;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.priceVariantNameMobile {
+  composes: p from global;
+  font-weight: var(--fontWeightBold);
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  color: #3F3131;
+  padding: 0;
+  margin-bottom: 16px;
+}
+
+.priceBreakdownContainer {
+  padding: 0 24px;
+  margin-bottom: 37px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 38px;
+  }
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.priceBreakdownTitle {
+  color: #7C6350;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 14px;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 18px;
+  }
+  @media (--viewportLarge) {
+    margin-top: 0;
+    margin-bottom: 14px;
+  }
+}
+
+.paymentContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+  margin-bottom: 35px;
+
+  @media (--viewportMedium) {
+    margin-top: 2px;
+    margin-bottom: 120px;
+  }
+
+  @media (--viewportLarge) {
+    margin-top: 0;
+    padding: 0;
+  }
+}
+
+.orderError,
+.notFoundError {
+  margin: 11px 0 12px 0;
+
+  @media (--viewportMedium) {
+    margin: 10px 0 12px 0;
+  }
+}
+.orderError {
+  color: var(--colorFail);
+}
+.notFoundError {
+  color: var(--colorFail);
+}
+
+.speculateError {
+  color: var(--colorFail);
+  margin: 19px 0 1px 0;
+
+  @media (--viewportLarge) {
+    margin: 28px 0 0 0;
+  }
+}
+
+.paymentForm {
+  flex-grow: 1;
+}
+
+/* Details column — desktop side card */
+.detailsContainerDesktop {
+  display: none;
+
+  @media (--viewportLarge) {
+    flex-shrink: 0;
+    display: block;
+    width: 409px;
+    padding-bottom: 36px;
+    margin: 56px 0 24px 0;
+    background-color: var(--colorWhite);
+    border: 6px solid #7C6350;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}
+
+.detailsAspectWrapper {
+  position: relative;
+  background-color: var(--colorWhite);
+}
+
+.detailsHeadings {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+    margin: 0;
+    &.noListingImage {
+      margin-top: 32px;
+    }
+  }
+}
+
+.detailsSubtitle {
+  composes: h5 from global;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  color: #7C6350;
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportLarge) {
+    padding: 3px 0 5px 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.orderBreakdownHeader {
+  @media (--viewportLarge) {
+    margin: 0 48px;
+  }
+}
+
+/* Multi-booking slot list — align with the breakdown's header/items so
+   the "Reserva 1, 2, 3" blocks line up with "RESUMO DA RESERVA" and the
+   total price row. */
+.multiBookingsList {
+  margin: 12px 0;
+
+  @media (--viewportLarge) {
+    margin: 12px 48px;
+  }
+}
+
+.orderBreakdownTitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  color: #3F3131;
+  letter-spacing: 1px;
+  margin: 5px 24px 25px 24px;
+
+  @media (--viewportLarge) {
+    padding: 6px 0 2px 0;
+    margin: 16px 0 8px 0;
+  }
+}
+
+.totalDivider {
+  width: 100%;
+  height: 1px;
+  margin: 12px 0 5px 0;
+  border: none;
+  background-color: #BAA38A;
+
+  @media (--viewportMedium) {
+    margin: 7px 0 0 0;
+  }
+}
+
+.orderBreakdown {
+  @media (--viewportLarge) {
+    padding-bottom: 20px;
+    margin: 0 48px;
+  }
+}
+
+/* CheckoutPageWithInquiryProcess */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 40px;
+}
+
+.sectionHeading {
+  composes: p from global;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  color: #3F3131;
+  margin: 0 0 12px 0;
+  padding-top: 4px;
+  padding-bottom: 2px;
+
+  @media (--viewportMedium) {
+    margin: 0 0 0 0;
+    padding-top: 5px;
+    padding-bottom: 3px;
+  }
+}
+
+.field {
+  margin: 25px 0 24px 0;
+
+  @media (--viewportMedium) {
+    margin: 22px 0 24px 0;
+  }
+}
+
+.fieldInquiryMessage {
+  margin: 0 0 24px 0;
+
+  @media (--viewportMedium) {
+    margin: 16px 0 24px 0;
+  }
+}
+
+.error {
+  color: var(--colorFail);
+  margin-top: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+  }
+}
+
+.priceContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-right: 22px;
+  padding: 3px 0;
+
+  @media (--viewportMedium) {
+    padding: 4px 0;
+  }
+
+  @media (--viewportLarge) {
+    flex-direction: row;
+    margin-right: unset;
+    padding: 0;
+  }
+}
+
+.price {
+  composes: p from global;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  color: #3F3131;
+  margin: 0 0 0 24px;
+
+  @media (--viewportMedium) {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.perUnit {
+  composes: p from global;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  color: #7C6350;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.inquiryPrice {
+  composes: p from global;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  color: #3F3131;
+}
+
+.incompatibleCurrency {
+  margin-top: 20px;
+  color: var(--colorFail);
+}
+
+.transactionFieldsContainer {
+  margin-bottom: 36px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 40px;
+  }
+}
+
+.spinner {
+  margin: auto;
+}
+
+/* Mobile-only: title shown ABOVE the listing image */
+.headingMobileTop {
+  padding: 16px 24px 0 24px;
+  margin: 0;
+  font-size: 28px !important;
+  line-height: 1.2 !important;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+/* Hide the original title block on mobile (keeps the listing-title H4 only on mobile, full block on desktop) */
+.headingContainerDesktop {
+  & .heading {
+    display: none;
+    @media (--viewportLarge) {
+      display: block;
+    }
+  }
+}
+
+/* Author name shown next to the avatar on mobile */
+.avatarName {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #3F3131;
+}
+
+/* Mobile-only: location info shown right below the listing title */
+.mobileLocationUnderTitle {
+  padding: 0 24px;
+  /* Pull up close to the title above and add breathing room before the dates below */
+  margin-top: -22px;
+  margin-bottom: 36px;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.mobileLocationLabel {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin: 0 0 6px 0;
+}
+
+.mobileLocationAddress {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #2E2E2E;
+  margin: 0;
+  line-height: 1.5;
+  word-break: break-word;
+}

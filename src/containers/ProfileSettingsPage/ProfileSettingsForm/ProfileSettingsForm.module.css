@@ -1,0 +1,243 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Disable the submit button while the user is actively typing in any text
+   field. Uses :has() so it only triggers for real text inputs/textareas —
+   not for buttons (e.g. language chips) that may keep :focus after click. */
+.root:has(input[type="text"]:focus, input[type="email"]:focus, input[type="search"]:focus, textarea:focus) .submitButton {
+  pointer-events: none;
+  opacity: 0.55;
+  cursor: default;
+}
+
+.sectionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionTitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  color: var(--colorBlack) !important;
+  margin: 0 0 4px 0 !important;
+}
+
+.lastSection {
+  gap: 20px;
+}
+
+.locationWrapper {
+  & [class*="icon"] {
+    display: none;
+  }
+  & input {
+    padding-left: 12px !important;
+  }
+}
+
+/* ── Avatar ─────────────────────────────────────── */
+.uploadAvatarInput {
+  display: none;
+}
+
+.uploadAvatarWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.avatarPlaceholder,
+.avatarContainer {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--colorGrey50);
+  border-radius: 50%;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.avatarPlaceholder {
+  border: 2px dashed var(--colorGrey200);
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: #BAA38A;
+  }
+}
+
+.avatarPlaceholderText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: var(--colorGrey400);
+  text-align: center;
+  padding: 0 14px;
+  display: none;
+
+  @media (--viewportMedium) {
+    display: block;
+  }
+}
+
+.avatarPlaceholderTextMobile {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: var(--colorGrey400);
+  text-align: center;
+
+  @media (--viewportMedium) {
+    display: none;
+  }
+}
+
+.avatarUploadError {
+  border: 2px dashed var(--colorFail);
+}
+
+.error {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: var(--colorFail);
+  margin-top: 10px;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.changeAvatar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.52);
+  color: #fff;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 0;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.uploadingImage {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  position: relative;
+}
+
+.uploadingImageOverlay {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.avatarInvisible {
+  visibility: hidden;
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+}
+
+.tip {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: var(--colorGrey500);
+  margin: 8px 0 2px 0;
+}
+
+.fileInfo {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: var(--colorGrey400);
+  margin: 0;
+}
+
+/* ── Name fields ─────────────────────────────────── */
+.nameContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (--viewportMedium) {
+    flex-direction: row;
+  }
+}
+
+.row {
+  width: 100%;
+}
+
+.firstName {
+  flex: 1;
+}
+
+.lastName {
+  flex: 2;
+}
+
+.extraInfo {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: var(--colorGrey500);
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+/* ── Submit ─────────────────────────────────────── */
+.submitButton {
+  align-self: stretch;
+  padding: 13px 32px;
+  background-color: #2E2E2E;
+  color: #ffffff;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 8px;
+
+  @media (--viewportMedium) {
+    align-self: flex-start;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #BAA38A;
+  }
+
+  &:disabled {
+    background-color: var(--colorGrey300);
+    cursor: not-allowed;
+  }
+}

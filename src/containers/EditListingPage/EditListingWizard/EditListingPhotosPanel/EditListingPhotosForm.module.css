@@ -1,0 +1,269 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.root {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.imagesFieldArray {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 0 0 24px 0;
+}
+
+.thumbnail {
+  width: 100%;
+  background-color: var(--colorGrey50);
+}
+
+/* Drag-to-reorder slot: each thumbnail is wrapped in this container so the
+   pointer-events handler can listen for the whole tile, and the visual states
+   below give immediate feedback about what's being dragged and where it'll
+   land. */
+.sortableSlot {
+  position: relative;
+  cursor: grab;
+  border-radius: 10px;
+  transition: opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  /* Suppress the browser's default image-drag (ghost image) and text
+     selection so our pointer-event reorder UX is the only thing that runs. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+.sortableSlot img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+/* Round the actual image inside each slot. `clip-path` doubles up the
+   border-radius so the image is clipped even when the inner wrapper uses
+   AspectRatioWrapper's overflow rules. */
+.sortableSlot > * {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sortableSlot:active {
+  cursor: grabbing;
+}
+
+/* While dragging we override transform/box-shadow inline (so the tile follows
+   the cursor) — only keep opacity here so the user can still see what's
+   underneath. */
+.dragging {
+  opacity: 0.85;
+  /* Skip the slot's own transition so the translate() follows the pointer
+     immediately instead of lagging behind. */
+  transition: none;
+}
+
+/* Slot that the dragged tile will land on — wrapped with a thick rounded
+   ring (box-shadow follows border-radius unlike outline) plus a soft tint so
+   the drop target is obvious. */
+.dragOver {
+  box-shadow: 0 0 0 6px #BAA38A;
+  background: rgba(186, 163, 138, 0.18);
+}
+
+/* YouTube field — sits below the photo grid as the "last slide" of the listing. */
+.youtubeSection {
+  margin: 40px 0 24px;
+  padding: 16px 18px;
+  background: #f6f0e8;
+  border: 1px solid #e5d8c4;
+  border-radius: 8px;
+
+  :global(body[data-dark-mode]) & {
+    background: #2a2a2a;
+    border-color: #3a3a3a;
+  }
+}
+
+.youtubeHint {
+  composes: h5 from global;
+  flex-shrink: 0;
+  color: var(--colorGrey600);
+  margin-top: 10px;
+  margin-bottom: 0;
+
+  :global(body[data-dark-mode]) & {
+    color: #c8bdb0;
+  }
+}
+
+.addImageWrapper {
+  float: left;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  &::after {
+    content: '.';
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
+  }
+}
+
+.addImage {
+  /* Layout */
+  /* Maintain aspect ratio */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+
+  /* Colors */
+  background-color: var(--colorWhite);
+
+  @media (--viewportLarge) {
+    background-color: var(--colorGrey50);
+  }
+
+  border-style: dashed;
+  border-color: var(--colorGrey100);
+  border-width: 2px;
+  border-radius: 2px;
+
+  /* Behaviour */
+  cursor: pointer;
+  transition: var(--transitionStyleButton);
+
+  &:hover {
+    border-color: var(--colorGrey300);
+  }
+}
+
+.chooseImageText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chooseImage {
+  composes: h4 from global;
+  color: var(--colorGrey700);
+  font-weight: var(--fontWeightSemiBold);
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: center;
+  padding: 0 8px;
+
+  margin-top: 0;
+  margin-bottom: 4px;
+
+  @media (--viewportMedium) {
+    font-size: 18px;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  @media (--viewportLarge) {
+    font-weight: var(--fontWeightSemiBold);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.imageTypes {
+  composes: marketplaceTinyFontStyles from global;
+  color: var(--colorGrey600);
+  font-size: 10px;
+  text-align: center;
+  padding: 0 8px;
+
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    font-size: 12px;
+    padding: 0;
+  }
+
+  @media (--viewportLarge) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.addImageInput {
+  clip-path: inset(50%);
+  height: 1px;
+  width: 1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+
+  &:focus ~ .addImage {
+    border-color: var(--colorGrey300);
+  }
+}
+
+.tip {
+  composes: h5 from global;
+
+  flex-shrink: 0;
+  color: var(--colorGrey600);
+  margin-top: 24px;
+  margin-bottom: 60px;
+
+  @media (--viewportLarge) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.error {
+  color: var(--colorFail);
+}
+
+.arrayError {
+  font-weight: var(--fontWeightMedium);
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0;
+  color: var(--colorFail);
+  width: 100%;
+  clear: both;
+
+  margin-top: 6px;
+  margin-bottom: 12px;
+
+  @media (--viewportMedium) {
+    font-weight: var(--fontWeightMedium);
+    margin-top: 6px;
+    margin-bottom: 10px;
+  }
+}
+
+.submitButton {
+  flex-shrink: 0;
+  margin-top: auto;
+  margin-bottom: 24px;
+
+  @media (--viewportLarge) {
+    display: inline-block;
+    width: 241px;
+    margin-top: 100px;
+  }
+}

@@ -1,0 +1,436 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.root {
+  background-color: #2E2E2E;
+  color: #f5f0eb;
+}
+
+.inner {
+  padding: 40px 16px 32px;
+
+  @media (--viewportMedium) {
+    padding: 64px 24px 40px;
+  }
+}
+
+/* ── Top section ─────────────────────────────────────── */
+.top {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+
+  @media (--viewportMedium) {
+    grid-template-columns: 520px 1fr;
+    gap: 64px;
+    align-items: stretch;
+  }
+}
+
+/* ── Brand ───────────────────────────────────────────── */
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.logoLink {
+  display: inline-block;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+.logo {
+  width: 160px;
+  height: auto;
+  object-fit: contain;
+
+  @media (--viewportMedium) {
+    width: 200px;
+  }
+}
+
+.tagline {
+  font-size: 14px;
+  color: #ffffff;
+  font-style: italic;
+  margin: 0;
+  letter-spacing: 0.02em;
+
+  @media (--viewportMedium) {
+    font-size: 15px;
+  }
+}
+
+/* ── Link columns ────────────────────────────────────── */
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 32px;
+
+  @media (--viewportMedium) {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 0;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+}
+
+.columnTitle {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0 0 16px;
+}
+
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+}
+
+.linkList li a,
+.linkList li .linkButton {
+  color: #f5f0eb;
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: inherit;
+  text-align: left;
+
+  @media (--viewportMedium) {
+    font-size: 16px;
+  }
+
+  &:hover {
+    color: #BAA38A;
+    text-decoration: none;
+  }
+}
+
+/* ── Newsletter ──────────────────────────────────────── */
+.newsletter {
+  margin-top: 40px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (--viewportMedium) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+  }
+}
+
+.newsletterText {
+  flex: 1;
+  min-width: 0;
+}
+
+.newsletterTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px;
+  letter-spacing: 0.02em;
+
+  @media (--viewportMedium) {
+    font-size: 17px;
+  }
+}
+
+.newsletterSubtitle {
+  font-size: 14px;
+  color: rgba(245, 240, 235, 0.75);
+  margin: 0;
+  line-height: 1.5;
+
+  @media (--viewportMedium) {
+    font-size: 15px;
+  }
+}
+
+.newsletterForm {
+  flex-shrink: 0;
+  width: 100%;
+
+  @media (--viewportMedium) {
+    width: 380px;
+  }
+}
+
+.newsletterInputRow {
+  display: flex;
+  gap: 8px;
+}
+
+.newsletterInput {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &:focus {
+    border-color: #BAA38A;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.newsletterButton {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  background: #BAA38A;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: #a8906f;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.newsletterError {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #ff6060;
+}
+
+.newsletterSuccess {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(186, 163, 138, 0.2);
+  border: 1px solid rgba(186, 163, 138, 0.4);
+  border-radius: 6px;
+  color: #f5f0eb;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+
+  @media (--viewportMedium) {
+    width: 380px;
+  }
+}
+
+.newsletterSuccessIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #BAA38A;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* PWA install slot — placed in the bottom row between copyright and socials.
+   On desktop it occupies the centre flex slot; on mobile it stacks. */
+.installSlot {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+/* ── Divider ─────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 32px 0 24px;
+
+  @media (--viewportMedium) {
+    margin: 48px 0 28px;
+  }
+}
+
+/* ── Bottom ──────────────────────────────────────────── */
+.bottom {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+
+  @media (--viewportMedium) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.copyright {
+  font-size: 13px;
+  color: #ffffff;
+  margin: 0;
+
+  @media (--viewportMedium) {
+    font-size: 14px;
+  }
+}
+
+/* ── Social icons ────────────────────────────────────── */
+.socialIcons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  @media (--viewportMedium) {
+    gap: 22px;
+  }
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+
+  @media (--viewportMedium) {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.socialIcon,
+.socialIconHover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  transition: opacity 0.2s ease;
+
+  @media (--viewportMedium) {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.socialIconHover {
+  width: 36px;
+  height: 36px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+
+  @media (--viewportMedium) {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.socialLink:hover .socialIcon {
+  opacity: 0;
+}
+
+.socialLink:hover .socialIconHover {
+  opacity: 1;
+}
+
+/* Phone in landscape: revert every desktop rule (viewportMedium) back to the
+   mobile portrait layout so the footer reads the same as on a portrait phone
+   regardless of how the device is rotated. */
+@media (orientation: landscape) and (max-width: 1023px) {
+  .inner {
+    padding: 40px 16px 32px;
+  }
+  .top {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: initial;
+  }
+  .logo {
+    width: 160px;
+  }
+  .tagline {
+    font-size: 14px;
+  }
+  .columns {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 32px;
+  }
+  .linkList li a,
+  .linkList li .linkButton {
+    font-size: 15px;
+  }
+  .divider {
+    margin: 32px 0 24px;
+  }
+  .bottom {
+    flex-direction: column;
+    justify-content: initial;
+    text-align: center;
+  }
+  .copyright {
+    font-size: 13px;
+  }
+  .socialIcons {
+    gap: 16px;
+  }
+  .socialLink,
+  .socialIcon,
+  .socialIconHover {
+    width: 40px;
+    height: 40px;
+  }
+  .socialIconHover {
+    width: 36px;
+    height: 36px;
+  }
+}

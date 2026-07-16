@@ -1,0 +1,37 @@
+.root {
+}
+
+.lockedLabel {
+  composes: label from global;
+}
+
+/* Blur suave + sem interação enquanto o segmento não está escolhido.
+   Nota: o CSS global já aplica opacity 0.5 a select:disabled — o wrapper
+   não pode empilhar muita opacidade por cima ou o campo desaparece. */
+.lockedControl {
+  filter: blur(0.8px);
+  opacity: 0.75;
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.lockedSelect {
+  color: var(--colorGrey400);
+  cursor: not-allowed;
+}
+
+/* Cancela o opacity 0.5 do select:disabled global — o efeito "apagado"
+   já vem do wrapper .lockedControl. */
+.lockedSelect:disabled {
+  opacity: 1;
+}
+
+.lockedHint {
+  composes: textXSmall from global;
+  color: var(--colorGrey400);
+  margin: 6px 0 0 0;
+}
+
+/* Nota dark mode: o painel de autenticação fica branco em dark mode por
+   convenção global (ver landingDark.css) — este campo herda essas cores. */

@@ -1,0 +1,170 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: var(--fontFamily);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.button:hover,
+.button:focus {
+  color: #BAA38A;
+  outline: none;
+}
+.button:hover svg,
+.button:focus svg,
+.button:hover svg *,
+.button:focus svg * {
+  stroke: #BAA38A !important;
+  color: #BAA38A !important;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+}
+
+.modal {
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 32px 24px 24px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modalClose {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: #2E2E2E;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.modalTitle {
+  margin: 0 0 16px;
+  font-family: var(--fontFamily);
+  font-size: 18px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+.modalSteps {
+  margin: 0;
+  padding-left: 22px;
+  font-family: var(--fontFamily);
+  font-size: 15px;
+  line-height: 1.55;
+  color: #2E2E2E;
+}
+
+.modalSteps li {
+  margin-bottom: 10px;
+}
+
+/* Intro modal — branded welcome before triggering the native install. */
+.modalIcon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.modalText {
+  margin: 0 0 14px;
+  font-family: var(--fontFamily);
+  font-size: 14px;
+  line-height: 1.55;
+  color: #2E2E2E;
+  text-align: center;
+}
+
+.modalCounter {
+  margin: 0 0 24px;
+  font-family: var(--fontFamily);
+  font-size: 13px;
+  color: #6b6b6b;
+  text-align: center;
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.modalPrimary {
+  flex: 1;
+  padding: 12px 18px;
+  background: #2E2E2E;
+  border: 1.5px solid #2E2E2E;
+  border-radius: 8px;
+  color: #ffffff;
+  font-family: var(--fontFamily);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.modalPrimary:hover:not(:disabled) {
+  background: #BAA38A;
+  border-color: #BAA38A;
+}
+
+.modalPrimaryDisabled {
+  background: #b5b5b5;
+  border-color: #b5b5b5;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.modalPrimaryDisabled:hover {
+  background: #b5b5b5;
+  border-color: #b5b5b5;
+}
+
+.modalSecondary {
+  flex: 1;
+  padding: 12px 18px;
+  background: #ffffff;
+  border: 1.5px solid #BAA38A;
+  border-radius: 8px;
+  color: #2E2E2E;
+  font-family: var(--fontFamily);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.modalSecondary:hover {
+  background: #BAA38A;
+  border-color: #BAA38A;
+  color: #ffffff;
+}
+
+.modalTitle {
+  text-align: center;
+}

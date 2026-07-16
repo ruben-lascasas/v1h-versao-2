@@ -1,0 +1,160 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 4px 0 8px;
+}
+
+/* SVG + title side by side */
+.titleRow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.modalIcon {
+  width: 52px;
+  height: 44px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Title */
+.modalTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.25;
+  color: #3F3131;
+  margin: 0 0 16px 0;
+  letter-spacing: 0.01em;
+
+  @media (--viewportMedium) {
+    font-size: 26px;
+  }
+}
+
+/* Body paragraphs */
+.modalMessage {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  font-weight: 400;
+  color: #3F3131;
+  margin: 0 0 10px 0;
+
+  @media (--viewportMedium) {
+    font-size: 15px;
+  }
+}
+
+/* Highlighted email address */
+.email {
+  font-weight: 700;
+  color: #7C6350;
+}
+
+/* Separator before helper links */
+.bottomWrapper {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #BAA38A;
+  align-self: stretch;
+  text-align: left;
+}
+
+/* Helper line text */
+.helperText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #7C6350;
+  margin: 0 0 6px 0;
+}
+
+/* Inline links — match the sign-in page link style */
+.helperLink {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #7C6350;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  display: inline;
+  margin: 0;
+
+  &:hover {
+    color: #3F3131;
+    text-decoration: underline;
+  }
+}
+
+/* Error message */
+.error {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #e53e3e;
+  margin: 8px 0 0 0;
+}
+
+/* Modal container — no bottom colored bar, compact height */
+.modalContainer {
+  border-bottom: none !important;
+
+  @media (max-width: 767px) {
+    min-height: calc(var(--vh, 1vh) * 100) !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
+    background-color: var(--colorWhite);
+  }
+
+  @media (--viewportMedium) {
+    border-bottom: none !important;
+    min-height: auto !important;
+    height: auto !important;
+    padding-bottom: 0 !important;
+    margin-top: 15vh;
+    margin-bottom: 15vh;
+  }
+}
+
+.modalContainer > nav {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.modalContainer > nav > button {
+  align-self: flex-end;
+}
+
+/* Scroll layer — no internal scroll, centered overlay */
+.modalScrollLayer {
+  flex-grow: 1;
+  display: flex;
+  overflow: hidden;
+  background-color: var(--colorWhite);
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (--viewportMedium) {
+    justify-content: center;
+    align-items: flex-start;
+    background-color: rgba(0, 0, 0, 0.4);
+    overflow: auto;
+  }
+}
+
+.reminderModalLinkButton {
+  composes: buttonPrimary from global;
+}

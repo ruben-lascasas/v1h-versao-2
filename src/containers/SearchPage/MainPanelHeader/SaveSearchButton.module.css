@@ -1,0 +1,83 @@
+@import '../../../styles/customMediaQueries.css';
+
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 12px;
+  vertical-align: middle;
+  transform: translateY(-2px);
+}
+
+/* Mirror of `.root` in FavoriteButton.module.css so the heart button feels
+   identical to the favorite hearts on each listing card, with extra padding
+   to accommodate the trailing label text. */
+.root {
+  composes: textSmall from global;
+  border: none;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 999px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px 0 10px;
+  margin: 0;
+  cursor: pointer;
+  color: #2E2E2E;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.root .btnLabel {
+  /* Inherit the composed textSmall font but neutralise any default margins */
+  margin: 0;
+}
+
+.root:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+.root:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.active {
+  color: var(--colorRed600);
+}
+
+/* On narrow screens the label hides and the button collapses to just the
+   heart so it doesn't push the sort dropdown off the row. */
+.btnLabel {
+  display: none;
+
+  @media (--viewportMedium) {
+    display: inline;
+  }
+}
+
+@media (max-width: 767px) {
+  .root {
+    width: 32px;
+    padding: 0;
+    gap: 0;
+  }
+}
+
+.flash {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #5C3317;
+  background: #f6f0e8;
+  border: 1px solid #e5d8c4;
+  border-radius: 999px;
+  padding: 6px 12px;
+  white-space: nowrap;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

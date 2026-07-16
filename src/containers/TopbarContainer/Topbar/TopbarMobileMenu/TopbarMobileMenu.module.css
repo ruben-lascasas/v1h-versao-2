@@ -1,0 +1,363 @@
+@import '../../../../styles/customMediaQueries.css';
+
+/* ─── Root ─── */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #2E2E2E;
+
+  :global(body[data-dark-mode]) & {
+    background-color: #2E2E2E;
+    color: #ffffff;
+  }
+}
+
+/* ─── Authenticated layout ─── */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 28px 24px;
+}
+
+/* ─── Avatar row (authenticated) ─── */
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  border: 2px solid #BAA38A;
+}
+
+.greeting {
+  font-family: var(--fontFamilyHeading);
+  font-size: 22px;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin: 0 0 4px;
+  letter-spacing: 0.02em;
+
+  :global(body[data-dark-mode]) & {
+    color: #ffffff;
+  }
+}
+
+.logoutButton {
+  display: inline;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: var(--fontFamily);
+  font-size: 13px;
+  font-weight: var(--fontWeightSemiBold);
+  color: #9E9E9E;
+  cursor: pointer;
+  text-decoration: none;
+  margin-bottom: 32px;
+
+  &:hover {
+    color: #BAA38A;
+    text-decoration: underline;
+  }
+}
+
+/* ─── Nav sections ─── */
+.accountLinksWrapper,
+.customLinksWrapper {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.accountLinksWrapper {
+  border-top: 1px solid rgba(186, 163, 138, 0.2);
+  padding-top: 24px;
+  margin-bottom: 8px;
+}
+
+/* ─── Individual nav link ─── */
+.navigationLink {
+  margin: 0;
+  padding: 0;
+
+  & a,
+  & button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-family: var(--fontFamilyHeading);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #2E2E2E;
+    text-decoration: none;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(46, 46, 46, 0.07);
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #BAA38A;
+    }
+  }
+
+  :global(body[data-dark-mode]) & a,
+  :global(body[data-dark-mode]) & button {
+    color: #ffffff;
+    border-bottom-color: rgba(255, 255, 255, 0.07);
+  }
+}
+
+.inbox {
+  composes: navigationLink;
+
+  & a {
+    color: #BAA38A;
+
+    &:hover {
+      color: #7C6350;
+    }
+  }
+}
+
+.currentPage {
+  & a,
+  & button {
+    color: #BAA38A !important;
+    border-left: 3px solid #BAA38A;
+    padding-left: 12px;
+  }
+}
+
+.menuItemBorder {
+  display: none;
+}
+
+.notificationBadge {
+  position: relative;
+  top: 0;
+  right: 0;
+  margin-left: 8px;
+}
+
+/* ─── Language switcher ─── */
+.langSwitcher {
+  display: flex;
+  gap: 10px;
+  margin: 24px 0 8px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(46, 46, 46, 0.1);
+
+  :global(body[data-dark-mode]) & {
+    border-top-color: rgba(186, 163, 138, 0.2);
+  }
+}
+
+.langOption {
+  font-family: var(--fontFamilyHeading);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #6B6B6B;
+  background: transparent;
+  border: 1.5px solid rgba(46, 46, 46, 0.25);
+  border-radius: 20px;
+  padding: 7px 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #BAA38A;
+    color: #BAA38A;
+  }
+
+  :global(body[data-dark-mode]) & {
+    color: #9E9E9E;
+    border-color: rgba(186, 163, 138, 0.4);
+  }
+}
+
+.langOptionActive {
+  background-color: #BAA38A;
+  color: #2E2E2E;
+  border-color: #BAA38A;
+}
+
+/* ─── Footer with CTA ─── */
+.footer {
+  padding: 20px 28px 36px;
+  border-top: 1px solid rgba(46, 46, 46, 0.1);
+
+  :global(body[data-dark-mode]) & {
+    border-top-color: rgba(186, 163, 138, 0.2);
+  }
+}
+
+.createNewListingLink {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background-color: #BAA38A;
+  color: #2E2E2E;
+  font-family: var(--fontFamilyHeading);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  padding: 16px 24px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #7C6350;
+    color: #ffffff;
+  }
+}
+
+.spacer {
+  flex: 1;
+  min-height: 24px;
+}
+
+/* ──────────────────────────────────────────
+   UNAUTHENTICATED LAYOUT
+   ────────────────────────────────────────── */
+.unauthContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 28px 48px;
+  padding-bottom: 260px;
+}
+
+.unauthLogo {
+  margin-bottom: 36px;
+  display: flex;
+  justify-content: center;
+}
+
+.logoImage {
+  filter: none;
+
+  :global(body[data-dark-mode]) & {
+    filter: brightness(0) invert(1);
+  }
+}
+
+.mainNavLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid rgba(46, 46, 46, 0.1);
+  padding-top: 8px;
+
+  :global(body[data-dark-mode]) & {
+    border-top-color: rgba(186, 163, 138, 0.2);
+  }
+}
+
+.unauthHeading {
+  font-family: var(--fontFamilyHeading);
+  font-size: 22px;
+  font-weight: 700;
+  color: #2E2E2E;
+  text-align: center;
+  margin-bottom: 10px;
+  line-height: 1.3;
+
+  :global(body[data-dark-mode]) & {
+    color: #ffffff;
+  }
+}
+
+.unauthSubtitle {
+  font-size: 14px;
+  color: #9E9E9E;
+  text-align: center;
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+
+/* ─── Auth buttons block ─── */
+.authButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.signupButton {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background-color: #BAA38A;
+  color: #2E2E2E;
+  font-family: var(--fontFamilyHeading);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  padding: 16px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #7C6350;
+    color: #ffffff;
+  }
+}
+
+.loginButton {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background-color: transparent;
+  color: #2E2E2E;
+  font-family: var(--fontFamilyHeading);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  padding: 15px 24px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(46, 46, 46, 0.3);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    border-color: #BAA38A;
+    color: #BAA38A;
+  }
+
+  :global(body[data-dark-mode]) & {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background-color: rgba(46, 46, 46, 0.15);
+
+  :global(body[data-dark-mode]) & {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.dividerText {
+  font-size: 13px;
+  color: #9E9E9E;
+  flex-shrink: 0;
+}

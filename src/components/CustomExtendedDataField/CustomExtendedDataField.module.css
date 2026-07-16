@@ -1,0 +1,104 @@
+@import '../../styles/customMediaQueries.css';
+
+.customField {
+  margin-bottom: 24px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (--viewportMedium) {
+    margin-bottom: 32px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* Numeric field — keep input clean (no native browser spinners). */
+.numberField input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.numberField input::-webkit-outer-spin-button,
+.numberField input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.numberLabel {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.numberWrapper {
+  position: relative;
+}
+
+.numberInput {
+  padding-right: 40px !important;
+}
+
+/* Position steppers vertically centered against the input. Anchor to the
+   first child of the wrapper (the input), not the whole wrapper which includes
+   the empty HelpText/ValidationError space below. */
+.steppers {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  max-height: 48px;
+  pointer-events: none;
+
+  @media (pointer: coarse) {
+    max-height: 56px;
+  }
+}
+
+.stepperButton + .stepperButton {
+  margin-top: -1px;
+}
+
+.stepperButton {
+  pointer-events: auto;
+  width: 28px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #7C6350;
+  padding: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  /* Larger touch target on touch-only devices for easier tapping */
+  @media (pointer: coarse) {
+    width: 32px;
+    height: 26px;
+  }
+}
+
+.stepperButton:hover:not(:disabled) {
+  background-color: #f5efe8;
+  color: #3F3131;
+}
+
+.stepperButton:active:not(:disabled) {
+  background-color: #BAA38A;
+  color: #ffffff;
+}
+
+.stepperButton:disabled {
+  color: #d4c4b0;
+  cursor: not-allowed;
+}

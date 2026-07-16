@@ -1,0 +1,139 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reviewItem {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(186, 163, 138, 0.25);
+
+  &:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+}
+
+.review {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.reviewCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
+
+.reviewerRow {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.listingHeader {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.avatar {
+  flex-shrink: 0;
+}
+
+.reviewBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.reviewHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reviewAuthor {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+.reviewMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #7C6350;
+}
+
+.separator {
+  margin: 0 2px;
+}
+
+.reviewContent {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #3F3131;
+  margin: 0;
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+.listingImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  border: 4px solid #7C6350;
+}
+
+.listingImageTitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #3F3131;
+}
+
+.reviewContentEmpty {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #BAA38A;
+  font-style: italic;
+  margin: 0;
+}
+
+.reviewRatingStar {
+  height: 12px;
+  width: 12px;
+  margin-right: 2px;
+}
+
+.inlineRating {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #2E2E2E;
+  font-weight: 600;
+}
+
+/* keep unused classes to avoid breaking other pages */
+.reviewInfo { display: none; }
+.desktopSeparator { display: none; }
+.mobileReviewRating { display: none; }
+.desktopReviewRatingWrapper { display: none; }
+.desktopReviewRating { display: none; }

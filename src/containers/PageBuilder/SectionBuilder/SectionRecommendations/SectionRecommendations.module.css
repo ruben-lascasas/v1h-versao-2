@@ -1,0 +1,119 @@
+@import '../../../../styles/customMediaQueries.css';
+
+/* "Para si" / "For you" homepage recommendations section.
+   Rendered only for logged-in users (component returns null otherwise) and
+   only when we have at least one scored candidate. */
+
+/* SectionContainer wraps children in a `.sectionContent` div that adds
+   32px (mobile) / 64px (desktop) of vertical padding. That gap is too big
+   between the Destaque section and this one, so we collapse the inner
+   div's top padding via an attribute selector (CSS Modules don't hash
+   attribute selectors, so this matches the hashed class name fine). */
+.root {
+  padding: 0;
+}
+.root > div[class*="sectionContent"] {
+  padding-top: 8px;
+  padding-bottom: 16px;
+
+  @media (--viewportMedium) {
+    padding-top: 12px;
+    padding-bottom: 24px;
+  }
+}
+
+.header {
+  max-width: 1120px;
+  margin: 0 auto 20px auto;
+  padding: 0 32px;
+  text-align: center;
+}
+
+/* Same look as SectionHighlightedListing.sectionTitle so this section's
+   header reads as the same family as the Destaque block above. */
+.title {
+  font-family: var(--fontFamily);
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin: 0 0 10px 0;
+  color: var(--colorBlack);
+
+  @media (--viewportMedium) {
+    font-size: 1.75rem;
+  }
+}
+
+/* Matches SectionHighlightedListing.sectionDivider — the horizontal line
+   underneath the title that ties the two sections together visually. */
+.divider {
+  border: none;
+  border-top: 1.5px solid #2E2E2E;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+
+.grid {
+  /* Slightly wider than the 1120px content cap used elsewhere so the gaps
+     between cards have somewhere to live, but capped so cards stay a sane
+     size on big monitors. */
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+  list-style: none;
+
+  display: grid;
+  /* auto-fill with a min column width keeps cards a sensible size even when
+     there are fewer items than fit a row (one card no longer stretches the
+     full page width). On mobile this collapses to 1 column naturally. */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  column-gap: 32px;
+  row-gap: 20px;
+  justify-content: center;
+
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    column-gap: 40px;
+    row-gap: 24px;
+  }
+
+  @media (--viewportLarge) {
+    /* Lock to 3 columns at desktop width so the layout matches the rest of
+       the homepage carousels regardless of candidate count. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 48px;
+    row-gap: 28px;
+  }
+}
+
+.item {
+  display: flex;
+  min-width: 0;
+  /* Hard cap per card so they don't grow beyond ListingCard-style width
+     even when the grid is wide. Keeps the look in line with the other
+     carousels on the homepage. */
+  max-width: 360px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.item > * {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Reserves vertical space so the page layout doesn't jump when the lazy
+   fetch completes and the real cards render. Roughly matches the rendered
+   section's height on desktop. */
+.lazyPlaceholder {
+  min-height: 280px;
+
+  @media (--viewportMedium) {
+    min-height: 360px;
+  }
+
+  @media (--viewportLarge) {
+    min-height: 460px;
+  }
+}

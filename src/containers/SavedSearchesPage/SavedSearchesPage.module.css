@@ -1,0 +1,207 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.content {
+  width: min(100%, 1140px);
+  margin: auto;
+  padding: 24px 12px 48px;
+}
+
+.headingWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.heading {
+  margin: 0;
+}
+
+.count {
+  font-size: var(--fontSizeSmall);
+  line-height: var(--lineHeightSmall);
+  color: var(--colorGrey600);
+  margin: 0;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  color: #7C6350;
+  font-style: italic;
+  text-align: center;
+  gap: 18px;
+}
+
+.empty p {
+  margin: 0;
+  max-width: 460px;
+  line-height: 1.6;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 20px;
+  border: 1.5px solid #e8e0d8;
+  border-radius: 12px;
+  background-color: #ffffff;
+  gap: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: #BAA38A;
+    box-shadow: 0 2px 12px rgba(186, 163, 138, 0.15);
+  }
+}
+
+.cardTop {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.countBadge {
+  flex-shrink: 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  border-radius: 999px;
+  padding: 4px 12px;
+  margin-left: auto;
+  white-space: nowrap;
+  align-self: center;
+}
+
+.pinIcon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f6f0e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7C6350;
+  margin-top: 2px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.label {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2E2E2E;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.savedAt {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #BAA38A;
+  font-style: italic;
+}
+
+.cardActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.repeatButton {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 22px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+  }
+}
+
+.removeButton {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #3F3131;
+  background-color: transparent;
+  border: 1.5px solid #3F3131;
+  border-radius: 6px;
+  padding: 11px 22px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background-color: #c62828;
+    border-color: #c62828;
+    color: #ffffff;
+  }
+}
+
+.browseLink {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 28px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+  }
+}

@@ -1,0 +1,92 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+}
+
+.tab {
+  margin-left: 16px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  @media (--viewportLarge) {
+    margin-left: 24px;
+  }
+}
+
+.link {
+  display: inline-block;
+  white-space: nowrap;
+
+  /* Font */
+  composes: textSmall from global;
+
+  color: var(--colorGrey700);
+  padding-bottom: 10px;
+  padding-top: 10px;
+  height: 100%;
+
+  /* push tabs against bottom of tab bar */
+  margin-top: auto;
+
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent;
+
+  transition: var(--transitionStyleButton);
+  background-image: none;
+  background-position: calc(var(--TabNav_linkWidth) + 4px) center;
+
+  &:hover {
+    text-decoration: none;
+    color: #BAA38A;
+  }
+
+  @media (--viewportLarge) {
+    font-family: 'Britannic Bold', 'Impact', sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.2;
+    color: var(--colorBlack);
+
+    height: unset;
+    width: var(--TabNav_linkWidth);
+    border-bottom-width: 0px;
+    margin-top: 0;
+    margin-bottom: 20px;
+
+    padding-top: 5px;
+    padding-bottom: 3px;
+
+    &:hover {
+      background-image: none;
+      color: #BAA38A;
+    }
+  }
+}
+
+.selectedLink {
+  border-bottom-color: #BAA38A;
+  color: var(--colorBlack);
+
+  @media (--viewportLarge) {
+    width: var(--TabNav_linkWidth);
+    background-image: url("data:image/svg+xml;utf8,<svg width='4' height='32' viewBox='0 0 4 32' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h4v32H0z' fill='%23BAA38A' fill-rule='evenodd'/></svg>");
+    background-position: right center;
+
+    &:hover {
+      background-image: url("data:image/svg+xml;utf8,<svg width='4' height='32' viewBox='0 0 4 32' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h4v32H0z' fill='%23BAA38A' fill-rule='evenodd'/></svg>");
+      background-position: right center;
+    }
+  }
+}
+
+.disabled {
+  pointer-events: none;
+  color: var(--colorGrey300);
+  text-decoration: none;
+}

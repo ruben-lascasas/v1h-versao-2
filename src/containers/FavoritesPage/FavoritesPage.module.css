@@ -1,0 +1,59 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.content {
+  width: min(100%, 1140px);
+  margin: auto;
+  padding: 24px 12px 48px;
+}
+
+.headingWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.heading {
+  margin: 0;
+}
+
+.count {
+  font-size: var(--fontSizeSmall);
+  line-height: var(--lineHeightSmall);
+  color: var(--colorGrey600);
+  margin: 0;
+}
+
+.noListings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  font-size: var(--fontSizeBody);
+  color: var(--colorGrey600);
+  text-align: center;
+}
+
+.listingsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.listingCard {
+  position: relative;
+}

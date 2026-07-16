@@ -1,0 +1,322 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  flex-grow: 1;
+  background-color: var(--colorGrey50);
+}
+
+/* ── Hero ─────────────────────────────────────────── */
+
+.hero {
+  text-align: center;
+  padding: 64px 24px 40px;
+
+  @media (--viewportMedium) {
+    padding: 80px 24px 48px;
+  }
+}
+
+.title {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 40px;
+  color: #3F3131;
+  margin: 0 0 24px 0;
+  letter-spacing: 0.04em;
+
+  @media (--viewportMedium) {
+    font-size: 54px;
+  }
+}
+
+.intro {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #7C6350;
+  line-height: 1.8;
+  max-width: 580px;
+  margin: 0 auto 48px;
+}
+
+/* ── 3 Cards ──────────────────────────────────────── */
+
+.cardsSection {
+  padding: 0 24px 32px;
+  margin-top: -36px;
+
+  @media (--viewportMedium) {
+    padding: 0 48px 40px;
+    margin-top: -48px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 0 64px 40px;
+  }
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (min-width: 700px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  @media (min-width: 1100px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+.card {
+  background-color: #3F3131;
+  border-radius: 8px;
+  padding: 36px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.cardIcon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.cardText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* ── Team ─────────────────────────────────────────── */
+
+.teamSection {
+  background-color: transparent;
+  padding: 32px 24px 32px;
+
+  @media (--viewportMedium) {
+    padding: 40px 48px 40px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 40px 64px 40px;
+  }
+}
+
+.teamInner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.teamHeader {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.teamTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 40px;
+  color: #3F3131;
+  margin: 0 0 14px 0;
+
+  @media (--viewportMedium) {
+    font-size: 54px;
+  }
+}
+
+.teamSubtitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  color: #7C6350;
+  line-height: 1.7;
+  margin: 0 auto;
+  max-width: 480px;
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px 32px;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px 40px;
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 40px 48px;
+  }
+}
+
+.teamMember {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.teamAvatar {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 14px;
+  transition: filter 0.3s ease;
+  filter: grayscale(15%);
+
+  &:hover {
+    filter: grayscale(0%);
+  }
+}
+
+.teamName {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin: 0 0 4px 0;
+}
+
+.teamRole {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #BAA38A;
+  margin: 0;
+}
+
+/* ── Values ──────────────────────────────────────── */
+
+.valuesSection {
+  background-color: transparent;
+  padding: 56px 24px;
+
+  @media (--viewportMedium) {
+    padding: 72px 48px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 80px 64px;
+  }
+}
+
+.valuesInner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.valuesTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 40px;
+  color: #3F3131;
+  margin: 0 0 40px 0;
+  text-align: center;
+
+  @media (--viewportMedium) {
+    font-size: 54px;
+    margin-bottom: 56px;
+  }
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+  }
+}
+
+.valueItem {
+  background-color: #ffffff;
+  padding: 24px 22px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.valueTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  color: #3F3131;
+  margin: 0 0 10px 0;
+}
+
+.valueText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #7C6350;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── CTA ─────────────────────────────────────────── */
+
+.ctaSection {
+  text-align: center;
+  padding: 32px 24px 56px;
+}
+
+.ctaText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  color: #7C6350;
+  margin: 0 0 28px 0;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+

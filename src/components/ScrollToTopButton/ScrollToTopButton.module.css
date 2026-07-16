@@ -1,0 +1,69 @@
+/* botão transparente igual ao arrowRight do carrossel.
+   z-index meio-termo:
+   – 50 fica acima dos elementos normais da página (paginação dos resultados,
+     cards, footer, etc.) que estavam a sobrepor-se ao botão na SearchPage.
+   – Continua bem abaixo dos toasts de notificação (FollowAlert /
+     FavoriteAlert / ExtraAlerts em 9998/9999), portanto a notificação
+     continua a tapar o botão e o X de fechar continua clicável. */
+.button {
+  position: fixed;
+  bottom: 32px;
+  right: 24px;
+  z-index: 50;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* círculo igual ao span do carrossel */
+.button:hover > .circle {
+  background-color: #BAA38A;
+  border-color: #BAA38A;
+  color: #ffffff;
+}
+
+.circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 100%;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--colorGrey200);
+  font-size: 30px;
+  color: #2E2E2E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.icon {
+  display: inline-block;
+  transform: rotate(-90deg);
+  line-height: 1;
+  margin-left: -5px;
+  font-family: Arial, sans-serif;
+}
+
+/* PC F12 mobile emulator: the laptop still has a mouse attached, so
+   `any-pointer: fine` matches even in mobile emulation. Keep the -8px that
+   you confirmed centres correctly there. */
+@media (max-width: 767px) and (any-pointer: fine) {
+  .icon {
+    margin-left: -8px;
+  }
+}
+
+/* Real touch-only phones (no mouse attached): the system fonts already render
+   `›` more to the left, so the -8px overshoots. Use a smaller offset. */
+@media (max-width: 767px) and (any-pointer: coarse) and (not (any-pointer: fine)) {
+  .icon {
+    margin-left: -4px;
+  }
+}

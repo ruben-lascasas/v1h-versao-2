@@ -1,0 +1,129 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.baseColumn {
+  max-width: var(--contentMaxWidthPages);
+  width: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px;
+  margin: 0 auto;
+  padding: 16px;
+
+  @media (--viewportMedium) {
+    gap: 32px;
+    padding: 32px;
+  }
+
+  @media (--viewportLarge) {
+    gap: 40px;
+    padding: 48px;
+  }
+}
+
+.oneColumn {
+  composes: baseColumn;
+}
+
+.twoColumns {
+  composes: baseColumn;
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(2, calc((100% - 32px) / 2));
+  }
+}
+.threeColumns {
+  composes: baseColumn;
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(3, calc((100% - 2 * 32px) / 3));
+  }
+}
+.fourColumns {
+  composes: baseColumn;
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(2, calc((100% - 32px) / 2));
+  }
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(4, calc((100% - 3 * 40px) / 4));
+  }
+}
+
+/* On any touch device in landscape below 1500px (covers every phone and most
+   small tablets), force 4-column sections to 3 columns so a 9-item grid
+   renders as 3/3/3 instead of 4/4/1. Real desktops use `any-pointer: fine`
+   so they keep the 4-column desktop layout. */
+@media (orientation: landscape) and (any-pointer: coarse) and (max-width: 1499px) {
+  .fourColumns {
+    grid-template-columns: repeat(3, calc((100% - 2 * 32px) / 3)) !important;
+  }
+}
+
+.noSidePaddings {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ── Slideshow ────────────────────────────────────────── */
+.slideshowWrapper {
+  width: 100%;
+}
+
+.slideshowOuter {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.slide {
+  width: 100%;
+}
+
+.slideActive {
+  position: relative;
+  animation: enterFromRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.slideExiting {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  animation: exitToLeft 0.6s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+  pointer-events: none;
+}
+
+@keyframes enterFromRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes exitToLeft {
+  from { transform: translateX(0);     opacity: 1; }
+  to   { transform: translateX(-100%); opacity: 0; }
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--colorGrey300);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dot:hover {
+  background-color: var(--colorGrey500);
+}
+
+.dotActive {
+  background-color: var(--colorGrey900);
+  transform: scale(1.2);
+}

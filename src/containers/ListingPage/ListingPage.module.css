@@ -1,0 +1,1566 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+}
+
+.pageRoot {
+  padding-bottom: 0;
+  background-color: var(--colorWhite);
+}
+
+.loadingText {
+  margin: 24px;
+}
+
+.errorText {
+  color: var(--colorFail);
+  margin: 24px;
+}
+
+.noReviewsText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #7C6350;
+  margin: 0;
+  font-style: italic;
+}
+
+.reviewsCount {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #7C6350;
+  font-weight: 600;
+  margin: -16px 0 24px 0;
+}
+
+.sectionHero {
+  position: relative;
+  margin: 0 0 36px 0;
+
+  @media (--viewportMedium) {
+    margin: 0;
+  }
+}
+
+.heroHeight {
+  @media (--viewportMedium) {
+    height: calc(0.41 * 100vw);
+    max-height: 50vh;
+    overflow-y: hidden;
+  }
+}
+
+.imageWrapperForSectionHero {
+  composes: heroHeight;
+  background-color: var(--colorGrey100); /* Loading BG color */
+
+  /* Image carousel can be opened from the image, therefore we should show a pointer */
+  cursor: pointer;
+}
+
+.actionBarWithCTAEnabled {
+  display: inline-flex;
+  flex-wrap: wrap;
+  padding: 0 8px;
+}
+
+.actionBar {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 100%;
+  color: var(--colorGrey100);
+  background-color: var(--colorGrey700);
+  z-index: 1; /* bring on top of mobile image */
+  padding: 0 24px;
+
+  /* Action bar prevents the image click events going to the parent and
+   should not show a pointer */
+  cursor: initial;
+
+  @media (--viewportMedium) {
+    flex-direction: row;
+    border-radius: var(--borderRadiusMedium);
+  }
+}
+
+.actionBarForProductLayout {
+  margin: 0;
+  width: 100%;
+
+  &:nth-child(even) {
+    margin-top: 24px;
+  }
+
+  @media (--viewportMedium) {
+    margin: 24px 0 24px 0;
+    width: 100%;
+  }
+
+  @media (--viewportLarge) {
+    margin: 0 0 24px 0;
+  }
+}
+
+.actionBarContainerForHeroLayout {
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  width: calc(100% - 26px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.favoriteButtonContainer {
+  position: absolute;
+  /* Mobile: account for .productGallery margin (12px) + slide wrapper inset (12px) + image border (6px) = 30px,
+     plus a small inset so the button sits inside the image edge. */
+  top: 14px;
+  right: 34px;
+  z-index: 1;
+  isolation: isolate;
+
+  @media (--viewportMedium) {
+    top: 13px;
+    right: 13px;
+  }
+}
+
+/* "X pessoas viram hoje" badge — sits in the bottom-left of the MAIN image
+   inside the gallery. The galleryWrapper also contains the thumbnail strip
+   below the main image, so we offset from bottom by the thumbnail strip's
+   height instead of using bottom: 0. */
+/* "X pessoas viram hoje" badge — same visual language as .listingCategoryBadge
+   (white translucent pill with brown border + dark text). Positioned above
+   the thumbnail strip on the bottom-left of the main image. */
+.viewCountBadge {
+  position: absolute;
+  /* Thumbnail strip (60px thumb + 24px top padding + ~6px breathing room) ≈
+     90px. Add 14px more so the badge sits with the same inset from the
+     bottom-of-image as .listingCategoryBadge has from the top-of-image. */
+  bottom: 112px;
+  left: 34px;
+  z-index: 1;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1.5px solid #BAA38A;
+  color: #2E2E2E;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 14px;
+  pointer-events: none;
+
+  @media (--viewportMedium) {
+    bottom: 110px;
+    left: 13px;
+    font-size: 13px;
+    padding: 7px 14px;
+  }
+}
+
+.viewCountBadge svg {
+  flex-shrink: 0;
+  color: #E03A18;
+}
+.viewCountBadge svg path {
+  stroke: #E03A18 !important;
+}
+
+.viewCountBadgeAccent {
+  color: #E03A18;
+  font-weight: 700;
+}
+
+/* "Novo" variant — blue accent (icons removed for now). */
+.viewCountBadgeAccentNew {
+  color: #2E6FE5;
+}
+
+/* "Em destaque" variant — yellow accent on white pill, brown border. */
+.viewCountBadgeFeatured {
+  border-color: #BAA38A;
+}
+.viewCountBadgeAccentFeatured {
+  color: #E0A028;
+}
+
+/* Owner-only "since launch" view-count badge (eye emoji + number).
+   Sits alongside (not replacing) the public Em destaque/Popular/Novo
+   badge when the listing's author is viewing their own listing. Brown
+   brand color so it reads as informational rather than promotional. */
+.ownerViewCountBadge {
+  border-color: #7C6350;
+  color: #3F3131;
+}
+
+/* Right-anchored variant — pins to the bottom-right of the image so it
+   sits opposite the public badge (bottom-left). */
+.ownerViewCountBadgeRight {
+  left: auto;
+  right: 34px;
+
+  @media (--viewportMedium) {
+    left: auto;
+    right: 13px;
+  }
+}
+
+/* Bigger heart pill for the listing detail page. The base width stays at
+   40px so the pill is round when there's no count, and grows to fit the
+   number when there is — same expansion trick as the search-card pill, just
+   scaled up. */
+.favoriteButtonLarge {
+  width: 40px;
+  height: 40px;
+
+  & svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  &[class*="withCount"] {
+    width: auto;
+    min-width: 40px;
+    padding: 0 14px 0 10px;
+    gap: 6px;
+  }
+
+  &[class*="withCount"] span {
+    font-size: 14px;
+  }
+
+  @media (--viewportMedium) {
+    width: 44px;
+    height: 44px;
+
+    & svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    &[class*="withCount"] {
+      min-width: 44px;
+      padding: 0 16px 0 12px;
+    }
+
+    &[class*="withCount"] span {
+      font-size: 15px;
+    }
+  }
+}
+
+.galleryWrapper {
+  position: relative;
+}
+
+/* Category badge overlaid on the listing image, top-left corner
+   (opposite of the favorite button which sits at top-right).
+   Clickable — navigates to the search page filtered by this category. */
+.listingCategoryBadge {
+  position: absolute;
+  top: 14px;
+  left: 34px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1.5px solid #BAA38A;
+  border-radius: 14px;
+  padding: 8px 6px;
+  width: 72px;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+
+  @media (--viewportMedium) {
+    top: 13px;
+    left: 13px;
+  }
+}
+
+.listingCategoryBadgeIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: #7C6350;
+}
+
+.listingCategoryBadgeIcon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+}
+
+.listingCategoryBadgeIcon svg rect,
+.listingCategoryBadgeIcon svg path,
+.listingCategoryBadgeIcon svg polygon,
+.listingCategoryBadgeIcon svg circle,
+.listingCategoryBadgeIcon svg line {
+  fill: none !important;
+  stroke: currentColor;
+}
+
+.listingCategoryBadgeLabel {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #2E2E2E;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.actionBarContainerForNoListingImage {
+  /* Mobile positioning for action bar when no listing image is present */
+  position: absolute;
+  width: 100%;
+  border-radius: 0;
+
+  @media (--viewportMedium) {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.actionBarForHeroLayout {
+  /* Action bar prevents the image click events going to the parent and
+   should not show a pointer */
+  cursor: initial;
+  border-radius: var(--borderRadiusMedium);
+
+  &.actionBarNoBorderRadiusOnMobile {
+    border-radius: 0;
+    @media (--viewportMedium) {
+      border-radius: var(--borderRadiusMedium);
+    }
+  }
+}
+
+.actionBarCTA {
+  composes: buttonSmall from global;
+  display: inline-block;
+  width: 100%;
+  margin: 10px 0px 20px 0px;
+
+  &:hover,
+  &:focus {
+    background-color: var(--marketplaceColor);
+    border-color: var(--marketplaceColor);
+    color: var(--colorWhite);
+    text-decoration: none;
+  }
+
+  @media (--viewportMedium) {
+    width: auto;
+    margin: 20px 0 20px 15px;
+  }
+}
+
+.linkContainer {
+  display: inline-flex;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0 8px;
+}
+
+.ownListingText {
+  composes: h5 from global;
+  margin: 14px 24px 0 0;
+
+  @media (--viewportMedium) {
+    margin: 24px 24px 24px 0;
+  }
+
+  &.CTAEnabled {
+    margin-bottom: 0;
+
+    @media (--viewportMedium) {
+      margin: 24px 0 0px 0;
+    }
+  }
+}
+
+.noShrink {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.ownListingTextPendingApproval {
+  color: var(--colorAttention);
+}
+
+.closedListingText {
+  composes: h4 from global;
+  margin: 14px 12px 11px 24px;
+  text-align: center;
+  width: 100%;
+
+  @media (--viewportMedium) {
+    margin: 25px 12px 22px 24px;
+  }
+}
+
+.addPayoutDetails,
+.editListingLink {
+  composes: h5 from global;
+  margin: 23px 24px 11px 0px;
+  color: var(--colorGrey100);
+
+  transition: var(--transitionStyleButton);
+
+  &:hover {
+    color: var(--colorWhite);
+    text-decoration: none;
+  }
+
+  @media (--viewportMedium) {
+    margin: 24px 0 0 0;
+  }
+
+  &.CTAEnabled {
+    margin: 24px 0 0 0;
+  }
+}
+
+.missingPayoutDetailsText {
+  color: var(--colorAttention);
+}
+
+.payoutDetailsWarning {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.editIcon {
+  margin: -6px 7px 0 0;
+}
+
+.rootForImage {
+  composes: heroHeight;
+  width: 100%;
+  transition: var(--transitionStyleButton);
+
+  @media (--viewportMedium) {
+    object-fit: cover;
+    border-radius: var(--borderRadius);
+
+    &:hover {
+      transform: scale(1.005);
+      box-shadow: var(--boxShadowListingCard);
+    }
+  }
+}
+
+.viewPhotos {
+  composes: buttonSmall from global;
+
+  /* Position and dimensions */
+  position: absolute;
+  bottom: 19px;
+  right: 24px;
+}
+
+.carouselModalScrollLayer {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(1, 1, 1, 0.92);
+}
+
+.carouselModalContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.contentWrapperForHeroLayout {
+  @media (--viewportMedium) {
+    width: 100%;
+    max-width: var(--contentMaxWidth);
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    position: relative;
+  }
+
+  @media (--viewportLarge) {
+    max-width: calc(var(--contentMaxWidth) + 72px);
+    padding: 0 36px;
+    margin: 0 auto 117px;
+  }
+
+  @media (--viewportXLarge) {
+    max-width: var(--contentMaxWidth);
+    padding: 0;
+  }
+}
+
+.mainColumnForProductLayout {
+  @media (--viewportMedium) {
+  }
+  @media (--viewportLarge) {
+    max-width: calc(100% - 520px);
+    flex-basis: calc(100% - 520px);
+    flex-shrink: 0;
+    flex-grow: 1;
+  }
+}
+
+.orderColumnForProductLayout {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0 0 24px 0;
+  box-sizing: border-box;
+
+  @media (--viewportLarge) {
+    margin-left: 48px;
+    flex-basis: 472px;
+    flex-shrink: 0;
+  }
+}
+
+.desktopOnlyMapReviews {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+.mobileOnlyMapReviews {
+  display: block;
+  width: 100%;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.mobileOnlyMapSlot {
+  display: block;
+  margin: 24px 0 0;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.contentWrapperForProductLayout {
+  margin: 0 0 56px 0;
+  padding: 0 16px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  max-width: 100%;
+
+  @media (--viewportMedium) {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 32px 0 32px;
+    margin: 0 auto 56px auto;
+  }
+
+  @media (--viewportLarge) {
+    display: flex;
+    flex-direction: row;
+    max-width: 1500px;
+    width: 100%;
+    padding: 64px 48px 0 48px;
+    margin: 0 auto 117px auto;
+  }
+}
+
+.mainColumnForHeroLayout {
+  flex-basis: 100%;
+  margin-bottom: 23px;
+
+  @media (--viewportMedium) {
+    margin-top: 50px;
+    margin-bottom: 51px;
+    flex-shrink: 0;
+  }
+
+  @media (--viewportLarge) {
+    margin-top: 80px;
+    margin-bottom: 0px;
+    /* contentContainer's full width - (orderColumn + two paddings + margin + border) */
+    max-width: calc(100% - 433px);
+    flex-basis: calc(100% - 433px);
+    flex-shrink: 0;
+    flex-grow: 1;
+  }
+}
+
+.orderColumnForHeroLayout {
+  @media (--viewportMedium) {
+  }
+  @media (--viewportLarge) {
+    display: block;
+    margin-top: 80px;
+    margin-left: 60px;
+    border-left: 1px solid var(--colorGrey100);
+    padding-left: 60px;
+    flex-basis: 312px;
+    flex-shrink: 0;
+  }
+}
+
+.orderPanel {
+}
+
+.productOrderPanel {
+  display: block;
+
+  &.imagesEnabled {
+    @media (--viewportLarge) {
+      margin-top: 0;
+    }
+  }
+}
+
+.mobileRatingRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 24px 12px 24px;
+  flex-wrap: wrap;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+
+.listingRatingRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.listingRatingLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.listingLocation {
+  display: inline;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #7C6350;
+  /* Allow long addresses to wrap so they don't push the right column wider
+     than its siblings. */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  & svg {
+    fill: #e53935 !important;
+    vertical-align: middle;
+    margin-right: 4px;
+    display: inline-block;
+  }
+}
+
+.listingRatingStar {
+  width: 14px;
+  height: 14px;
+  fill: #FFD700;
+}
+
+.listingRatingStarEmpty {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: #FFD700;
+  stroke-width: 2px;
+}
+
+.listingRatingValue {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--colorGrey700);
+}
+
+.orderPanelTitle {
+  /* Font */
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  color: #2E2E2E;
+  letter-spacing: 0.02em;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
+  @media (min-width: 480px) {
+    font-size: 32px;
+  }
+
+  @media (--viewportMedium) {
+    font-size: 40px;
+  }
+
+  /* Layout */
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+  &.titleMarginForOwnListingNoImage {
+    margin-top: 100px;
+    @media (--viewportMedium) {
+      margin-top: 0;
+    }
+  }
+}
+
+.sectionAvatar {
+  /* Position (over the listing image)*/
+  margin-left: 24px;
+  margin-top: -31px;
+
+  /* Rendering context to the same lavel as listing image */
+  position: relative;
+
+  /* Flexbox would give too much width by default. */
+  width: 60px;
+
+  @media (--viewportMedium) {
+    position: absolute;
+    top: -49px;
+    margin-left: 0;
+    margin-top: 0;
+  }
+}
+
+.avatarMobile {
+  display: flex;
+
+  @media (--viewportMedium) {
+    display: none; /* Hide the medium avatar from the bigger screens */
+  }
+}
+
+.avatarDesktop {
+  display: none; /* Hide the large avatar from the smaller screens */
+
+  @media (--viewportMedium) {
+    display: flex;
+  }
+}
+
+.desktopPriceContainer {
+  display: none;
+
+  @media (--viewportLarge) {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+    margin: 0 48px 0 0;
+    padding: 0;
+  }
+}
+
+.desktopPriceValue {
+  /* Font */
+  composes: marketplaceModalTitleStyles from global;
+  color: var(--marketplaceColor);
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 1px;
+  }
+}
+
+.desktopPerUnit {
+  /* Font */
+  composes: h5 from global;
+  color: var(--colorGrey700);
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.heading {
+  margin-bottom: 33px;
+  padding: 0 24px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 0;
+    padding: 0;
+  }
+}
+
+.title {
+  /* Font */
+  composes: marketplaceModalTitleStyles from global;
+  color: var(--colorGrey700);
+
+  /* Layout */
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 2px;
+  }
+}
+
+.author {
+  width: 100%;
+  composes: h5 from global;
+
+  margin-top: 7px;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: var(--colorGrey700);
+  }
+}
+
+.authorNameLink {
+  composes: textSmall from global;
+  color: var(--colorGrey700);
+}
+
+.contactWrapper {
+  display: none;
+
+  @media (--viewportMedium) {
+    display: inline;
+  }
+}
+
+.separator {
+  margin: 0 6px;
+}
+
+.contactLink {
+  /* Position and dimensions */
+  display: inline;
+  padding: 0;
+
+  /* Borders */
+  border: none;
+
+  /* Colors */
+  color: var(--marketplaceColor);
+
+  /* Text size should be inherited */
+  text-decoration: none;
+
+  font-weight: var(--fontWeightMedium);
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0;
+  margin: 0;
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  @media (--viewportMedium) {
+    line-height: 16px;
+  }
+}
+
+.sectionText {
+  padding: 0 24px;
+  margin-bottom: 36px;
+
+  @media (--viewportMedium) {
+    padding: 0;
+    margin-bottom: 40px;
+  }
+}
+
+.sectionHeading,
+.sectionHeadingWithExtraMargin {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #2E2E2E;
+  padding: 0;
+
+  margin-top: 0;
+  margin-bottom: 12px;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+}
+
+.sectionHeadingWithExtraMargin {
+  @media (--viewportMedium) {
+    margin-bottom: 16px;
+  }
+}
+
+.text {
+  font-weight: var(--fontWeightRegular);
+  padding: 1px 0 5px 0;
+  margin: 0;
+
+  /* Preserve newlines, but collapse other whitespace */
+  white-space: pre-line;
+
+  @media (--viewportMedium) {
+    padding: 3px 0 5px 0;
+    margin: 0;
+  }
+}
+
+.ingress {
+  composes: p from global;
+  margin: 0;
+
+  /* Preserve newlines, but collapse other whitespace */
+  white-space: pre-line;
+
+  @media (--viewportMedium) {
+    margin: 0;
+  }
+}
+
+.sectionDetails,
+.sectionMultiEnum,
+.sectionEmbeddedYoutubeVideo {
+  padding: 0 24px;
+  margin-bottom: 32px;
+
+  @media (--viewportMedium) {
+    padding: 0;
+    margin-bottom: 40px;
+  }
+}
+
+.sectionMap {
+  padding: 0 24px;
+  margin-bottom: 35px;
+
+  @media (--viewportMedium) {
+    padding: 0;
+    margin-bottom: 0;
+  }
+}
+
+.locationAddress {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #2E2E2E;
+  margin: 0 0 16px;
+  word-break: break-word;
+}
+
+.locationSeparator {
+  color: #BAA38A;
+  margin: 0 4px;
+}
+
+.locationBuilding {
+  color: #7C6350;
+  font-weight: 600;
+}
+
+.sectionReviews,
+.sectionAuthor {
+  padding: 0 24px;
+  margin-top: 42px;
+  scroll-margin-top: calc(var(--topbarHeight) + 24px);
+
+  @media (--viewportMedium) {
+    padding: 0;
+    margin-top: 40px;
+    scroll-margin-top: calc(var(--topbarHeightDesktop) + 24px);
+  }
+  @media (--viewportLarge) {
+    padding: 8px 0;
+  }
+}
+
+.details {
+  padding-bottom: 1px;
+  margin: 0;
+}
+
+.detailsRow {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+  list-style: none;
+  font-weight: var(--fontWeightRegular);
+  line-height: 24px;
+  padding: 7px 0px 10px;
+  gap: 8px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--colorGrey100);
+  }
+
+  @media (--viewportMedium) {
+    padding: 5px 0 2px 0;
+    line-height: 32px;
+  }
+}
+
+.detailLabel {
+  font-weight: var(--fontWeightSemiBold);
+  letter-spacing: -0.09px;
+}
+
+.inquiryModalContainer {
+  composes: marketplaceModalInMobileBaseStyles from global;
+}
+
+@media (max-width: 767px) {
+  .inquiryModalContainer {
+    height: calc(var(--vh, 1vh) * 100);
+    padding: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .inquiryModalContainer > nav {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--colorWhite);
+  }
+
+  .inquiryModalContainer > nav > button {
+    align-self: flex-end;
+  }
+}
+
+@media (--viewportMedium) {
+  .inquiryModalContainer {
+    flex-basis: 576px;
+    flex-grow: 0;
+    min-height: auto;
+    height: auto;
+    padding: var(--modalPaddingMedium);
+    background-color: var(--colorWhite);
+    margin-top: 12.5vh;
+    margin-bottom: 12.5vh;
+    border-radius: var(--borderRadius);
+  }
+}
+
+.inquiryModalContent {
+  flex-grow: 1;
+  display: flex;
+
+  @media (max-width: 767px) {
+    padding: 24px;
+  }
+}
+
+.inquiryForm {
+  flex-grow: 1;
+  margin: 0 0 100px 0;
+
+  @media (--viewportMedium) {
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    margin: 0;
+  }
+}
+
+.inquirySubmitButtonWrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  background-color: var(--colorWhite);
+
+  @media (--viewportMedium) {
+    position: static;
+    padding: 0;
+    margin-top: auto;
+  }
+}
+
+.map {
+  display: block;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 280px;
+  background-color: rgba(186, 163, 138, 0.1);
+  padding: 0;
+  border: 3px solid #BAA38A;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+
+  @media (--viewportMedium) {
+    height: 400px;
+    border-width: 5px;
+    border-radius: 12px;
+  }
+
+  @media (--viewportLarge) {
+    height: 500px;
+    border-width: 6px;
+    margin-bottom: 7px;
+  }
+
+  /* Hide Mapbox's compact attribution info button (ⓘ) entirely. */
+  & :global(.mapboxgl-ctrl-attrib-button) {
+    display: none !important;
+  }
+
+  /* Remove the compact bubble layout so the attribution renders flat. */
+  & :global(.mapboxgl-ctrl-attrib.mapboxgl-compact) {
+    padding-right: 0 !important;
+    min-height: 0;
+  }
+}
+
+.mobileListingTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  color: #2E2E2E;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  margin: 12px 24px 4px 24px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
+  @media (min-width: 480px) {
+    font-size: 30px;
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.mobileListingPrice {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0 24px 16px 24px;
+
+  @media (min-width: 480px) {
+    margin: 0 24px 20px 24px;
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.mobileListingPriceValue {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #2E2E2E;
+  letter-spacing: 0.02em;
+}
+
+.mobileListingPriceUnit {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #7C6350;
+}
+
+/* Mobile CTAs (Enviar mensagem + Reservar agora) displayed after the
+   rating/location row. Hidden on desktop where the sidebar OrderPanel
+   handles these actions. */
+.mobileCtaRow {
+  display: none;
+}
+
+.mobileCtaButton {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  border: 2px solid #2E2E2E;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.mobileCtaButton:hover,
+.mobileCtaButton:focus {
+  background-color: #BAA38A;
+  border-color: #BAA38A;
+  color: #ffffff;
+  text-decoration: none;
+  outline: none;
+}
+
+/* ─── Mobile-only info sections (Comodidades, Detalhes, Descrição)
+   These render inline on the main column for narrow screens because the
+   OrderPanel sidebar — which normally shows them on desktop — is collapsed
+   into a modal on mobile. Hidden at viewportLarge to avoid duplication. */
+.mobileInfoSections {
+  padding: 0 16px;
+  margin-bottom: 28px;
+
+  @media (min-width: 480px) {
+    padding: 0 24px;
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.mobileInfoHeading {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #2E2E2E;
+  margin: 0 0 8px 0;
+}
+
+.mobileAmenitySection {
+  margin: 0 0 24px 0;
+}
+
+.mobileAmenityChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mobileAmenityChip {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #2E2E2E;
+  background-color: #ffffff;
+  border: 1px solid #D4C4B0;
+  border-radius: 20px;
+  padding: 4px 14px;
+}
+
+.mobileDetailSection {
+  margin: 0 0 24px 0;
+}
+
+.mobileDetailList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobileDetailRow {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 4px;
+  padding: 3px 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #2E2E2E;
+}
+
+.mobileDetailLabel {
+  color: #2E2E2E;
+  font-weight: 600;
+}
+
+.mobileDetailValue {
+  color: #2E2E2E;
+  font-weight: 400;
+}
+
+.mobileDescriptionSection {
+  margin: 0 0 8px 0;
+}
+
+.mobileDescriptionBox {
+  border: 1.5px solid #D4C4B0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.mobileDescriptionText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #3F3131;
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.mobileDescriptionTextClamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mobileDescriptionToggle {
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2E2E2E;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: #BAA38A;
+  }
+}
+
+.mobileDescriptionActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.longWord {
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.descriptionWrapper {
+  margin-bottom: 36px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 40px;
+  }
+}
+
+.descriptionTitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #2E2E2E;
+  margin: 0 0 10px 0;
+  padding: 0 16px;
+
+  @media (min-width: 480px) {
+    padding: 0 24px;
+  }
+
+  @media (--viewportMedium) {
+    padding: 0;
+  }
+}
+
+.descriptionBox {
+  border: 1.5px solid #BAA38A;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 0 16px;
+
+  @media (min-width: 480px) {
+    padding: 16px 20px;
+    margin: 0 24px;
+  }
+
+  @media (--viewportMedium) {
+    margin: 0;
+  }
+}
+
+.productGallery {
+  margin: 20px 0 36px 0;
+
+  @media (max-width: 380px) {
+    margin: 16px 0 28px 0;
+  }
+
+  @media (--viewportMedium) {
+    margin: 24px 0 48px 0;
+  }
+  @media (--viewportLarge) {
+    margin: 0 0 40px 0;
+    padding-bottom: 4px;
+  }
+}
+
+@media (max-width: 767px) {
+  .productGallery :global(.image-gallery-slide-wrapper) {
+    margin: 0 12px;
+  }
+}
+
+.mobileHeading {
+  margin: 0 0 20px 0;
+
+  @media (min-width: 480px) {
+    margin: 0 0 24px 0;
+  }
+
+  @media (--viewportMedium) {
+    margin: 0 0 24px 0;
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.noListingImageHeading {
+  margin: 0 24px 24px 24px;
+  padding-top: 36px;
+
+  @media (--viewportMedium) {
+    margin: 0 0 24px 0;
+  }
+}
+
+.noListingImageHeadingHero {
+  composes: noListingImageHeading;
+
+  @media (--viewportMedium) {
+    padding-top: 0;
+  }
+}
+
+.noListingImageHeadingProduct {
+  composes: noListingImageHeading;
+
+  @media (--viewportLarge) {
+    padding-top: 0;
+  }
+}
+
+.productDesktopHeading {
+  display: none;
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+.productSideContent {
+}
+
+.productBookingPanel {
+  @media (--viewportLarge) {
+    display: block;
+    margin-top: 24px;
+
+    /* The calendar needs 312px */
+    flex-basis: 312px;
+    flex-shrink: 0;
+  }
+}
+
+.video {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.reportLinkWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px 28px;
+  margin-top: 24px;
+  border-top: 1px solid var(--colorGrey100);
+}
+
+.reportLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2E2E2E;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.35);
+  text-underline-offset: 4px;
+}
+
+.reportLink:hover {
+  color: #c62828;
+  text-decoration-color: #c62828;
+}
+

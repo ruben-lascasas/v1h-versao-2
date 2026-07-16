@@ -1,0 +1,590 @@
+@import '../../styles/customMediaQueries.css';
+
+.pageRoot {
+  min-height: 100vh;
+  background-color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* Same layout as SavedSearchesPage so the title aligns the same way. */
+.content {
+  width: 100%;
+  max-width: 1140px;
+  margin: auto;
+  padding: 16px 12px 32px;
+  box-sizing: border-box;
+
+  @media (--viewportMedium) {
+    padding: 24px 20px 48px;
+  }
+}
+
+/* Heading row: title + sort dropdown side-by-side at all sizes. */
+.headingWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+
+  @media (--viewportMedium) {
+    gap: 16px;
+    flex-wrap: nowrap;
+  }
+}
+
+.title {
+  margin: 0;
+  font-family: 'Britannic Bold', 'Georgia', serif;
+  color: #2E2E2E;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tab {
+  display: flex;
+}
+
+.tabLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navigation {
+  /* let layout handle width */
+}
+
+.mainColumn {
+  padding: 24px 24px 64px 24px;
+
+  @media (--viewportMedium) {
+    padding: 36px 48px 96px 48px;
+  }
+}
+
+/* Sort dropdown sits on the same row as the title (inside headingWrapper). */
+.sortByWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.sortByLabel {
+  composes: marketplaceSmallFontStyles from global;
+  font-weight: var(--fontWeightRegular);
+  padding: 8px 8px 8px 0;
+}
+
+.sortLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 160px;
+  min-width: 160px;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+  min-height: 35px;
+
+  padding: 6px 10px;
+  margin: 0 9px 0 0;
+
+  transition: all var(--transitionStyleButton);
+  cursor: pointer;
+
+  font-weight: var(--fontWeightSemiBold);
+  font-size: 13px;
+  line-height: 1.25;
+  letter-spacing: 0.2px;
+
+  text-align: center;
+  text-decoration: none;
+
+  border: 1px solid var(--colorGrey100);
+  border-radius: var(--borderRadiusMedium);
+  background-color: var(--colorWhite);
+}
+.sortLabel:focus,
+.sortLabel:hover {
+  outline: none;
+  box-shadow: var(--boxShadowFilterButton);
+  text-decoration: none;
+  border-color: #BAA38A;
+}
+
+@media (--viewportMedium) {
+  .sortLabel {
+    gap: 8px;
+    min-height: 0;
+    padding: 8px 10px;
+    margin: 0;
+    font-weight: var(--fontWeightMedium);
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  .sortLabel:hover,
+  .sortLabel:focus {
+    border-color: #BAA38A;
+  }
+}
+
+.sortLabelText {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  overflow-wrap: break-word;
+}
+
+.iconArrow {
+  transition: all 0.2s ease-out;
+  flex-shrink: 0;
+}
+.iconArrowAnimation {
+  transform: rotate(-180deg);
+}
+
+.menuContent {
+  margin-top: 0px;
+  margin-right: 13px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px #e8e3de;
+}
+.menuContent > ul > li {
+  height: auto !important;
+}
+
+.menuItem {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 10px 16px 10px 12px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #2E2E2E !important;
+  font-family: var(--fontFamily) !important;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-left: 4px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  text-decoration: none;
+}
+.menuItem:hover,
+.menuItem:focus {
+  color: #7C6350 !important;
+  border-left-color: #BAA38A;
+  text-decoration: none;
+  outline: none;
+}
+.menuItemSelected {
+  color: #2E2E2E !important;
+  font-weight: 600 !important;
+  border-left-color: #BAA38A;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ───────────── Transaction card (matches InboxPage.bookingCard) ───────────── */
+
+.bookingCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--colorWhite);
+  border: 1px solid var(--colorGrey100);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.bookingCard:hover {
+  border-color: #BAA38A;
+  box-shadow: 0 2px 12px rgba(124, 99, 80, 0.15);
+  text-decoration: none;
+}
+.bookingCard:hover {
+  border-color: #BAA38A;
+  box-shadow: 0 2px 12px rgba(124, 99, 80, 0.15);
+  text-decoration: none;
+}
+
+.bookingCardImage {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--colorGrey100);
+}
+.bookingCardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bookingCardPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.bookingCardInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bookingCardTitleRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+}
+
+.bookingCardTitle {
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.25;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* "Foste Cliente" / "Foste Anfitrião" pill — indicates the current user's
+   role in this transaction (different from the other party label). */
+.bookingCardUserRole {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background-color: #BAA38A;
+  color: #ffffff;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  transform: translateY(1px);
+}
+
+.bookingCardLocation {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 12px;
+  color: #BAA38A;
+  margin: 0;
+  line-height: 1.35;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.bookingCardLocation svg {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.bookingCardDates {
+  font-size: 13px;
+  color: var(--colorGrey600);
+  margin: 0;
+  line-height: 1.35;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.bookingCardPrice {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.bookingCardArrow {
+  color: var(--colorGrey400);
+  flex-shrink: 0;
+  font-size: 20px;
+
+  /* Arrow is mostly decorative — hide it on mobile where space is precious. */
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+.bookingCardRight {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+
+  /* When the card is too narrow for everything to fit on one line, wrap the
+     right column to a new line that spans the full card width — same trick
+     the Caixa de Entrada uses naturally. */
+  @media (max-width: 767px) {
+    width: 100%;
+    margin-left: 0;
+    border-top: 1px solid var(--colorGrey100);
+    padding-top: 12px;
+  }
+}
+
+.bookingCardProviderRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+
+  @media (max-width: 767px) {
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* Right-side actions: role label + Seguir button.
+   On desktop they sit side-by-side; on mobile they stack with the label
+   ON TOP of the button. */
+.bookingCardProviderActions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+}
+
+.bookingCardProviderAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #e8e0d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #7C6350;
+}
+.bookingCardProviderAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fixed width that comfortably fits the "day" format ("Esteve online há 99d").
+   Longer strings (e.g. "Esteve online há uma semana") wrap to a second line. */
+.bookingCardProviderInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+
+  /* On mobile we let the column shrink so all three blocks fit on the row. */
+  @media (max-width: 767px) {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+.bookingCardProviderActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Role pill — same shape/size as the Seguir button below, so they stack
+   nicely as a "actions column" with consistent width. */
+.bookingCardProviderRole {
+  display: inline-block;
+  width: 80px;
+  text-align: center;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #BAA38A;
+  border: 1.5px solid #BAA38A;
+  border-radius: 20px;
+  padding: 4px 0;
+  box-sizing: border-box;
+}
+
+.bookingCardProviderName {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3F3131;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bookingCardProviderOnline {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  color: #7C6350;
+  font-style: italic;
+  display: block;
+  min-width: 0;
+  line-height: 1.25;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.bookingCardFollowBtn,
+.bookingCardFollowingBtn {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  width: 80px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bookingCardFollowBtn {
+  color: #ffffff;
+  background-color: #3F3131;
+  border: 1.5px solid #3F3131;
+  padding: 4px 0;
+}
+.bookingCardFollowBtn:hover {
+  background-color: #BAA38A;
+  border-color: #BAA38A;
+}
+
+.bookingCardFollowingBtn {
+  color: #3F3131;
+  background-color: transparent;
+  border: 1.5px solid #3F3131;
+  padding: 4px 0;
+}
+.bookingCardFollowingBtn:hover {
+  background-color: #3F3131;
+  color: #ffffff;
+}
+
+/* ───────────── State / empty / error ───────────── */
+
+.error {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: #fff0f0;
+  color: #c62828;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+}
+
+.empty {
+  margin: 32px 0;
+  padding: 24px;
+  border: 1px dashed #d4c4b0;
+  border-radius: 10px;
+  text-align: center;
+  color: #7C6350;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+}
+
+.listLoading {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.pagination {
+  margin-top: 32px;
+}
+
+/* ───────────── Topbar visibility (mobile vs desktop) ───────────── */
+
+.mobileTopbar {
+  width: 100%;
+  height: var(--topbarHeight);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--colorWhite);
+  box-shadow: none;
+
+  @media (--viewportMedium) {
+    height: var(--topbarHeightDesktop);
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.desktopTopbar,
+.mobileTopbar {
+  box-shadow: none;
+
+  @media (--viewportLarge) {
+    box-shadow: var(--boxShadowLight);
+  }
+}

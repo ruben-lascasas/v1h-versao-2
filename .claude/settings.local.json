@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C c:/Users/Gui28/Desktop/web-template log --oneline -10)",
+      "Bash(grep -rn \"verify\\\\|Verify\" c:/Users/Gui28/Desktop/web-template/src --include=*.js -l)",
+      "Bash(grep -n -A 8 \"path: ''/recently-viewed''\" \"c:/Users/Gui28/Desktop/web-template/src/routing/routeConfiguration.js\")",
+      "Bash(ls \"c:/Users/Gui28/Desktop/web-template/.env\"*)",
+      "Bash(node -e \"try { require\\(''''./src/ducks/recentlyViewed.duck.js''''\\); } catch\\(e\\) { console.log\\(e.message\\); }\")",
+      "Bash(node -e \":*)",
+      "Bash(grep -E '\\\\.\\(js|jsx|ts|tsx\\)$')",
+      "Bash(grep -r \"per_page\\\\|perPage\\\\|PAGE_SIZE\\\\|pageSize\" c:/Users/Gui28/Desktop/web-template/src --include=*.js -l)",
+      "Bash(ls -lh /c/Users/Gui28/Desktop/web-template/src/assets/images/VH1-ICON*)",
+      "Bash(python3 -c \":*)",
+      "Bash(grep -E \"\\\\.\\(js|jsx\\)$\")",
+      "Bash(xargs grep:*)",
+      "Bash(ls ~/Desktop/v1hdoc/)",
+      "Read(//c/Users/User/Desktop/v1hdoc/**)",
+      "Read(//c/Users/User/Desktop/documentationai-starter-kit/**)",
+      "Read(//c/Users/User/Desktop/documentationai-starter-kit/help-center/**)",
+      "Bash(curl -s -X POST http://localhost:3500/api/translate -H 'Content-Type: application/json' -d '{\"text\":\"Ótimo espaço para conviver e criar memórias com amigos e família\",\"target\":\"en\"}')",
+      "Bash(curl -s -X POST http://localhost:3000/api/translate -H 'Content-Type: application/json' -d '{\"text\":\"Ótimo espaço para conviver\",\"target\":\"en\"}')",
+      "Bash(curl -s \"https://api.mymemory.translated.net/get?q=Ótimo+espaço+para+conviver&langpair=pt|en\")",
+      "Bash(curl -s \"https://api.mymemory.translated.net/get?q=hello%20world&langpair=en%7Cpt\")",
+      "Bash(curl -s \"https://api.mymemory.translated.net/get?q=%C3%93timo%20espa%C3%A7o%20para%20conviver&langpair=pt%7Cen\")",
+      "Bash(curl -s \"https://api.mymemory.translated.net/get?q=%C3%93timo%20espa%C3%A7o&langpair=autodetect%7Cen\")",
+      "Bash(node -e \"console.log\\(typeof fetch\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(git -C \"C:/Users/User/Desktop/documentationai-starter-kit\" pull)"
+    ]
+  }
+}

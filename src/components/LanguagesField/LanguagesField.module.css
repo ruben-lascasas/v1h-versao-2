@@ -1,0 +1,103 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Match the site's standard label style (used by FieldTextInput etc.) */
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: #2E2E2E;
+  margin: 0 0 6px;
+
+  :global(body[data-dark-mode]) & {
+    color: #f0ece6;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 767px) {
+  .chips {
+    /* On mobile, use a 2-column grid so chips line up neatly regardless of
+       language-name length, instead of wrapping unevenly. */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .chip {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: #ffffff;
+  border: 1.5px solid #BAA38A;
+  border-radius: 20px;
+  font-family: var(--fontFamily);
+  font-size: 13px;
+  font-weight: 600;
+  color: #5C3317;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  :global(body[data-dark-mode]) & {
+    background: #2a2a2a;
+    border-color: #BAA38A;
+    color: #f0ece6;
+  }
+}
+
+/* flag-icons base classes are styled via the imported stylesheet, but we need
+   to give them an explicit display so they sit nicely beside the language
+   name and don't get squashed. */
+.flag {
+  width: 18px !important;
+  height: 13px !important;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.chip:hover {
+  background: #f6f0e8;
+}
+
+:global(body[data-dark-mode]) .chip:hover {
+  background: #3a3a3a;
+}
+
+.chipActive {
+  background: #BAA38A;
+  border-color: #BAA38A;
+  color: #ffffff;
+}
+
+.chipActive:hover {
+  background: #7C6350;
+  border-color: #7C6350;
+}
+
+/* Dark-mode explicit overrides for the active state — bg + text colour
+   only. We DO NOT touch the flag span (`[class*="fi-"]`) since the
+   `flag-icons` library renders the flag via `background-image` and any
+   `background:` shorthand here would wipe it out. */
+:global(body[data-dark-mode]) .chipActive {
+  background: #BAA38A !important;
+  color: #ffffff !important;
+  border-color: #BAA38A !important;
+}
+:global(body[data-dark-mode]) .chipActive span:not([class*="fi-"]) {
+  color: #ffffff !important;
+}

@@ -1,0 +1,623 @@
+@import '../../../styles/customMediaQueries.css';
+
+/* YouTube video slide: keep the same aspect ratio as photos, but center a play
+   badge over the thumbnail so it's obvious the slide is a video. The actual
+   iframe only mounts inside the fullscreen modal. */
+.videoPlayBadge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Plain wrapper around the YouTube thumb img — same DOM shape as the photo
+   path's `<div><img className={css.thumb}/></div>`, so the gallery library
+   slots both tiles into the same baseline. The badge below is anchored to
+   this wrapper via `position: absolute`. */
+/* Same shape as the photo's renderThumbInner (`<div><img class="thumb"/></div>`)
+   so the library lays out both thumbs identically. The only extra is the
+   `position: relative` anchor needed for the absolute play badge. */
+.videoThumbWrapper {
+  position: relative;
+}
+
+.videoThumbBadge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Inside the fullscreen modal the parent `.modalImageFrame` is a flex
+   container that shrinks to its content's intrinsic size. An iframe has no
+   intrinsic size, so we give the embed an explicit 16:9 box capped by the
+   viewport so it visually matches the photo slides. */
+.modalVideo {
+  width: min(90vw, 1280px);
+  height: min(calc(90vw * 9 / 16), 720px);
+  max-width: 100%;
+  max-height: 100%;
+  border: none;
+  display: block;
+  background: #000;
+}
+
+/* Inline video on the main carousel: fills the same AspectRatioWrapper slot
+   as a regular image so the gallery layout stays consistent. */
+.itemVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  background: #000;
+}
+
+:global(.image-gallery-thumbnails-container) {
+  text-align: left !important;
+}
+:global(.image-gallery-thumbnails) {
+  padding-top: 24px;
+  padding-bottom: 0;
+
+  /*
+   By default, the gallery controls the scroll position of the thumbnails when
+   browsing the images. We change this logic to a freely scrollable container
+   that the user controls. This overflow works together with the
+   `disableThumbnailScroll` option in the component JS.
+   */
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+
+  @media (--viewportMedium) {
+    width: 100%;
+  }
+  @media (--viewportLarge) {
+    width: unset;
+  }
+}
+:global(.image-gallery-thumbnail) {
+  width: auto;
+  border-radius: 8px;
+
+  text-align: left !important;
+
+  &:first-child {
+    margin-left: 24px;
+
+    @media (--viewportMedium) {
+      margin-left: 0;
+    }
+  }
+  &:last-child {
+    margin-right: 24px;
+
+    @media (--viewportMedium) {
+      margin-right: 0;
+    }
+  }
+
+  &:hover,
+  &:global(.active) {
+    border-color: #7C6350;
+  }
+}
+
+:global(.image-gallery-slide-wrapper) {
+  background-color: var(--colorWhite);
+  border: 6px solid #7C6350;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+:global(.fullscreen) {
+  background-color: var(--colorWhite) !important;
+
+  & :global(.image-gallery-slide-wrapper) {
+    background-color: transparent;
+    border: none;
+  }
+
+  & :global(.image-gallery-thumbnails-container),
+  & :global(.image-gallery-thumbnail) {
+    text-align: center !important;
+  }
+}
+
+.root {
+}
+
+.itemWrapper,
+.itemWrapperFullscreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemWrapper {
+  height: 260px;
+
+  @media (min-width: 480px) {
+    height: 340px;
+  }
+
+  @media (--viewportMedium) {
+    height: 520px;
+  }
+
+  @media (--viewportLarge) {
+    height: 560px;
+  }
+}
+
+.noImage {
+  border: 1px solid var(--colorGrey100);
+  border-radius: var(--borderRadiusMedium);
+}
+
+.itemWrapperFullscreen {
+  height: calc(100vh - 130px);
+}
+
+.itemCentering {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.item {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb {
+  /* Fixed-size box (instead of max-only) so the photo and YouTube thumbs end
+     up exactly the same dimensions in the strip. object-fit: cover keeps
+     each image filling the box without distortion. */
+  width: 86px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: var(--borderRadiusMedium);
+}
+
+.navLeft,
+.navRight {
+  /* Hidden on mobile — the gallery library supports swipe natively, so touch
+     users navigate by dragging sideways. */
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border: none;
+  padding: 0;
+  z-index: 1;
+  cursor: pointer;
+  background: transparent;
+
+  /* circle — always visible regardless of the image behind */
+  border-radius: 100%;
+  background-color: rgba(255, 255, 255, 0.97);
+  border: 1.5px solid rgba(0, 0, 0, 0.18);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  font-size: 30px;
+  color: #2E2E2E;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 4px 0;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+
+  @media (--viewportMedium) {
+    display: flex;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #BAA38A;
+    border-color: #BAA38A;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.navLeft {
+  left: 10px;
+}
+
+.navRight {
+  right: 10px;
+}
+
+.openFullscreen {
+  /* Hide on mobile. Currently react-image-gallery fullscreen mode is broken on
+     mobile, and mobile doesn't really benefit from fullscreen anyways. */
+  display: none;
+
+  composes: buttonSmall from global;
+
+  /* Position and dimensions */
+  position: absolute;
+  bottom: 19px;
+  right: 24px;
+
+  /* Ensure the button is on top of the navRight area */
+  z-index: 1;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+.close {
+  composes: marketplaceModalCloseStyles from global;
+
+  color: var(--colorGrey600);
+  transition: var(--transitionStyleButton);
+
+  &:enabled:hover,
+  &:enabled:active {
+    color: var(--colorBlack);
+  }
+}
+
+.closeText {
+  composes: marketplaceModalCloseText from global;
+}
+
+.closeIcon {
+  composes: marketplaceModalCloseIcon from global;
+}
+
+/* ─── eBay-style image modal ──────────────────────────────────────────── */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 48px;
+  box-sizing: border-box;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 8px 0 16px;
+}
+
+.modalTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2E2E2E;
+  text-align: center;
+}
+
+.modalCounter {
+  font-size: 22px;
+  font-weight: 700;
+  color: #7C6350;
+  margin-left: 6px;
+}
+
+.modalClose {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2E2E2E;
+  border-radius: 50%;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #BAA38A;
+  }
+}
+
+.modalBody {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  min-height: 0;
+  position: relative;
+}
+
+.modalImageStage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  min-width: 0;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* Brown frame around the big image — mirrors the inline gallery border. */
+.modalImageFrame {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  border: 6px solid #7C6350;
+  border-radius: 12px;
+  background-color: var(--colorWhite);
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalImage {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.modalNavLeft,
+.modalNavRight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--colorGrey200);
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #2E2E2E;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 4px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background-color: #BAA38A;
+      border-color: #BAA38A;
+      color: #ffffff;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.modalNavLeft {
+  /* Anchored inside the main image stage, not on the screen edge. */
+  left: 32px;
+}
+
+.modalNavRight {
+  /* Sit just inside the right edge of the image column, leaving the
+     thumbnail panel untouched. */
+  right: calc(320px + 24px + 32px);
+}
+
+.modalThumbs {
+  /* Fill all the vertical space of the right column so thumbnails aren't
+     cramped at the top with empty space below. Scroll kicks in as soon
+     as the content exceeds the available height (≈6 thumbs at normal
+     desktop sizes, more on tall screens). Top padding matches the image
+     stage so the first row lines up with the top of the main image. */
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-content: flex-start;
+  padding: 24px 10px 4px 4px;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+}
+
+/* The button stays square via a padding-bottom trick on its inner span —
+   `aspect-ratio` on a <button> was producing inconsistent row heights.
+   The inner span is absolutely positioned to fill the square so the
+   image always covers the whole cell. */
+.modalThumb {
+  position: relative;
+  border: 2px solid var(--colorGrey100, #e6e6e6);
+  border-radius: 10px;
+  padding: 0;
+  background: #ffffff;
+  cursor: pointer;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: #7C6350;
+  }
+}
+
+.modalThumbInner {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.modalThumbActive {
+  border: 3px solid #7C6350;
+  box-shadow: 0 0 0 1px #7C6350;
+}
+
+.modalThumbImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ─── Responsive breakpoints ──────────────────────────────────────────── */
+
+/* Tablet: narrower thumb column */
+@media (max-width: 1100px) {
+  .modalBody {
+    grid-template-columns: 1fr 240px;
+  }
+  .modalNavRight {
+    right: calc(240px + 24px + 24px);
+  }
+  .modalNavLeft {
+    left: 24px;
+  }
+}
+
+/* Mobile: eBay-style vertical scroll — big hero image at top, thumbs below in
+   a 2-column grid. User swipes left/right on the hero to change image. */
+@media (max-width: 800px) {
+  .modalOverlay {
+    padding: 12px 12px 24px 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .modalHeader {
+    padding: 4px 0 14px;
+    flex-shrink: 0;
+  }
+  .modalTitle {
+    font-size: 17px;
+  }
+  .modalCounter {
+    font-size: 17px;
+  }
+  .modalBody {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: none;
+    grid-template-rows: none;
+    gap: 18px;
+    flex: none;
+    min-height: 0;
+  }
+  .modalImageStage {
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    touch-action: pan-y;
+  }
+  .modalImageFrame {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: none;
+    border-width: 6px;
+    border-radius: 12px;
+  }
+  .modalImage {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: none;
+    object-fit: cover;
+  }
+  .modalNavLeft,
+  .modalNavRight {
+    display: none;
+  }
+  .modalThumbs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-height: none;
+    padding: 0;
+    overflow: visible;
+  }
+  .modalThumb {
+    border-width: 1.5px;
+    border-radius: 8px;
+  }
+  .modalThumbActive {
+    border-width: 2.5px;
+  }
+}
+
+/* Extra-small phones: tighter paddings + borders */
+@media (max-width: 480px) {
+  .modalOverlay {
+    padding: 10px 10px 20px 10px;
+  }
+  .modalHeader {
+    padding: 2px 0 10px;
+  }
+  .modalTitle {
+    font-size: 16px;
+  }
+  .modalClose {
+    width: 30px;
+    height: 30px;
+  }
+  .modalBody {
+    gap: 14px;
+  }
+  .modalImageFrame {
+    border-width: 5px;
+    border-radius: 10px;
+  }
+  .modalThumbs {
+    gap: 8px;
+  }
+  .modalThumb {
+    border-width: 1.5px;
+    border-radius: 7px;
+  }
+}

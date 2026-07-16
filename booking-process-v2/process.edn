@@ -1,0 +1,416 @@
+{:format :v3,
+ :transitions
+ [
+  ;; ─── INQUIRY (unchanged) ───────────────────────────────────────────
+  {:name :transition/inquire,
+   :actor :actor.role/customer,
+   :actions [{:name :action/update-protected-data}],
+   :to :state/inquiry}
+
+  ;; ─── SHORT-TERM PATH (≤90 days) — unchanged ────────────────────────
+  {:name :transition/request-payment,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/update-protected-data}
+    {:name :action/create-pending-booking, :config {:type :time}}
+    {:name :action/privileged-set-line-items}
+    {:name :action/stripe-create-payment-intent}],
+   :to :state/pending-payment,
+   :privileged? true}
+  {:name :transition/request-payment-after-inquiry,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/update-protected-data}
+    {:name :action/create-pending-booking, :config {:type :time}}
+    {:name :action/privileged-set-line-items}
+    {:name :action/stripe-create-payment-intent}],
+   :from :state/inquiry,
+   :to :state/pending-payment,
+   :privileged? true}
+
+  ;; ─── LONG-TERM PATH (>90 days) ─────────────────────────────────────
+  ;; Customer requests the date without paying. Slot is locked but provider
+  ;; must still approve. The webapp routes here when bookingStart >90 days.
+  {:name :transition/request-long-term-reservation,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/update-protected-data}
+    {:name :action/create-pending-booking, :config {:type :time}}
+    {:name :action/privileged-set-line-items}],
+   :to :state/long-term-pending-approval,
+   :privileged? true}
+  {:name :transition/request-long-term-reservation-after-inquiry,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/update-protected-data}
+    {:name :action/create-pending-booking, :config {:type :time}}
+    {:name :action/privileged-set-line-items}],
+   :from :state/inquiry,
+   :to :state/long-term-pending-approval,
+   :privileged? true}
+
+  ;; Provider accepts the long-term request — slot stays locked,
+  ;; payment is deferred until 90 days before the event.
+  {:name :transition/accept-long-term-reservation,
+   :actor :actor.role/provider,
+   :actions [],
+   :from :state/long-term-pending-approval,
+   :to :state/long-term-reserved}
+
+  ;; Provider declines the long-term request — slot is released.
+  {:name :transition/decline-long-term-reservation,
+   :actor :actor.role/provider,
+   :actions [{:name :action/decline-booking}],
+   :from :state/long-term-pending-approval,
+   :to :state/long-term-declined}
+
+  ;; If provider doesn't respond in 7 days, the request auto-expires.
+  {:name :transition/expire-long-term-approval,
+   :at
+   {:fn/plus
+    [{:fn/timepoint
+      [:time/first-entered-state :state/long-term-pending-approval]}
+     {:fn/period ["P7D"]}]},
+   :actions [{:name :action/decline-booking}],
+   :from :state/long-term-pending-approval,
+   :to :state/long-term-declined}
+
+  ;; Customer or operator can cancel while waiting for provider approval.
+  {:name :transition/customer-cancel-long-term-pending,
+   :actor :actor.role/customer,
+   :actions [{:name :action/decline-booking}],
+   :from :state/long-term-pending-approval,
+   :to :state/long-term-cancelled}
+  {:name :transition/operator-cancel-long-term-pending,
+   :actor :actor.role/operator,
+   :actions [{:name :action/decline-booking}],
+   :from :state/long-term-pending-approval,
+   :to :state/long-term-cancelled}
+
+  ;; Timer: 90 days before booking-start, payment window opens.
+  ;; Customer is notified by email and must come back and pay.
+  {:name :transition/open-payment-window,
+   :at
+   {:fn/minus
+    [{:fn/timepoint [:time/booking-start]} {:fn/period ["P90D"]}]},
+   :actions [],
+   :from :state/long-term-reserved,
+   :to :state/payment-window-open}
+
+  ;; Operator manual variant — same effect, lets operators force the
+  ;; payment window open for testing or special cases.
+  {:name :transition/operator-open-payment-window,
+   :actor :actor.role/operator,
+   :actions [],
+   :from :state/long-term-reserved,
+   :to :state/payment-window-open}
+
+  ;; Customer pays during the open window. Creates the Stripe PaymentIntent.
+  {:name :transition/pay-long-term-reservation,
+   :actor :actor.role/customer,
+   :actions [{:name :action/stripe-create-payment-intent}],
+   :from :state/payment-window-open,
+   :to :state/pending-payment,
+   :privileged? true}
+
+  ;; Customer confirms card payment for a long-term reservation.
+  ;; Auto-accepts: provider already approved at the reservation stage.
+  {:name :transition/confirm-long-term-payment,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/stripe-confirm-payment-intent}
+    {:name :action/accept-booking}
+    {:name :action/stripe-capture-payment-intent}],
+   :from :state/pending-payment,
+   :to :state/accepted}
+
+  ;; If customer doesn't pay within 14 days of payment window opening,
+  ;; reservation auto-cancels and slot is released.
+  {:name :transition/expire-long-term-reservation,
+   :at
+   {:fn/plus
+    [{:fn/timepoint
+      [:time/first-entered-state :state/payment-window-open]}
+     {:fn/period ["P14D"]}]},
+   :actions [{:name :action/decline-booking}],
+   :from :state/payment-window-open,
+   :to :state/long-term-expired}
+
+  ;; Operator, provider or customer can cancel an approved long-term reservation before payment.
+  {:name :transition/operator-cancel-long-term,
+   :actor :actor.role/operator,
+   :actions [{:name :action/decline-booking}],
+   :from :state/long-term-reserved,
+   :to :state/long-term-cancelled}
+  {:name :transition/provider-cancel-long-term,
+   :actor :actor.role/provider,
+   :actions [{:name :action/decline-booking}],
+   :from :state/long-term-reserved,
+   :to :state/long-term-cancelled}
+  {:name :transition/customer-cancel-long-term,
+   :actor :actor.role/customer,
+   :actions [{:name :action/decline-booking}],
+   :from :state/long-term-reserved,
+   :to :state/long-term-cancelled}
+
+  ;; ─── EXISTING SHORT-TERM FLOW continues from pending-payment ───────
+  {:name :transition/expire-payment,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/first-entered-state :state/pending-payment]}
+     {:fn/period ["PT15M"]}]},
+   :actions
+   [{:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}
+    {:name :action/decline-booking}],
+   :from :state/pending-payment,
+   :to :state/payment-expired}
+  {:name :transition/confirm-payment,
+   :actor :actor.role/customer,
+   :actions [{:name :action/stripe-confirm-payment-intent}],
+   :from :state/pending-payment,
+   :to :state/preauthorized}
+  {:name :transition/accept,
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/accept-booking}
+    {:name :action/stripe-capture-payment-intent}],
+   :from :state/preauthorized,
+   :to :state/accepted}
+  {:name :transition/operator-accept,
+   :actor :actor.role/operator,
+   :actions
+   [{:name :action/accept-booking}
+    {:name :action/stripe-capture-payment-intent}],
+   :from :state/preauthorized,
+   :to :state/accepted}
+  {:name :transition/decline,
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}
+    {:name :action/decline-booking}],
+   :from :state/preauthorized,
+   :to :state/declined}
+  {:name :transition/operator-decline,
+   :actor :actor.role/operator,
+   :actions
+   [{:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}
+    {:name :action/decline-booking}],
+   :from :state/preauthorized,
+   :to :state/declined}
+  {:name :transition/expire,
+   :at
+   {:fn/min
+    [{:fn/plus
+      [{:fn/timepoint [:time/first-entered-state :state/preauthorized]}
+       {:fn/period ["P6D"]}]}
+     {:fn/plus
+      [{:fn/timepoint [:time/booking-start]} {:fn/period ["P1D"]}]}
+     {:fn/timepoint [:time/booking-end]}]},
+   :actions
+   [{:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}
+    {:name :action/decline-booking}],
+   :from :state/preauthorized,
+   :to :state/expired}
+  {:name :transition/complete,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P2D"]}]},
+   :actions [{:name :action/stripe-create-payout}],
+   :from :state/accepted,
+   :to :state/delivered}
+  {:name :transition/operator-complete,
+   :actor :actor.role/operator,
+   :actions [{:name :action/stripe-create-payout}],
+   :from :state/accepted,
+   :to :state/delivered}
+  {:name :transition/cancel,
+   :actor :actor.role/operator,
+   :actions
+   [{:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}
+    {:name :action/cancel-booking}],
+   :from :state/accepted,
+   :to :state/cancelled}
+
+  ;; ─── REVIEWS (unchanged) ───────────────────────────────────────────
+  {:name :transition/review-1-by-provider,
+   :actor :actor.role/provider,
+   :actions [{:name :action/post-review-by-provider}],
+   :from :state/delivered,
+   :to :state/reviewed-by-provider}
+  {:name :transition/review-2-by-provider,
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/post-review-by-provider}
+    {:name :action/publish-reviews}],
+   :from :state/reviewed-by-customer,
+   :to :state/reviewed}
+  {:name :transition/review-1-by-customer,
+   :actor :actor.role/customer,
+   :actions [{:name :action/post-review-by-customer}],
+   :from :state/delivered,
+   :to :state/reviewed-by-customer}
+  {:name :transition/review-2-by-customer,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/post-review-by-customer}
+    {:name :action/publish-reviews}],
+   :from :state/reviewed-by-provider,
+   :to :state/reviewed}
+  {:name :transition/expire-review-period,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
+   :actions [],
+   :from :state/delivered,
+   :to :state/reviewed}
+  {:name :transition/expire-provider-review-period,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
+   :actions [{:name :action/publish-reviews}],
+   :from :state/reviewed-by-customer,
+   :to :state/reviewed}
+  {:name :transition/expire-customer-review-period,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
+   :actions [{:name :action/publish-reviews}],
+   :from :state/reviewed-by-provider,
+   :to :state/reviewed}],
+
+ :notifications
+ [
+  ;; Provider notified of new long-term request — must accept or decline
+  {:name :notification/long-term-request-to-provider,
+   :on :transition/request-long-term-reservation,
+   :to :actor.role/provider,
+   :template :booking-new-request}
+  {:name :notification/long-term-request-after-inquiry-to-provider,
+   :on :transition/request-long-term-reservation-after-inquiry,
+   :to :actor.role/provider,
+   :template :booking-new-request}
+  ;; Customer notified when provider accepts the long-term request
+  {:name :notification/long-term-accepted-by-provider,
+   :on :transition/accept-long-term-reservation,
+   :to :actor.role/customer,
+   :template :booking-accepted-request}
+  ;; Customer notified when provider declines the long-term request
+  {:name :notification/long-term-declined-by-provider,
+   :on :transition/decline-long-term-reservation,
+   :to :actor.role/customer,
+   :template :booking-declined-request}
+  ;; Customer notified when long-term approval auto-expires (provider didn't respond)
+  {:name :notification/long-term-approval-expired-customer,
+   :on :transition/expire-long-term-approval,
+   :to :actor.role/customer,
+   :template :booking-expired-request}
+
+  ;; Customer is notified that the payment window opened — must pay within 14 days
+  {:name :notification/long-term-payment-window-opened-customer,
+   :on :transition/open-payment-window,
+   :to :actor.role/customer,
+   :template :booking-payment-window-open}
+  ;; Same notification for operator-forced variant (used in testing / manual ops)
+  {:name :notification/long-term-payment-window-operator-opened-customer,
+   :on :transition/operator-open-payment-window,
+   :to :actor.role/customer,
+   :template :booking-payment-window-open}
+  ;; New: customer notified if their long-term reservation expired (no payment in 7d)
+  {:name :notification/long-term-reservation-expired-customer,
+   :on :transition/expire-long-term-reservation,
+   :to :actor.role/customer,
+   :template :booking-expired-request}
+  {:name :notification/long-term-reservation-expired-provider,
+   :on :transition/expire-long-term-reservation,
+   :to :actor.role/provider,
+   :template :booking-expired-request}
+
+  ;; Long-term payment confirmed: notify provider that booking is now accepted & paid
+  {:name :notification/long-term-payment-confirmed-provider,
+   :on :transition/confirm-long-term-payment,
+   :to :actor.role/provider,
+   :template :booking-new-request}
+  ;; And notify customer that their booking is confirmed
+  {:name :notification/long-term-payment-confirmed-customer,
+   :on :transition/confirm-long-term-payment,
+   :to :actor.role/customer,
+   :template :booking-accepted-request}
+
+  ;; Existing notifications
+  {:name :notification/booking-new-request,
+   :on :transition/confirm-payment,
+   :to :actor.role/provider,
+   :template :booking-new-request}
+  {:name :notification/booking-accepted-request,
+   :on :transition/accept,
+   :to :actor.role/customer,
+   :template :booking-accepted-request}
+  {:name :notification/booking-operator-accepted-request-to-customer,
+   :on :transition/operator-accept,
+   :to :actor.role/customer,
+   :template :booking-accepted-request}
+  {:name :notification/booking-operator-accepted-request-to-provider,
+   :on :transition/operator-accept,
+   :to :actor.role/provider,
+   :template :booking-operator-accepted-request}
+  {:name :notification/booking-declined-request,
+   :on :transition/decline,
+   :to :actor.role/customer,
+   :template :booking-declined-request}
+  {:name :notification/booking-operator-declined-request-to-customer,
+   :on :transition/operator-decline,
+   :to :actor.role/customer,
+   :template :booking-declined-request}
+  {:name :notification/booking-operator-declined-request-to-provider,
+   :on :transition/operator-decline,
+   :to :actor.role/provider,
+   :template :booking-operator-declined-request}
+  {:name :notification/booking-expired-request,
+   :on :transition/expire,
+   :to :actor.role/customer,
+   :template :booking-expired-request}
+  {:name :notification/booking-money-paid,
+   :on :transition/complete,
+   :to :actor.role/provider,
+   :template :booking-money-paid}
+  {:name :notification/review-period-start-provider,
+   :on :transition/complete,
+   :to :actor.role/provider,
+   :template :booking-review-by-provider-wanted}
+  {:name :notification/review-period-start-customer,
+   :on :transition/complete,
+   :to :actor.role/customer,
+   :template :booking-review-by-customer-wanted}
+  {:name :notification/booking-money-paid-operator-complete,
+   :on :transition/operator-complete,
+   :to :actor.role/provider,
+   :template :booking-money-paid}
+  {:name :notification/review-period-start-provider-operator-complete,
+   :on :transition/operator-complete,
+   :to :actor.role/provider,
+   :template :booking-review-by-provider-wanted}
+  {:name :notification/review-period-start-customer-operator-complete,
+   :on :transition/operator-complete,
+   :to :actor.role/customer,
+   :template :booking-review-by-customer-wanted}
+  {:name :notification/review-by-provider-first,
+   :on :transition/review-1-by-provider,
+   :to :actor.role/customer,
+   :template :booking-review-by-other-party-unpublished}
+  {:name :notification/review-by-customer-first,
+   :on :transition/review-1-by-customer,
+   :to :actor.role/provider,
+   :template :booking-review-by-other-party-unpublished}
+  {:name :notification/review-by-provider-second,
+   :on :transition/review-2-by-provider,
+   :to :actor.role/customer,
+   :template :booking-review-by-other-party-published}
+  {:name :notification/review-by-customer-second,
+   :on :transition/review-2-by-customer,
+   :to :actor.role/provider,
+   :template :booking-review-by-other-party-published}]}

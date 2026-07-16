@@ -1,0 +1,332 @@
+@import '../../styles/customMediaQueries.css';
+
+.topbar {
+  width: 100%;
+
+  /* Top Bar's drop shadow should always be visible */
+  z-index: var(--zIndexTopbar);
+  position: relative;
+
+  @media (--viewportMedium) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* We need to raise Topbar above .container */
+    z-index: var(--zIndexTopbar);
+  }
+}
+
+/* Can be given to Topbar when a modal is opened
+ * so that the Topbar is not rendered on top of it.*/
+.topbarBehindModal {
+  z-index: initial;
+}
+
+.container {
+  /* Layout */
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+
+  @media (--viewportMedium) {
+    position: relative;
+    padding-top: var(--topbarHeightDesktop);
+    min-height: calc(100vh - var(--topbarHeightDesktop));
+    scroll-margin-top: var(--topbarHeightDesktop);
+  }
+}
+
+/* Container for side and content */
+.layoutWrapperContainer {
+  composes: container;
+  /* parent aka root is flexbox, this container takes all available space */
+  flex-shrink: 0;
+
+  /* This container uses flexbox layout */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: var(--colorWhite);
+
+  /* When side nav is shown as a column, Topbar's box-shadow should be visible */
+  z-index: calc(var(--zIndexTopbar) - 1);
+
+  @media (--viewportMedium) {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.layoutWrapperFilterColumn {
+  display: none;
+
+  @media (--viewportMedium) {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 30px 16px 0 20px;
+    background-color: var(--colorWhite);
+  }
+  @media (--viewportLarge) {
+    padding: 30px 16px 0 20px;
+    flex-direction: column;
+    justify-content: flex-start;
+    border: none;
+    box-shadow: none;
+    background-color: var(--colorWhite);
+  }
+
+  @media (min-width: 1440px) {
+    padding: 30px 16px 0 20px;
+  }
+  @media (--viewportXLarge) {
+    padding: 30px 16px 0 20px;
+  }
+}
+
+.filterColumnContent {
+  display: flex;
+  flex-direction: column;
+  width: 228px;
+  padding: 8px 16px 0 0;
+
+  @media (--viewportMedium) {
+    padding: 8px 16px 24px 0;
+  }
+
+  @media (--viewportLarge) {
+    width: 264px;
+    padding: 8px 16px 24px 0;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 8px 16px 24px 0;
+  }
+}
+.filter:first-child {
+  padding-top: 0;
+}
+
+.resetAllButton {
+  /* Match the "Enviar mensagem" PrimaryButton look (black fill, uppercase,
+     bold) but keep a size appropriate for a filters sidebar. */
+  display: block;
+  box-sizing: border-box;
+  width: calc(100% + 16px);
+  margin: 17px -16px 0 0;
+  padding: 12px 24px;
+  cursor: pointer;
+
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+
+  border: none;
+  border-radius: var(--borderRadiusMedium);
+
+  background-color: var(--colorPrimaryButton);
+  color: var(--colorWhite);
+
+  transition: all var(--transitionStyleButton);
+
+  &:focus,
+  &:hover {
+    outline: none;
+    background-color: #BAA38A;
+    color: var(--colorWhite);
+    text-decoration: none;
+  }
+
+  @media (--viewportMedium) {
+    margin: 24px 0 0 0;
+  }
+}
+
+.layoutWrapperMain {
+  /* Expand to the full remaining width of the viewport */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 0 24px;
+
+  @media (--viewportMedium) {
+    /**
+     * Calculate right padding to match Footer right border
+     * and left padding together with border should be 60px.
+     */
+    padding: 24px 24px 0 24px;
+    background-color: var(--colorWhite);
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: var(--colorGrey100);
+
+    scroll-margin-top: var(--topbarHeightDesktop);
+  }
+
+  @media (--viewportLarge) {
+    /* Equal left/right padding so the listings sit symmetrically. */
+    padding: 40px 36px 0 44px;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 40px calc((100vw - 1368px) / 2) 0 calc((100vw - 1368px) / 2);
+  }
+  @media (--viewportXLarge) {
+    padding: 40px calc((100vw - 1800px) / 2) 0 calc((100vw - 1800px) / 2);
+  }
+}
+
+.searchResultContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2px 0 0 0;
+
+  @media (--viewportMedium) {
+    padding: 0;
+    /**
+     * .container is using flexbox,
+     * This specifies that searchResultContainer is taking 60% from the viewport width
+     */
+    flex-basis: 50%;
+  }
+
+  @media (--viewportLarge) {
+    flex-basis: 62.5%;
+  }
+}
+
+.error {
+  color: var(--colorFail);
+}
+
+.searchString {
+  /* Search string should not break on white spaces - i.e. line-break should happen before. */
+  white-space: nowrap;
+}
+
+.mainPanel {
+  display: none;
+
+  @media (--viewportMedium) {
+    display: flex;
+  }
+}
+
+.mainPanelMapVariant {
+  composes: mainPanel;
+
+  @media (--viewportMedium) {
+    padding: 18px 24px 0 24px;
+    margin-bottom: 21px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 23px 36px 0 36px;
+  }
+}
+
+.searchFiltersMobileMap {
+  padding: 16px 24px;
+
+  @media (--viewportMedium) {
+    display: none;
+  }
+}
+
+.searchFiltersMobileList {
+  padding: 16px 0;
+
+  @media (--viewportMedium) {
+    display: none;
+  }
+}
+
+.searchFiltersPanel {
+  flex-grow: 1;
+  display: flex;
+  padding: 0 24px 24px 24px;
+
+  @media (--viewportLarge) {
+    padding: 0 36px 36px 36px;
+  }
+}
+
+.listings {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.listingsForGridVariant {
+  composes: listings;
+}
+
+.listingsForMapVariant {
+  composes: listings;
+  padding: 0 24px;
+
+  @media (--viewportLarge) {
+    padding: 0 36px;
+  }
+}
+
+.newSearchInProgress {
+  opacity: 0.1;
+}
+
+.searchListingsPanel {
+  flex-grow: 1;
+}
+
+.mapPanel {
+  @media (--viewportMedium) {
+    /**
+     * .container is using flexbox,
+     * This specifies that mapPanel is taking 34% from the viewport width
+     */
+    flex-basis: 50%;
+
+    /* Own layout settings */
+    display: flex;
+    height: 100%;
+  }
+
+  @media (--viewportLarge) {
+    flex-basis: 37.5%;
+  }
+}
+
+.mapWrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.map {
+  width: 100vw;
+  height: 100vh;
+
+  @media (--viewportMedium) {
+    /* Map is fixed so that it doesn't scroll along search results */
+    position: fixed;
+    top: var(--topbarHeightDesktop);
+    right: 0;
+    left: unset;
+
+    /* Fixed content needs width relative to viewport */
+    width: 50vw;
+    height: calc(100vh - var(--topbarHeightDesktop));
+  }
+
+  @media (--viewportLarge) {
+    width: 37.5vw;
+  }
+}
+
+.mapRoot {
+  background-color: var(--colorGrey100);
+}

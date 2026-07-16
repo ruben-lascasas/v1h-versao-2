@@ -1,0 +1,21 @@
+@import '../../../styles/customMediaQueries.css';
+.root {
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--zIndexTopbar);
+}
+
+.main {
+  display: grid;
+  scroll-margin-top: var(--topbarHeight);
+
+  @media (--viewportMedium) {
+    scroll-margin-top: var(--topbarHeightDesktop);
+  }
+}

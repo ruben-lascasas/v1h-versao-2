@@ -1,0 +1,30 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  composes: marketplaceModalBottomWrapperText from global;
+  padding-bottom: 6px;
+
+  @media (--viewportMedium) {
+    padding-bottom: 8px;
+  }
+}
+
+.finePrint {
+  composes: marketplaceModalHelperLink from global;
+  padding: 3px 0 5px 0;
+  text-align: left;
+}
+
+/* Same style as the LoginForm "Registe-se" / "Inicie sessão" link */
+.privacyLink,
+.termsLink {
+  composes: a from global;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorBlack);
+  text-decoration: underline;
+
+  &:hover {
+    color: #BAA38A;
+    cursor: pointer;
+  }
+}

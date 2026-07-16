@@ -1,0 +1,1142 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  position: relative;
+}
+
+.addToCalendarRow {
+  display: flex;
+  justify-content: center;
+  /* Pull the button up close to the price total so the gap above matches
+     the gap below "Ver anúncio" (the breakdown card has bottom padding that
+     would otherwise leave a much bigger visual gap). */
+  margin: -28px 24px 12px;
+  padding: 0;
+}
+
+@media (--viewportLarge) {
+  .addToCalendarRow {
+    margin: -20px 48px 12px;
+  }
+}
+
+/* "Ver anúncio" button — same look and feel as AddToCalendarButton (white
+   pill with brown border, 56px tall, full width). Always visible; appears
+   right BELOW the calendar button when both are present. */
+.viewListingRow {
+  display: flex;
+  justify-content: center;
+  margin: 12px 24px;
+  padding: 0;
+}
+
+@media (--viewportLarge) {
+  .viewListingRow {
+    margin: 12px 48px;
+  }
+}
+
+/* When the breakdown card precedes this row, suck it up so the gap above
+   matches the breakdown's internal bottom padding. */
+.breakdownContainer + .viewListingRow,
+.addToCalendarRow + .viewListingRow {
+  margin-top: 12px;
+}
+
+/* Translate-conversation link — Vinted-style plain text link tucked just
+   above the input. Scrolls with the chat (not sticky). */
+:global(.TransactionPanel_translateBar) {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 2px;
+  margin-top: auto;
+}
+
+:global(.TransactionPanel_translateBtn) {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #7C6350;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+:global(.TransactionPanel_translateBtn):hover {
+  color: #BAA38A;
+  text-decoration: underline;
+}
+
+:global(.TransactionPanel_translateBtn):disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+:global(body[data-dark-mode] .TransactionPanel_translateBtn) {
+  color: #BAA38A !important;
+}
+
+:global(body[data-dark-mode] .TransactionPanel_translateBtn):hover {
+  color: #f0ece6 !important;
+}
+
+.viewListingButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 56px;
+  min-height: 56px;
+  max-height: 56px;
+  margin: 0;
+  padding: 0 8px;
+  background: #ffffff;
+  border: 1.5px solid #BAA38A;
+  border-radius: 4px;
+  color: #2E2E2E;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.viewListingButton:hover,
+.viewListingButton:focus {
+  background: #BAA38A;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @media (--viewportLarge) {
+    flex-direction: row;
+    max-width: calc(var(--contentMaxWidth) + 72px);
+    margin: 0 auto 57px auto;
+    padding: 0 36px;
+  }
+
+  @media (--viewportXLarge) {
+    max-width: var(--contentMaxWidth);
+    padding: 0;
+  }
+}
+
+.txInfo {
+  margin-bottom: 36px;
+
+  @media (--viewportLarge) {
+    flex-basis: 538px;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin-right: 56px;
+    margin-bottom: 0;
+  }
+}
+
+.genericError {
+  color: var(--colorFail);
+  margin: 24px 24px 0 24px;
+
+  @media (--viewportMedium) {
+    margin: 32px 24px 0 24px;
+  }
+  @media (--viewportLarge) {
+    margin: 32px 0 0 0;
+  }
+}
+
+/* DetailCardImage subcomponent */
+.detailCardImageWrapper {
+  /* Layout */
+  display: none;
+  width: 100%;
+  position: relative;
+  background-color: var(--colorGrey100); /* Loading BG color */
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+.rootForImage {
+  /* Layout - image will take space defined by aspect ratio wrapper */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+
+  @media (--viewportLarge) {
+    border-radius: 6px 6px 0 0;
+  }
+}
+
+.avatarWrapper {
+  margin-left: 48px;
+  margin-top: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  width: auto;
+
+  @media (--viewportMedium) {
+    padding: 2px 0;
+  }
+  @media (--viewportLarge) {
+    margin-left: 48px;
+    padding: 2px 0;
+  }
+  &.noListingImage {
+    margin-top: 24px;
+    @media (--viewportMedium) {
+      margin-top: 32px;
+    }
+    @media (--viewportLarge) {
+      margin-top: 40px;
+    }
+  }
+}
+
+/* Mobile-only: title + extra info ABOVE the listing image.
+   No horizontal padding here — the H1 (.headingOrder/.headingSale) and the
+   extraInfo paragraph already carry their own 24px side margins, matching
+   the image's 24px margin so they line up edge-to-edge with the image. */
+.mobileTopHeader {
+  padding-top: 16px;
+
+  /* Bump up the typography on mobile so the heading and explanatory text
+     read clearly above the listing image. */
+  & .mainTitle {
+    font-size: 28px !important;
+    line-height: 1.2 !important;
+  }
+  & .transactionInfoMessage {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+/* Mobile-only: listing title + special messages BELOW the listing image */
+.mobileBottomHeader {
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+/* Desktop-only: full PanelHeading rendered as a single block */
+.desktopHeader {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+/* Passed-in props for DetailCardImage subcomponent */
+.imageWrapperMobile {
+  position: relative;
+  background-color: var(--colorGrey100); /* Loading BG color */
+  /* White space around the hero image + thick dark-brown frame on mobile,
+     matching the CheckoutPage. AspectRatioWrapper sets width:100% so we
+     constrain it with calc to leave room for the margins. */
+  width: calc(100% - 48px) !important;
+  margin: 24px 24px 0 24px;
+  border: 6px solid #7C6350;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.avatarWrapperMobile {
+  composes: avatarWrapper;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.avatarWrapperDesktop {
+  composes: avatarWrapper;
+  display: none;
+
+  @media (--viewportLarge) {
+    display: flex;
+  }
+}
+
+.avatarWrapperProviderDesktop {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  margin: 24px 0 0;
+}
+.avatarDesktop {
+  @media (--viewportLarge) {
+    display: flex;
+    flex-shrink: 0;
+  }
+}
+
+/* PanelHeadings subcomponent */
+.headingOrder {
+  margin: 16px 24px 0 24px;
+
+  @media (--viewportMedium) {
+    max-width: 80%;
+    margin: 16px 24px 0 24px;
+    padding: 2px 0 6px 0;
+  }
+
+  @media (--viewportLarge) {
+    max-width: 100%;
+    margin: 32px 0 0 0;
+  }
+}
+
+.headingSale {
+  margin: 12px 24px 0 24px;
+  padding: 5px 0 1px 0;
+
+  @media (--viewportMedium) {
+    max-width: 80%;
+    margin: 16px 24px 0 24px;
+    padding: 1px 0 7px 0;
+  }
+
+  @media (--viewportLarge) {
+    max-width: 100%;
+    margin: 24px 0 0 0;
+    padding: 2px 0 6px 0;
+  }
+}
+
+.mainTitle {
+  composes: h3 from global;
+  display: block;
+  margin-bottom: 0;
+  font-family: 'Britannic Bold', 'Georgia', serif;
+  color: #3F3131;
+}
+
+.listingTitleMobile {
+  margin: 30px 24px 0 24px;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.inquiryPrice {
+  composes: p from global;
+  font-weight: var(--fontWeightBold);
+}
+
+.transactionInfoMessage {
+  margin: 12px 24px 0 24px;
+
+  @media (--viewportMedium) {
+    margin: 0 24px 0 24px;
+  }
+
+  @media (--viewportLarge) {
+    margin: 0;
+  }
+}
+
+.orderDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Container for order details in mobile layout */
+.orderDetailsMobileSection {
+  margin-top: 16px;
+  order: 2;
+
+  @media (--viewportMedium) {
+    margin-top: 16px;
+    padding: 4px 0 4px 0;
+  }
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+.deliveryInfoSection {
+  order: 1;
+}
+
+/* "aside" section in desktop layout */
+.asideDesktop {
+  margin: 1px 0 0 0;
+
+  /**
+   * Aside is visible on mobile layout too, since it includes OrderPanel component.
+   * It might get rendered as a Modal in mobile layout.
+   */
+
+  @media (--viewportLarge) {
+    margin: 56px 0 0 0;
+    align-self: flex-start;
+  }
+}
+
+.stickySection {
+  @media (--viewportLarge) {
+    width: 409px;
+    z-index: 1;
+  }
+}
+
+.detailCard {
+  @media (--viewportLarge) {
+    background-color: var(--colorWhite);
+    border: 6px solid #7C6350;
+    border-radius: 12px;
+    /* overflow visible so the date picker / multiple-bookings calendar dropdown
+       can extend beyond the card without being clipped. The corner image is
+       kept within bounds via DetailCardImage's own styles. */
+    overflow: visible;
+  }
+}
+
+/* DetailCardHeadingsMaybe subcomponent */
+.avatarColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.providerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.providerHeadingRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.providerName {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #3F3131;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.providerLastOnline {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #BAA38A;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.providerLocation {
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #7C6350;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.followButton {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #3F3131;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: flex-start;
+  width: fit-content;
+  margin-top: 8px;
+
+  &:hover {
+    background-color: #BAA38A;
+  }
+}
+
+.followingButton {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3F3131;
+  background-color: transparent;
+  border: 1.5px solid #3F3131;
+  border-radius: 20px;
+  padding: 4px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+  width: fit-content;
+  margin-top: 8px;
+
+  &:hover {
+    background-color: #3F3131;
+    color: #ffffff;
+  }
+}
+
+.detailCardHeadings {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+    margin: 24px 48px 32px 48px;
+    &.noListingImage {
+      margin-top: 32px;
+    }
+  }
+}
+
+.detailCardTitle {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-family: 'Britannic Bold', 'Georgia', serif;
+  color: #3F3131;
+
+  @media (--viewportLarge) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.detailCardSubtitle {
+  composes: h5 from global;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  color: #7C6350;
+
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportLarge) {
+    margin-top: 9px;
+    margin-bottom: 0;
+  }
+}
+
+/* AddressLinkMaybe subcomponent */
+.address {
+  composes: h5 from global;
+  color: var(--colorGrey700);
+  margin: 0;
+}
+
+.viewOnGoogleMapsWrapper {
+  white-space: nowrap;
+}
+
+.bookingLocationAddress,
+.pickupAddress {
+  composes: h5 from global;
+  margin: 0;
+  display: inline-block;
+
+  @media (--viewportMedium) {
+    padding: 3px 0 5px 0;
+  }
+}
+
+/* BreakdownMaybe subcomponent */
+.breakdownMaybe {
+  /* default "root" class for breakdown container */
+}
+
+.bookingPriceVariant {
+  margin: 0 24px 18px 24px;
+
+  @media (--viewportMedium) {
+    margin: 0 24px 16px 24px;
+  }
+  @media (--viewportLarge) {
+    margin: 0 48px;
+  }
+}
+
+.orderBreakdownTitle {
+  letter-spacing: 1px;
+  font-weight: var(--fontWeightMedium);
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  color: #7C6350;
+  margin: 0 24px;
+
+  @media (--viewportLarge) {
+    margin: 0 48px;
+  }
+}
+
+.totalDivider {
+  height: 1px;
+  margin: 12px 24px 5px 24px;
+
+  border: none;
+  background-color: #BAA38A;
+
+  @media (--viewportLarge) {
+    margin: 7px 48px 0 48px;
+  }
+}
+
+.breakdownContainer {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+.sectionHeading {
+  composes: p from global;
+  font-weight: var(--fontWeightBold);
+  padding: 0;
+  margin-bottom: 4px;
+}
+
+.chatPrompt {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--colorBlack);
+  margin: 0 0 16px 0;
+  padding: 0;
+}
+
+.shippingInfoContent {
+  padding: 0px 0 0px 13px;
+  margin-top: 12px;
+
+  @media (--viewportMedium) {
+    padding: 4px 0 4px 13px;
+    margin-top: 8px;
+  }
+}
+
+.bookingLocationContent,
+.pickupInfoContent {
+  composes: marketplaceSmallFontStyles from global;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 5px 0 1px 0;
+  margin-top: 6px;
+
+  @media (--viewportMedium) {
+    padding: 1px 0 7px 0;
+    margin-top: 8px;
+  }
+}
+
+.feedContent {
+  padding: 0;
+  margin-top: 12px;
+
+  @media (--viewportMedium) {
+    margin-top: 8px;
+  }
+}
+
+.messageError {
+  color: var(--colorFail);
+  margin: 13px 0 22px 0;
+
+  @media (--viewportMedium) {
+    margin: 13px 0 23px 0;
+  }
+
+  @media (--viewportLarge) {
+    margin: 12px 0 23px 0;
+  }
+}
+
+.longWord {
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Passed-in props for FeedSection subcomponent */
+.bookingLocationContainer,
+.deliveryInfoContainer,
+.inquiryMessageContainer,
+.feedContainer {
+  margin: 6px 24px 0 24px;
+
+  @media (--viewportMedium) {
+    padding: 7px 0 1px 0;
+    margin: 6px 24px 0 24px;
+  }
+  @media (--viewportLarge) {
+    margin: 4px 0 0 0;
+  }
+}
+
+/* Prop to be passed to SendMessageForm component */
+.sendMessageForm {
+  position: relative;
+  margin: 46px 24px 0 24px;
+
+  @media (--viewportMedium) {
+    margin: 49px 24px 0 24px;
+    border-top: 0;
+  }
+  @media (--viewportLarge) {
+    margin: 48px 0 0 0;
+  }
+}
+
+.sendingMessageNotAllowed {
+  color: var(--colorGrey600);
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  margin: 0;
+  padding: 12px 0 0;
+}
+
+.chatCardTitle {
+  font-family: 'Britannic Bold', 'Georgia', serif;
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--colorBlack);
+  margin: 24px 24px 16px 24px;
+  padding: 0;
+
+  @media (--viewportMedium) {
+    font-size: 30px;
+  }
+
+  @media (--viewportLarge) {
+    margin: 20px 0 16px 0;
+  }
+}
+
+/* ── Chat Card (DirectMessage style) ── */
+.chatCard {
+  border: 6px solid #7C6350;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  margin: 2px 24px 0 24px;
+
+  @media (--viewportLarge) {
+    margin: 20px 0 0 0;
+  }
+}
+
+.chatCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e8e0d8;
+  background: #ffffff;
+}
+
+.chatCardUser {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+
+  &:hover { text-decoration: none; }
+}
+
+.chatCardAvatar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.chatCardText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chatCardName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--colorBlack);
+}
+
+.chatCardLocation {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #BAA38A;
+
+  /* Hide on mobile — keeps the chat card header compact, location is already
+     shown elsewhere in the listing summary section. */
+  @media (max-width: 1023px) {
+    display: none;
+  }
+}
+
+.chatCardOnline {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #7C6350;
+}
+
+.chatCardFollowBtn {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+
+  &:hover { background-color: #BAA38A; }
+}
+
+.chatCardFollowingBtn {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2E2E2E;
+  background-color: #ffffff;
+  border: 2px solid #2E2E2E;
+  border-radius: 6px;
+  padding: 8px 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+
+  &:hover { background-color: #f5f0eb; }
+}
+
+.chatCardFeed {
+  padding: 12px 16px 8px;
+  min-height: 280px;
+  max-height: 420px;
+  overflow-y: auto;
+
+  @media (--viewportLarge) {
+    min-height: 200px;
+    max-height: 290px;
+  }
+}
+
+.chatCardInput {
+  padding: 4px 16px 12px;
+}
+
+.chatCardError {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: var(--colorFail);
+  margin: 0 0 8px;
+}
+
+/* Container for ActionButtons subcomponent */
+.mobileActionButtons {
+  display: block;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+.mobileActionButtonSpacer {
+  width: 100%;
+  height: 120px;
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.desktopActionButtons {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+    margin-bottom: 48px;
+  }
+}
+
+.diminishedActionButtonRoot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 18px 24px 0 24px;
+
+  @media (--viewportLarge) {
+    align-items: center;
+    padding: 0;
+  }
+}
+
+/* e.g. dispute "link" */
+.diminishedActionButton {
+  composes: marketplaceTinyFontStyles from global;
+
+  width: max-content;
+  color: var(--colorGrey600);
+  padding: 1px 0 5px 0;
+  margin: 0;
+
+  @media (--viewportMedium) {
+    margin: 0;
+  }
+  @media (--viewportLarge) {
+    padding: 0px 75px;
+    margin-top: 16px;
+  }
+}
+
+/* Mobile-only listing summary shown below the listing title */
+.mobileListingSummary {
+  margin: 12px 24px 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.summaryRating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #2E2E2E;
+  font-style: italic;
+}
+
+.summaryStar {
+  width: 14px;
+  height: 14px;
+  fill: #FFD700 !important;
+  stroke: none !important;
+}
+
+.summaryLocation {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 14px;
+  color: #2E2E2E;
+  line-height: 1.4;
+}
+
+.summaryCapacity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #2E2E2E;
+}
+
+.summaryDescription {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #2E2E2E;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Section blocks (Localização / Descrição) inside MobileListingSummary */
+.summarySection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summarySectionTitle {
+  margin: 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #2E2E2E;
+  text-transform: uppercase;
+}
+
+.summaryStarEmpty {
+  width: 14px;
+  height: 14px;
+  fill: none !important;
+  stroke: #FFD700 !important;
+  stroke-width: 2px !important;
+}
+
+/* Listing title shown inside the summary block — only used in the desktop
+   sidecard when DetailCardHeadings isn't being rendered (e.g. customer
+   inquiry state) so the side card matches the info density of other states. */
+.summaryTitleLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+.summaryTitle {
+  margin: 0 0 4px 0;
+  font-family: 'Britannic Bold', 'Georgia', serif;
+  font-weight: var(--fontWeightBold);
+  font-size: 22px;
+  line-height: 1.2;
+  color: #3F3131;
+}
+.summaryTitleLink:hover .summaryTitle {
+  color: #7C6350;
+}
+
+/* Desktop-only title rendered directly in the side card (above the listing
+   summary). Hidden on mobile because PanelHeading already shows the title
+   there as the H2 listingTitleMobile. */
+.desktopOnlyTitle {
+  display: none;
+}
+@media (--viewportLarge) {
+  .desktopOnlyTitle {
+    display: block;
+    margin: 24px 48px 0 48px;
+  }
+}
+
+/* Price row used in the summary block when DetailCardHeadings isn't
+   showing the price separately (e.g. customer inquiry state). When this is
+   visible the OrderPanel's own PriceMaybe is hidden in the desktop sidecard
+   so the price sits right under the capacity row instead of below the form
+   header. */
+.summaryPrice {
+  font-family: 'Britannic Bold', 'Georgia', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #3F3131;
+  margin-top: 6px;
+}
+
+/* When the summary already renders the title/price in the desktop sidecard,
+   hide the OrderPanel's own duplicated title + price so the booking form sits
+   tightly below the capacity row. */
+@media (--viewportLarge) {
+  .detailCard [class*="OrderPanel_orderHeading"] {
+    display: none !important;
+  }
+  .detailCard [class*="OrderPanel_priceContainer"] {
+    display: none !important;
+  }
+}
+
+/* Mobile-only wrapper for the "Informação adicional" block above the image */
+.mobileTopTransactionFields {
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+/* Desktop-only — keep transactionFields in its original position on desktop */
+.desktopOnlyTransactionFields {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+/* More breathing room between the location section and the capacity row */
+.summaryCapacity {
+  margin-top: 18px;
+}
+
+/* Desktop sidecard variant of the listing summary — visible only on desktop */
+.desktopListingSummary {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Sits below the inline .desktopOnlyTitle (24px above) in the side card.
+       Bottom margin stays small so the OrderPanel form hugs the capacity
+       row in the customer-inquiry state. */
+    margin: 8px 48px 12px 48px;
+    font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+
+    /* Tighter capacity spacing than mobile — pull it closer to the location */
+    & .summaryCapacity {
+      margin-top: 0;
+    }
+
+    /* Hide the "LOCALIZAÇÃO" label on desktop — the address with the pin
+       icon is self-explanatory in the side card. */
+    & .summarySectionTitle {
+      display: none;
+    }
+  }
+}
+
+/* Hide the legacy BookingLocationMaybe in the main column — the sidecard
+   listing summary already shows the address (LOCALIZAÇÃO with pin). */
+.hiddenBookingLocation {
+  display: none;
+}

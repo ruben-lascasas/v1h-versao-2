@@ -1,0 +1,181 @@
+.root {
+  margin: 24px 0;
+  padding: 16px 24px;
+  border-top: 1px solid var(--colorGrey100);
+  border-bottom: 1px solid var(--colorGrey100);
+}
+
+@media (min-width: 768px) {
+  .root {
+    padding: 16px 0;
+  }
+}
+
+.heading {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #2E2E2E;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .buttons {
+    gap: 8px;
+    justify-content: flex-start;
+  }
+}
+
+.whatsappButton,
+.linkedinButton,
+.facebookButton,
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0;
+  font-weight: 600;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  text-decoration: none;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+
+.whatsappButton span,
+.linkedinButton span,
+.facebookButton span,
+.copyButton span {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .buttons {
+    gap: 8px;
+  }
+  .whatsappButton,
+  .linkedinButton,
+  .facebookButton,
+  .copyButton {
+    width: auto;
+    height: auto;
+    padding: 10px 14px;
+    font-size: 13px;
+    gap: 8px;
+    border-radius: 999px;
+    flex: 1 1 0;
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .whatsappButton span,
+  .linkedinButton span,
+  .facebookButton span,
+  .copyButton span {
+    display: inline;
+  }
+}
+
+.whatsappButton {
+  background-color: #25D366;
+  color: #ffffff;
+  border: 1px solid #25D366;
+
+  &:hover {
+    background-color: #1ebe57;
+    border-color: #1ebe57;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+.copyButton {
+  background-color: #ffffff;
+  color: #2E2E2E;
+  border: 1px solid var(--colorGrey200);
+
+  &:hover {
+    background-color: #BAA38A;
+    border-color: #BAA38A;
+    color: #ffffff;
+  }
+}
+
+.copyButton svg path {
+  fill: none !important;
+  stroke: currentColor;
+}
+
+.whatsappButton svg path,
+.linkedinButton svg path,
+.facebookButton svg path {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Force every share-button icon to render at the same visual size. The base
+   SVGs differ (LinkedIn fills its viewBox, WhatsApp/Facebook are rounded
+   with padding inside the viewBox, copy link is a thin stroke icon). The
+   per-icon transform corrects for that so all four buttons feel balanced. */
+.whatsappButton svg,
+.linkedinButton svg,
+.facebookButton svg,
+.copyButton svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.linkedinButton svg {
+  transform: scale(0.82);
+}
+
+.whatsappButton svg {
+  transform: scale(1.05);
+}
+
+.facebookButton svg {
+  transform: scale(1.0);
+}
+
+.copyButton svg {
+  transform: scale(1.05);
+}
+
+.linkedinButton {
+  background-color: #0A66C2;
+  color: #ffffff;
+  border: 1px solid #0A66C2;
+}
+
+.linkedinButton:hover {
+  background-color: #004182;
+  border-color: #004182;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.facebookButton {
+  background-color: #1877F2;
+  color: #ffffff;
+  border: 1px solid #1877F2;
+}
+
+.facebookButton:hover {
+  background-color: #4A8DF4;
+  border-color: #4A8DF4;
+  color: #ffffff;
+  text-decoration: none;
+}

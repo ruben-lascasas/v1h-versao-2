@@ -1,0 +1,27 @@
+{
+    "name": "Venue1Hub",
+    "short_name": "V1HUB",
+    "description": "O seu principal parceiro de eventos — alugue espacos por hora ou por dia.",
+    "start_url": "/?source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#2E2E2E",
+    "background_color": "#ffffff",
+    "lang": "pt-PT",
+    "categories": ["business", "lifestyle", "travel"],
+    "icons": [
+      {
+        "src": "/static/icons/android-chrome-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+          "src": "/static/icons/android-chrome-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any maskable"
+      }
+    ]
+  }

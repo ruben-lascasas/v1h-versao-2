@@ -1,0 +1,116 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px 60px;
+  background-color: #ffffff;
+
+  @media (--viewportMedium) {
+    padding: 48px 24px 80px;
+  }
+}
+
+.card {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.number {
+  font-family: 'Britannic Bold', 'Impact', serif;
+  font-weight: 400;
+  font-size: 100px;
+  line-height: 1;
+  color: #BAA38A;
+  letter-spacing: -2px;
+  margin: 0 0 8px 0;
+
+  @media (--viewportMedium) {
+    font-size: 130px;
+  }
+}
+
+.heading {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--colorBlack);
+  margin: 0 0 16px 0;
+
+  @media (--viewportMedium) {
+    font-size: 26px;
+  }
+}
+
+.description {
+  font-size: 15px;
+  color: var(--colorGrey600);
+  line-height: 1.6;
+  margin: 0 0 28px 0;
+}
+
+.searchForm {
+  width: 100%;
+  max-width: 640px;
+  background-color: var(--colorWhite);
+  border: 1px solid #BAA38A;
+  border-radius: 6px;
+  margin: 0 auto 24px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus-within {
+    border-color: #BAA38A;
+    box-shadow: 0 0 0 3px rgba(186, 163, 138, 0.2);
+  }
+}
+
+/* Force the LocationAutocompleteInput wrapper to fill the search bar width
+   so the "0" count badge (absolutely positioned) lands at the right edge of
+   the bar instead of mid-bar. */
+.searchForm [class*="LocationAutocompleteInput_root"] {
+  flex: 1;
+  width: 100%;
+}
+
+/* Constrain the predictions dropdown to the same width as the search bar
+   (default has `min-width: max-content` which lets long suggestions push it
+   wider than the input). Use overflow ellipsis on long suggestion rows. */
+.searchForm [class*="LocationAutocompleteInput_predictionsRoot"] {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+.searchForm [class*="LocationAutocompleteInput_predictionsRoot"] [class*="LocationAutocompleteInput_historyItem"],
+.searchForm [class*="LocationAutocompleteInput_predictionsRoot"] [class*="LocationAutocompleteInput_predictionRow"] {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.homeButton {
+  display: inline-block;
+  padding: 13px 28px;
+  background-color: #2E2E2E;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+    text-decoration: none;
+    color: #ffffff;
+  }
+}

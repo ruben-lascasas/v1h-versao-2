@@ -1,0 +1,27 @@
+.root {
+  color: #7C6350;
+  transition: color 0.2s ease-in-out;
+  display: inline-block;
+}
+
+.root path {
+  fill: currentColor;
+}
+
+.filled {
+  color: #e60023 !important;
+}
+
+.filled path {
+  fill: #e60023 !important;
+}
+
+.outline {
+  color: #7C6350;
+}
+
+.outline path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}

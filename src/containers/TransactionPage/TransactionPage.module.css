@@ -1,0 +1,103 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: var(--colorWhite);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-grow: 1;
+}
+
+.error {
+  composes: loading;
+  color: var(--colorFail);
+}
+
+.tabContent {
+  display: none;
+}
+
+.tabContentVisible {
+  display: block;
+}
+
+.footer {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+/* Multi-booking slot list — match the breakdown margins so headers align
+   with the RESUMO DA RESERVA title and the per-line items. */
+.multiBookingsListTx {
+  margin: 14px 24px 0 24px;
+  padding: 1px 0 5px 0;
+
+  @media (--viewportMedium) {
+    margin: 16px 24px 0 24px;
+    padding: 3px 0 5px 0;
+  }
+  @media (--viewportLarge) {
+    margin: 0px 48px 0 48px;
+    padding: 6px 0 2px 0;
+  }
+}
+
+/* OrderBreakdown subcomponent */
+.breakdown {
+  margin: 14px 24px 0 24px;
+  padding: 1px 0 5px 0;
+
+  @media (--viewportMedium) {
+    margin: 16px 24px 0 24px;
+    padding: 3px 0 5px 0;
+  }
+  @media (--viewportLarge) {
+    margin: 0px 48px 47px 48px;
+    padding: 6px 0 2px 0;
+  }
+}
+
+/* OrderPanel subcomponent */
+.orderPanel {
+  /* When no DetailCardHeadings sits above the OrderPanel (e.g. customer
+     inquiry state), the desktop sidecard's listing summary already shows the
+     title + price right above this; pull the form up close to the capacity
+     row instead of leaving a wide gap. */
+  margin: 0 48px 48px 48px;
+}
+.orderPanelNextToTitle {
+  margin: -24px 48px 48px 48px;
+}
+
+.orderTitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  color: #7C6350;
+  margin-top: 0;
+  margin-bottom: 1px;
+}
+
+.orderPanelTitle {
+  font-family: 'Britannic Bold', 'Georgia', serif;
+  font-weight: var(--fontWeightBold);
+  color: #3F3131;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.detailsRow {
+  &:first-child {
+    padding-top: 0px;
+  }
+}

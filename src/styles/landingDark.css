@@ -1,0 +1,3737 @@
+﻿/*
+ * Dark mode overrides.
+ *
+ * Two attributes work together on <body>:
+ *   data-landing-dark â€” CSS variable overrides + landing-page-specific section rules
+ *   data-dark-mode    â€” topbar + search page + global component patches
+ *
+ * app.js sets/removes both on every page based on the isDark state.
+ *
+ * Strategy:
+ *  1. data-landing-dark overrides CSS custom properties (var(--color*)) so any
+ *     component that uses them automatically adapts.
+ *  2. data-dark-mode patches hardcoded colours on the topbar, search page, etc.
+ *  3. Landing-page section overrides target stable IDs that only exist on that page.
+ *  4. Never touch #hero-banner background (already dark in light mode).
+ *  5. Hero search bar inputs/buttons keep their white backgrounds.
+ */
+
+/* â”€â”€ Text selection in dark mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+body[data-dark-mode] ::selection,
+body[data-landing-dark] ::selection {
+  background-color: #BAA38A;
+  color: #ffffff;
+}
+
+/* â”€â”€ CSS variable overrides â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+body[data-landing-dark] {
+  --colorWhite:   #1e1e1e;
+  --colorGrey50:  #1a1a1a;
+  --colorGrey100: #2a2a2a;
+  --colorGrey200: #3a3a3a;
+  --colorGrey300: #4d4d4d;
+  --colorGrey400: #666666;
+  --colorGrey500: #888888;
+  --colorGrey600: #aaaaaa;
+  --colorGrey700: #cccccc;
+  --colorGrey800: #e0dbd4;
+  --colorGrey900: #f0ece6;
+  --colorBlack:   #f0ece6;
+  background-color: #1a1a1a;
+}
+
+/* â”€â”€ Main content area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+body[data-landing-dark] #main-content {
+  background-color: #1a1a1a;
+}
+
+/* â”€â”€ General text colours (cascade into all sections) â”€â”€â”€ */
+body[data-landing-dark] #main-content h1,
+body[data-landing-dark] #main-content h2,
+body[data-landing-dark] #main-content h3,
+body[data-landing-dark] #main-content h4,
+body[data-landing-dark] #main-content p,
+body[data-landing-dark] #main-content span,
+body[data-landing-dark] #main-content li {
+  color: #f0ece6;
+}
+
+body[data-landing-dark] #main-content a {
+  color: #f0ece6;
+}
+body[data-landing-dark] #main-content a:hover {
+  color: #BAA38A;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO SECTION (#hero-banner)
+   Already has background-color: #2E2E2E in light mode.
+   DO NOT change the section background.
+   DO NOT darken the search bar inputs/buttons.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* Search bar â€” white fill inside each field, transparent bar wrapper (no white box around all). */
+body[data-landing-dark] #hero-banner [class*="bar"] {
+  background-color: transparent !important;
+}
+
+body[data-landing-dark] #hero-banner [class*="locationWrapper"],
+body[data-landing-dark] #hero-banner [class*="categoryWrapper"],
+body[data-landing-dark] #hero-banner [class*="submit"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #2E2E2E !important;
+}
+
+body[data-landing-dark] #hero-banner input,
+body[data-landing-dark] #hero-banner select {
+  background: transparent !important;
+  color: #2E2E2E !important;
+}
+
+body[data-landing-dark] #hero-banner input::placeholder {
+  color: #7C6350 !important;
+}
+
+/* Text inside the hero fields (input is an <input> element so no span/p needed here) */
+body[data-landing-dark] #hero-banner [class*="categoryWrapper"] span,
+body[data-landing-dark] #hero-banner [class*="categoryWrapper"] label,
+body[data-landing-dark] #hero-banner [class*="categoryTrigger"],
+body[data-landing-dark] #hero-banner [class*="categoryTriggerLabel"],
+body[data-landing-dark] #hero-banner [class*="submit"] span {
+  color: #2E2E2E !important;
+}
+
+/* Dropdowns â€” dark background + light text */
+body[data-landing-dark] #hero-banner [class*="categoryMenu"],
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] {
+  background-color: #2a2a2a !important;
+  border-color: #4d4d4d !important;
+  color: #f0ece6 !important;
+}
+
+body[data-landing-dark] #hero-banner [class*="categoryOption"],
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] li,
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] p,
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] span,
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] a,
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] [class*="predictionLabel"],
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] [class*="historyLabelText"],
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] [class*="categoryItem"] {
+  color: #f0ece6 !important;
+}
+/* Counts and labels on dark dropdown — cream so they stand out against
+   the dark backdrop. */
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] [class*="historyCount"],
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] [class*="predictionsLabel"],
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] [class*="categoryLabel"],
+body[data-landing-dark] #hero-banner [class*="locationPredictions"] [class*="historyLabel"] {
+  color: #f0ece6 !important;
+}
+
+/* Brute-force: every text node anywhere inside the hero-banner location
+   predictions dropdown, in dark mode — pure white, fully opaque. This
+   catches any nested elements that earlier rules don't explicitly name. */
+body[data-dark-mode] [class*="locationPredictions"],
+body[data-dark-mode] [class*="locationPredictions"] *,
+body[data-landing-dark] [class*="locationPredictions"],
+body[data-landing-dark] [class*="locationPredictions"] * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Same treatment for the TOPBAR search dropdown — its predictions root
+   uses `TopbarSearchForm_desktopPredictions` / `mobilePredictions`
+   instead of `locationPredictions`, so the hero rules above don't
+   reach it. Make the dropdown bg dark, all text pure white. */
+body[data-dark-mode] [class*="TopbarSearchForm_desktopPredictions"],
+body[data-dark-mode] [class*="TopbarSearchForm_mobilePredictions"],
+body[data-landing-dark] [class*="TopbarSearchForm_desktopPredictions"],
+body[data-landing-dark] [class*="TopbarSearchForm_mobilePredictions"] {
+  background-color: #2a2a2a !important;
+  border-color: #4d4d4d !important;
+}
+body[data-dark-mode] [class*="TopbarSearchForm_desktopPredictions"],
+body[data-dark-mode] [class*="TopbarSearchForm_desktopPredictions"] *,
+body[data-dark-mode] [class*="TopbarSearchForm_mobilePredictions"],
+body[data-dark-mode] [class*="TopbarSearchForm_mobilePredictions"] *,
+body[data-landing-dark] [class*="TopbarSearchForm_desktopPredictions"],
+body[data-landing-dark] [class*="TopbarSearchForm_desktopPredictions"] *,
+body[data-landing-dark] [class*="TopbarSearchForm_mobilePredictions"],
+body[data-landing-dark] [class*="TopbarSearchForm_mobilePredictions"] * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* "PROCURAR" hover â€” brown background with white text (same as light mode) */
+body[data-landing-dark] #hero-banner [class*="submit"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* Rotating keyword keeps the site's standard dark-brown accent */
+body[data-landing-dark] #hero-banner [class*="rotatingWord"],
+body[data-landing-dark] #hero-banner [class*="rotatingLetter"] {
+  color: #BAA38A !important;
+}
+
+/* CTA buttons with white background (hero-style) â€” keep dark text in dark mode.
+   The global "a { color: #f0ece6 }" rule would otherwise make the text invisible on white. */
+body[data-landing-dark] #main-content [class*="slideContent"] [class*="ctaButton"],
+body[data-landing-dark] #hero-banner [class*="ctaButton"],
+body[data-landing-dark] [class*="SectionMobilePromo"] [class*="cta"] {
+  color: #2E2E2E !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   WHY US SECTION
+   ID hardcoded in SectionWhyUs.js as "section-why-us".
+   Background: mid-dark #242424 (not the darkest).
+   Brown bars (.topBar, .topBarLeft, .bottomBar) stay #BAA38A.
+   All text: white.
+   Polaroid frames: keep white (polaroid effect).
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-landing-dark] #section-why-us {
+  background-color: #242424 !important;
+}
+
+/* Title text â€” hardcoded color: #3F3131 in the component */
+body[data-landing-dark] #section-why-us h1,
+body[data-landing-dark] #section-why-us h2,
+body[data-landing-dark] #section-why-us h3 {
+  color: #f0ece6 !important;
+}
+
+/* Description text â€” hardcoded color: #7C6350 in the component */
+body[data-landing-dark] #section-why-us p,
+body[data-landing-dark] #section-why-us span {
+  color: #d4c9bc !important;
+}
+
+/* Brown bars â€” restore explicitly so they don't get overridden */
+body[data-landing-dark] #section-why-us [class*="topBar"],
+body[data-landing-dark] #section-why-us [class*="bottomBar"],
+body[data-landing-dark] #section-why-us [class*="topBarLeft"] {
+  background-color: #BAA38A !important;
+}
+
+/* Badge chips â€” keep exactly as light mode: dark-brown bg, white text & icons */
+body[data-landing-dark] #section-why-us [class*="badge"] {
+  background-color: #3F3131 !important;
+  color: #ffffff !important;
+}
+/* The .badges container also matches [class*="badge"] â€” reset it to transparent
+   so the gaps between individual badge pills show the section background. */
+body[data-landing-dark] #section-why-us [class*="badges"] {
+  background-color: transparent !important;
+}
+body[data-landing-dark] #section-why-us [class*="badgeLabel"] {
+  color: #ffffff !important;
+}
+
+/* Polaroid frames â€” keep white to look like real polaroids */
+body[data-landing-dark] #section-why-us [class*="polaroid"] {
+  background-color: #ffffff !important;
+}
+
+/* Anything inside the polaroid frame stays dark (icons, placeholder text) */
+body[data-landing-dark] #section-why-us [class*="polaroid"] span,
+body[data-landing-dark] #section-why-us [class*="polaroid"] p,
+body[data-landing-dark] #section-why-us [class*="polaroid"] svg {
+  color: #2E2E2E !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HIGHLIGHTED LISTING SECTION (#highlighted-space)
+   Background: mid-dark (#242424) â€” not the darkest.
+   Card (.contentWrapper + .infoWrapper): keep LIGHT (as in light mode).
+   No dark-ring or contrast separation around the card.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-landing-dark] #highlighted-space {
+  background-color: #242424 !important;
+}
+
+/* Inner wrappers that inherit the section bg */
+body[data-landing-dark] #highlighted-space > div,
+body[data-landing-dark] #highlighted-space > * {
+  background-color: transparent !important;
+}
+
+/* Section title text */
+body[data-landing-dark] #highlighted-space [class*="sectionTitle"] {
+  color: #f0ece6 !important;
+}
+
+/* Section divider line */
+body[data-landing-dark] #highlighted-space [class*="sectionDivider"] {
+  border-color: #BAA38A !important;
+}
+
+/* "Veja mais" link */
+body[data-landing-dark] #highlighted-space [class*="verMaisDesktopLink"],
+body[data-landing-dark] #highlighted-space [class*="verMaisText"] {
+  color: #f0ece6 !important;
+}
+
+/* The card itself: keep EXACTLY as light mode (white bg, brown border) */
+body[data-landing-dark] #highlighted-space [class*="contentWrapper"] {
+  background-color: #ffffff !important;
+  border-color: #7C6350 !important;
+}
+
+body[data-landing-dark] #highlighted-space [class*="infoWrapper"],
+body[data-landing-dark] #highlighted-space [class*="infoContent"] {
+  background-color: #ffffff !important;
+}
+
+/* All text INSIDE the card: keep dark (as in light mode) */
+body[data-landing-dark] #highlighted-space [class*="contentWrapper"] h1,
+body[data-landing-dark] #highlighted-space [class*="contentWrapper"] h2,
+body[data-landing-dark] #highlighted-space [class*="contentWrapper"] h3,
+body[data-landing-dark] #highlighted-space [class*="contentWrapper"] h4,
+body[data-landing-dark] #highlighted-space [class*="contentWrapper"] p,
+body[data-landing-dark] #highlighted-space [class*="contentWrapper"] span,
+body[data-landing-dark] #highlighted-space [class*="contentWrapper"] a {
+  color: #2E2E2E !important;
+}
+
+body[data-landing-dark] #highlighted-space [class*="listingTitle"] {
+  color: #2E2E2E !important;
+}
+
+/* "RESERVAR AGORA" button (buttonPrimary: bg #2E2E2E, text must be white).
+   Needs extra attribute selector to beat the [contentWrapper] a rule above (specificity [1,2,2]). */
+body[data-landing-dark] #highlighted-space [class*="buttonsContainer"] [class*="buttonPrimary"] {
+  color: #ffffff !important;
+}
+
+body[data-landing-dark] #highlighted-space [class*="locationBadge"],
+body[data-landing-dark] #highlighted-space [class*="ratingValue"],
+body[data-landing-dark] #highlighted-space [class*="hostName"],
+body[data-landing-dark] #highlighted-space [class*="hostVerified"],
+body[data-landing-dark] #highlighted-space [class*="listingDescription"],
+body[data-landing-dark] #highlighted-space [class*="compactTitle"],
+body[data-landing-dark] #highlighted-space [class*="compactPrice"],
+body[data-landing-dark] #highlighted-space [class*="compactPerUnit"] {
+  color: #2E2E2E !important;
+}
+
+body[data-dark-mode] [class*="SectionHighlightedListing"] [class*="compactPerUnit"],
+body[data-dark-mode] [class*="SectionHighlightedListing"] [class*="perUnit"] {
+  color: #2E2E2E !important;
+}
+
+body[data-landing-dark] #highlighted-space [class*="tag"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #D4C4B0 !important;
+}
+
+body[data-landing-dark] #highlighted-space [class*="hostInfo"] {
+  border-color: #D4C4B0 !important;
+}
+
+/* Compact grid cards (mobile) */
+body[data-landing-dark] #highlighted-space [class*="compactCard"] {
+  background-color: #ffffff !important;
+  border-color: #7C6350 !important;
+}
+
+body[data-landing-dark] #highlighted-space [class*="compactLocation"] {
+  color: #888 !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LISTINGS CAROUSEL (#espacos-disponiveis)
+   Full dark treatment.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-landing-dark] #espacos-disponiveis {
+  background-color: #1e1e1e !important;
+  border-top-color: #3a3a3a !important;
+}
+
+body[data-landing-dark] #espacos-disponiveis [class*="listingCard"],
+body[data-landing-dark] #espacos-disponiveis [class*="ListingCard"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MAP SECTION (#landing-map)
+   Dark surroundings; map tile itself unchanged.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-landing-dark] #landing-map {
+  background-color: #1a1a1a !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CMS SECTIONS (no stable ID â€” use CSS variable cascade)
+   SectionContainer uses var(--colorWhite) for odd sections,
+   so the variable override already makes them dark.
+   Just patch any hardcoded white backgrounds via broad selector.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* Category badge: restore dark-brown icon + label so they're visible on the white badge bg.
+   The general span cascade (#main-content span { color: #f0ece6 }) would otherwise make them invisible. */
+body[data-landing-dark] [class*="categoryBadgeLabel"] {
+  color: #2E2E2E !important;
+}
+body[data-landing-dark] [class*="categoryBadgeIcon"] {
+  color: #7C6350 !important;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MOBILE CATEGORY TICKER â€” dark mode
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+body[data-dark-mode] [class*="MobileCategoryTicker_outer"] {
+  background-color: #1e1e1e !important;
+  border-bottom-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="MobileCategoryTicker_heading"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="MobileCategoryTicker_subtext"] {
+  color: #aaaaaa !important;
+}
+
+/* Circular nav arrow buttons â€” covers SectionCarousel, RecentlyViewedSection,
+   ScrollToTopButton, SectionHighlightedListing and the ListingPage image
+   gallery (.navLeft / .navRight). White semi-transparent circle + dark arrow
+   so they stay visible over any background photo in dark mode
+   (same look as light mode for visual consistency). */
+body[data-landing-dark] [class*="arrowLeft"] > span,
+body[data-landing-dark] [class*="arrowRight"] > span,
+body[data-landing-dark] [class*="carouselArrowPrev"],
+body[data-landing-dark] [class*="carouselArrowNext"],
+body[data-landing-dark] [class*="navArrow"],
+body[data-landing-dark] [class*="ListingImageGallery_navLeft"],
+body[data-landing-dark] [class*="ListingImageGallery_navRight"],
+body[data-landing-dark] [class*="ScrollToTopButton"] [class*="circle"],
+body[data-dark-mode] [class*="ListingImageGallery_navLeft"],
+body[data-dark-mode] [class*="ListingImageGallery_navRight"] {
+  background-color: rgba(255, 255, 255, 0.97) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.18) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35) !important;
+  color: #2E2E2E !important;
+}
+/* A seta Ã© um <span> dentro do botÃ£o. A regra global de spans
+   (body[data-landing-dark] #main-content span { color: #f0ece6 })
+   sobrepÃµe a cor herdada do botÃ£o â€” forÃ§ar diretamente no span. */
+body[data-dark-mode] #main-content [class*="ListingImageGallery_navLeft"] span,
+body[data-dark-mode] #main-content [class*="ListingImageGallery_navRight"] span,
+body[data-landing-dark] #main-content [class*="ListingImageGallery_navLeft"] span,
+body[data-landing-dark] #main-content [class*="ListingImageGallery_navRight"] span {
+  color: #2E2E2E !important;
+}
+
+/* Match light-mode hover: brown circle with white arrow. */
+body[data-landing-dark] [class*="arrowLeft"]:hover:not(:disabled) > span,
+body[data-landing-dark] [class*="arrowRight"]:hover:not(:disabled) > span,
+body[data-landing-dark] [class*="carouselArrowPrev"]:hover:not(:disabled),
+body[data-landing-dark] [class*="carouselArrowNext"]:hover:not(:disabled),
+body[data-landing-dark] [class*="navArrow"]:hover:not(:disabled),
+body[data-landing-dark] [class*="ListingImageGallery_navLeft"]:hover:not(:disabled),
+body[data-landing-dark] [class*="ListingImageGallery_navRight"]:hover:not(:disabled),
+body[data-landing-dark] [class*="ScrollToTopButton"]:hover [class*="circle"],
+body[data-dark-mode] [class*="ListingImageGallery_navLeft"]:hover:not(:disabled),
+body[data-dark-mode] [class*="ListingImageGallery_navRight"]:hover:not(:disabled) {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* Pagination arrows (PaginationLinks .prev / .next) â€” same white circle
+   treatment as the hero / carousel arrows so they stay clearly visible. */
+body[data-dark-mode] [class*="PaginationLinks_prev"],
+body[data-dark-mode] [class*="PaginationLinks_next"],
+body[data-landing-dark] [class*="PaginationLinks_prev"],
+body[data-landing-dark] [class*="PaginationLinks_next"] {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  border-color: transparent !important;
+}
+body[data-dark-mode] [class*="PaginationLinks_prev"] [class*="arrowChar"],
+body[data-dark-mode] [class*="PaginationLinks_next"] [class*="arrowChar"],
+body[data-landing-dark] [class*="PaginationLinks_prev"] [class*="arrowChar"],
+body[data-landing-dark] [class*="PaginationLinks_next"] [class*="arrowChar"] {
+  color: #2E2E2E !important;
+  -webkit-text-stroke-color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="PaginationLinks_prev"]:hover,
+body[data-dark-mode] [class*="PaginationLinks_next"]:hover,
+body[data-landing-dark] [class*="PaginationLinks_prev"]:hover,
+body[data-landing-dark] [class*="PaginationLinks_next"]:hover {
+  background-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="PaginationLinks_prev"]:hover [class*="arrowChar"],
+body[data-dark-mode] [class*="PaginationLinks_next"]:hover [class*="arrowChar"],
+body[data-landing-dark] [class*="PaginationLinks_prev"]:hover [class*="arrowChar"],
+body[data-landing-dark] [class*="PaginationLinks_next"]:hover [class*="arrowChar"] {
+  color: #ffffff !important;
+  -webkit-text-stroke-color: #ffffff !important;
+}
+
+/* The icon inside ScrollToTopButton has its own color rule (#2E2E2E) that
+   overrides hover cascade â€” explicitly flip it to white on hover. */
+body[data-dark-mode] [class*="ScrollToTopButton"]:hover [class*="ScrollToTopButton_icon"],
+body[data-landing-dark] [class*="ScrollToTopButton"]:hover [class*="ScrollToTopButton_icon"] {
+  color: #ffffff !important;
+}
+
+/* SaveSearchButton (heart + "Search saved" label next to results count):
+   light-mode default is a white pill with dark text, which becomes an
+   unreadable gray smudge over the dark page bg. Drop the pill, keep just
+   the heart and text in cream so it reads cleanly. */
+body[data-dark-mode] [class*="SaveSearchButton_root"],
+body[data-landing-dark] [class*="SaveSearchButton_root"] {
+  background: transparent !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="SaveSearchButton_root"]:hover,
+body[data-landing-dark] [class*="SaveSearchButton_root"]:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* SaveSearchButton flash toast ("Pesquisa guardada" / "Pesquisa removida") â€”
+   light cream pill becomes unreadable on dark bg. Re-skin to dark pill with
+   cream text so the feedback shows clearly. */
+body[data-dark-mode] [class*="SaveSearchButton_flash"],
+body[data-landing-dark] [class*="SaveSearchButton_flash"] {
+  background: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+  color: #f0ece6 !important;
+}
+
+/* "X resultados" count na barra do header â€” sem cor explÃ­cita herda dark e
+   fica invisÃ­vel na pÃ¡gina escura. */
+body[data-dark-mode] [class*="MainPanelHeader_resultsFound"],
+body[data-landing-dark] [class*="MainPanelHeader_resultsFound"] {
+  color: #f0ece6 !important;
+}
+
+/* FavoriteButton pill (coraÃ§Ã£o + contador) nos cards e na FavoritesPage â€”
+   mantÃ©m o fundo branco/transparente e o nÃºmero escuro tambÃ©m em dark mode,
+   para nÃ£o ficar invisÃ­vel. */
+body[data-dark-mode] [class*="FavoriteButton_root"],
+body[data-landing-dark] [class*="FavoriteButton_root"] {
+  background: rgba(255, 255, 255, 0.88) !important;
+}
+
+body[data-dark-mode] [class*="FavoriteButton_root"]:hover,
+body[data-landing-dark] [class*="FavoriteButton_root"]:hover {
+  background: rgba(255, 255, 255, 1) !important;
+}
+
+body[data-dark-mode] [class*="FavoriteButton_count"],
+body[data-landing-dark] [class*="FavoriteButton_count"] {
+  color: #2E2E2E !important;
+}
+
+/* ScrollToTopButton: revert circle to white (original), keep the â€º arrow dark.
+   The carousel-arrow rule above also catches this circle and makes it dark gray.
+   We undo that here so the button stays white-circle + dark-arrow in dark mode. */
+body[data-dark-mode] [class*="ScrollToTopButton"] [class*="circle"] {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  border-color: #cccccc !important;
+  color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="ScrollToTopButton_icon"] {
+  color: #2E2E2E !important;
+}
+
+/* Hero arrows: keep the outer button transparent (no rectangle), but the
+   inner circle gets a semi-transparent dark fill so it's still visible
+   over the hero background photo in dark mode. */
+body[data-landing-dark] #hero-banner [class*="arrowLeft"],
+body[data-landing-dark] #hero-banner [class*="arrowRight"] {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+
+body[data-landing-dark] #hero-banner [class*="arrowLeft"] > span,
+body[data-landing-dark] #hero-banner [class*="arrowRight"] > span {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  border-color: transparent !important;
+  color: #2E2E2E !important;
+}
+
+/* Mirror the light-mode hover (brown circle + white arrow) in dark mode. */
+body[data-landing-dark] #hero-banner [class*="arrowLeft"]:hover:not(:disabled) > span,
+body[data-landing-dark] #hero-banner [class*="arrowRight"]:hover:not(:disabled) > span {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FOOTER
+   Already dark (#2E2E2E) â€” ensure no accidental bleed.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-landing-dark] #site-footer {
+  background-color: #2E2E2E !important;
+}
+
+body[data-landing-dark] #site-footer h1,
+body[data-landing-dark] #site-footer h2,
+body[data-landing-dark] #site-footer h3,
+body[data-landing-dark] #site-footer h4,
+body[data-landing-dark] #site-footer p,
+body[data-landing-dark] #site-footer span,
+body[data-landing-dark] #site-footer a {
+  color: #f5f0eb !important;
+}
+
+/* Footer's "Instalar a nossa app" button â€” the generic `#site-footer span`
+   rule above paints the button label cream with !important. Restore the
+   hover behaviour with an even more specific selector. */
+body[data-landing-dark] #site-footer button[class*="PwaInstallButton_button"]:hover,
+body[data-landing-dark] #site-footer button[class*="PwaInstallButton_button"]:hover span,
+body[data-dark-mode] #site-footer button[class*="PwaInstallButton_button"]:hover,
+body[data-dark-mode] #site-footer button[class*="PwaInstallButton_button"]:hover span {
+  color: #BAA38A !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   TOPBAR â€” all pages (data-dark-mode)
+   TopbarDesktop uses background-color: #ffffff hardcoded.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* Mobile topbar container: var(--colorWhite) resolves to #1e1e1e via CSS vars,
+   but the page background is #1a1a1a â€” the mismatch creates a visible lighter
+   bar. Force it to match the page with no shadow. */
+body[data-dark-mode] [class*="Topbar_container"],
+body[data-landing-dark] [class*="Topbar_container"] {
+  background-color: #1a1a1a !important;
+  box-shadow: none !important;
+}
+
+/* Mobile icon div inside TopbarSearchForm also inherits var(--colorWhite) */
+body[data-dark-mode] [class*="TopbarSearchForm_mobileIcon"],
+body[data-landing-dark] [class*="TopbarSearchForm_mobileIcon"] {
+  background-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+body[data-dark-mode] nav[class*="TopbarDesktop"] {
+  background-color: #1a1a1a !important;
+  box-shadow: none !important;
+}
+
+/* Logo: invert the black PNG to white in dark mode */
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="logoImage"] {
+  filter: invert(1) !important;
+}
+
+/* Mobile topbar logo â€” also invert to white */
+body[data-dark-mode] #logo-topbar-mobile img,
+body[data-dark-mode] #logo-topbar-mobile [class*="logoImage"] {
+  filter: brightness(0) invert(1) !important;
+}
+
+/* Search icon (lupa) in topbar â€” IconSearchDesktop renders an <svg> with a <g class="iconSvgGroup">
+   that has hardcoded stroke: #2E2E2E. Target the group directly. */
+body[data-dark-mode] nav[class*="TopbarDesktop"] [class*="iconSvgGroup"] {
+  stroke: #ffffff !important;
+}
+
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="searchLink"] {
+  border-left-color: #3a3a3a !important;
+}
+
+/* Topbar search â€” every wrapper around the input must be transparent in dark
+   mode. The grey patch was the wrapper inheriting the input's white bg from
+   page-level rules. Force transparent on ALL wrappers, not just the input. */
+body[data-dark-mode] [class*="TopbarSearchForm_desktopInput"],
+body[data-dark-mode] [class*="TopbarSearchForm_mobileInput"],
+body[data-dark-mode] [class*="TopbarSearchForm_keywordSearchWrapper"],
+body[data-dark-mode] [class*="TopbarSearchForm_keywordSearchWrapper"] input,
+body[data-dark-mode] [class*="TopbarSearchForm_desktopInputRoot"],
+body[data-dark-mode] [class*="TopbarSearchForm_mobileInputRoot"],
+body[data-dark-mode] [class*="TopbarSearchForm_locationWrapper"],
+body[data-dark-mode] [class*="TopbarDesktop_searchLink"],
+body[data-dark-mode] [class*="TopbarDesktop_topbarSearchWithLeftPadding"] {
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+  caret-color: #f0ece6 !important;
+  border-color: transparent !important;
+}
+
+body[data-dark-mode] [class*="TopbarSearchForm_desktopInput"]::placeholder,
+body[data-dark-mode] [class*="TopbarSearchForm_mobileInput"]::placeholder,
+body[data-dark-mode] [class*="TopbarSearchForm_keywordSearchWrapper"] input::placeholder {
+  color: #c0b5aa !important;
+}
+
+body[data-dark-mode] [class*="TopbarSearchForm_desktopInput"]:-webkit-autofill,
+body[data-dark-mode] [class*="TopbarSearchForm_mobileInput"]:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  -webkit-text-fill-color: #f0ece6 !important;
+  transition: background-color 9999s ease-out !important;
+}
+
+/* LocationAutocompleteInput â€” campo de input (Ã­cone + placeholder) */
+body[data-dark-mode] [class*="LocationAutocompleteInput_icon"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_icon"] {
+  background-color: transparent !important;
+  border-bottom-color: #5a5a5a !important;
+}
+
+body[data-dark-mode] [class*="LocationAutocompleteInput_iconSvgGroup"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_iconSvgGroup"] {
+  stroke: #c0b5aa !important;
+}
+
+body[data-dark-mode] [class*="LocationAutocompleteInput_input"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_input"] {
+  color: #f0ece6 !important;
+  background-color: transparent !important;
+  border-bottom-color: #5a5a5a !important;
+}
+
+/* When focused, marketplaceDefaults.css forces background-color: #fff on
+   inputs, which would make the cream text on white = invisible. Pin the
+   background transparent on focus too. Same applies to the TopbarSearchForm
+   keyword wrapper. */
+body[data-dark-mode] [class*="LocationAutocompleteInput_input"]:focus,
+body[data-landing-dark] [class*="LocationAutocompleteInput_input"]:focus,
+body[data-dark-mode] [class*="TopbarSearchForm_desktopInput"]:focus,
+body[data-dark-mode] [class*="TopbarSearchForm_mobileInput"]:focus,
+body[data-dark-mode] [class*="TopbarSearchForm_keywordSearchWrapper"] input:focus {
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+  -webkit-text-fill-color: #f0ece6 !important;
+  box-shadow: none !important;
+}
+
+body[data-dark-mode] [class*="LocationAutocompleteInput_input"]::placeholder,
+body[data-landing-dark] [class*="LocationAutocompleteInput_input"]::placeholder {
+  color: #c0b5aa !important;
+}
+
+/* Predictions dropdown (LocationAutocomplete) â€” dark background + texto claro */
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] {
+  background-color: #232323 !important;
+  border-color: #3a3a3a !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"] li,
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"] p,
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"] span,
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"] a,
+body[data-dark-mode] [class*="LocationAutocompleteInput_currentLocation"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionLabel"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_historyLabelText"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_categoryItem"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] li,
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] p,
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] span,
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] a,
+body[data-landing-dark] [class*="LocationAutocompleteInput_currentLocation"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionLabel"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_historyLabelText"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_categoryItem"] {
+  color: #ffffff !important;
+}
+
+/* Landing-page hero search bar swaps the dropdown class via
+   predictionsClassName={css.predictions} (FilterLocation.module.css), so
+   the generic LocationAutocompleteInput_predictionsRoot rules above don't
+   reach it. Mirror the white bg + dark text treatment here.
+   Includes the inner listItem classes because their `.predictions li` rule
+   sets `color: var(--colorGrey700)` which gets inverted to a light grey
+   in dark mode â€” invisible against the forced white background. */
+body[data-dark-mode] [class*="FilterLocation_predictions"],
+body[data-dark-mode] [class*="FilterLocation_predictions"] *,
+body[data-landing-dark] [class*="FilterLocation_predictions"],
+body[data-landing-dark] [class*="FilterLocation_predictions"] * {
+  color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="FilterLocation_predictions"],
+body[data-landing-dark] [class*="FilterLocation_predictions"] {
+  background-color: #ffffff !important;
+  border-color: #e0d6cc !important;
+}
+
+/* The "CLIQUE NUMA..." heading uses .predictionsLabel which is brand brown
+   #7C6350 by default â€” keep that legible too on the white forced bg. */
+body[data-dark-mode] [class*="FilterLocation_predictions"] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-dark-mode] [class*="FilterLocation_predictions"] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-dark-mode] [class*="FilterLocation_predictions"] [class*="LocationAutocompleteInput_historyLabel"],
+body[data-landing-dark] [class*="FilterLocation_predictions"] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-landing-dark] [class*="FilterLocation_predictions"] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-landing-dark] [class*="FilterLocation_predictions"] [class*="LocationAutocompleteInput_historyLabel"] {
+  color: #2E2E2E !important;
+}
+
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_historyLabel"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_historyLabel"] {
+  color: #ffffff !important;
+}
+
+/* Inside predictionsRoot the bg is dark in dark-mode (NotFoundPage,
+   TopbarSearchForm, etc.), so the labels must stay white. Previously this
+   block forced #2E2E2E which made them invisible against the dark dropdown
+   bg on the 404 page — flipped to pure white. */
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"] [class*="LocationAutocompleteInput_historyLabel"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] [class*="LocationAutocompleteInput_historyLabel"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+body[data-dark-mode] [class*="LocationAutocompleteInput_liveCount"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_historyCount"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_liveCount"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_historyCount"] {
+  color: #ffffff !important;
+}
+
+/* Icons inside the predictions dropdown (history pins, current location
+   pin) — keep them light in dark mode so they don't disappear. */
+body[data-dark-mode] [class*="LocationAutocompleteInput_historyIcon"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_currentLocationIcon"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"] svg,
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionsRoot"] svg path,
+body[data-landing-dark] [class*="LocationAutocompleteInput_historyIcon"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_currentLocationIcon"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] svg,
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionsRoot"] svg path {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  stroke: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* History items (recent searches): override the default grey (#555) and
+   make the address + the trailing count both readable in dark mode.
+   Also force opacity:1 because .historyIcon has opacity:0.5 by default. */
+body[data-dark-mode] [class*="LocationAutocompleteInput_historyItem"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_historyItem"] *,
+body[data-dark-mode] [class*="LocationAutocompleteInput_historyLabelText"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_historyItem"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_historyItem"] *,
+body[data-landing-dark] [class*="LocationAutocompleteInput_historyLabelText"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Prediction labels (the Mapbox-suggested addresses while typing) — pure
+   white + full opacity. */
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictionLabel"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictionLabel"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* listItemBlackText / listItemWhiteText — each prediction <li> gets one of
+   these two classes, and BOTH set color to var(--colorGrey700) which is
+   unreadable on the dark dropdown bg. Force pure white. */
+body[data-dark-mode] [class*="LocationAutocompleteInput_listItemBlackText"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_listItemWhiteText"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_listItemBlackText"] *,
+body[data-dark-mode] [class*="LocationAutocompleteInput_listItemWhiteText"] *,
+body[data-landing-dark] [class*="LocationAutocompleteInput_listItemBlackText"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_listItemWhiteText"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_listItemBlackText"] *,
+body[data-landing-dark] [class*="LocationAutocompleteInput_listItemWhiteText"] * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* The liveCount sits INSIDE the search input itself (not in the dropdown), so
+   when the input is on a dark page the brown text vanishes. Keep it white
+   when it's a direct child of the dark input wrapper. */
+body[data-dark-mode] [class*="NotFoundPage_searchForm"] [class*="LocationAutocompleteInput_liveCount"],
+body[data-dark-mode] [class*="TopbarSearchForm"] [class*="LocationAutocompleteInput_liveCount"] {
+  color: #ffffff !important;
+}
+
+body[data-dark-mode] [class*="LocationAutocompleteInput_historySection"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_currentLocationSection"],
+body[data-dark-mode] [class*="LocationAutocompleteInput_categorySection"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_historySection"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_currentLocationSection"],
+body[data-landing-dark] [class*="LocationAutocompleteInput_categorySection"] {
+  border-color: #3a3a3a !important;
+}
+
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictions"] li:hover,
+body[data-dark-mode] [class*="LocationAutocompleteInput_predictions"] li.highlighted,
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictions"] li:hover,
+body[data-landing-dark] [class*="LocationAutocompleteInput_predictions"] li.highlighted {
+  background-color: #2e2e2e !important;
+}
+
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="navDivider"] {
+  background-color: #3a3a3a !important;
+}
+
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="loginLink"],
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="signupLink"],
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="topbarLink"],
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="helpLink"],
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="darkToggle"] {
+  color: #f0ece6 !important;
+}
+
+/* Dark mode toggle: force the SVG strokes themselves to be light too in case
+   a parent rule wins over `currentColor` inheritance. Also give the button a
+   subtle circular highlight so it stands out against the dark topbar. */
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="darkToggle"] svg {
+  stroke: #f0ece6 !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="darkToggle"] svg * {
+  stroke: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="langSwitcherText"],
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="langSwitcherArrow"] {
+  color: #f0ece6 !important;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   EDIT LISTING PAGE â€” fundo dos containers (#1e1e1e â†’ #1a1a1a)
+   O var(--colorWhite) resolve para #1e1e1e mas a pÃ¡gina Ã© #1a1a1a,
+   criando uma barra levemente mais clara visÃ­vel no modo escuro.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* Mobile topbar do EditListingPage */
+body[data-dark-mode] [class*="EditListingPage_mobileTopbar"],
+body[data-landing-dark] [class*="EditListingPage_mobileTopbar"] {
+  background-color: #1a1a1a !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Sidebar de navegaÃ§Ã£o (nav) do wizard */
+body[data-dark-mode] [class*="EditListingWizard_nav"],
+body[data-landing-dark] [class*="EditListingWizard_nav"] {
+  background-color: #1a1a1a !important;
+  box-shadow: none !important;
+  border-color: #2a2a2a !important;
+}
+
+/* Painel de conteÃºdo principal (formulÃ¡rio) */
+body[data-dark-mode] [class*="EditListingWizardTab_panel"],
+body[data-landing-dark] [class*="EditListingWizardTab_panel"] {
+  background-color: #1a1a1a !important;
+  border-color: #2a2a2a !important;
+}
+
+/* Dropdown de previsÃµes de localizaÃ§Ã£o (class substituÃ­da pelo form) */
+body[data-dark-mode] [class*="EditListingLocationForm_predictionsRoot"],
+body[data-landing-dark] [class*="EditListingLocationForm_predictionsRoot"],
+body[data-dark-mode] [class*="EditListingDeliveryForm_predictionsRoot"],
+body[data-landing-dark] [class*="EditListingDeliveryForm_predictionsRoot"] {
+  background-color: #232323 !important;
+  border-color: #3a3a3a !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Texto dentro dos dropdowns de localizaÃ§Ã£o no EditListingPage */
+body[data-dark-mode] [class*="EditListingLocationForm_predictionsRoot"] li,
+body[data-dark-mode] [class*="EditListingLocationForm_predictionsRoot"] span,
+body[data-dark-mode] [class*="EditListingLocationForm_predictionsRoot"] p,
+body[data-dark-mode] [class*="EditListingDeliveryForm_predictionsRoot"] li,
+body[data-dark-mode] [class*="EditListingDeliveryForm_predictionsRoot"] span,
+body[data-dark-mode] [class*="EditListingDeliveryForm_predictionsRoot"] p,
+body[data-landing-dark] [class*="EditListingLocationForm_predictionsRoot"] li,
+body[data-landing-dark] [class*="EditListingLocationForm_predictionsRoot"] span,
+body[data-landing-dark] [class*="EditListingLocationForm_predictionsRoot"] p,
+body[data-landing-dark] [class*="EditListingDeliveryForm_predictionsRoot"] li,
+body[data-landing-dark] [class*="EditListingDeliveryForm_predictionsRoot"] span,
+body[data-landing-dark] [class*="EditListingDeliveryForm_predictionsRoot"] p {
+  color: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="langSwitcherContent"],
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="profileMenuContent"] {
+  background-color: #2a2a2a !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px #3a3a3a !important;
+}
+
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="langOption"],
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="menuLink"],
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="logoutButton"] {
+  color: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="langOption"]:hover {
+  background-color: #3a3a3a !important;
+}
+
+/* Mobile menu PT/EN language buttons + active state â€” keep contrast in dark mode. */
+body[data-dark-mode] [class*="TopbarMobileMenu_langOption"] {
+  color: #f0ece6 !important;
+  border-color: rgba(186, 163, 138, 0.6) !important;
+  background-color: transparent !important;
+}
+body[data-dark-mode] [class*="TopbarMobileMenu_langOption"]:hover {
+  border-color: #BAA38A !important;
+  color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="TopbarMobileMenu_langOptionActive"] {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LISTING PAGE â€” category badge
+   Keep the same white-pill look in dark mode so it matches light mode.
+   Without these overrides the badge would inherit any dark-mode rules
+   that target generic `background-color: white` patches.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* The outer container's hashed class ends in `listingCategoryBadge__hash`,
+   while the children are `listingCategoryBadgeIcon__hash` /
+   `listingCategoryBadgeLabel__hash`. Using `listingCategoryBadge__` (double
+   underscore) targets only the container so the children don't inherit the
+   white pill background. */
+body[data-dark-mode] [class*="listingCategoryBadge__"] {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="listingCategoryBadge__"]:hover {
+  background: rgba(255, 255, 255, 1) !important;
+}
+body[data-dark-mode] [class*="listingCategoryBadgeIcon"] {
+  color: #7C6350 !important;
+}
+body[data-dark-mode] [class*="listingCategoryBadgeIcon"] svg,
+body[data-dark-mode] [class*="listingCategoryBadgeIcon"] svg * {
+  stroke: #7C6350 !important;
+}
+body[data-dark-mode] [class*="listingCategoryBadgeLabel"] {
+  color: #2E2E2E !important;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESCRIPTION ACTIONS (Translate + See more)
+   Light mode: both black (#2E2E2E) â€” set in each module's CSS.
+   Dark mode: both white so they stay legible on the dark panel.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+body[data-dark-mode] [class*="TranslateButton_root"],
+body[data-dark-mode] [class*="OrderPanel_descriptionToggle"],
+body[data-dark-mode] [class*="ListingPage_mobileDescriptionToggle"] {
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="TranslateButton_root"]:hover,
+body[data-dark-mode] [class*="OrderPanel_descriptionToggle"]:hover,
+body[data-dark-mode] [class*="ListingPage_mobileDescriptionToggle"]:hover {
+  color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="TranslateButton_error"] {
+  color: #ff7a7a !important;
+}
+
+
+/* â”€â”€ Amenity chips on listing page â€” white bg, black text in dark mode â”€â”€ */
+body[data-dark-mode] [class*="OrderPanel_amenityChip"],
+body[data-dark-mode] [class*="ListingPage_mobileAmenityChip"] {
+  color: #000000 !important;
+}
+
+/* â”€â”€ Topbar search input â€” browser UA gives inputs a white bg that
+   overrides background-color:transparent; force dark explicitly. â”€â”€ */
+body[data-dark-mode] nav[class*="TopbarDesktop"] [class*="desktopInput"],
+body[data-dark-mode] nav[class*="TopbarDesktop"] input[type="text"] {
+  background-color: #1a1a1a !important;
+  color: #f0ece6 !important;
+  caret-color: #f0ece6 !important;
+}
+
+body[data-dark-mode] nav[class*="TopbarDesktop"] [class*="desktopInput"]::placeholder {
+  color: #888888 !important;
+}
+
+body[data-dark-mode] nav[class*="TopbarDesktop"] [class*="animatedPlaceholder"] {
+  color: #888888 !important;
+}
+
+/* Location predictions dropdown — bg is dark in dark-mode (see rules above),
+   so force every text node white. Previously this rule forced dark text on a
+   white bg; both bg and text are now dark-mode-aware. */
+body[data-dark-mode] [class*="desktopPredictions"],
+body[data-dark-mode] [class*="mobilePredictions"],
+body[data-dark-mode] [class*="desktopPredictions"] *,
+body[data-dark-mode] [class*="mobilePredictions"] *,
+body[data-landing-dark] [class*="desktopPredictions"],
+body[data-landing-dark] [class*="mobilePredictions"],
+body[data-landing-dark] [class*="desktopPredictions"] *,
+body[data-landing-dark] [class*="mobilePredictions"] * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+body[data-dark-mode] [class*="desktopPredictions"],
+body[data-dark-mode] [class*="mobilePredictions"],
+body[data-landing-dark] [class*="desktopPredictions"],
+body[data-landing-dark] [class*="mobilePredictions"] {
+  background-color: #2a2a2a !important;
+  border-color: #4d4d4d !important;
+}
+
+/* High-specificity overrides for inner text classes. Earlier rules in this
+   file target individual LocationAutocompleteInput_* classes with cream
+   (#f0ece6) which loses contrast on the dark dropdown bg. By chaining the
+   parent desktopPredictions/mobilePredictions selector with the inner
+   class selector, we get 3 attribute selectors — beats the 2-attr rules
+   above and forces pure white. */
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_historyLabel"],
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_historyLabelText"],
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_historyCount"],
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_predictionLabel"],
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_categoryItem"],
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_listItemBlackText"],
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_listItemWhiteText"],
+body[data-dark-mode] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_currentLocation"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_historyLabel"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_historyLabelText"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_historyCount"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_predictionLabel"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_categoryItem"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_listItemBlackText"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_listItemWhiteText"],
+body[data-dark-mode] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_currentLocation"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_historyLabel"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_historyLabelText"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_historyCount"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_predictionLabel"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_categoryItem"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_listItemBlackText"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_listItemWhiteText"],
+body[data-landing-dark] [class*="desktopPredictions"] [class*="LocationAutocompleteInput_currentLocation"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_historyLabel"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_historyLabelText"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_historyCount"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_predictionsLabel"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_predictionLabel"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_categoryLabel"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_categoryItem"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_listItemBlackText"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_listItemWhiteText"],
+body[data-landing-dark] [class*="mobilePredictions"] [class*="LocationAutocompleteInput_currentLocation"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* â”€â”€ Mapbox canvas â€” increase contrast so place-name labels read darker â”€â”€ */
+body[data-dark-mode] [class*="SearchMap"] canvas,
+body[data-dark-mode] [class*="reusableMap"] canvas {
+  filter: contrast(1.25) saturate(1.1) !important;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SEARCH PAGE â€” specific patches (data-dark-mode)
+   Most backgrounds use var(--colorWhite) and go dark via
+   the CSS variable cascade from data-landing-dark.
+   These rules patch hardcoded colours only.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* Sidebar border between filters and results */
+body[data-dark-mode] [class*="SearchPage"] [class*="layoutWrapperMain"] {
+  border-left-color: #3a3a3a !important;
+}
+
+/* Listing card text (hardcoded #2E2E2E â€” not covered by #main-content rule) */
+body[data-dark-mode] [class*="ListingCard"] [class*="title"],
+body[data-dark-mode] [class*="ListingCard"] [class*="priceValue"],
+body[data-dark-mode] [class*="ListingCard"] [class*="perUnit"],
+body[data-dark-mode] [class*="ListingCard"] [class*="authorInfo"] {
+  color: #f0ece6 !important;
+}
+
+/* ListingCardHotel keeps a white card background in dark mode â€” keep text dark */
+body[data-dark-mode] [class*="ListingCardHotel"] [class*="perUnit"] {
+  color: #2E2E2E !important;
+}
+
+/* UserCard "SEGUIR" / "A SEGUIR" buttons on the listing page â€”
+   force dark bg + white text (Seguir) and white bg + dark text (A Seguir)
+   to stay visible in dark mode. */
+body[data-dark-mode] [class*="UserCard_followButton"] {
+  background-color: #2E2E2E !important;
+  color: #ffffff !important;
+  border-color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="UserCard_followButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+body[data-dark-mode] [class*="UserCard_followingButton"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="UserCard_followingButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* "Destacar um anúncio" button — light mode uses beige bg + dark text;
+   dark mode inverts to dark bg + white text, hover keeps darker brown. */
+body[data-dark-mode] [class*="destacarButton"] {
+  background-color: #2E2E2E !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="destacarButton"]:hover {
+  background-color: #7C6350 !important;
+  color: #ffffff !important;
+}
+
+/* ManageListings card action icons (edit / close / delete) — sit on top of
+   the listing image with a drop shadow. In dark mode some generic rule
+   was pulling them to dark; force them back to white. */
+/* editarDestaqueButton — outline cream em dark mode (transparente + texto/borda cream) */
+body[data-dark-mode] [class*="ManageListingCard_editarDestaqueButton"],
+body[data-dark-mode] [class*="DestacaAnuncioPage_selectCardEditarDestaque"],
+body[data-dark-mode] [class*="ProfilePage_editarDestaqueButton"],
+body[data-landing-dark] [class*="ManageListingCard_editarDestaqueButton"],
+body[data-landing-dark] [class*="DestacaAnuncioPage_selectCardEditarDestaque"],
+body[data-landing-dark] [class*="ProfilePage_editarDestaqueButton"] {
+  color: #f0ece6 !important;
+  background-color: transparent !important;
+  border-color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="ManageListingCard_editarDestaqueButton"]:hover,
+body[data-dark-mode] [class*="DestacaAnuncioPage_selectCardEditarDestaque"]:hover,
+body[data-dark-mode] [class*="ProfilePage_editarDestaqueButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="ManageListingCard_editarDestaqueIcon"],
+body[data-dark-mode] [class*="DestacaAnuncioPage_selectCardEditarIcon"],
+body[data-dark-mode] [class*="ProfilePage_editarDestaqueIcon"],
+body[data-landing-dark] [class*="ManageListingCard_editarDestaqueIcon"],
+body[data-landing-dark] [class*="DestacaAnuncioPage_selectCardEditarIcon"],
+body[data-landing-dark] [class*="ProfilePage_editarDestaqueIcon"],
+body[data-dark-mode] [class*="ManageListingCard_editarDestaqueIcon"] g,
+body[data-dark-mode] [class*="DestacaAnuncioPage_selectCardEditarIcon"] g,
+body[data-dark-mode] [class*="ProfilePage_editarDestaqueIcon"] g,
+body[data-landing-dark] [class*="ManageListingCard_editarDestaqueIcon"] g,
+body[data-landing-dark] [class*="DestacaAnuncioPage_selectCardEditarIcon"] g,
+body[data-landing-dark] [class*="ProfilePage_editarDestaqueIcon"] g {
+  fill: #f0ece6 !important;
+  stroke: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="ManageListingCard_iconWrapperEdit"],
+body[data-dark-mode] [class*="ManageListingCard_iconWrapperClose"],
+body[data-dark-mode] [class*="ManageListingCard_iconWrapperDelete"] {
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="ManageListingCard_iconWrapperEdit"] svg,
+body[data-dark-mode] [class*="ManageListingCard_iconWrapperClose"] svg,
+body[data-dark-mode] [class*="ManageListingCard_iconWrapperDelete"] svg {
+  stroke: #ffffff !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="ManageListingCard_iconWrapperEdit"]:hover svg {
+  stroke: #BAA38A !important;
+  color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="ManageListingCard_iconWrapperClose"]:hover svg {
+  stroke: #e03030 !important;
+  color: #e03030 !important;
+}
+body[data-dark-mode] [class*="ManageListingCard_iconWrapperDelete"]:hover svg {
+  stroke: #e03030 !important;
+  color: #e03030 !important;
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   Modals in dark mode â€” keep text inside readable.
+   Many modals use white backgrounds with dark text (cookie modal,
+   ReportListingModal/ReportUserModal). Those stay as-is in dark mode.
+   The problem modals are the ones over dark backgrounds (inquiry,
+   email verification, ModalMissingInformation) where the text
+   inherits dark colors that vanish.
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+
+/* EmailReminder / ModalMissingInformation (dark overlay modal with title
+   + body text that needs to be visible). */
+body[data-dark-mode] [class*="ModalMissingInformation_modalTitle"],
+body[data-dark-mode] [class*="ModalMissingInformation_modalMessage"],
+body[data-dark-mode] [class*="ModalMissingInformation_email"],
+body[data-dark-mode] [class*="ModalMissingInformation_helperText"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="ModalMissingInformation_helperLink"],
+body[data-dark-mode] [class*="ModalMissingInformation_reminderModalLinkButton"] {
+  color: #BAA38A !important;
+}
+
+/* InquiryForm submit button â€” keep white text visible in dark mode
+   (PrimaryButton may inherit a faded color from a parent override). */
+body[data-dark-mode] [class*="InquiryForm"] button[type="submit"],
+body[data-dark-mode] [class*="InquiryForm"] button[type="submit"] span {
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="InquiryForm"] button[type="submit"]:disabled,
+body[data-dark-mode] [class*="InquiryForm"] button[type="submit"]:disabled span {
+  color: #ffffff !important;
+  opacity: 0.5;
+}
+
+/* ReportListingModal / ReportUserModal â€” white modal so text should be dark.
+   In dark mode the page-level overrides may pale the text â€” force dark. */
+body[data-dark-mode] [class*="ReportListingModal"],
+body[data-dark-mode] [class*="ReportUserModal"] {
+  color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="ReportListingModal"] p,
+body[data-dark-mode] [class*="ReportListingModal"] label,
+body[data-dark-mode] [class*="ReportListingModal"] h1,
+body[data-dark-mode] [class*="ReportListingModal"] h2,
+body[data-dark-mode] [class*="ReportListingModal"] h3,
+body[data-dark-mode] [class*="ReportUserModal"] p,
+body[data-dark-mode] [class*="ReportUserModal"] label,
+body[data-dark-mode] [class*="ReportUserModal"] h1,
+body[data-dark-mode] [class*="ReportUserModal"] h2,
+body[data-dark-mode] [class*="ReportUserModal"] h3 {
+  color: #2E2E2E !important;
+}
+/* btnPrimary inside report modals: keep white text on dark background */
+body[data-dark-mode] [class*="ReportListingModal"] [class*="btnPrimary"],
+body[data-dark-mode] [class*="ReportUserModal"] [class*="btnPrimary"],
+body[data-landing-dark] [class*="ReportListingModal"] [class*="btnPrimary"],
+body[data-landing-dark] [class*="ReportUserModal"] [class*="btnPrimary"] {
+  color: #ffffff !important;
+}
+
+/* LanguagesField language chips (PortuguÃªs / InglÃªs / etc.) â€” keep text
+   readable in dark mode. The selector uses `button[class*=...]` instead of
+   bare `[class*=...]` because the latter would also catch the parent
+   `.chips` container (it contains the substring "chip"). */
+body[data-dark-mode] button[class*="LanguagesField_chip"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] button[class*="LanguagesField_chip"]:hover {
+  background-color: #f6f0e8 !important;
+}
+body[data-dark-mode] button[class*="LanguagesField_chipActive"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] button[class*="LanguagesField_chipActive"]:hover {
+  background-color: #7C6350 !important;
+  border-color: #7C6350 !important;
+}
+body[data-dark-mode] [class*="LanguagesField_label"] {
+  color: #f0ece6 !important;
+}
+
+/* ProfilePage public read-only language chips (different component from the
+   edit form's LanguagesField). Keep them cream pill + dark text in dark mode. */
+body[data-dark-mode] [class*="ProfilePage_languagesLabel"] {
+  color: #f0ece6 !important;
+}
+/* Use :not() to exclude the inner flag span (which also contains
+   "ProfilePage_languagesChip" because of "ProfilePage_languagesChipFlag"). */
+body[data-dark-mode] span[class*="ProfilePage_languagesChip"]:not([class*="Flag"]) {
+  background-color: #f6f0e8 !important;
+  color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="ProfilePage_languagesSection"] {
+  color: #2E2E2E !important;
+}
+
+/* ProfilePage sidebar â€” rating / followers / online / search lupa.
+   These all use dark text colors that disappear on the dark page bg. */
+body[data-dark-mode] [class*="ProfilePage_userRatingSidebar"],
+body[data-dark-mode] [class*="ProfilePage_userRatingSidebar"] strong,
+body[data-dark-mode] [class*="ProfilePage_userRatingCount"],
+body[data-dark-mode] [class*="ProfilePage_followersCountSidebar"],
+body[data-dark-mode] [class*="ProfilePage_followersCountSidebar"] strong,
+body[data-dark-mode] [class*="ProfilePage_completedBookingsSidebar"],
+body[data-dark-mode] [class*="ProfilePage_completedBookingsSidebar"] strong,
+body[data-dark-mode] [class*="ProfilePage_lastOnlineSidebar"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="ProfilePage_profileSearchIcon"],
+body[data-dark-mode] [class*="ProfilePage_profileSearchIcon"] svg,
+body[data-dark-mode] [class*="ProfileListingsSearchBar_iconLupa"],
+body[data-dark-mode] [class*="ProfileListingsSearchBar_iconLupa"] svg {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="ProfilePage_profileSearchIcon"] svg path,
+body[data-dark-mode] [class*="ProfilePage_profileSearchIcon"] svg circle,
+body[data-dark-mode] [class*="ProfilePage_profileSearchIcon"] svg line,
+body[data-dark-mode] [class*="ProfileListingsSearchBar_iconLupa"] svg path,
+body[data-dark-mode] [class*="ProfileListingsSearchBar_iconLupa"] svg circle,
+body[data-dark-mode] [class*="ProfileListingsSearchBar_iconLupa"] svg line {
+  stroke: #f0ece6 !important;
+}
+
+/* SavedSearchesPage in dark mode â€” page bg, cards, text, action buttons. */
+body[data-dark-mode] [class*="SavedSearchesPage_root"] {
+  background-color: #1a1a1a !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_heading"],
+body[data-dark-mode] [class*="SavedSearchesPage_count"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_item"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_label"],
+body[data-dark-mode] [class*="SavedSearchesPage_label"] span,
+body[data-dark-mode] [class*="SavedSearchesPage_label"] *,
+body[data-dark-mode] [class*="SavedSearchesPage_item"] [class*="SavedSearchesPage_label"],
+body[data-dark-mode] [class*="SavedSearchesPage_info"] [class*="SavedSearchesPage_label"],
+body[data-dark-mode] [class*="SavedSearchesPage_cardTop"] [class*="SavedSearchesPage_label"] {
+  color: #f0ece6 !important;
+  opacity: 1 !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_savedAt"] {
+  color: #c8bdb0 !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_pinIcon"],
+body[data-dark-mode] [class*="SavedSearchesPage_pinIcon"] svg,
+body[data-dark-mode] [class*="SavedSearchesPage_pinIcon"] span {
+  background-color: #f6f0e8 !important;
+  color: #2E2E2E !important;
+  stroke: #2E2E2E !important;
+}
+/* span tags (used for # and â†© glyphs) shouldn't inherit the cream bg from
+   the parent rule above â€” only the outer .pinIcon circle has the cream. */
+body[data-dark-mode] [class*="SavedSearchesPage_pinIcon"] span {
+  background-color: transparent !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_countBadge"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_repeatButton"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border: 1.5px solid #BAA38A !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_repeatButton"]:hover {
+  background-color: #8c6f56 !important;
+  border-color: #8c6f56 !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_removeButton"] {
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+  border-color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_removeButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_empty"] {
+  color: #c8bdb0 !important;
+  border-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="SavedSearchesPage_browseLink"] {
+  color: #BAA38A !important;
+}
+
+/* FollowingPage in dark mode â€” page bg, cards, text, action buttons. */
+body[data-dark-mode] [class*="FollowingPage_root"] {
+  background-color: #1a1a1a !important;
+}
+body[data-dark-mode] [class*="FollowingPage_heading"],
+body[data-dark-mode] [class*="FollowingPage_count"],
+body[data-dark-mode] [class*="FollowingPage_followingSection"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="FollowingPage_item"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="FollowingPage_nameLink"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="FollowingPage_userLocation"],
+body[data-dark-mode] [class*="FollowingPage_lastOnline"],
+body[data-dark-mode] [class*="FollowingPage_followersCount"] {
+  color: #c8bdb0 !important;
+}
+body[data-dark-mode] [class*="FollowingPage_unfollowButton"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border: 1.5px solid #BAA38A !important;
+}
+body[data-dark-mode] [class*="FollowingPage_unfollowButton"]:hover {
+  background-color: #a38d76 !important;
+  border-color: #a38d76 !important;
+}
+body[data-dark-mode] [class*="FollowingPage_messageButton"] {
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+  border-color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="FollowingPage_messageButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="FollowingPage_empty"] {
+  color: #c8bdb0 !important;
+  border-color: #3a3a3a !important;
+}
+
+/* NotificationBadge â€” keep the red bubble with white "4+" text in dark mode
+   (some generic rule was pulling text colour to cream/grey). */
+body[data-dark-mode] [class*="NotificationBadge_root"] {
+  background-color: var(--colorFail) !important;
+  color: #ffffff !important;
+}
+
+/* AuthenticationPage modal â€” hide the white top accent line that appears
+   over the dark modal in dark mode (the original 3px black border becomes
+   white when the global color is inverted). */
+body[data-dark-mode] [class*="AuthenticationPage_content"] {
+  border-top: none !important;
+}
+
+/* TransactionPage in dark mode â€” expirou state title, message, "Converse
+   com o cliente" instructions, chat panel cards. */
+body[data-dark-mode] [class*="TransactionPage"] h1,
+body[data-dark-mode] [class*="TransactionPage"] h2,
+body[data-dark-mode] [class*="TransactionPage"] h3,
+body[data-dark-mode] [class*="TransactionPage"] p,
+body[data-dark-mode] [class*="TransactionPage_orderTitle"],
+body[data-dark-mode] [class*="TransactionPage_orderPanelTitle"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="TransactionPage"] input,
+body[data-dark-mode] [class*="TransactionPage"] textarea {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+}
+
+/* Exception: the SendMessageForm textarea sits inside the dark chat card
+   (TransactionPanel + DirectMessagePage) and must NOT be white — keep it
+   transparent so the chatBar's dark bg shows through. */
+body[data-dark-mode] [class*="SendMessageForm_chatBar"] textarea,
+body[data-dark-mode] [class*="SendMessageForm_textarea"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+  -webkit-text-fill-color: #f0ece6 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+body[data-dark-mode] [class*="SendMessageForm_chatBar"] textarea::placeholder,
+body[data-dark-mode] [class*="SendMessageForm_textarea"]::placeholder {
+  color: #BAA38A !important;
+  opacity: 1;
+}
+
+/* NotFoundPage (404) â€” body bg + heading + text + suggestion. */
+body[data-dark-mode] [class*="NotFoundPage_root"] {
+  background-color: #1a1a1a !important;
+}
+body[data-dark-mode] [class*="NotFoundPage"] h1,
+body[data-dark-mode] [class*="NotFoundPage"] h2,
+body[data-dark-mode] [class*="NotFoundPage"] p {
+  color: #f0ece6 !important;
+}
+
+/* Generic LocationAutocomplete predictions inside ProfileListingsSearchBar
+   (the dropdown on "Os meus anÃºncios" search bar). */
+body[data-dark-mode] [class*="ProfileListingsSearchBar"] [class*="LocationAutocompleteInput_predictionsRoot"],
+body[data-dark-mode] [class*="ProfileListingsSearchBar"] [class*="LocationAutocompleteInput_predictionsRoot"] li,
+body[data-dark-mode] [class*="ProfileListingsSearchBar"] [class*="LocationAutocompleteInput_predictionsRoot"] p,
+body[data-dark-mode] [class*="ProfileListingsSearchBar"] [class*="LocationAutocompleteInput_predictionsRoot"] span,
+body[data-dark-mode] [class*="ProfileListingsSearchBar"] [class*="LocationAutocompleteInput_predictionLabel"] {
+  color: #2E2E2E !important;
+  background-color: #ffffff !important;
+}
+
+/* Listing image gallery arrows â€” already styled in dark mode but ensure
+   the inner svg / character stays visible. */
+body[data-dark-mode] [class*="ListingImageGallery_navLeft"],
+body[data-dark-mode] [class*="ListingImageGallery_navRight"] {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  color: #2E2E2E !important;
+}
+
+/* Multi-booking notice â€” "Reservas mÃºltiplas suportam apenas datas atÃ©..."
+   Force both bg and text so dark mode never makes them blend. */
+body[data-dark-mode] [class*="MultipleBookingsManager_horizonNotice"] {
+  background-color: #FFF8EE !important;
+  color: #2E2E2E !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="MultipleBookingsManager_emptyHint"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="MultipleBookingsManager_resumeNotice"] {
+  background-color: #7C6350 !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="MultipleBookingsManager_slotDay"],
+body[data-dark-mode] [class*="MultipleBookingsManager_slotDate"],
+body[data-dark-mode] [class*="MultipleBookingsManager_slotDayLabel"],
+body[data-dark-mode] [class*="MultipleBookingsManager_slotPeriod"] {
+  color: #f0ece6 !important;
+}
+
+/* Share buttons in dark mode â€” keep their brand colors, no extra hover
+   effect that fades them out. */
+body[data-dark-mode] [class*="ShareButtons_whatsappButton"]:hover {
+  background-color: #1ebe57 !important;
+  border-color: #1ebe57 !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="ShareButtons_linkedinButton"]:hover,
+body[data-dark-mode] [class*="ShareButtons_facebookButton"]:hover {
+  /* Keep brand bg + white text on hover, no fade */
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="ShareButtons_copyButton"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="ShareButtons_copyButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* CheckoutPage â€” page bg, labels, headings, line items, totals.
+   The form/cart card stays light (white) but the page chrome around it
+   needs to stay readable on dark page. */
+body[data-dark-mode] [class*="CheckoutPage"] h1,
+body[data-dark-mode] [class*="CheckoutPage"] h2,
+body[data-dark-mode] [class*="CheckoutPage"] h3,
+body[data-dark-mode] [class*="CheckoutPage"] label,
+body[data-dark-mode] [class*="CheckoutPage"] p,
+body[data-dark-mode] [class*="CheckoutPage_heading"],
+body[data-dark-mode] [class*="CheckoutPage_sectionTitle"],
+body[data-dark-mode] [class*="CheckoutPage_priceBreakdownTitle"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="CheckoutPage"] input,
+body[data-dark-mode] [class*="CheckoutPage"] textarea,
+body[data-dark-mode] [class*="CheckoutPage"] select {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #cccccc !important;
+}
+body[data-dark-mode] [class*="CheckoutPage"] input::placeholder,
+body[data-dark-mode] [class*="CheckoutPage"] textarea::placeholder {
+  color: #9e9e9e !important;
+}
+body[data-dark-mode] [class*="CheckoutPage"] button[type="submit"],
+body[data-dark-mode] [class*="CheckoutPage"] button[type="submit"] span {
+  color: #ffffff !important;
+}
+
+/* DetailsSideCard summary in checkout â€” the listing title link inside the
+   dark summary card was inheriting dark color. Force it to cream so it's
+   readable. */
+body[data-dark-mode] [class*="CheckoutPage_detailsHeadings"] a,
+body[data-dark-mode] [class*="CheckoutPage_detailsHeadings"] h1,
+body[data-dark-mode] [class*="CheckoutPage_detailsHeadings"] h2,
+body[data-dark-mode] [class*="CheckoutPage_detailsHeadings"] h3,
+body[data-dark-mode] [class*="CheckoutPage_detailsHeadings"] h4,
+body[data-dark-mode] [class*="CheckoutPage_listingDetailsWrapper"] a,
+body[data-dark-mode] [class*="CheckoutPage_listingDetailsWrapper"] h2,
+body[data-dark-mode] [class*="CheckoutPage_listingDetailsWrapper"] h3,
+body[data-dark-mode] [class*="CheckoutPage_authorName"],
+body[data-dark-mode] [class*="CheckoutPage_priceBreakdownTitle"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="CheckoutPage_detailsHeadings"] a:hover,
+body[data-dark-mode] [class*="CheckoutPage_listingDetailsWrapper"] a:hover {
+  color: #BAA38A !important;
+}
+
+/* SectionCarousel category grid cards (Trabalho & ReuniÃµes / EducaÃ§Ã£o &
+   Cultura / Gastronomia & ConvÃ­vio) â€” give them a card-like bg in dark mode
+   so text inside doesn't float on the page bg. */
+body[data-dark-mode] [class*="SectionCarousel_gridBlockClickable"],
+body[data-landing-dark] [class*="SectionCarousel_gridBlockClickable"] {
+  background-color: #2a2a2a !important;
+}
+
+/* OrderPanel buttons on the ListingPage â€” "Enviar mensagem" + "Solicitar
+   reserva". The buttons themselves were inheriting transparent bg with dark
+   text. Force solid bg + white text + brown hover. */
+body[data-dark-mode] [class*="OrderPanel_mobileContactButton"] {
+  background-color: #2E2E2E !important;
+  color: #ffffff !important;
+  border-color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="OrderPanel_mobileContactButton"]:hover,
+body[data-dark-mode] [class*="OrderPanel_mobileContactButton"]:focus {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* All PrimaryButtons in dark mode â€” keep their black bg + white text. */
+body[data-dark-mode] button[class*="PrimaryButton"],
+body[data-dark-mode] [class*="PrimaryButton_root"] {
+  background-color: #2E2E2E !important;
+  color: #ffffff !important;
+  border-color: #2E2E2E !important;
+}
+body[data-dark-mode] button[class*="PrimaryButton"] span,
+body[data-dark-mode] [class*="PrimaryButton_root"] span {
+  color: #ffffff !important;
+}
+body[data-dark-mode] button[class*="PrimaryButton"]:hover,
+body[data-dark-mode] [class*="PrimaryButton_root"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] button[class*="PrimaryButton"]:disabled,
+body[data-dark-mode] button[class*="PrimaryButton"]:disabled span {
+  color: #ffffff !important;
+  opacity: 0.5;
+}
+
+/* UserCard "A SEGUIR" / "SEGUIR" buttons on ListingPage â€” same approach as
+   the FollowingPage buttons. */
+body[data-dark-mode] [class*="UserCard_followingButton"] {
+  background-color: transparent !important;
+  border-color: #f0ece6 !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="UserCard_followingButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="UserCard_followButton"] {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="UserCard_followButton"]:hover {
+  background-color: #a38d76 !important;
+  border-color: #a38d76 !important;
+}
+
+/* Listing image gallery arrows â€” match the RecentlyViewedSection look:
+   solid white circle + dark arrow, brown circle + white arrow on hover.
+   Higher opacity so they stand out even over light listing photos. */
+body[data-dark-mode] button[class*="ListingImageGallery_navLeft"],
+body[data-dark-mode] button[class*="ListingImageGallery_navRight"] {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #2E2E2E !important;
+  border: 1px solid #d4c4b0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+}
+body[data-dark-mode] button[class*="ListingImageGallery_navLeft"] > span,
+body[data-dark-mode] button[class*="ListingImageGallery_navRight"] > span {
+  color: #2E2E2E !important;
+}
+body[data-dark-mode] button[class*="ListingImageGallery_navLeft"]:hover:not(:disabled),
+body[data-dark-mode] button[class*="ListingImageGallery_navRight"]:hover:not(:disabled) {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] button[class*="ListingImageGallery_navLeft"]:hover:not(:disabled) > span,
+body[data-dark-mode] button[class*="ListingImageGallery_navRight"]:hover:not(:disabled) > span {
+  color: #ffffff !important;
+}
+
+/* "Denunciar este anÃºncio" â€” word AND underline turn red on hover. */
+body[data-dark-mode] button[class*="ListingPage_reportLink"]:hover,
+body[data-dark-mode] button[class*="ListingPage_reportLink"]:hover span,
+body[data-dark-mode] button[class*="ListingPage_reportLink"]:hover svg {
+  color: #ff6b6b !important;
+  text-decoration-color: #ff6b6b !important;
+  fill: #ff6b6b !important;
+  stroke: #ff6b6b !important;
+}
+
+/* UserCard "metaRatingValue" â€” the "3.2" rating number on the host card
+   was inheriting dark color. Force cream so it's readable. */
+body[data-dark-mode] [class*="UserCard_metaRatingValue"],
+body[data-dark-mode] [class*="UserCard_metaRatingCount"] {
+  color: #f0ece6 !important;
+}
+
+/* Filter "LIMPAR" buttons in mobile/dark mode — they had white bg + faded
+   text. Force transparent bg + light text. Catches both naming flavours:
+   "*_clearButton" (StarRatingFilter, FilterPlain) AND "*_clearBtn"
+   (UnitTypeFilter, CategoryMultiFilter). */
+body[data-dark-mode] [class*="FilterPlain_clearButton"],
+body[data-dark-mode] [class*="FilterPlain_clear"],
+body[data-dark-mode] button[class*="clearButton"],
+body[data-dark-mode] button[class*="clearBtn"] {
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+  border-color: #f0ece6 !important;
+}
+body[data-dark-mode] button[class*="clearButton"]:hover,
+body[data-dark-mode] button[class*="clearBtn"]:hover,
+body[data-dark-mode] button[class*="clearButton"]:focus-visible,
+body[data-dark-mode] button[class*="clearBtn"]:focus-visible {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border-color: #BAA38A !important;
+}
+
+/* CookieConsent settings modal â€” dark mode + scroll lock + touch X button. */
+body[data-dark-mode] [class*="CookieConsent_modalBackdrop"] {
+  background-color: transparent !important;
+}
+body[data-dark-mode] [class*="CookieConsent_modal__"] {
+  background-color: #2a2a2a !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="CookieConsent_modal__"] h1,
+body[data-dark-mode] [class*="CookieConsent_modal__"] h2,
+body[data-dark-mode] [class*="CookieConsent_modal__"] h3,
+body[data-dark-mode] [class*="CookieConsent_modal__"] h4,
+body[data-dark-mode] [class*="CookieConsent_modal__"] p,
+body[data-dark-mode] [class*="CookieConsent_modal__"] span,
+body[data-dark-mode] [class*="CookieConsent_modal__"] strong,
+body[data-dark-mode] [class*="CookieConsent_modal__"] label,
+body[data-dark-mode] [class*="CookieConsent_modalTitle"],
+body[data-dark-mode] [class*="CookieConsent_categoryTitle"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="CookieConsent_modal__"] hr,
+body[data-dark-mode] [class*="CookieConsent_modal__"] [class*="divider"] {
+  border-color: #3a3a3a !important;
+}
+[class*="CookieConsent_modal__"] {
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+[class*="CookieConsent_modalBackdrop"] {
+  /* Prevent touch events on the backdrop from propagating to the body
+     (which would scroll the page underneath on mobile). */
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+[class*="CookieConsent_modalClose"] {
+  min-width: 44px;
+  min-height: 44px;
+  z-index: 10;
+  cursor: pointer;
+}
+body[data-dark-mode] [class*="CookieConsent_modalClose"] {
+  color: #f0ece6 !important;
+}
+
+/* MobileSearchCard on the landing page â€” give it dark mode bg so it doesn't
+   show a pure white card on the dark landing. The wrapper around the
+   carousel had a light grey bg (#f0f2f5) that leaked. */
+body[data-landing-dark] [class*="MobileSearchCard_wrapper"],
+body[data-dark-mode] [class*="MobileSearchCard_wrapper"] {
+  background-color: #1a1a1a !important;
+}
+body[data-landing-dark] [class*="MobileSearchCard_card"],
+body[data-dark-mode] [class*="MobileSearchCard_card"] {
+  background-color: #2a2a2a !important;
+}
+/* Carousel dots: in dark mode the dot's dark border vanishes on dark bg.
+   Use a light border + lighter active fill. */
+body[data-landing-dark] [class*="MobileSearchCard_dot"],
+body[data-dark-mode] [class*="MobileSearchCard_dot"] {
+  border-color: rgba(240, 236, 230, 0.85) !important;
+}
+body[data-landing-dark] [class*="MobileSearchCard_dotActive"],
+body[data-dark-mode] [class*="MobileSearchCard_dotActive"] {
+  background-color: #BAA38A !important;
+  border-color: rgba(240, 236, 230, 0.85) !important;
+}
+
+/* CheckoutPage payment terms text ("Autoriza a V1H a enviar instruÃ§Ãµes..."
+   and "Guardar dados do cartÃ£o para futuros pedidos"). */
+body[data-dark-mode] [class*="CheckoutPage"] [class*="paymentTerms"],
+body[data-dark-mode] [class*="CheckoutPage"] [class*="savePaymentDetails"],
+body[data-dark-mode] [class*="StripePaymentForm"] label,
+body[data-dark-mode] [class*="StripePaymentForm"] [class*="termsText"],
+body[data-dark-mode] [class*="StripePaymentForm"] p,
+body[data-dark-mode] [class*="StripePaymentForm"] span {
+  color: #f0ece6 !important;
+}
+
+/* LanguagesField â€” strengthen the rule with extra specificity. The text
+   inside the button is a plain text node, so we also force `*` color via
+   inheritance to catch any child color override. */
+body[data-dark-mode] button[type="button"][class*="LanguagesField_chip"]:not([class*="Flag"]),
+body[data-dark-mode] button[type="button"][class*="LanguagesField_chip"]:not([class*="Flag"]) > * {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #BAA38A !important;
+  -webkit-text-fill-color: #2E2E2E !important;
+}
+body[data-dark-mode] button[type="button"][class*="LanguagesField_chipActive"],
+body[data-dark-mode] button[type="button"][class*="LanguagesField_chipActive"] > * {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border-color: #BAA38A !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+/* The flag span is decorative â€” let it keep its original look (no bg). */
+body[data-dark-mode] button[type="button"][class*="LanguagesField_chipActive"] [class*="LanguagesField_flag"],
+body[data-dark-mode] button[type="button"][class*="LanguagesField_chip"]:not([class*="Flag"]) [class*="LanguagesField_flag"] {
+  background-color: transparent !important;
+}
+
+/* ProfilePage "A SEGUIR" button â€” white bg + white text was invisible. */
+body[data-dark-mode] [class*="ProfilePage_followingButton"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="ProfilePage_followingButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="ProfilePage_followButton"] {
+  background-color: #2E2E2E !important;
+  color: #ffffff !important;
+  border-color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="ProfilePage_followButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+}
+
+/* "Ver histÃ³rico" (outlined) + "Editar perfil" mobile (dark filled). Mirror the
+   message + follow pair styling so own-profile matches other-profile. */
+body[data-dark-mode] [class*="ProfilePage_historyButton"] {
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+  border: 2px solid #f0ece6 !important;
+}
+body[data-dark-mode] [class*="ProfilePage_historyButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="ProfilePage_editProfileButtonMobile"],
+body[data-dark-mode] [class*="ProfilePage_editLinkDesktop"] {
+  background-color: #f0ece6 !important;
+  color: #1a1a1a !important;
+  border: none !important;
+}
+body[data-dark-mode] [class*="ProfilePage_editProfileButtonMobile"]:hover,
+body[data-dark-mode] [class*="ProfilePage_editLinkDesktop"]:hover {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* "Destacar anÃºncio" â€” same text-link style as reportButton (dark mode). */
+body[data-dark-mode] [class*="ProfilePage_highlightLinkSidebar"],
+body[data-dark-mode] [class*="ProfilePage_highlightLinkMobile"] {
+  color: #f0ece6 !important;
+  text-decoration-color: rgba(240, 236, 230, 0.45) !important;
+}
+body[data-dark-mode] [class*="ProfilePage_highlightLinkSidebar"]:hover,
+body[data-dark-mode] [class*="ProfilePage_highlightLinkMobile"]:hover {
+  color: #BAA38A !important;
+  text-decoration-color: #BAA38A !important;
+}
+
+/* ReviewModal (customer + provider reviews) â€” modal content needs readable
+   text. The modal sits on top of the dark page so inherited "dark text"
+   would vanish. Keep title + reviewee + message + form labels light. */
+body[data-dark-mode] [class*="ReviewModal_modalTitle"],
+body[data-dark-mode] [class*="ReviewModal_modalMessage"],
+body[data-dark-mode] [class*="ReviewModal_reviewee"],
+body[data-dark-mode] [class*="ReviewModal"] label,
+body[data-dark-mode] [class*="ReviewForm"] label {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="ReviewForm"] textarea,
+body[data-dark-mode] [class*="ReviewForm"] input {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="ReviewForm"] textarea::placeholder,
+body[data-dark-mode] [class*="ReviewForm"] input::placeholder {
+  color: #9e9e9e !important;
+}
+body[data-dark-mode] [class*="ReviewForm"] button[type="submit"],
+body[data-dark-mode] [class*="ReviewForm"] button[type="submit"] span {
+  color: #ffffff !important;
+}
+
+/* FeedbackPromptModal ("o que achaste do site?") â€” overlay popup with a
+   title + subtitle + buttons that all need light text in dark mode. */
+body[data-dark-mode] [class*="FeedbackPromptModal_modal"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="FeedbackPromptModal_title"],
+body[data-dark-mode] [class*="FeedbackPromptModal_subtitle"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="FeedbackPromptModal_closeBtn"],
+body[data-dark-mode] [class*="FeedbackPromptModal_closeBtnFloating"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="FeedbackPromptModal"] textarea,
+body[data-dark-mode] [class*="FeedbackPromptModal"] input {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="FeedbackPromptModal"] textarea::placeholder,
+body[data-dark-mode] [class*="FeedbackPromptModal"] input::placeholder {
+  color: #9e9e9e !important;
+}
+body[data-dark-mode] [class*="FeedbackPromptModal"] button[type="submit"],
+body[data-dark-mode] [class*="FeedbackPromptModal"] button[type="submit"] span {
+  color: #ffffff !important;
+}
+
+/* AuthenticationPage form inputs â€” keep white bg with dark text so typed
+   characters (and password dots) are visible. */
+body[data-dark-mode] [class*="AuthenticationPage"] input,
+body[data-dark-mode] [class*="AuthenticationPage"] input[type="text"],
+body[data-dark-mode] [class*="AuthenticationPage"] input[type="email"],
+body[data-dark-mode] [class*="AuthenticationPage"] input[type="password"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  caret-color: #2E2E2E !important;
+  -webkit-text-fill-color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="AuthenticationPage"] input::placeholder {
+  color: #9e9e9e !important;
+  -webkit-text-fill-color: #9e9e9e !important;
+}
+
+/* Inbox/Historico avatar fallback (when the user has no profile picture) â€”
+   match the Avatar component's brand colors so the initial is readable. */
+body[data-dark-mode] div[class*="InboxPage_bookingCardProviderAvatar"],
+body[data-dark-mode] div[class*="HistoricoReservasPage_bookingCardProviderAvatar"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] div[class*="InboxPage_bookingCardProviderAvatar"] span,
+body[data-dark-mode] div[class*="HistoricoReservasPage_bookingCardProviderAvatar"] span,
+body[data-dark-mode] div[class*="InboxPage_bookingCardProviderAvatar"] > *,
+body[data-dark-mode] div[class*="HistoricoReservasPage_bookingCardProviderAvatar"] > * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Global Avatar component â€” when user has no image we show initials. In dark
+   mode keep the same look as the topbar (brown bg + white initials). */
+body[data-dark-mode] [class*="Avatar_avatarBase"],
+body[data-dark-mode] [class*="Avatar_root"],
+body[data-dark-mode] [class*="Avatar_smallAvatar"],
+body[data-dark-mode] [class*="Avatar_mediumAvatar"],
+body[data-dark-mode] [class*="Avatar_largeAvatar"] {
+  background-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="Avatar_initials"],
+body[data-dark-mode] [class*="Avatar_initialsSmall"],
+body[data-dark-mode] [class*="Avatar_initialsMedium"],
+body[data-dark-mode] [class*="Avatar_initialsLarge"] {
+  color: #2E2E2E !important;
+}
+
+/* "Denunciar este utilizador" hover red — strengthen specificity so the
+   word itself + flag icon + underline all turn red on hover. */
+body[data-dark-mode] [class*="FollowingPage_reportLink"]:hover,
+body[data-dark-mode] [class*="FollowingPage_reportLink"]:hover *,
+body[data-dark-mode] [class*="FollowingPage_reportLink"]:hover svg,
+body[data-dark-mode] [class*="FollowingPage_reportLink"]:hover svg path,
+body[data-dark-mode] [class*="FollowingPage_reportLink"]:hover svg line,
+body[data-dark-mode] [class*="ProfilePage_reportButton"]:hover,
+body[data-dark-mode] [class*="ProfilePage_reportButton"]:hover * {
+  color: #ff6b6b !important;
+  text-decoration-color: #ff6b6b !important;
+  fill: #ff6b6b !important;
+  stroke: #ff6b6b !important;
+}
+
+/* "Os nossos valores" cards on the AboutPage â€” give them a card-like bg so
+   the white-on-dark text reads as a card, not floating text. */
+body[data-dark-mode] [class*="AboutPage_valueItem"] {
+  background-color: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+  border-radius: 8px;
+  padding: 24px;
+}
+body[data-dark-mode] [class*="AboutPage_valueTitle"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="AboutPage_valueText"] {
+  color: #c8bdb0 !important;
+}
+
+/* Hero "DÃª-se a conhecer" CTA â€” turn text white on hover (already brown bg).
+   Selector matches the specificity of the rule at the top of this file so
+   it wins on hover. */
+body[data-landing-dark] #main-content [class*="slideContent"] [class*="ctaButton"]:hover,
+body[data-landing-dark] #hero-banner [class*="ctaButton"]:hover,
+body[data-landing-dark] [class*="SectionMobilePromo"] [class*="cta"]:hover,
+body[data-landing-dark] [class*="ctaButton"]:hover,
+body[data-dark-mode] [class*="ctaButton"]:hover {
+  color: #ffffff !important;
+}
+
+/* FollowingPage "Deixar de seguir" button hover â€” was missing. */
+body[data-dark-mode] [class*="FollowingPage_unfollowButton"]:hover {
+  background-color: #a38d76 !important;
+  border-color: #a38d76 !important;
+  color: #ffffff !important;
+}
+
+/* EditListingPage location autocomplete predictions â€” keep white pill with
+   dark text (same approach as the topbar dropdown). */
+body[data-dark-mode] [class*="EditListing"] [class*="LocationAutocompleteInput_predictionsRoot"],
+body[data-dark-mode] [class*="EditListing"] [class*="LocationAutocompleteInput_predictionsRoot"] li,
+body[data-dark-mode] [class*="EditListing"] [class*="LocationAutocompleteInput_predictionsRoot"] p,
+body[data-dark-mode] [class*="EditListing"] [class*="LocationAutocompleteInput_predictionsRoot"] span {
+  color: #2E2E2E !important;
+  background-color: #ffffff !important;
+}
+
+/* EditListingPage "GUARDAR ALTERAÃ‡Ã•ES" + ContactDetails save button â€” must
+   keep white text on the dark/brown V1H button. */
+body[data-dark-mode] [class*="EditListing"] button[type="submit"],
+body[data-dark-mode] [class*="EditListing"] button[type="submit"] span,
+body[data-dark-mode] [class*="ContactDetailsForm"] button[type="submit"],
+body[data-dark-mode] [class*="ContactDetailsForm"] button[type="submit"] span {
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="EditListing"] button[type="submit"]:disabled,
+body[data-dark-mode] [class*="ContactDetailsForm"] button[type="submit"]:disabled {
+  opacity: 0.5;
+  color: #ffffff !important;
+}
+
+/* YouTube URL input wrapper on the photos step â€” was on a cream block that
+   blends into dark mode. Force a darker frame so it's visible. */
+body[data-dark-mode] [class*="EditListingPhotosForm_youtubeBlock"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="EditListingPhotosForm_youtubeLabel"],
+body[data-dark-mode] [class*="EditListingPhotosForm_youtubeHelper"] {
+  color: #c8bdb0 !important;
+}
+
+/* EditListing topbar search bar fix â€” when on edit pages the topbar search
+   was inheriting a greyish background. Force same dark transparent look. */
+body[data-dark-mode] [class*="EditListing"] [class*="TopbarSearchForm_desktopInput"],
+body[data-dark-mode] [class*="EditListing"] [class*="TopbarSearchForm_keywordSearchWrapper"] input {
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+}
+
+/* The search bar wrapper / topbar link itself was inheriting a greyish
+   background on EditListing pages. Force transparent for all wrappers. */
+body[data-dark-mode] [class*="EditListing"] [class*="TopbarSearchForm_keywordSearchWrapper"],
+body[data-dark-mode] [class*="EditListing"] [class*="TopbarDesktop_searchLink"],
+body[data-dark-mode] [class*="EditListing"] [class*="TopbarDesktop_topbarSearchWithLeftPadding"] {
+  background-color: transparent !important;
+}
+
+/* InboxPage cards in dark mode â€” mirror the same look as HistoricoReservasPage
+   cards (background, text, role label, Seguir button) since they share the
+   same visual structure. */
+body[data-dark-mode] [class*="InboxPage_bookingCard"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardTitle"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardDates"] {
+  color: #c8bdb0 !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardStatus"] {
+  background-color: #3a3a3a !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardProviderRole"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardProviderName"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardProviderOnline"] {
+  color: #c8bdb0 !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardFollowingBtn"] {
+  background-color: transparent !important;
+  border-color: #f0ece6 !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardFollowingBtn"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardFollowBtn"] {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardFollowBtn"]:hover {
+  background-color: #a38d76 !important;
+  border-color: #a38d76 !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardArrow"] {
+  color: #c8bdb0 !important;
+}
+body[data-dark-mode] [class*="InboxPage_bookingCardLocation"] {
+  color: #BAA38A !important;
+}
+
+/* TransactionPanel chat card (cliente/anfitrião conversation) in dark mode —
+   mirror the same look as the DirectMessagePage chat box (dark card bg with
+   light text, dark input strip). */
+body[data-dark-mode] [class*="TransactionPanel_chatCardTitle"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCard"] {
+  background: #2a2a2a !important;
+  border-color: #4a3d34 !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardHeader"] {
+  background: #2a2a2a !important;
+  border-bottom-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardFeed"] {
+  background: #2a2a2a !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardInput"] {
+  background: #2a2a2a !important;
+  border-top-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardName"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardOnline"] {
+  color: #c8bdb0 !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardFollowBtn"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardFollowBtn"]:hover {
+  background-color: #a38d76 !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardFollowingBtn"] {
+  background-color: transparent !important;
+  border-color: #f0ece6 !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardFollowingBtn"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* ActivityFeed bubbles (used inside TransactionPanel chat) in dark mode —
+   keep "own" bubble dark brown (already dark) and lighten the "other" bubble
+   to match DirectMessagePage's dark-mode bubble. */
+body[data-dark-mode] [class*="ActivityFeed_messageContent"] {
+  background-color: #3a3a3a !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="ActivityFeed_messageDate"],
+body[data-dark-mode] [class*="ActivityFeed_ownMessageDate"] {
+  color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="ActivityFeed_transitionContent"] {
+  color: #c8bdb0 !important;
+}
+body[data-dark-mode] [class*="ActivityFeed_transitionDate"] {
+  color: #BAA38A !important;
+}
+
+/* InboxPage "Outras Mensagens" cards + title in dark mode — match the
+   same dark gray as the booking cards above. */
+body[data-dark-mode] [class*="InboxPage_title"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="InboxPage_messageCard"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="InboxPage_messageCardName"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="InboxPage_messageCardListing"] {
+  color: #c8bdb0 !important;
+}
+body[data-dark-mode] [class*="InboxPage_messageCardMeta"] {
+  color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="InboxPage_messageCardAvatar"] {
+  background-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="InboxPage_messageCardAvatarFallback"] {
+  background-color: #BAA38A !important;
+  color: #2a2a2a !important;
+}
+
+/* HistoricoReservasPage cards in dark mode â€” price, role labels and Seguir
+   button need explicit colors otherwise they inherit dark-on-dark. */
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCard"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardTitle"],
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardPrice"] {
+  color: #f0ece6 !important;
+}
+/* "FOSTE CLIENTE" / "FOSTE ANFITRIÃƒO" pill in the title row â€” keep the V1H
+   brand brown with white text in dark mode too. */
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardUserRole"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardDates"] {
+  color: #c8bdb0 !important;
+}
+/* The "CLIENTE" / "ANFITRIÃƒO" badge (other party) */
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardProviderRole"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardProviderName"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardProviderOnline"] {
+  color: #c8bdb0 !important;
+}
+/* Seguir / A Seguir buttons */
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardFollowingBtn"] {
+  background-color: transparent !important;
+  border-color: #f0ece6 !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardFollowingBtn"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardFollowBtn"] {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_bookingCardFollowBtn"]:hover {
+  background-color: #a38d76 !important;
+  border-color: #a38d76 !important;
+}
+/* Sort dropdown */
+body[data-dark-mode] [class*="HistoricoReservasPage_sortByLabel"] {
+  color: #c8bdb0 !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_sortLabel"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+  color: #f0ece6 !important;
+}
+/* Sort dropdown popup â€” keep the same white-bg appearance as light mode so it
+   stays consistent with the SearchPage and Inbox sort dropdowns. */
+body[data-dark-mode] [class*="HistoricoReservasPage_menuContent"] {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 0 1px #e8e3de !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_menuItem"] {
+  color: #2E2E2E !important;
+  background: transparent !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_menuItem"]:hover,
+body[data-dark-mode] [class*="HistoricoReservasPage_menuItem"]:focus {
+  color: #7C6350 !important;
+  border-left-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="HistoricoReservasPage_menuItemSelected"] {
+  color: #2E2E2E !important;
+  border-left-color: #BAA38A !important;
+}
+
+/* "Denunciar este anúncio" link — default state has dark text + dark
+   underline (invisible on dark bg). Make text/flag/underline cream so it's
+   visible, then turn red on hover. */
+body[data-dark-mode] [class*="ListingPage_reportLink"],
+body[data-dark-mode] [class*="FollowingPage_reportLink"],
+body[data-dark-mode] [class*="ProfilePage_reportButton"] {
+  color: #f0ece6 !important;
+  text-decoration-color: rgba(240, 236, 230, 0.6) !important;
+}
+body[data-dark-mode] [class*="ListingPage_reportLink"]:hover,
+body[data-dark-mode] [class*="FollowingPage_reportLink"]:hover,
+body[data-dark-mode] [class*="ProfilePage_reportButton"]:hover {
+  color: #ff6b6b !important;
+  text-decoration-color: #ff6b6b !important;
+}
+
+/* Filter & confirm buttons â€” text uses var(--colorWhite) which inverts to dark; restore to light */
+body[data-dark-mode] [class*="resetAllButton"] {
+  color: #f0ece6 !important;
+}
+
+/* "CONFIRMAR" button — fill with the deeper V1H brown so it reads
+   clearly against the dark sidebar (the lighter #BAA38A was washing
+   out). Hover goes to deep brown #5C3317. */
+body[data-dark-mode] button[class*="confirmButton"],
+body[data-dark-mode] button[class*="confirmBtn"] {
+  color: #ffffff !important;
+  background-color: #7C6350 !important;
+  border-color: #7C6350 !important;
+}
+
+body[data-dark-mode] button[class*="confirmButton"]:hover,
+body[data-dark-mode] button[class*="confirmBtn"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* "RESET ALL" / "REPOR TUDO" no fundo do painel de filtros — mesmo
+   tratamento do confirmButton para ficarem visualmente alinhados em
+   dark mode. */
+body[data-dark-mode] [class*="bottomResetAll"],
+body[data-dark-mode] [class*="resetAllButton"] {
+  background-color: #7C6350 !important;
+  color: #ffffff !important;
+  border-color: #7C6350 !important;
+}
+body[data-dark-mode] [class*="bottomResetAll"]:hover,
+body[data-dark-mode] [class*="resetAllButton"]:hover {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* SaveSearchButton label â€” white text in dark mode */
+body[data-landing-dark] #main-content [class*="SaveSearchButton"] span,
+body[data-dark-mode] [class*="SaveSearchButton"] span {
+  color: #ffffff !important;
+}
+
+/* FavoriteButton count â€” white pill has hardcoded white bg; keep number black */
+body[data-landing-dark] #main-content [class*="FavoriteButton_count"],
+body[data-dark-mode] [class*="FavoriteButton_count"] {
+  color: #000000 !important;
+}
+
+/* "Publicar um novo anÃºncio" in topbar â€” hardcoded #2E2E2E, invisible on dark topbar */
+body[data-dark-mode] [class*="priorityLink"] {
+  color: #f0ece6 !important;
+}
+
+/* Number inputs in capacity/range filters â€” keep white background + black text (like light mode) */
+body[data-dark-mode] [class*="SearchPage"] input[type="number"],
+body[data-dark-mode] [class*="SearchPage"] [class*="minValue"],
+body[data-dark-mode] [class*="SearchPage"] [class*="maxValue"],
+body[data-dark-mode] [class*="SearchPage"] [class*="rangeInput"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #cccccc !important;
+}
+
+/* Sort dropdown + results header */
+body[data-dark-mode] [class*="SearchPage"] [class*="sortyByWrapper"] select,
+body[data-dark-mode] [class*="SearchPage"] select {
+  background-color: #2a2a2a !important;
+  color: #f0ece6 !important;
+  border-color: #4d4d4d !important;
+}
+
+/* Search results count text */
+body[data-dark-mode] [class*="SearchPage"] [class*="resultsCount"],
+body[data-dark-mode] [class*="SearchPage"] [class*="searchResultSummary"] {
+  color: #f0ece6 !important;
+}
+
+/* Filter panel headings / labels (hardcoded colours in filter components) */
+body[data-dark-mode] [class*="SearchPage"] [class*="filterLabel"],
+body[data-dark-mode] [class*="SearchPage"] [class*="labelText"],
+body[data-dark-mode] [class*="SearchPage"] [class*="groupLabel"],
+body[data-dark-mode] [class*="SearchPage"] fieldset legend,
+body[data-dark-mode] [class*="SearchPage"] label {
+  color: #f0ece6 !important;
+}
+
+/* Checkbox borders */
+body[data-dark-mode] [class*="SearchPage"] input[type="checkbox"] {
+  accent-color: #BAA38A;
+}
+
+
+/* â”€â”€ DatePicker global dark mode (all pages) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   Overrides CSS variables defined by .DatePicker_light class.
+   Specificity: body[attr] + [class*=...] = [0,2,1] > .light [0,1,0].
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+body[data-dark-mode] [class*="DatePicker_root"] {
+  --datepickerFgColor: #f0ece6;
+  --datepickerBgColor: #232323;
+  --datepickerBorderColor: #3a3a3a;
+  --datepickerDisabledFgColor: #555555;
+  --datepickerDisabledTextDeco: line-through;
+  --datepickerHoveredFgColor: #f0ece6;
+  --datepickerHoveredBgColor: #3a3a3a;
+  --datepickerHeaderFgColor: #f0ece6;
+  --datepickerHeaderFgColorDisabled: #555555;
+  --datepickerHeaderArrowColor: #BAA38A;
+  --datepickerDateOutline: auto;
+  --datepickerButtonOutlineColor: #aaaaaa;
+  --datepickerSelectedFgColor: #ffffff;
+  --datepickerSelectedBgColor: #BAA38A;
+  --datepickerSelectedBorder: solid 1px #BAA38A;
+  --datepickerSelectedHoveredFgColor: #ffffff;
+  --datepickerSelectedHoveredBgColor: #7C6350;
+  --datepickerInRangeBgColor: rgba(186, 163, 138, 0.25);
+  --datepickerInRangeFgColor: #f0ece6;
+  background-color: #232323 !important;
+  color: #f0ece6 !important;
+}
+
+/* Month name + weekday row text */
+body[data-dark-mode] [class*="DatePicker_monthName"],
+body[data-dark-mode] [class*="DatePicker_weekday"] span {
+  color: #f0ece6 !important;
+}
+
+/* Navigation arrow buttons â€” normal state: transparent bg, brown icon */
+body[data-dark-mode] [class*="DatePicker_previousMonthButton"],
+body[data-dark-mode] [class*="DatePicker_nextMonthButton"],
+body[data-dark-mode] [class*="DatePicker_monthYearPickerYearArrow"] {
+  background-color: transparent !important;
+  color: #BAA38A !important;
+}
+
+/* Navigation arrow buttons â€” hover state: brown bg, white icon */
+body[data-dark-mode] [class*="DatePicker_previousMonthButton"]:hover,
+body[data-dark-mode] [class*="DatePicker_nextMonthButton"]:hover,
+body[data-dark-mode] [class*="DatePicker_monthYearPickerYearArrow"]:hover {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+}
+
+/* Navigation arrow icons â€” inherit color from button */
+body[data-dark-mode] [class*="DatePicker_arrowIcon"] {
+  stroke: currentColor !important;
+  fill: currentColor !important;
+}
+
+/* All date cells */
+body[data-dark-mode] [class*="DatePicker_date"] {
+  color: #f0ece6 !important;
+}
+
+/* "Today" underline â€” use brand colour */
+body[data-dark-mode] [class*="DatePicker_dateToday"] [class*="DatePicker_renderedDay"]::after {
+  background-color: #BAA38A !important;
+}
+
+/* Month/year jump picker popup */
+body[data-dark-mode] [class*="DatePicker_monthYearPicker"] {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="DatePicker_monthYearPickerMonth"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="DatePicker_monthYearPickerYearLabel"] {
+  color: #f0ece6 !important;
+}
+
+/* Ensure the SingleDatePicker popup container itself is dark (no white bleed) */
+body[data-dark-mode] [class*="SingleDatepicker_popup"] {
+  background-color: #232323 !important;
+}
+
+/* Date text inputs on listing/OrderPanel â€” white bg, black text (both hour and day booking).
+   Use `input` element type to avoid matching inputWrapper div ([class*="DateRangePicker_input"]
+   would otherwise also match DateRangePicker_inputWrapper and add a white bg to the container). */
+body[data-dark-mode] [class*="OrderPanel"] [class*="SingleDatepicker_input"],
+body[data-dark-mode] [class*="OrderPanel"] [class*="FieldDateAndTimeInput"] input,
+body[data-dark-mode] [class*="OrderPanel"] input[class*="DateRangePicker_input"],
+body[data-dark-mode] [class*="BookingDatesForm"] input[class*="DateRangePicker_input"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #BAA38A !important;
+}
+
+/* DateRangePicker popup container in dark mode â€” dark bg so calendar renders correctly */
+body[data-dark-mode] [class*="OrderPanel"] [class*="DateRangePicker_popup"],
+body[data-dark-mode] [class*="BookingDatesForm"] [class*="DateRangePicker_popup"] {
+  background-color: #232323 !important;
+}
+
+/* Time selects (Hora de inÃ­cio / Hora de fim) â€” keep white bg, force black text
+   The CSS variable cascade sets color:#f0ece6 (cream) which looks pinkish on white. */
+body[data-dark-mode] [class*="OrderPanel"] select,
+body[data-dark-mode] [class*="BookingTimeForm"] select,
+body[data-dark-mode] [class*="FieldDateAndTimeInput"] select {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #BAA38A !important;
+}
+
+body[data-dark-mode] [class*="OrderPanel"] select option {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   ACCOUNT SETTINGS PAGES (ContactDetails, PasswordChange, PaymentMethods, etc.)
+   All rendered inside LayoutSideNavigation.
+   Same visual as Contact page: dark background, white inputs, dark input text.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* Main content area background */
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] {
+  background-color: #1a1a1a !important;
+  border-left-color: #3a3a3a !important;
+}
+
+/* Side nav background */
+body[data-dark-mode] [class*="LayoutSideNavigation_sideNav"] {
+  background-color: #1a1a1a !important;
+  border-top-color: #3a3a3a !important;
+}
+
+/* Side nav links */
+body[data-dark-mode] [class*="TabNav_link"],
+body[data-dark-mode] [class*="LayoutSideNavigation_sideNavTitle"] {
+  color: #f0ece6 !important;
+}
+
+/* Inputs, textareas, selects â€” white bg, black text (same as Contact page) */
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] input,
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] textarea,
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] select {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #cccccc !important;
+}
+
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] input::placeholder,
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] textarea::placeholder {
+  color: #c0b5aa !important;
+}
+
+/* Labels and form text */
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] label {
+  color: #f0ece6 !important;
+}
+
+/* Generic form titles / headings inside settings */
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] h1,
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] h2,
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] h3 {
+  color: #f0ece6 !important;
+}
+
+/* Submit / action buttons */
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] button[type="submit"],
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] [class*="submitButton"],
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] [class*="saveButton"] {
+  background-color: #2E2E2E !important;
+  color: #ffffff !important;
+}
+
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] button[type="submit"]:hover,
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] [class*="submitButton"]:hover,
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] [class*="saveButton"]:hover {
+  background-color: #BAA38A !important;
+}
+
+/* Info / helper text */
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] p,
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] span {
+  color: #d4c9bc !important;
+}
+
+/* Error messages â€” keep red readable */
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] [class*="error"],
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] [class*="Error"] {
+  color: #ff6b6b !important;
+}
+
+/* Success / verification messages â€” keep green */
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] [class*="success"],
+body[data-dark-mode] [class*="LayoutSideNavigation_main"] [class*="verified"] {
+  color: #4caf82 !important;
+}
+
+
+/* RecentlyViewedSection below search results (hardcoded white bg) */
+body[data-dark-mode] [class*="RecentlyViewedSection"][class*="root"] {
+  background-color: #1a1a1a !important;
+  border-top-color: #3a3a3a !important;
+}
+
+/* "EspaÃ§os Que TambÃ©m PoderÃ¡s Gostar" â€” same dark treatment as RecentlyViewedSection */
+body[data-dark-mode] [class*="SimilarListingsSection"][class*="root"] {
+  background-color: #1a1a1a !important;
+  border-top-color: #3a3a3a !important;
+}
+
+body[data-dark-mode] [class*="SimilarListingsSection"] [class*="heading"] {
+  color: #f0ece6 !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   ABOUT PAGE (data-dark-mode)
+   Root + sections: dark background #1a1a1a.
+   Cards (.card) keep their #3F3131 bg â€” already dark.
+   All text: white/cream. Icons: hardcoded #fff in SVG â€” no change needed.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-dark-mode] [class*="AboutPage_root"] {
+  background-color: #1a1a1a !important;
+}
+
+body[data-dark-mode] [class*="AboutPage_teamSection"] {
+  background-color: #1a1a1a !important;
+}
+
+/* Titles */
+body[data-dark-mode] [class*="AboutPage_title"],
+body[data-dark-mode] [class*="AboutPage_teamTitle"] {
+  color: #f0ece6 !important;
+}
+
+/* Subtitles / intro text */
+body[data-dark-mode] [class*="AboutPage_intro"],
+body[data-dark-mode] [class*="AboutPage_teamSubtitle"],
+body[data-dark-mode] [class*="AboutPage_ctaText"] {
+  color: #d4c9bc !important;
+}
+
+/* Team member names */
+body[data-dark-mode] [class*="AboutPage_teamName"] {
+  color: #f0ece6 !important;
+}
+
+/* Team member roles â€” keep brand brown, visible on dark bg */
+body[data-dark-mode] [class*="AboutPage_teamRole"] {
+  color: #BAA38A !important;
+}
+
+/* Card text (already white in light mode â€” reinforce) */
+body[data-dark-mode] [class*="AboutPage_cardText"] {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+body[data-dark-mode] [class*="AboutPage_cardTitle"] {
+  color: #ffffff !important;
+}
+
+/* Card SVG icons â€” protect strokes and prevent fill bleed from currentColor cascade.
+   Do NOT set color on the wrapper (would cause fill:currentColor = white on the compass circle). */
+body[data-dark-mode] [class*="AboutPage_cardIcon"] svg path,
+body[data-dark-mode] [class*="AboutPage_cardIcon"] svg rect,
+body[data-dark-mode] [class*="AboutPage_cardIcon"] svg line {
+  stroke: #ffffff !important;
+  fill: none !important;
+}
+body[data-dark-mode] [class*="AboutPage_cardIcon"] svg circle {
+  fill: none !important;
+  stroke: #ffffff !important;
+}
+/* The compass centre dot (r=1) must be filled white */
+body[data-dark-mode] [class*="AboutPage_cardIcon"] svg circle[r="1"] {
+  fill: #ffffff !important;
+}
+
+/* "Comece a explorar" CTA button â€” keep white text in both states.
+   The global #main-content a rule forces #f0ece6 which blends with #BAA38A on hover. */
+body[data-dark-mode] [class*="AboutPage_ctaButton"] {
+  color: #ffffff !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CONTACT PAGE (data-dark-mode)
+   Similar visual to the search/listings page.
+   Inputs keep white background + dark text (same as search filters).
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-dark-mode] [class*="ContactPage_root"] {
+  background-color: #1a1a1a !important;
+}
+
+/* Form labels */
+body[data-dark-mode] [class*="ContactPage_label"],
+body[data-dark-mode] [class*="ContactPage_formTitle"] {
+  color: #f0ece6 !important;
+}
+
+/* Inputs / textarea / phone input â€” white bg, dark text (like search page) */
+body[data-dark-mode] [class*="ContactPage_input"],
+body[data-dark-mode] [class*="ContactPage_textarea"],
+body[data-dark-mode] [class*="ContactPage_phoneInput"] {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #cccccc !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_phoneInputWrapper"] {
+  background-color: #ffffff !important;
+  border-color: #cccccc !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_phonePrefixBtn"] {
+  background-color: #f0ece6 !important;
+  color: #2E2E2E !important;
+  border-right-color: #cccccc !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_phonePrefixDropdown"] {
+  background-color: #2a2a2a !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px #3a3a3a !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_phonePrefixOption"] {
+  color: #f0ece6 !important;
+  background: transparent !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_phonePrefixOption"]:hover {
+  color: #BAA38A !important;
+}
+
+/* Sidebar info items â€” transparent (remove rectangle boxes visible on desktop sidebar) */
+body[data-dark-mode] [class*="ContactPage_infoItem"] {
+  background-color: transparent !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_infoTitle"],
+body[data-dark-mode] [class*="ContactPage_infoLabel"] {
+  color: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_infoText"],
+body[data-dark-mode] [class*="ContactPage_infoValue"],
+body[data-dark-mode] [class*="ContactPage_infoNote"] {
+  color: #aaaaaa !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_infoNote"] {
+  background-color: #2a2a2a !important;
+  border-left-color: #BAA38A !important;
+}
+
+/* Submit / reset buttons */
+body[data-dark-mode] [class*="ContactPage_submitButton"],
+body[data-dark-mode] [class*="ContactPage_resetButton"] {
+  background-color: #2E2E2E !important;
+  color: #ffffff !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_submitButton"]:hover:not(:disabled),
+body[data-dark-mode] [class*="ContactPage_resetButton"]:hover {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* Success state */
+body[data-dark-mode] [class*="ContactPage_successTitle"] {
+  color: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="ContactPage_successText"] {
+  color: #aaaaaa !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PROFILE SETTINGS PAGE (data-dark-mode)
+   Uses LayoutSingleColumn â€” NOT LayoutSideNavigation.
+   Dark background, white inputs, adapted text.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-dark-mode] [class*="ProfileSettingsPage_root"] {
+  background-color: #1a1a1a !important;
+}
+
+/* Info note panel (hardcoded #faf7f4 background) */
+body[data-dark-mode] [class*="ProfileSettingsPage_infoNote"] {
+  background-color: #2a2a2a !important;
+  border-left-color: #BAA38A !important;
+  color: #aaaaaa !important;
+}
+
+/* Inputs / textareas / selects â€” white bg, black text.
+   Scoped to the form (not the wider page wrapper) so the topbar search box
+   keeps its normal styling. */
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] input,
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] textarea,
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] select {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #cccccc !important;
+}
+
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] input::placeholder,
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] textarea::placeholder {
+  color: #c0b5aa !important;
+}
+
+/* Labels inside the form */
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] label {
+  color: #f0ece6 !important;
+}
+
+/* "VER O MEU PERFIL" mobile button (hardcoded white bg + dark text) */
+body[data-dark-mode] [class*="ProfileSettingsPage_viewProfileMobileButton"] {
+  background-color: #2a2a2a !important;
+  color: #f0ece6 !important;
+  border-color: #3a3a3a !important;
+}
+
+body[data-dark-mode] [class*="ProfileSettingsPage_viewProfileMobileButton"]:hover {
+  background-color: #BAA38A !important;
+  border-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* Error and success messages */
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] [class*="error"],
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] [class*="Error"] {
+  color: #ff6b6b !important;
+}
+
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] [class*="success"],
+body[data-dark-mode] [class*="ProfileSettingsForm_root"] [class*="verified"] {
+  color: #4caf82 !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   COMO FUNCIONA PAGE (data-dark-mode)
+   .root: dark. .hero already dark (#3F3131 â€” keep).
+   .stepCard and .guaranteeSection already dark â€” keep.
+   Fix: section text, FAQ, CTA section, dividers, borders.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-dark-mode] [class*="ComoFuncionaPage_root"] {
+  background-color: #1a1a1a !important;
+}
+
+/* Section titles (hardcoded #3F3131) */
+body[data-dark-mode] [class*="ComoFuncionaPage_sectionTitle"] {
+  color: #f0ece6 !important;
+}
+
+/* Section subtitles (hardcoded #7C6350) */
+body[data-dark-mode] [class*="ComoFuncionaPage_sectionSubtitle"] {
+  color: #d4c9bc !important;
+}
+
+/* FAQ questions (hardcoded #3F3131) */
+body[data-dark-mode] [class*="ComoFuncionaPage_faqQ"] {
+  color: #f0ece6 !important;
+}
+
+/* FAQ answers (hardcoded #7C6350) */
+body[data-dark-mode] [class*="ComoFuncionaPage_faqA"] {
+  color: #d4c9bc !important;
+}
+
+/* FAQ item separator lines (hardcoded #e8e0d8) */
+body[data-dark-mode] [class*="ComoFuncionaPage_faqItem"] {
+  border-bottom-color: #3a3a3a !important;
+  border-top-color: #3a3a3a !important;
+}
+
+/* Divider between sections (hardcoded #e8e0d8) */
+body[data-dark-mode] [class*="ComoFuncionaPage_divider"] {
+  background-color: #3a3a3a !important;
+}
+
+/* Final CTA section (hardcoded #f5f0eb background) */
+body[data-dark-mode] [class*="ComoFuncionaPage_ctaSection"] {
+  background-color: #242424 !important;
+}
+
+/* CTA title and text */
+body[data-dark-mode] [class*="ComoFuncionaPage_ctaTitle"] {
+  color: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="ComoFuncionaPage_ctaText"] {
+  color: #d4c9bc !important;
+}
+
+/* SVG icons in step cards and guarantee section â€” force white stroke explicitly.
+   The SVGs have hardcoded stroke="#ffffff" but this protects against any CSS override. */
+body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg path,
+body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg circle,
+body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg rect,
+body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg line,
+body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg polygon {
+  stroke: #ffffff !important;
+  fill: none !important;
+}
+
+body[data-dark-mode] [class*="ComoFuncionaPage_guaranteeIcon"] svg path,
+body[data-dark-mode] [class*="ComoFuncionaPage_guaranteeIcon"] svg circle,
+body[data-dark-mode] [class*="ComoFuncionaPage_guaranteeIcon"] svg rect,
+body[data-dark-mode] [class*="ComoFuncionaPage_guaranteeIcon"] svg line,
+body[data-dark-mode] [class*="ComoFuncionaPage_guaranteeIcon"] svg polygon {
+  stroke: #ffffff !important;
+  fill: none !important;
+}
+
+/* HelpLink icon in topbar â€” SVG uses stroke="currentColor"; force white */
+body[data-dark-mode] [class*="TopbarDesktop"] [class*="helpIcon"] {
+  stroke: #ffffff !important;
+  color: #ffffff !important;
+}
+
+/* Step numbers â€” preserve original faint opacity (rgba(255,255,255,0.15)) so they look
+   the same as light mode. The general span cascade makes them solid #f0ece6 otherwise. */
+body[data-dark-mode] [class*="ComoFuncionaPage_stepNumber"] {
+  color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Step card text â€” keep same colors as light mode (already on dark #3F3131 bg) */
+body[data-dark-mode] [class*="ComoFuncionaPage_stepTitle"] {
+  color: #ffffff !important;
+}
+
+body[data-dark-mode] [class*="ComoFuncionaPage_stepText"] {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Section CTA buttons â€” fix hover: general a:hover sets color:#BAA38A which is invisible
+   on the #BAA38A hover background. Force white text on hover. */
+body[data-dark-mode] [class*="ComoFuncionaPage_ctaBtn"]:hover {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+body[data-dark-mode] [class*="ComoFuncionaPage_ctaBtnPrimary"]:hover {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+/* Secondary CTA button â€” outline style with dark border/text in light mode */
+body[data-dark-mode] [class*="ComoFuncionaPage_ctaBtnSecondary"] {
+  border-color: #f0ece6 !important;
+  color: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="ComoFuncionaPage_ctaBtnSecondary"]:hover {
+  background-color: #f0ece6 !important;
+  color: #2E2E2E !important;
+  text-decoration: none !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SHARE BUTTONS (Copiar link / Partilhar no WhatsApp)
+   .copyButton has hardcoded white bg + dark text.
+   The general span cascade turns the label near-white â†’ invisible on white bg.
+   Restore icon + text to dark brown so they're readable on the white button.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-landing-dark] [class*="ShareButtons_copyButton"] {
+  color: #7C6350 !important;
+  border-color: #BAA38A !important;
+}
+
+body[data-landing-dark] [class*="ShareButtons_copyButton"] span {
+  color: #7C6350 !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FOOTER â€” newsletter error text
+   The general footer span/p override (#f5f0eb) swallows
+   the error colour. Restore it to red explicitly.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-landing-dark] #site-footer [class*="newsletterError"] {
+  color: #ff6060 !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PWA INSTALL MODAL (data-dark-mode)
+   Keep the exact same light-mode appearance in dark mode
+   (white card, dark text) â€” it floats over a dimmed overlay
+   so it reads fine regardless of the page theme.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-dark-mode] div[class*="PwaInstallButton_modal"] {
+  background: #ffffff !important;
+  color: #2E2E2E !important;
+}
+
+body[data-dark-mode] div[class*="PwaInstallButton_modalBackdrop"] {
+  background: rgba(0, 0, 0, 0.55) !important;
+}
+
+body[data-dark-mode] div[class*="PwaInstallButton_modal"] h3,
+body[data-dark-mode] div[class*="PwaInstallButton_modal"] p,
+body[data-dark-mode] div[class*="PwaInstallButton_modal"] ol,
+body[data-dark-mode] div[class*="PwaInstallButton_modal"] li,
+body[data-dark-mode] #site-footer div[class*="PwaInstallButton_modal"] h3,
+body[data-dark-mode] #site-footer div[class*="PwaInstallButton_modal"] p,
+body[data-dark-mode] #site-footer div[class*="PwaInstallButton_modal"] ol,
+body[data-dark-mode] #site-footer div[class*="PwaInstallButton_modal"] li {
+  color: #2E2E2E !important;
+}
+
+body[data-dark-mode] button[class*="PwaInstallButton_modalClose"],
+body[data-dark-mode] #site-footer button[class*="PwaInstallButton_modalClose"] {
+  color: #2E2E2E !important;
+}
+
+body[data-dark-mode] button[class*="PwaInstallButton_modalPrimary"] {
+  background: #2E2E2E !important;
+  color: #ffffff !important;
+  border-color: #2E2E2E !important;
+}
+
+body[data-dark-mode] button[class*="PwaInstallButton_modalPrimary"]:hover:not(:disabled) {
+  background: #BAA38A !important;
+  border-color: #BAA38A !important;
+}
+
+body[data-dark-mode] button[class*="PwaInstallButton_modalSecondary"] {
+  background: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #BAA38A !important;
+}
+
+body[data-dark-mode] button[class*="PwaInstallButton_modalSecondary"]:hover {
+  background: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   EDIT LISTING WIZARD (data-dark-mode)
+   Global CSS hardcodes select/input bg to #fff.
+   Make them dark to match the dark wizard background.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+body[data-dark-mode] [class*="EditListingPage"] {
+  background-color: #1a1a1a !important;
+}
+
+body[data-dark-mode] [class*="EditListingPage"] select,
+body[data-dark-mode] [class*="EditListingPage"] input:not([type="checkbox"]):not([type="radio"]):not([class*="TopbarSearchForm"]),
+body[data-dark-mode] [class*="EditListingPage"] textarea {
+  background-color: #2a2a2a !important;
+  color: #f0ece6 !important;
+  border-color: #4d4d4d !important;
+}
+
+body[data-dark-mode] [class*="EditListingPage"] input:not([class*="TopbarSearchForm"])::placeholder,
+body[data-dark-mode] [class*="EditListingPage"] textarea::placeholder {
+  color: #888888 !important;
+}
+
+body[data-dark-mode] [class*="EditListingPage"] label {
+  color: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="EditListingPage"] h1,
+body[data-dark-mode] [class*="EditListingPage"] h2,
+body[data-dark-mode] [class*="EditListingPage"] h3,
+body[data-dark-mode] [class*="EditListingPage"] p,
+body[data-dark-mode] [class*="EditListingPage"] span:not(button span):not([class*="PrimaryButton"] span) {
+  color: #f0ece6 !important;
+}
+
+/* Wizard buttons ("SEGUINTE", "Save changes") use the basic <Button>
+   component (buttonDefault from marketplaceDefaults) — its `:disabled`
+   state defaults to grey-on-grey (colorGrey100 / colorGrey700), which
+   in dark mode renders as basically invisible. Force a readable
+   dark-on-light pill for the disabled state and keep the active state
+   black bg + white text. */
+body[data-dark-mode] [class*="EditListingPage"] button[class*="Button_root"],
+body[data-dark-mode] [class*="EditListingPage"] button[class*="primaryButtonRoot"] {
+  background-color: #2E2E2E !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="EditListingPage"] button[class*="Button_root"]:hover,
+body[data-dark-mode] [class*="EditListingPage"] button[class*="primaryButtonRoot"]:hover {
+  background-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="EditListingPage"] button[class*="Button_root"]:disabled,
+body[data-dark-mode] [class*="EditListingPage"] button[class*="primaryButtonRoot"]:disabled {
+  background-color: #3F3131 !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  opacity: 1 !important;
+}
+
+/* EditListing modals (Availability Plan, Availability Exception, etc.) —
+   invert to dark background + light text in dark mode, instead of leaving
+   the modal as a white island floating over the dark page. */
+
+/* The outer scroll layer (covers viewport with a dim/dark backdrop on
+   desktop, full background on mobile) and the inner container (the
+   actual white card) both default to white — flip both to dark. We
+   target both the generic Modal_scrollLayer / Modal_container AND the
+   panel-specific overrides (EditListingAvailabilityPanel_modalContainer
+   etc.) because the availability modal supplies its own classNames. */
+body[data-dark-mode] [class*="Modal_isOpen"] [class*="scrollLayer"],
+body[data-dark-mode] [class*="Modal_isOpen"] [class*="modalScrollLayer"] {
+  background-color: rgba(0, 0, 0, 0.55) !important;
+}
+
+body[data-dark-mode] [class*="Modal_isOpen"] [class*="container"],
+body[data-dark-mode] [class*="Modal_isOpen"] [class*="modalContainer"] {
+  background-color: #2a2a2a !important;
+  color: #f0ece6 !important;
+}
+
+/* Extra-specific targeting for the EditListingAvailabilityPanel modals —
+   their custom `.modalContainer` and `.modalScrollLayer` classes were
+   getting missed by the generic Modal_isOpen descendant selector. */
+body[data-dark-mode] [class*="EditListingAvailabilityPanel_modalContainer"] {
+  background-color: #2a2a2a !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="EditListingAvailabilityPanel_modalScrollLayer"] {
+  background-color: rgba(0, 0, 0, 0.55) !important;
+}
+
+/* Text inside the modal stays cream (matches the rest of the dark
+   theme). Selects, inputs and the close button also need adjusting. */
+body[data-dark-mode] [class*="Modal_isOpen"] h1,
+body[data-dark-mode] [class*="Modal_isOpen"] h2,
+body[data-dark-mode] [class*="Modal_isOpen"] h3,
+body[data-dark-mode] [class*="Modal_isOpen"] h4,
+body[data-dark-mode] [class*="Modal_isOpen"] p,
+body[data-dark-mode] [class*="Modal_isOpen"] span,
+body[data-dark-mode] [class*="Modal_isOpen"] label {
+  color: #f0ece6 !important;
+}
+
+/* Inputs / selects inside the modal — dark background, light text,
+   visible border. Native <option> elements inside <select> follow the
+   user's OS dark/light setting, so they show readable in dark mode
+   regardless. */
+body[data-dark-mode] [class*="Modal_isOpen"] input,
+body[data-dark-mode] [class*="Modal_isOpen"] textarea,
+body[data-dark-mode] [class*="Modal_isOpen"] select {
+  background-color: #1f1f1f !important;
+  color: #f0ece6 !important;
+  border-color: #4a4a4a !important;
+  caret-color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="Modal_isOpen"] input:focus,
+body[data-dark-mode] [class*="Modal_isOpen"] textarea:focus,
+body[data-dark-mode] [class*="Modal_isOpen"] select:focus {
+  background-color: #1f1f1f !important;
+  color: #f0ece6 !important;
+  border-color: #BAA38A !important;
+  box-shadow: none !important;
+}
+body[data-dark-mode] [class*="Modal_isOpen"] input::placeholder,
+body[data-dark-mode] [class*="Modal_isOpen"] textarea::placeholder {
+  color: #8a7a6c !important;
+}
+body[data-dark-mode] [class*="Modal_isOpen"] option {
+  background-color: #2a2a2a !important;
+  color: #f0ece6 !important;
+}
+
+body[data-dark-mode] [class*="EditListingPage"] [class*="error"],
+body[data-dark-mode] [class*="EditListingPage"] [class*="Error"] {
+  color: #ff6b6b !important;
+}
+
+/* Unavailable badge â€” texto sempre preto sobre fundo claro */
+body[data-landing-dark] [class*="unavailableBadge"],
+body[data-landing-dark] [class*="unavailableBadge"] span,
+body[data-dark-mode] [class*="unavailableBadge"],
+body[data-dark-mode] [class*="unavailableBadge"] span {
+  color: #2E2E2E !important;
+}
+
+/* SavedSearchesPage cards — fundo escuro #2a2a2a em dark mode, texto creme. */
+body[data-landing-dark] [class*="SavedSearchesPage"] [class*="label"],
+body[data-dark-mode] [class*="SavedSearchesPage"] [class*="label"] {
+  color: #f0ece6 !important;
+}
+
+/* TransactionPanel chat-card header — card is now DARK in dark mode, so
+   text inside must be LIGHT. */
+body[data-dark-mode] [class*="TransactionPanel_chatCardName"],
+body[data-dark-mode] [class*="TransactionPanel_chatCardName"] span:not([class*="chatCardLocation"]) {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardName"] [class*="TransactionPanel_chatCardLocation"] {
+  color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardOnline"] {
+  color: #c8bdb0 !important;
+}
+
+/* "Seguir" / "A seguir" button hover in the chat card. */
+body[data-dark-mode] [class*="TransactionPanel_chatCardFollowingBtn"] {
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+  border-color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardFollowingBtn"]:hover,
+body[data-dark-mode] [class*="TransactionPanel_chatCardFollowingBtn"]:focus {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_chatCardFollowBtn"]:hover,
+body[data-dark-mode] [class*="TransactionPanel_chatCardFollowBtn"]:focus {
+  background-color: #a38d76 !important;
+  color: #ffffff !important;
+}
+
+/* ActivityFeed received-message bubble (other party) — bubble bg is now
+   dark (#3a3a3a) so text + date must be light. */
+body[data-dark-mode] [class*="ActivityFeed_messageContent"],
+body[data-dark-mode] [class*="ActivityFeed_messageContent"] p,
+body[data-dark-mode] [class*="ActivityFeed_messageContent"] span,
+body[data-dark-mode] [class*="ActivityFeed_messageText"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="ActivityFeed_messageDate"] {
+  color: #BAA38A !important;
+}
+
+/* Avatars inside chat cards (TransactionPanel + DirectMessagePage + ActivityFeed)
+   — brown circle with white initials for clear contrast on the dark card. */
+body[data-dark-mode] [class*="TransactionPanel_chatCardAvatar"] [class*="Avatar_initials"],
+body[data-dark-mode] [class*="TransactionPanel_chatCardAvatar"] [class*="Avatar_initialsSmall"],
+body[data-dark-mode] [class*="TransactionPanel_chatCardAvatar"] [class*="Avatar_initialsMedium"],
+body[data-dark-mode] [class*="TransactionPanel_chatCardAvatar"] [class*="Avatar_initialsLarge"],
+body[data-dark-mode] [class*="ActivityFeed_avatar"] [class*="Avatar_initials"],
+body[data-dark-mode] [class*="ActivityFeed_avatar"] [class*="Avatar_initialsSmall"],
+body[data-dark-mode] [class*="DirectMessagePage_headerAvatar"] [class*="Avatar_initials"],
+body[data-dark-mode] [class*="DirectMessagePage_bubbleAvatar"] [class*="Avatar_initialsSmall"] {
+  color: #ffffff !important;
+}
+
+/* "Ver anúncio" button on the OrderDetailsPage. The right-hand card stays
+   white in dark mode so the button keeps the same white pill + brown border.
+   Only the button itself gets the background — inner elements stay
+   transparent so we don't draw a separate "rectangle behind the text" on
+   hover. */
+body[data-dark-mode] [class*="TransactionPanel_viewListingButton"] {
+  background: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_viewListingButton"] * {
+  background: transparent !important;
+  color: inherit !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_viewListingButton"]:hover,
+body[data-dark-mode] [class*="TransactionPanel_viewListingButton"]:focus {
+  background: #BAA38A !important;
+  color: #ffffff !important;
+  outline: none !important;
+}
+
+/* "Adicionar ao calendário" button — text is inside a plain <span> with no
+   class, so the wide `#main-content span { color: cream }` rule paints it
+   invisible on the white button. Pin its label colour to dark. */
+body[data-dark-mode] [class*="AddToCalendarButton_button"],
+body[data-dark-mode] [class*="AddToCalendarButton_button"] span {
+  color: #2E2E2E !important;
+}
+body[data-dark-mode] [class*="AddToCalendarButton_button"]:hover,
+body[data-dark-mode] [class*="AddToCalendarButton_button"]:focus,
+body[data-dark-mode] [class*="AddToCalendarButton_button"]:hover span,
+body[data-dark-mode] [class*="AddToCalendarButton_button"]:focus span {
+  color: #ffffff !important;
+}
+/* Dropdown menu items (Google / Apple / Outlook) inside the calendar
+   dropdown — same dark-text-on-white treatment. */
+body[data-dark-mode] [class*="AddToCalendarButton_menu"] [class*="AddToCalendarButton_menuItem"],
+body[data-dark-mode] [class*="AddToCalendarButton_menu"] [class*="AddToCalendarButton_menuItem"] span {
+  color: #2E2E2E !important;
+}
+
+body[data-landing-dark] [class*="SavedSearchesPage"] [class*="savedAt"],
+body[data-dark-mode] [class*="SavedSearchesPage"] [class*="savedAt"] {
+  color: #BAA38A !important;
+}
+
+/* UserCard "N seguidores" â€” nÃºmero em branco no dark mode (fundo escuro) */
+body[data-dark-mode] [class*="metaFollowers"] strong {
+  color: #ffffff !important;
+}
+body[data-dark-mode] [class*="metaFollowers"] {
+  color: #f0ece6 !important;
+}
+
+/* ProfilePage language chips â€” fundo claro, texto preto */
+body[data-landing-dark] [class*="languagesChip"],
+body[data-dark-mode] [class*="languagesChip"] {
+  color: #2E2E2E !important;
+}
+
+/* ProfileListingsSearchBar â€” corrigir fundo branco do input no dark mode */
+body[data-landing-dark] [class*="ProfileListingsSearchBar"] [class*="wrap"],
+body[data-landing-dark] [class*="ProfileListingsSearchBar"] input,
+body[data-dark-mode] [class*="ProfileListingsSearchBar"] [class*="wrap"],
+body[data-dark-mode] [class*="ProfileListingsSearchBar"] input {
+  background-color: #1e1e1e !important;
+}
+body[data-landing-dark] [class*="ProfileListingsSearchBar"] input,
+body[data-dark-mode] [class*="ProfileListingsSearchBar"] input {
+  color: #f0ece6 !important;
+  caret-color: #f0ece6 !important;
+}
+
+/* ProfileListingsSearchBar dropdown — fully custom component (no
+   LocationAutocompleteInput), so it needs its own dark-mode treatment.
+   Default state is hardcoded #ffffff bg + brown labels, which on a dark
+   page looks like a big white slab. Flip bg + borders dark and force all
+   inner text (section labels, items, counts) to white. */
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"],
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] {
+  background-color: #1a1a1a !important;
+  border-color: #4d4d4d !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55) !important;
+}
+
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_section"] + [class*="ProfileListingsSearchBar_section"],
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_section"] + [class*="ProfileListingsSearchBar_section"] {
+  border-top-color: #3a3a3a !important;
+}
+
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_sectionLabel"],
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_item"],
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_itemLabel"],
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_itemIcon"],
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_itemCount"],
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_sectionLabel"],
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_item"],
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_itemLabel"],
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_itemIcon"],
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_itemCount"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* "Limpar" button in the recent-searches header keeps its cream brand
+   accent, but lighter so it stands out on the dark dropdown bg. */
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_sectionClear"],
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_sectionClear"] {
+  color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_sectionClear"]:hover,
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_sectionClear"]:hover {
+  color: #ffffff !important;
+}
+
+/* Hover state on each item gets a brighter background to stay visible
+   against the dark dropdown bg (the default rgba(186,163,138,0.16) is too
+   faint here). */
+body[data-dark-mode] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_item"]:hover,
+body[data-landing-dark] [class*="ProfileListingsSearchBar_dropdown"] [class*="ProfileListingsSearchBar_item"]:hover {
+  background-color: rgba(186, 163, 138, 0.18) !important;
+  border-left-color: #BAA38A !important;
+}
+
+/* DestacaAnuncioPage â€” lado direito branco do card: forÃ§ar texto preto */
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="previewInfoWrapper"],
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="previewInfoWrapper"] *,
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="previewInfoWrapper"],
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="previewInfoWrapper"] * {
+  color: #2E2E2E !important;
+}
+/* BotÃ£o primÃ¡rio "RESERVAR AGORA" mantÃ©m texto branco */
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="previewButtonPrimary"],
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="previewButtonPrimary"] {
+  color: #ffffff !important;
+}
+/* Overlay "Em Destaque" e contador "1 de 1" â€” texto branco sobre fundo escuro */
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="previewImageOverlay"],
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="previewImageCounter"],
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="previewImageOverlay"],
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="previewImageCounter"] {
+  color: #ffffff !important;
+}
+/* Setas de navegaÃ§Ã£o â€” texto escuro sobre fundo branco do botÃ£o circular */
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="previewNavArrow"],
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="previewNavArrow"] {
+  color: #2E2E2E !important;
+}
+
+/* DestacaAnuncioPage â€” paymentSection tem fundo branco, forÃ§ar texto preto */
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="paymentSection"],
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="paymentSection"] *,
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="paymentSection"],
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="paymentSection"] * {
+  color: #2E2E2E !important;
+}
+
+/* DestacaAnuncioPage â€” addImageButton texto preto, Ã­cone "+" castanho */
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="addImageButton"],
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="addImageButton"] {
+  color: #2E2E2E !important;
+}
+body[data-landing-dark] [class*="DestacaAnuncioPage"] [class*="addImageIcon"],
+body[data-dark-mode] [class*="DestacaAnuncioPage"] [class*="addImageIcon"] {
+  color: #BAA38A !important;
+}
+/* DestacaAnuncioPage -- popup de sucesso: fundo branco, texto preto */
+body[data-landing-dark] [class*=”DestacaAnuncioPage_popupCard”],
+body[data-landing-dark] [class*=”DestacaAnuncioPage_popupCard”] *,
+body[data-dark-mode] [class*=”DestacaAnuncioPage_popupCard”],
+body[data-dark-mode] [class*=”DestacaAnuncioPage_popupCard”] * {
+  color: #2E2E2E !important;
+}
+body[data-landing-dark] [class*=”DestacaAnuncioPage_popupIcon”],
+body[data-dark-mode] [class*=”DestacaAnuncioPage_popupIcon”] {
+  color: #ffffff !important;
+}
+
+/* ── ProfilePage chips de língua: forçar texto preto no fundo creme ──
+   #main-content iguala a especificidade do seletor de span global [1,1,2].
+   SÃ³ alteramos color â€” background nÃ£o, para nÃ£o sobrescrever o background-image
+   das bandeiras do flag-icons no span interior. */
+body[data-dark-mode] #main-content [class*="ProfilePage_languagesChip"],
+body[data-landing-dark] #main-content [class*="ProfilePage_languagesChip"] {
+  color: #000000 !important;
+}
+
+/* â”€â”€ Auth-family pages: form cards stay white with dark text in dark mode â”€â”€
+   The card composes marketplaceModalBaseStyles (bg = var(--colorWhite)).
+   CSS vars may be inlined at build time so the var override doesn't reach
+   the card background; explicitly keep it white and force text dark. */
+body[data-dark-mode] [class*="AuthenticationPage_content"],
+body[data-dark-mode] [class*="PasswordRecoveryPage_submitEmailContent"],
+body[data-dark-mode] [class*="PasswordRecoveryPage_genericErrorContent"],
+body[data-dark-mode] [class*="PasswordRecoveryPage_emailSubmittedContent"],
+body[data-dark-mode] [class*="PasswordResetPage_content"],
+body[data-landing-dark] [class*="AuthenticationPage_content"],
+body[data-landing-dark] [class*="PasswordRecoveryPage_submitEmailContent"],
+body[data-landing-dark] [class*="PasswordRecoveryPage_genericErrorContent"],
+body[data-landing-dark] [class*="PasswordRecoveryPage_emailSubmittedContent"],
+body[data-landing-dark] [class*="PasswordResetPage_content"] {
+  background-color: #ffffff !important;
+}
+body[data-dark-mode] [class*="AuthenticationPage_content"] h1,
+body[data-dark-mode] [class*="AuthenticationPage_content"] h2,
+body[data-dark-mode] [class*="AuthenticationPage_content"] h3,
+body[data-dark-mode] [class*="AuthenticationPage_content"] p,
+body[data-dark-mode] [class*="AuthenticationPage_content"] span,
+body[data-dark-mode] [class*="AuthenticationPage_content"] label,
+body[data-dark-mode] [class*="AuthenticationPage_content"] a,
+body[data-dark-mode] [class*="PasswordRecoveryPage_submitEmailContent"] h1,
+body[data-dark-mode] [class*="PasswordRecoveryPage_submitEmailContent"] p,
+body[data-dark-mode] [class*="PasswordRecoveryPage_submitEmailContent"] span,
+body[data-dark-mode] [class*="PasswordRecoveryPage_submitEmailContent"] label,
+body[data-dark-mode] [class*="PasswordRecoveryPage_emailSubmittedContent"] h1,
+body[data-dark-mode] [class*="PasswordRecoveryPage_emailSubmittedContent"] p,
+body[data-dark-mode] [class*="PasswordRecoveryPage_emailSubmittedContent"] span,
+body[data-dark-mode] [class*="PasswordResetPage_content"] h1,
+body[data-dark-mode] [class*="PasswordResetPage_content"] p,
+body[data-dark-mode] [class*="PasswordResetPage_content"] span,
+body[data-dark-mode] [class*="PasswordResetPage_content"] label,
+body[data-landing-dark] [class*="AuthenticationPage_content"] h1,
+body[data-landing-dark] [class*="AuthenticationPage_content"] h2,
+body[data-landing-dark] [class*="AuthenticationPage_content"] h3,
+body[data-landing-dark] [class*="AuthenticationPage_content"] p,
+body[data-landing-dark] [class*="AuthenticationPage_content"] span,
+body[data-landing-dark] [class*="AuthenticationPage_content"] label,
+body[data-landing-dark] [class*="AuthenticationPage_content"] a,
+body[data-landing-dark] [class*="PasswordRecoveryPage_submitEmailContent"] h1,
+body[data-landing-dark] [class*="PasswordRecoveryPage_submitEmailContent"] p,
+body[data-landing-dark] [class*="PasswordRecoveryPage_submitEmailContent"] span,
+body[data-landing-dark] [class*="PasswordRecoveryPage_submitEmailContent"] label,
+body[data-landing-dark] [class*="PasswordRecoveryPage_emailSubmittedContent"] h1,
+body[data-landing-dark] [class*="PasswordRecoveryPage_emailSubmittedContent"] p,
+body[data-landing-dark] [class*="PasswordRecoveryPage_emailSubmittedContent"] span,
+body[data-landing-dark] [class*="PasswordResetPage_content"] h1,
+body[data-landing-dark] [class*="PasswordResetPage_content"] p,
+body[data-landing-dark] [class*="PasswordResetPage_content"] span,
+body[data-landing-dark] [class*="PasswordResetPage_content"] label {
+  color: #2E2E2E !important;
+}
+/* Exceção: os cartões de tipo de conta (Anunciante/Visitante) ficam escuros
+   em dark mode (o background usa var(--colorWhite), que inverte), por isso o
+   ícone e o texto deles têm de passar a claro — sobrepõe o forçar-escuro
+   acima. Tem de vir DEPOIS dessas regras. */
+body[data-dark-mode] [class*="AuthenticationPage_content"] [class*="userTypeCardIcon"],
+body[data-dark-mode] [class*="AuthenticationPage_content"] [class*="userTypeCardLabel"],
+body[data-landing-dark] [class*="AuthenticationPage_content"] [class*="userTypeCardIcon"],
+body[data-landing-dark] [class*="AuthenticationPage_content"] [class*="userTypeCardLabel"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="AuthenticationPage_content"] [class*="userTypeCardDescription"],
+body[data-landing-dark] [class*="AuthenticationPage_content"] [class*="userTypeCardDescription"] {
+  color: #b5b0a8 !important;
+}
+/* OR divider background must match the white card */
+body[data-dark-mode] [class*="AuthenticationPage_socialButtonsOr"],
+body[data-dark-mode] [class*="AuthenticationPage_socialButtonsOrText"],
+body[data-landing-dark] [class*="AuthenticationPage_socialButtonsOr"],
+body[data-landing-dark] [class*="AuthenticationPage_socialButtonsOrText"] {
+  background-color: #ffffff !important;
+}
+/* Submit buttons keep white text on dark background */
+body[data-dark-mode] [class*="LoginForm_submitButton"],
+body[data-dark-mode] [class*="SignupForm_submitButton"],
+body[data-dark-mode] [class*="ConfirmSignupForm_submitButton"],
+body[data-landing-dark] [class*="LoginForm_submitButton"],
+body[data-landing-dark] [class*="SignupForm_submitButton"],
+body[data-landing-dark] [class*="ConfirmSignupForm_submitButton"] {
+  color: #ffffff !important;
+}
+/* Google/social login button text must be white in dark mode */
+body[data-dark-mode] [class*="socialButtonRoot"],
+body[data-dark-mode] [class*="socialButtonRoot"] span,
+body[data-landing-dark] [class*="socialButtonRoot"],
+body[data-landing-dark] [class*="socialButtonRoot"] span {
+  color: #ffffff !important;
+}
+/* Form inputs on the white card stay white */
+body[data-dark-mode] [class*="AuthenticationPage_content"] input,
+body[data-landing-dark] [class*="AuthenticationPage_content"] input {
+  background-color: #ffffff !important;
+  color: #2E2E2E !important;
+  border-color: #D4C4B0 !important;
+}
+
+/* â”€â”€ LanguagesField chips: texto preto em dark mode â”€â”€
+   NÃƒO forÃ§amos background aqui â€” o chip jÃ¡ tem background:#ffffff hardcoded
+   no CSS module e o dark mode nÃ£o o altera. ForÃ§amos sÃ³ as cores de texto.
+   [class*="LanguagesField_chip"] apanha chip + chips (container) + chipActive,
+   mas color em elementos sem texto nÃ£o tem efeito visual. */
+body[data-dark-mode] #main-content [class*="LanguagesField_label"],
+body[data-landing-dark] #main-content [class*="LanguagesField_label"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] #main-content [class*="LanguagesField_chip"],
+body[data-landing-dark] #main-content [class*="LanguagesField_chip"] {
+  color: #000000 !important;
+}
+body[data-dark-mode] #main-content [class*="LanguagesField_chip"] span,
+body[data-landing-dark] #main-content [class*="LanguagesField_chip"] span {
+  color: #000000 !important;
+}
+body[data-dark-mode] #main-content [class*="LanguagesField_chipActive"],
+body[data-landing-dark] #main-content [class*="LanguagesField_chipActive"] {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+body[data-dark-mode] #main-content [class*="LanguagesField_chipActive"] span,
+body[data-landing-dark] #main-content [class*="LanguagesField_chipActive"] span {
+  color: #ffffff !important;
+}
+
+/* Force-clear any inherited background on the text span inside language
+   chips so the selected (brown) chip doesn't get a stray white/cream
+   rectangle behind its label. The flag span keeps its background-image,
+   so exclude it from this rule. */
+body[data-dark-mode] #main-content [class*="LanguagesField_chip"] span:not([class*="fi-"]),
+body[data-landing-dark] #main-content [class*="LanguagesField_chip"] span:not([class*="fi-"]) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+/* "X pessoas viram hoje" view-count pill — global text-color inversions in
+   dark mode flip the dark text to a light shade, making it invisible on the
+   light translucent badge background. Lock the text to dark explicitly so
+   the pill stays readable. */
+body[data-dark-mode] [class*="ListingPage_viewCountBadge"],
+body[data-dark-mode] [class*="ListingPage_viewCountBadge"] span {
+  color: #2E2E2E !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* NotFoundPage (404) â€” dark mode coverage. The brown "404" number stays as-is
+   (brand colour reads fine on dark bg); flip the white background, search
+   input, and the dark home button. */
+body[data-dark-mode] [class*="NotFoundPage_root"] {
+  background-color: #1a1a1a !important;
+}
+body[data-dark-mode] [class*="NotFoundPage_heading"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="NotFoundPage_description"] {
+  color: #c9c2b6 !important;
+}
+body[data-dark-mode] [class*="NotFoundPage_searchForm"] {
+  background-color: #2a2a2a !important;
+  border-color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="NotFoundPage_searchForm"] input,
+body[data-dark-mode] [class*="SearchForm_searchInput"],
+body[data-dark-mode] [class*="SearchForm_keywordInput"] {
+  background-color: transparent !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="SearchForm_searchInput"]::placeholder,
+body[data-dark-mode] [class*="SearchForm_keywordInput"]::placeholder {
+  color: #8a8073 !important;
+}
+body[data-dark-mode] [class*="SearchForm_iconSvgGroup"] {
+  stroke: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="NotFoundPage_homeButton"] {
+  background-color: #f0ece6 !important;
+  color: #1a1a1a !important;
+}
+body[data-dark-mode] [class*="NotFoundPage_homeButton"]:hover {
+  background-color: #BAA38A !important;
+  color: #ffffff !important;
+}
+
+/* Desktop sidecard listing summary — title + price visible in dark mode
+   (used in customer inquiry state to mirror the expired state's info density). */
+body[data-dark-mode] [class*="TransactionPanel_summaryTitle"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_summaryTitleLink"]:hover [class*="TransactionPanel_summaryTitle"] {
+  color: #BAA38A !important;
+}
+body[data-dark-mode] [class*="TransactionPanel_summaryPrice"] {
+  color: #f0ece6 !important;
+}

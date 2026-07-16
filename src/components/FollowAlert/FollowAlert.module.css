@@ -1,0 +1,119 @@
+/* Bottom-right anchor — same as FavoriteAlert / NewListingNotification /
+   SavedSearchAlert / ExtraAlerts so all toast types appear in a consistent
+   spot. Two alerts firing simultaneously is rare; if they do they'll stack
+   on top of each other briefly. */
+.stack {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  left: auto;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.stack > * {
+  pointer-events: auto;
+}
+
+.banner {
+  background-color: #2E2E2E;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 380px;
+  max-width: 380px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  animation: slideIn 0.3s ease;
+}
+
+@media (max-width: 480px) {
+  .stack {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+  }
+  .banner {
+    max-width: none;
+    width: auto;
+  }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.content {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.messages {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #BAA38A;
+}
+
+.text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #f0ebe4;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.label {
+  color: #BAA38A;
+  font-weight: 700;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: #BAA38A;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.closeBtn:hover {
+  color: #ffffff;
+}

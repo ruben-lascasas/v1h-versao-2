@@ -1,0 +1,8 @@
+{
+  "//": "Stop nodemon from restarting on writes to server/data/* — pwa-counter.json is touched on every install and the constant restarts cause ECONNREFUSED errors for in-flight proxy requests.",
+  "ignore": [
+    "server/data/*",
+    "node_modules/*",
+    "build/*"
+  ]
+}

@@ -1,0 +1,301 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.root {
+  background: #fff;
+  padding: 0;
+  overflow: visible;
+}
+
+/* ── Title + bar row ──────────────────────── */
+.titleBarRow {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.titleWrapper {
+  flex-shrink: 0;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.titleField h1,
+.titleField h2,
+.titleField h3 {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #3F3131;
+  line-height: 1.1;
+  margin: 0;
+  white-space: nowrap;
+
+  @media (max-width: 767px) {
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
+.topBarLeft {
+  flex: 0 0 400px;
+  height: 26px;
+  background: #BAA38A;
+}
+
+.topBar {
+  flex: 1;
+  height: 26px;
+  background: #BAA38A;
+}
+
+/* ── Bottom bar ───────────────────────────── */
+.bottomBar {
+  height: 26px;
+  background: #BAA38A;
+  width: 100%;
+  position: relative;
+  z-index: 0;
+}
+
+/* ── Main content row ─────────────────────── */
+.inner {
+  display: flex;
+  align-items: stretch;
+  gap: 32px;
+  padding: 40px 64px 48px 64px;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  overflow: visible;
+}
+
+/* ── Left side ────────────────────────────── */
+.left {
+  flex: 1 1 52%;
+  max-width: 52%;
+  display: flex;
+  flex-direction: column;
+}
+
+.descriptionField p {
+  font-size: 1.55rem;
+  line-height: 1.85;
+  color: #7C6350;
+  margin: 0;
+}
+
+/* Badges */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: #3F3131;
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 13px;
+  min-width: 158px;
+}
+
+.badgeIcon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.badgeLabel {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* ── Right side – polaroids ───────────────── */
+.right {
+  flex: 1 1 48%;
+  position: relative;
+  min-height: 420px;
+  overflow: visible;
+}
+
+.polaroid {
+  position: absolute;
+  background: #fff;
+  padding: 10px 10px 34px 10px;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.polaroidPhoto {
+  width: 250px;
+  height: 250px;
+  overflow: hidden;
+  background: #d6c9b8;
+}
+
+.polaroidImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.polaroidEmpty {
+  width: 100%;
+  height: 100%;
+  background: #d6c9b8;
+}
+
+/*
+  Triangle layout:
+  p1 – top-right, extends above the title bar (negative top)
+  p2 – bottom-left
+  p3 – bottom-right
+*/
+.p1 {
+  top: -175px;
+  right: 30px;
+  transform: rotate(6deg);
+  z-index: 4;
+}
+
+.p2 {
+  top: 100px;
+  left: 0;
+  transform: rotate(-10deg);
+  z-index: 2;
+}
+
+.p3 {
+  top: 120px;
+  right: -30px;
+  transform: rotate(-3deg);
+  z-index: 3;
+}
+
+/* ── Responsive ─────────────────────────── */
+@media (max-width: 1024px) {
+  .titleBarRow {
+    padding-left: 40px;
+  }
+
+  .inner {
+    padding: 40px 40px 56px 40px;
+  }
+
+  .titleField h1,
+  .titleField h2,
+  .titleField h3 {
+    font-size: 2rem;
+  }
+
+  .polaroidPhoto {
+    width: 175px;
+    height: 175px;
+  }
+
+  .p1 { top: -130px; right: 10px; }
+  .p2 { top: 60px; left: 0; }
+  .p3 { top: 90px; right: 0; }
+}
+
+@media (max-width: 767px) {
+  .titleBarRow {
+    padding-left: 0;
+    justify-content: center;
+  }
+
+  .titleWrapper {
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+  }
+
+  .topBar,
+  .topBarLeft {
+    display: none;
+  }
+
+  .titleField h1,
+  .titleField h2,
+  .titleField h3 {
+    font-size: 1.6rem;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .inner {
+    flex-direction: column;
+    padding: 32px 20px 40px 20px;
+    gap: 0;
+  }
+
+  .left {
+    max-width: 100%;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .descriptionField p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
+  }
+
+  .badges {
+    gap: 8px;
+  }
+
+  .badge {
+    min-width: 0;
+    flex: 0 0 calc(50% - 4px);
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .badgeLabel {
+    white-space: normal;
+    font-size: 12px;
+  }
+
+  .right {
+    width: 100%;
+    min-height: 260px;
+    margin-top: 8px;
+  }
+
+  .badge {
+    min-width: auto;
+    padding: 10px 14px;
+  }
+
+  .badgeLabel {
+    font-size: 13px;
+  }
+
+  .right {
+    width: 100%;
+    min-height: 280px;
+  }
+
+  .polaroidPhoto {
+    width: 130px;
+    height: 130px;
+  }
+
+  .p1 { top: 10px; right: 10px; }
+  .p2 { top: 100px; left: 0; }
+  .p3 { top: 60px; right: 50%; transform: translateX(50%) rotate(-3deg); }
+}

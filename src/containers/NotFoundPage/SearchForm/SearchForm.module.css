@@ -1,0 +1,119 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.searchInputIcon {
+  box-sizing: content-box;
+  padding-left: 20px;
+  padding-right: 8px;
+
+  display: flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  background-color: transparent;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.searchInput {
+  flex-grow: 1;
+  height: 52px;
+  padding-left: 10px;
+  margin: 0;
+  line-height: unset;
+  border: 0;
+  font-size: 16px;
+  color: var(--colorGrey700);
+
+  /* Safari bugfix: without this Safari will print placeholder to a wrong place */
+  &::-webkit-input-placeholder {
+    line-height: normal;
+  }
+
+  &:hover,
+  &:focus {
+    border: 0;
+    outline: none;
+    box-shadow: unset;
+  }
+
+  &:hover::placeholder,
+  &:focus::placeholder {
+    color: var(--colorGrey700);
+  }
+
+  &::placeholder {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    font-weight: var(--fontWeightRegular);
+    transition: var(--transitionStyleButton);
+  }
+}
+
+
+/**
+ * Keyword search
+ */
+.keywordSearchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.keywordInput {
+  height: 52px;
+  border: 0;
+  flex-grow: 1;
+  font-size: 16px;
+  color: var(--colorGrey700);
+  background: transparent;
+  padding-right: 16px;
+
+  &::placeholder {
+    color: #BAA38A;
+  }
+
+  &:hover,
+  &:focus {
+    outline: none;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+.searchSubmit {
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    outline: none;
+
+    & .iconSvgGroup {
+      stroke: #BAA38A;
+    }
+  }
+}
+
+.iconSvg {
+  margin: auto;
+}
+
+.iconSvgGroup {
+  stroke: #2E2E2E;
+  stroke-width: 2.5px;
+  transition: stroke 0.2s ease;
+
+  @media (--viewportMedium) {
+    stroke-width: 2px;
+  }
+}

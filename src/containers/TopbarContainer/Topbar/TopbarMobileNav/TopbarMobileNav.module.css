@@ -1,0 +1,203 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #ffffff;
+  padding: 36px 28px 36px;
+  overflow-y: auto;
+
+  :global(body[data-dark-mode]) & {
+    background-color: #2E2E2E;
+  }
+}
+
+/* ─── Logo ─── */
+.logoRow {
+  margin-bottom: 28px;
+}
+
+.logoImage {
+  filter: none;
+
+  :global(body[data-dark-mode]) & {
+    filter: brightness(0) invert(1);
+  }
+}
+
+/* ─── Language switcher ─── */
+.langSwitcher {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-bottom: 28px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(46, 46, 46, 0.1);
+
+  :global(body[data-dark-mode]) & {
+    border-bottom-color: rgba(186, 163, 138, 0.2);
+  }
+}
+
+.langOption {
+  font-family: var(--fontFamilyHeading);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #6B6B6B;
+  background: transparent;
+  border: 1.5px solid rgba(46, 46, 46, 0.25);
+  border-radius: 20px;
+  padding: 8px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #BAA38A;
+    color: #BAA38A;
+  }
+
+  :global(body[data-dark-mode]) & {
+    color: #9E9E9E;
+    border-color: rgba(186, 163, 138, 0.4);
+  }
+}
+
+.langOptionActive {
+  background-color: #BAA38A;
+  color: #2E2E2E;
+  border-color: #BAA38A;
+
+  :global(body[data-dark-mode]) & {
+    color: #2E2E2E;
+  }
+}
+
+/* ─── Dark / Light mode toggle ─── */
+.darkModeToggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-bottom: 28px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(46, 46, 46, 0.1);
+
+  :global(body[data-dark-mode]) & {
+    border-bottom-color: rgba(186, 163, 138, 0.2);
+  }
+}
+
+.darkModeOption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--fontFamilyHeading);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #6B6B6B;
+  background: transparent;
+  border: 1.5px solid rgba(46, 46, 46, 0.25);
+  border-radius: 20px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #BAA38A;
+    color: #BAA38A;
+  }
+
+  :global(body[data-dark-mode]) & {
+    color: #9E9E9E;
+    border-color: rgba(186, 163, 138, 0.4);
+  }
+}
+
+.darkModeOptionActive {
+  background-color: #BAA38A;
+  color: #2E2E2E;
+  border-color: #BAA38A;
+
+  :global(body[data-dark-mode]) & {
+    color: #2E2E2E;
+  }
+}
+
+/* ─── Nav links ─── */
+.navLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navItem {
+  margin: 0;
+
+  & a {
+    display: block;
+    font-family: var(--fontFamilyHeading);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #2E2E2E;
+    text-decoration: none;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(46, 46, 46, 0.07);
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #BAA38A;
+    }
+  }
+
+  :global(body[data-dark-mode]) & a {
+    color: #ffffff;
+    border-bottom-color: rgba(255, 255, 255, 0.07);
+  }
+}
+
+.currentPage {
+  & a {
+    color: #BAA38A;
+    border-left: 3px solid #BAA38A;
+    padding-left: 12px;
+  }
+}
+
+.spacer {
+  flex: 1;
+  min-height: 32px;
+}
+
+.cookieSettingsButton {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(46, 46, 46, 0.07);
+  padding: 15px 0;
+  font-family: var(--fontFamilyHeading);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #2E2E2E;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  :global(body[data-dark-mode]) & {
+    color: #ffffff;
+    border-bottom-color: rgba(255, 255, 255, 0.07);
+  }
+}
+
+.cookieSettingsButton:hover {
+  color: #BAA38A;
+}
+
+.cookieSettingsButton:focus {
+  outline: none;
+}

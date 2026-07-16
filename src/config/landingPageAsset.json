@@ -1,0 +1,32 @@
+{
+  "sections": [
+    {
+      "sectionId": "highlighted-space",
+      "sectionType": "highlightedListing",
+      "sectionName": "Highlighted Listing",
+      "title": {
+        "fieldType": "heading",
+        "content": "Espaço em Destaque"
+      },
+      "description": {
+        "fieldType": "paragraph",
+        "content": "Conheça nosso espaço mais popular e bem avaliado"
+      },
+      "appearance": {
+        "backgroundColor": "#ffffff",
+        "textColor": "dark"
+      },
+      "listingSelection": "newest"
+    }
+  ],
+  "meta": {
+    "pageTitle": {
+      "fieldType": "metaTitle",
+      "content": "Home - v1h"
+    },
+    "pageDescription": {
+      "fieldType": "metaDescription",
+      "content": "Descobrir espaços incríveis"
+    }
+  }
+}

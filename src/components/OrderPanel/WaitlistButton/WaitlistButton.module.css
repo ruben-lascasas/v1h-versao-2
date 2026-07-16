@@ -1,0 +1,168 @@
+.root {
+  margin: 8px 0 0;
+}
+
+/* ── Trigger button ─────────────────────────────────── */
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1.5px dashed rgba(186, 163, 138, 0.6);
+  border-radius: 8px;
+  font-family: var(--fontFamily);
+  font-size: 13px;
+  font-weight: 500;
+  color: #9a8070;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.trigger:hover {
+  border-color: #BAA38A;
+  color: #7C6350;
+  background: rgba(186, 163, 138, 0.06);
+}
+
+/* ── Expanded panel ─────────────────────────────────── */
+.panel {
+  border: 1.5px solid rgba(186, 163, 138, 0.4);
+  border-radius: 8px;
+  padding: 16px;
+  background: rgba(186, 163, 138, 0.05);
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 6px;
+  font-family: var(--fontFamily);
+  font-size: 14px;
+  font-weight: 700;
+  color: #7C6350;
+}
+
+.panelText {
+  margin: 0 0 14px;
+  font-family: var(--fontFamily);
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* ── Form ───────────────────────────────────────────── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1.5px solid #d4c4b0;
+  border-radius: 6px;
+  font-family: var(--fontFamily);
+  font-size: 14px;
+  color: #2E2E2E;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.input:focus {
+  border-color: #BAA38A;
+}
+
+.input::placeholder {
+  color: #bbb;
+}
+
+.error {
+  margin: 0;
+  font-size: 12px;
+  color: #e05252;
+}
+
+.formActions {
+  display: flex;
+  gap: 8px;
+}
+
+.cancelBtn {
+  flex: 1;
+  padding: 9px 12px;
+  background: transparent;
+  border: 1.5px solid #d4c4b0;
+  border-radius: 6px;
+  font-family: var(--fontFamily);
+  font-size: 13px;
+  font-weight: 500;
+  color: #888;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  border-color: #999;
+  color: #555;
+}
+
+.submitBtn {
+  flex: 2;
+  padding: 9px 12px;
+  background: #2E2E2E;
+  border: 1.5px solid #2E2E2E;
+  border-radius: 6px;
+  font-family: var(--fontFamily);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #BAA38A;
+  border-color: #BAA38A;
+}
+
+.submitBtn:disabled,
+.cancelBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ── Success state ──────────────────────────────────── */
+.successBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(186, 163, 138, 0.12);
+  border: 1px solid rgba(186, 163, 138, 0.4);
+  border-radius: 8px;
+  font-family: var(--fontFamily);
+  font-size: 13px;
+  color: #7C6350;
+  font-weight: 500;
+}
+
+.successIcon {
+  font-size: 16px;
+  font-weight: 700;
+  color: #7C6350;
+  flex-shrink: 0;
+}
+
+/* ── Shared icon ────────────────────────────────────── */
+.icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}

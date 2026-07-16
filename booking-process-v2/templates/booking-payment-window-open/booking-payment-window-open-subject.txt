@@ -1,0 +1,1 @@
+É hora de pagar a tua reserva em {{transaction.listing.title}}

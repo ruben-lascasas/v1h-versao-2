@@ -1,0 +1,135 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+}
+
+.confirmChangesSection {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  padding: 0;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, max-height 0.2s ease;
+}
+
+.confirmChangesSectionVisible {
+  opacity: 1;
+  max-height: 600px;
+  margin-bottom: 16px;
+}
+
+.emailStyle {
+  font-weight: var(--fontWeightBold);
+  word-wrap: break-word;
+}
+
+.helperLink {
+  composes: a from global;
+  color: var(--colorBlack);
+  font-weight: var(--fontWeightSemiBold);
+  text-decoration: underline;
+
+  &:hover {
+    color: #BAA38A;
+    text-decoration: underline;
+  }
+
+  @media (--viewportMedium) {
+    margin: 0;
+  }
+}
+
+.confirmChangesTitle {
+  margin-top: 0;
+  margin-bottom: 13px;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+
+.confirmChangesInfo {
+  margin-top: 0;
+  margin-bottom: 37px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 48px;
+  }
+}
+
+.bottomWrapper {
+  margin-top: 24px;
+
+  @media (--viewportMedium) {
+    margin-top: 32px;
+  }
+}
+
+.submitButton {
+  background-color: var(--colorFail);
+
+  &:focus,
+  &:hover {
+    background-color: var(--colorFailDark);
+  }
+  &:disabled {
+    background-color: var(--colorGrey100);
+  }
+}
+
+.error {
+  color: var(--colorFail);
+  margin-top: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+  }
+}
+
+.googleAccountSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sendPasswordEmailButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  padding: 12px 24px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.sendPasswordEmailButton:focus {
+  outline: none;
+}
+
+@media (hover: hover) {
+  .sendPasswordEmailButton:hover {
+    background-color: #BAA38A;
+    color: #ffffff;
+  }
+}
+
+.sendPasswordEmailButton:disabled {
+  background-color: var(--colorGrey300);
+  cursor: not-allowed;
+}

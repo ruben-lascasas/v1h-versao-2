@@ -1,0 +1,158 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: transparent;
+  position: static;
+}
+
+.searchResultSummary {
+  composes: h3 from global;
+  margin-top: 6px;
+
+  display: flex;
+  justify-content: space-between;
+
+  background-color: transparent;
+
+  @media (--viewportMedium) {
+    margin-top: 8px;
+  }
+}
+
+.buttons {
+  display: flex;
+}
+
+.mapIcon {
+  /* Font */
+  composes: marketplaceTinyFontStyles from global;
+  font-weight: var(--fontWeightMedium);
+
+  /* background map image */
+  background-image: url(./images/map_icon216x105.png);
+  background-size: cover;
+
+  border-radius: 3px;
+  width: 72px;
+  height: 35px;
+  padding: 9px 22px;
+  margin: 0;
+}
+
+.modalContainer {
+  width: 100%;
+  padding: 24px 0 94px 0;
+  margin: 0 12px;
+  box-sizing: border-box;
+
+  @media (min-width: 480px) {
+    margin: 0 24px;
+  }
+}
+
+/* Force the modal CANCELAR X close button to the top-right corner of the
+   filters modal in mobile. */
+.modalContainer :global(nav[aria-label]) {
+  left: auto !important;
+  right: 0 !important;
+  justify-content: flex-end;
+}
+.modalContainer :global(nav[aria-label]) > button {
+  margin-left: auto;
+}
+
+.bottomResetAll {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 24px 0 16px 0;
+  padding: 12px 24px;
+  cursor: pointer;
+
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+
+  border: none;
+  border-radius: var(--borderRadiusMedium);
+
+  background-color: var(--colorPrimaryButton);
+  color: var(--colorWhite);
+
+  transition: all var(--transitionStyleButton);
+
+  &:focus-visible,
+  &:hover {
+    outline: none;
+    background-color: #BAA38A;
+    color: var(--colorWhite);
+  }
+}
+
+.modalHeadingWrapper {
+  padding-bottom: 31px;
+  border-bottom: 1px solid var(--colorGrey100);
+}
+
+.modalHeading {
+  composes: h1 from global;
+  margin-top: 0;
+}
+
+.resetAllButton {
+  composes: h5 from global;
+  font-weight: var(--fontWeightMedium);
+  color: var(--colorGrey600);
+
+  /* Layout */
+  display: inline;
+  float: right;
+  margin: 8px 0 0 0;
+  padding: 0;
+
+  /* Override button styles */
+  outline: none;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+
+  &:focus,
+  &:hover {
+    color: var(--colorBlack);
+  }
+}
+
+.filtersWrapper {
+  display: flex;
+  flex-direction: column;
+  /* add bottom margin so that the last filter won't be hidden
+   * under the mobile safari bottom bar or the "Show results"
+   * button bar */
+  padding-bottom: 220px;
+}
+
+.showListingsContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+  width: 100vw;
+  padding: 18px 24px;
+
+  background: var(--colorWhite);
+  box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.1);
+  z-index: 11;
+}
+
+.showListingsButton {
+  background-color: var(--marketplaceColor);
+  display: inline-block;
+  border-radius: 3px;
+}

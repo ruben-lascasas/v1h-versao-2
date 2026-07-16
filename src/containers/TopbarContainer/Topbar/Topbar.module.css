@@ -1,0 +1,455 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  width: 100%;
+
+  /* Top Bar's drop shadow should always be visible */
+  z-index: var(--zIndexTopbar);
+  position: relative;
+}
+
+/* Skip to main content link - visually hidden until focused */
+.skipToMainContent {
+  /* Position it off-screen by default */
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: calc(var(--zIndexTopbar) + 1);
+
+  /* Make it visible when focused */
+  &:focus {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: auto;
+    padding: 18px 24px;
+    border-radius: 0;
+
+    @media (--viewportMedium) {
+      padding: 24px 24px;
+    }
+  }
+}
+.skiptoMainArrow {
+  stroke: var(--colorWhite);
+  fill: var(--colorWhite);
+}
+
+.container {
+  /* Size */
+  width: 100%;
+  height: var(--topbarHeight);
+
+  /* Layout for child components */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 16px;
+
+  /* fill */
+  background-color: var(--colorWhite);
+
+  /* shadows */
+  box-shadow: var(--boxShadow);
+
+  @media (--viewportMedium) {
+    height: var(--topbarHeightDesktop);
+    padding-left: 24px;
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.mobileActions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logoutButton {
+  margin: 0;
+}
+
+/* Child component's size (and positioning) should be given here */
+.menu,
+.searchMenu {
+  /* Font */
+  composes: h5 from global;
+  color: var(--colorGrey700);
+
+  /* Layout */
+  display: flex;
+  width: 66px;
+  margin: 0;
+  border-width: 0px;
+  background-color: transparent;
+
+  /* Hovers */
+  &:enabled {
+    cursor: pointer;
+  }
+  &:enabled:hover,
+  &:enabled:active {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  &:disabled {
+    background-color: transparent;
+    cursor: auto;
+  }
+}
+
+.menu {
+  padding: 15px 24px;
+  position: relative;
+
+  @media (--viewportMedium) {
+    padding: 21px 24px;
+  }
+}
+.searchMenu {
+  padding: 12px 24px;
+
+  @media (--viewportMedium) {
+    padding: 18px 24px;
+  }
+}
+
+.menuIcon,
+.searchMenuIcon,
+.accountMenuIcon {
+  margin: 9px 0;
+}
+
+.accountMenuIcon {
+  color: #2E2E2E;
+}
+
+.accountMenuAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.accountMenuIcon path,
+.accountMenuIcon circle {
+  fill: none !important;
+  stroke: currentColor;
+}
+
+.accountMenu {
+  composes: h5 from global;
+  color: var(--colorGrey700);
+  display: flex;
+  width: 52px;
+  margin: 0;
+  padding: 12px 14px;
+  border-width: 0px;
+  background-color: transparent;
+  position: relative;
+
+  &:enabled {
+    cursor: pointer;
+  }
+  &:enabled:hover,
+  &:enabled:active {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  &:disabled {
+    background-color: transparent;
+    cursor: auto;
+  }
+
+  @media (--viewportMedium) {
+    padding: 18px 14px;
+  }
+}
+
+.notificationDot {
+  /* Dimensions */
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+
+  /* Position — top-right corner of the avatar, slightly outside. */
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  /* Style: red dot with white border */
+  background-color: var(--colorFail);
+  border: 2px solid var(--colorWhite);
+
+  animation-name: notificationPop;
+  animation-duration: 0.1s;
+  animation-delay: 0.1s;
+  animation-fill-mode: forwards;
+
+  animation-timing-function: ease-in;
+  opacity: 0;
+  transform: scale(0);
+
+  @media (--viewportMedium) {
+    top: 14px;
+  }
+}
+
+@keyframes accountBadgeBlink {
+  0%     { opacity: 1; }
+  12.5%  { opacity: 0; }
+  25%    { opacity: 1; }
+  37.5%  { opacity: 0; }
+  50%    { opacity: 1; }
+  62.5%  { opacity: 0; }
+  75%    { opacity: 1; }
+  87.5%  { opacity: 0; }
+  100%   { opacity: 0; }
+}
+
+.accountMenuNotLogged {
+  position: relative;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #5C2E00;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    animation: accountBadgeBlink 2.4s ease-in-out 1 forwards;
+    pointer-events: none;
+  }
+}
+
+.accountMenuNotLogged .accountMenuIcon {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+  animation: accountIconFlip 2.4s ease-in-out 1 forwards;
+}
+
+.accountMenuNotLogged .accountMenuIcon path,
+.accountMenuNotLogged .accountMenuIcon circle {
+  stroke: currentColor !important;
+}
+
+@keyframes accountIconFlip {
+  0%, 90%  { color: #ffffff; }
+  100%     { color: #2E2E2E; }
+}
+
+@keyframes notificationPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.desktop {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+  }
+}
+
+/* Icon component styles */
+.rootMenuIcon {
+  fill: var(--colorGrey700);
+}
+.rootSearchIcon {
+  stroke: var(--colorGrey700);
+}
+
+.searchContainer {
+  position: relative;
+  height: 100%;
+  margin-top: 94px;
+}
+
+.mobileHelp {
+  color: var(--colorGrey500);
+  font-size: 14px;
+  margin: 8px 24px 0;
+}
+
+/* ================ Modal ================ */
+
+.modalContainer {
+  composes: marketplaceModalInMobileBaseStyles from global;
+  height: calc(var(--vh, 1vh) * 100);
+  min-height: 100vh;
+  padding: 0;
+  background-color: #ffffff !important;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+
+  & :global(.marketplaceModalCloseNav) {
+    left: auto !important;
+    right: 0 !important;
+    position: fixed !important;
+  }
+
+  :global(body[data-dark-mode]) & {
+    background-color: #2E2E2E !important;
+  }
+
+  @media (--viewportMedium) {
+    flex-basis: 576px;
+    flex-grow: 1;
+    min-height: max(100%, 100vh);
+    height: auto;
+    padding: 24px;
+    background-color: var(--colorWhite) !important;
+    border-bottom: none;
+  }
+}
+.modalContainerNav {
+  composes: marketplaceModalInMobileBaseStyles from global;
+  height: calc(var(--vh, 1vh) * 100);
+  min-height: 100vh;
+  padding: 0;
+  background-color: #ffffff !important;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+
+  & :global(.marketplaceModalCloseNav) {
+    left: auto !important;
+    right: 0 !important;
+    position: fixed !important;
+  }
+
+  :global(body[data-dark-mode]) & {
+    background-color: #2E2E2E !important;
+  }
+
+  @media (--viewportMedium) {
+    flex-basis: 576px;
+    flex-grow: 1;
+    min-height: max(100%, 100vh);
+    height: auto;
+    padding: 0;
+    border-bottom: none;
+  }
+}
+
+.modalContainerSearchForm {
+  composes: modalContainer;
+  padding: 0;
+  @media (--viewportMedium) {
+    padding: var(--modalPaddingMedium);
+  }
+}
+
+.missingInformationModal {
+  composes: marketplaceModalBaseStyles from global;
+  padding-top: 70px;
+}
+
+/* Title of the modal */
+.modalTitle {
+  composes: marketplaceModalTitleStyles from global;
+}
+
+/* Paragraph for the Modal */
+.modalMessage {
+  composes: marketplaceModalParagraphStyles from global;
+}
+
+/* Make the email pop */
+.email {
+  font-weight: var(--fontWeightHighlightEmail);
+}
+
+.helperLink {
+  composes: marketplaceModalHelperLink from global;
+}
+
+.helperText {
+  composes: marketplaceModalHelperText from global;
+}
+
+.error {
+  composes: marketplaceModalPasswordMargins from global;
+}
+
+.bottomWrapper {
+  composes: marketplaceModalBottomWrapper from global;
+
+  /* Align the helper links to the left since there isn't a Primary Button anymore */
+  text-align: left;
+}
+
+.modalIcon {
+  composes: marketplaceModalIconStyles from global;
+}
+
+.genericError {
+  position: fixed;
+  top: calc(var(--topbarHeight) + 15px);
+
+  /* Place enough to the right to hide the error */
+  right: -355px;
+  opacity: 0;
+
+  max-width: 340px;
+  margin: 0 15px;
+
+  /* Animate error from the right */
+  transition: all ease-out 0.2s;
+  transition-delay: 1s;
+
+  /* Bleed the bg color from the bottom */
+  padding-bottom: 4px;
+  background-color: var(--marketplaceColor);
+  border-radius: var(--borderRadiusMedium);
+
+  /* Place on top of everything */
+  z-index: var(--zIndexGenericError);
+
+  @media (--viewportMedium) {
+    top: calc(var(--topbarHeightDesktop) + 15px);
+  }
+}
+
+.genericErrorVisible {
+  right: 0;
+  opacity: 1;
+}
+
+.genericErrorContent {
+  padding: 16px 22px;
+  background-color: var(--marketplaceColorLight);
+  border-radius: var(--borderRadiusMedium);
+}
+
+.genericErrorText {
+  composes: h5 from global;
+  font-weight: var(--fontWeightSemiBold);
+  margin: 0;
+  color: var(--colorWhite);
+
+  @media (--viewportMedium) {
+    margin: 0;
+  }
+}

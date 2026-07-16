@@ -1,0 +1,129 @@
+.root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prev,
+.next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,0.85);
+  border: 1px solid var(--colorGrey200);
+  padding: 0;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  @media (min-width: 480px) {
+    width: 44px;
+    height: 44px;
+  }
+
+  &:hover {
+    background-color: #BAA38A;
+    border-color: #BAA38A;
+    text-decoration: none;
+  }
+
+  &:hover .arrowChar {
+    color: #ffffff;
+  }
+}
+
+.prevDisabled,
+.nextDisabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.arrowChar {
+  font-size: 24px;
+  line-height: 1;
+  color: #2E2E2E;
+  padding: 0 0 3px 0;
+  transition: color 0.2s ease;
+  -webkit-text-stroke: 0.8px #2E2E2E;
+
+  @media (min-width: 480px) {
+    font-size: 30px;
+  }
+}
+
+.prev:hover .arrowChar,
+.next:hover .arrowChar {
+  -webkit-text-stroke: 0.8px #ffffff;
+}
+
+.pageNumberList {
+  display: flex;
+  justify-content: space-between;
+}
+
+/**
+ * Using 'justify-content: space-between;' we can deal with very narrow mobile screens.
+ * However, since the length of pageNumberList can vary up to 7,
+ * we need to keep track of how much space is allocated for the list
+ * Maximum length of pageNumbersNavLinks is 7 (e.g. [1, '…', 4, 5, 6, '…', 9])
+ */
+.pageNumberList1Items {
+  flex-basis: 30px;
+}
+
+.pageNumberList2Items {
+  flex-basis: 60px;
+}
+
+.pageNumberList3Items {
+  flex-basis: 100px;
+}
+
+.pageNumberList4Items {
+  flex-basis: 160px;
+}
+
+.pageNumberList5Items {
+  flex-basis: 200px;
+}
+
+.pageNumberList6Items {
+  flex-basis: 250px;
+}
+
+.pageNumberList7Items {
+  flex-basis: 275px;
+}
+
+.toPageLink {
+  padding: 21px 5px 18px 5px;
+  color: var(--colorGrey700);
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    color: #7C6350;
+    border-bottom-color: #BAA38A;
+    text-decoration: none;
+  }
+}
+
+.currentPage {
+  padding: 21px 5px 18px 5px;
+  border-bottom: 3px solid #BAA38A;
+  color: #BAA38A;
+  font-weight: var(--fontWeightSemiBold);
+}
+
+.paginationGap {
+  /* Dimensions */
+  padding: 21px 5px;
+
+  /* Color for svg icons */
+  color: var(--colorGrey700);
+
+  /* Ellipsis is raised from baseline */
+  line-height: 13px;
+}

@@ -1,0 +1,115 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+.fieldGroup {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.fieldGroupPlain {
+  margin: 0;
+  padding: 14px 0 6px 0;
+  border: none;
+
+  @media (--viewportMedium) {
+    padding: 16px 0 4px 0;
+  }
+}
+
+.accessibilityLegend {
+  visibility: hidden;
+  position: absolute;
+  left: -9999px;
+}
+
+.list {
+  margin: 0;
+}
+
+.item {
+  padding: 6px 0 4px 0;
+
+  /* Fix broken multi-column layout in Chrome */
+  page-break-inside: avoid;
+
+  @media (--viewportMedium) {
+    padding: 6px 0;
+  }
+}
+
+.labelRow {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.optionCount {
+  color: var(--colorGrey500);
+  font-size: 0.95em;
+  flex-shrink: 0;
+}
+
+/* ── Single-select checkbox (category filter) ── */
+
+.singleRoot {
+  position: relative;
+}
+
+.singleInput {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.singleLabel {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.singleCheckboxWrapper {
+  height: 36px;
+  margin-right: 10px;
+  align-self: baseline;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.singleCheckedHidden {
+  display: none;
+}
+
+.singleChecked {
+  display: inline;
+  fill: #3F3131;
+  stroke: #3F3131;
+  stroke-width: 1px;
+}
+
+.singleBox {
+  stroke: var(--colorGrey300);
+}
+
+.singleBoxChecked {
+  stroke: #3F3131;
+  stroke-width: 2px;
+}
+
+.singleText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--colorGrey700);
+  cursor: pointer;
+  width: 100%;
+}

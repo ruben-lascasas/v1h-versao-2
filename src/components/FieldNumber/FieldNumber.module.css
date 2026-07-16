@@ -1,0 +1,91 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  position: relative;
+}
+
+.numberInputWrapper {
+  align-self: baseline;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  min-width: 104px;
+}
+
+.numberButton {
+  stroke-width: 1px;
+  border-radius: 10%;
+  fill: var(--colorSecondaryButton);
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+  display: flex;
+  padding: 0px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+
+  svg {
+    pointer-events: none;
+  }
+}
+
+.numberButton:hover {
+  .iconContainer {
+    stroke: #BAA38A;
+  }
+}
+
+.numberButton:focus {
+  outline: none;
+
+  .iconContainer {
+    stroke: #BAA38A;
+  }
+}
+.numberButton:active {
+  .iconContainer {
+    fill: var(--colorGrey50);
+    stroke: #BAA38A;
+  }
+}
+.numberButton:disabled {
+  cursor: not-allowed;
+
+  .disabled.iconContainer {
+    fill: var(--colorSecondaryButton);
+    stroke: #D4C4B0;
+  }
+}
+
+.numberInput {
+  width: 60px;
+  text-align: center;
+  padding: 0px 10px;
+  cursor: default;
+  font-size: 16px;
+  font-weight: var(--fontWeightMedium);
+}
+
+.iconContainer {
+  fill: var(--colorWhite);
+  /* stroke color set to match the color of the input 
+  borders defined in marketplaceDefaults.css  */
+  stroke: #D4C4B0;
+  stroke-width: 1px;
+}
+
+.icon {
+  stroke: var(--colorGrey700);
+  fill: var(--colorGrey700);
+}
+
+.disabled {
+  .icon {
+    stroke: var(--colorGrey200);
+    fill: var(--colorGrey200);
+  }
+}

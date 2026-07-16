@@ -1,0 +1,25 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 24px;
+  padding: 0 12px;
+}
+
+.sortyByWrapper {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  margin-top: -8px;
+}
+
+.sortyBy {
+  composes: marketplaceSmallFontStyles from global;
+  font-weight: var(--fontWeightRegular);
+  padding: 8px 8px 8px 0;
+}
+
+@media (--viewportLarge) {
+  .root {
+    padding: 0;
+  }
+}

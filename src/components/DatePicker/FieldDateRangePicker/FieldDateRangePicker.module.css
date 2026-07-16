@@ -1,0 +1,68 @@
+@import '../../../styles/customMediaQueries.css';
+
+.fieldRoot {
+}
+
+.labels {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 1023px) {
+  .labels {
+    justify-content: center !important;
+    gap: 8px;
+  }
+
+  .labels > label,
+  .labels .startDateLabel,
+  .labels .endDateLabel {
+    flex: 0 0 142px !important;
+    width: 142px !important;
+    box-sizing: border-box;
+    padding-left: 5px;
+  }
+}
+
+.labelDisabled {
+  color: var(--colorGrey500);
+}
+
+/**
+ * Mobile margins mean that labels, inputs (incl separate borders) get margins,
+ * but calendar popup doesn't.
+ */
+.mobileMargins {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  /* Gutter between inputs (when calendar is not visible) */
+  & .startDateLabel,
+  & .endDateLabel {
+    flex-basis: calc(50% - 6px);
+  }
+
+  & .input {
+    flex-basis: calc(50% - 6px);
+    transition: all 0.15s ease-out;
+  }
+
+  @media (--viewportMedium) {
+    width: 100%;
+    margin: 0;
+
+    /* Gutter between inputs (when calendar is not visible) */
+    & .startDateLabel,
+    & .endDateLabel {
+      flex-basis: calc(50% - 6px);
+    }
+
+    & .input {
+      flex-basis: calc(50% - 6px);
+      transition: all 0.15s ease-out;
+    }
+  }
+}

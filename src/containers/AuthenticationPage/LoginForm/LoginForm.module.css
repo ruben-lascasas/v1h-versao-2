@@ -1,0 +1,166 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  composes: marketplaceModalFormRootStyles from global;
+
+  justify-content: flex-start;
+
+  @media (--viewportMedium) {
+    justify-content: space-between;
+  }
+}
+
+.password {
+  composes: marketplaceModalPasswordMargins from global;
+
+  & input {
+    padding-right: 44px !important;
+  }
+}
+
+/* Hide native browser password reveal button */
+.passwordWrapper input::-ms-reveal,
+.passwordWrapper input::-ms-clear {
+  display: none;
+}
+
+.passwordWrapper {
+  position: relative;
+}
+
+.eyeButton {
+  position: absolute;
+  right: 12px;
+  /* Input height is 36px on mobile, 48px on viewportMedium+ — see
+     marketplaceDefaults.css. Center the button on each baseline. */
+  top: 18px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--colorGrey400);
+  display: flex;
+  align-items: center;
+  line-height: 0;
+
+  @media (--viewportMedium) {
+    top: 24px;
+  }
+
+  &:hover {
+    color: #BAA38A;
+  }
+}
+
+.rememberRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin-top: 10px;
+
+  & > * {
+    white-space: nowrap;
+  }
+}
+
+
+.forgotPasswordRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.recoveryLink {
+  composes: a from global;
+  font-size: 13px;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorBlack);
+  text-decoration: underline;
+  white-space: nowrap;
+
+  &:hover {
+    color: #BAA38A;
+  }
+}
+
+.recoveryLinkInfo {
+  composes: marketplaceModalHelperText from global;
+  white-space: nowrap;
+}
+
+.bottomWrapper {
+  composes: marketplaceModalBottomWrapper from global;
+  margin-top: 28px;
+
+  @media (--viewportMedium) {
+    margin-top: 36px;
+  }
+}
+
+/* Black filled CTA — matches the ListingPage "SEGUIR" button style. */
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 24px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.submitButton:focus {
+  outline: none;
+}
+
+@media (hover: hover) {
+  .submitButton:hover {
+    background-color: #BAA38A;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+.submitButton:disabled {
+  background-color: var(--colorGrey300);
+  cursor: not-allowed;
+}
+
+.bottomWrapperText {
+  composes: marketplaceModalBottomWrapperText from global;
+}
+
+.switchAuthText {
+  text-align: center;
+  margin-top: 18px;
+  margin-bottom: 0;
+  font-size: 13px;
+  color: var(--colorGrey500);
+}
+
+.switchAuthLink {
+  composes: a from global;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorBlack);
+  text-decoration: underline;
+
+  &:hover {
+    color: #BAA38A;
+  }
+}

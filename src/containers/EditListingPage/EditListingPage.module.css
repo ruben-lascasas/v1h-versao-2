@@ -1,0 +1,45 @@
+@import '../../styles/customMediaQueries.css';
+
+/* Mobile: prevent the wizard tabs / form fields from causing
+   horizontal page scroll. */
+.pageRoot {
+  @media (max-width: 767px) {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+}
+
+.mobileTopbar {
+  /* Size */
+  width: 100%;
+  height: var(--topbarHeight);
+
+  /* Layout for child components */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  /* fill */
+  background-color: var(--colorWhite);
+
+  /* shadows */
+  box-shadow: none;
+
+  @media (--viewportLarge) {
+    display: none;
+  }
+}
+
+.desktopTopbar,
+.mobileTopbar {
+  box-shadow: none;
+
+  @media (--viewportLarge) {
+    box-shadow: var(--boxShadowLight);
+  }
+}
+
+.wizard {
+  flex-grow: 1;
+}

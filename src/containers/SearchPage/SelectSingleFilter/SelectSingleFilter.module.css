@@ -1,0 +1,11 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+}
+
+.labelPlain {
+}
+
+.labelPlainSelected {
+  color: var(--colorGrey700);
+}

@@ -1,0 +1,262 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.mobileInputRoot {
+  width: 100%;
+}
+
+.desktopInputRoot {
+  height: var(--topbarHeightDesktop);
+}
+
+.mobileIcon {
+  margin-left: 24px;
+  padding: 11px 0 17px 0;
+
+  display: flex;
+  width: 24px;
+  align-self: stretch;
+  background-color: var(--colorWhite);
+
+  @media (--viewportMedium) {
+    margin-left: 0;
+  }
+}
+
+.fontInput {
+  font-weight: var(--fontWeightBlack);
+  font-size: 24px;
+  line-height: 24px;
+
+  /* Layout */
+  margin: 0 24px 0 0;
+  padding: 4px 13px 10px 13px;
+
+  @media (--viewportMedium) {
+    font-size: 30px;
+    line-height: 40px;
+    padding: 5px 13px 15px 13px;
+    margin: 0;
+  }
+}
+
+.mobileInput {
+  /* Font */
+  composes: fontInput;
+
+  /* Layout */
+  height: 50px;
+
+  /* Borders */
+  border: 0;
+  border-radius: 0;
+
+  /* Safari bugfix: without this Safari will print placeholder to a wrong place */
+  &::-webkit-input-placeholder {
+    line-height: normal;
+  }
+
+  &:hover,
+  &:focus {
+    border-radius: 0;
+    border: 0;
+    outline: none;
+    box-shadow: none;
+  }
+}
+
+.desktopIcon {
+  height: var(--topbarHeightDesktop);
+  border: none;
+  padding-top: 2px;
+
+  display: flex;
+  width: 24px;
+  align-self: stretch;
+  background-color: transparent;
+}
+
+.desktopInput {
+  composes: p from global;
+  flex-grow: 1;
+  /* Font */
+  height: var(--topbarHeightDesktop);
+  line-height: unset;
+  border: none;
+  padding-top: 0;
+  padding-bottom: 0;
+  background-color: transparent;
+  color: #2E2E2E;
+  cursor: text;
+  caret-color: #2E2E2E;
+
+  /* Search text gets ellipsis if it's too wide */
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 10px;
+
+  &:hover,
+  &:focus {
+    border-bottom-color: var(--marketplaceColor);
+    outline: none;
+    border: 0;
+    box-shadow: none;
+  }
+
+  &:hover::placeholder,
+  &:focus::placeholder {
+    color: #2E2E2E;
+  }
+
+  /* Placeholder text might be too wide */
+  &::placeholder {
+    color: #7C6350;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    transition: color 0.2s ease;
+  }
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.mobilePredictions {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  /* searchContainer margin-top (94px) + mobileInput height (50px) = 144px */
+  min-height: calc(100vh - 144px);
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #D4C4B0;
+  border-bottom-left-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  z-index: calc(var(--zIndexPopup) + 1);
+
+  @media (--viewportMedium) {
+    min-height: unset;
+  }
+}
+
+.mobilePredictionsAttribution {
+  /* When using the Google Maps Places geocoder, the "Powered by Google"
+   text is hidden in Mobile Safari without giving some extra space to
+   it. */
+  margin-bottom: 100px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 0;
+  }
+}
+
+.desktopPredictions {
+  position: absolute;
+  width: 100%;
+  top: var(--topbarHeightDesktop);
+  left: 0;
+  background-color: #ffffff;
+  border: 1px solid #D4C4B0;
+  border-bottom-left-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  z-index: calc(var(--zIndexPopup) + 1);
+
+  margin-top: 0;
+  max-width: 560px;
+}
+
+/**
+ * Keyword search
+ */
+.keywordSearchWrapper {
+  position: relative;
+  display: flex;
+}
+
+/* Animated placeholder fade — applied via JS class toggle */
+.placeholderFading::placeholder {
+  opacity: 0 !important;
+  transition: opacity 0.38s ease;
+}
+
+.desktopInput::placeholder,
+.mobileInput::placeholder {
+  transition: opacity 0.38s ease;
+  opacity: 1;
+}
+
+.searchSubmit {
+  position: relative;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    & .iconSvgGroup {
+      stroke: #BAA38A;
+    }
+  }
+
+  /* This increases the size of the clicable area for better accessibility */
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: -24px;
+    right: 0px;
+  }
+}
+
+.icon {
+  display: flex;
+  width: 24px;
+  align-self: stretch;
+  border-bottom: 2px solid transparent;
+  background-color: transparent;
+}
+
+.iconSvg {
+  margin: auto;
+}
+
+.iconSvgGroup {
+  stroke: #2E2E2E;
+  stroke-width: 2.5px;
+  transition: stroke 0.2s ease;
+
+  @media (--viewportMedium) {
+    stroke-width: 2px;
+  }
+}
+
+/* ── Animated placeholder overlay ───────────────────────────── */
+.locationWrapper {
+  position: relative;
+}
+
+.animatedPlaceholder {
+  position: absolute;
+  top: 0;
+  line-height: 50px;
+  color: #888888;
+  pointer-events: none;
+  font-size: 16px;
+  white-space: nowrap;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+
+  @media (--viewportMedium) {
+    line-height: var(--topbarHeightDesktop);
+  }
+}
+

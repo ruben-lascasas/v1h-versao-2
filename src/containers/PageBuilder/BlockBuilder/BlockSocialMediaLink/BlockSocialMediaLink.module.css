@@ -1,0 +1,46 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.root {
+  display: inline-block;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 4px 5px;
+  background: #2E2E2E;
+  border-radius: 10px;
+  color: #fff;
+  transition: background 0.18s ease, transform 0.15s ease;
+
+  &:hover {
+    background: #BAA38A;
+    color: #fff;
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  @media (--viewportMedium) {
+    width: 42px;
+    height: 42px;
+    margin: 4px 6px;
+  }
+}
+
+.media {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 0;
+}
+
+.text {
+  width: 100%;
+  margin-top: 20px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}

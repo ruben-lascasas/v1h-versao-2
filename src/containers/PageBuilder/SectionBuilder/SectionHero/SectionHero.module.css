@@ -1,0 +1,333 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.root {
+  background-color: #2E2E2E;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  /* Breathing room so the decorative waves never overlap the next section,
+     even on tall/short monitors. Scales with viewport. */
+  margin-bottom: 36px;
+
+  @media (--viewportMedium) {
+    min-height: 70vh;
+    margin-bottom: 56px;
+  }
+
+  @media (--viewportLarge) {
+    min-height: 80vh;
+    overflow: visible;
+    margin-bottom: 72px;
+  }
+}
+
+/* Decorative image overlaid at the bottom of the hero (desktop only).
+   Pushed down slightly so it pokes out a bit below the hero edge but
+   without overlapping the content of the next section. */
+.heroDecoration {
+  display: none;
+
+  @media (--viewportLarge) {
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    transform-origin: bottom;
+    transform: translateY(clamp(0px, 12%, 48px)) scaleY(1.1);
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0.99;
+  }
+}
+
+/* Clipping container: keeps the Ken Burns scale-up inside the hero
+   so it can't grow over the decorative waves or the next section. */
+.slideBgClip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Background layer - fades in on slide change with a slow Ken Burns zoom */
+.slideBg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  animation: heroFadeIn 0.5s ease-out forwards, heroKenBurns 42s ease-out forwards;
+  z-index: 1;
+  will-change: opacity, transform;
+}
+
+/* Previous slide stays visible underneath while the new one fades in */
+.slideBgPrev {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  opacity: 1;
+}
+
+@keyframes heroFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes heroKenBurns {
+  from { transform: scale(1); }
+  to   { transform: scale(1.08); }
+}
+
+/* Intro slide title — slightly tighter line height for the long phrase */
+.introTitle {
+  line-height: 1.1;
+}
+
+/* Rotating word — letters fade in one by one with a small stagger */
+.rotatingWord {
+  display: inline-block;
+}
+
+.rotatingLetter {
+  display: inline-block;
+  opacity: 0;
+  white-space: pre;
+  animation: rotatingLetterIn 0.5s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes rotatingLetterIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Dark overlay for text readability on images */
+.slideOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.28);
+  z-index: 2;
+}
+
+/* Force hero text centered on all screen sizes */
+.slideContent header,
+.slideContent header * {
+  text-align: center;
+  justify-self: center;
+}
+
+/* CTA button — white with black border, brown on hover */
+.slideContent [class*='ctaButton'] {
+  background-color: #ffffff;
+  color: #2E2E2E;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 2px solid #2E2E2E !important;
+  outline: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  padding: 11px 30px;
+  min-width: 280px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: none;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  box-sizing: border-box;
+}
+
+.slideContent [class*='ctaButton']:hover {
+  background-color: #BAA38A;
+  color: #ffffff;
+  border-color: #BAA38A !important;
+  text-decoration: none;
+}
+
+/* Hero typography */
+.slideContent h1,
+.slideContent h2,
+.slideContent h3,
+.slideContent h4,
+.slideContent h5,
+.slideContent h6 {
+  font-family: 'Britannic Bold', 'Georgia', serif;
+  font-weight: 400;
+}
+
+.slideContent p,
+.slideContent [class*="ingress"],
+.slideContent [class*="description"] {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-weight: 700;
+}
+
+/* Content above the overlay */
+.slideContent {
+  position: relative;
+  z-index: 7;
+  width: 100%;
+  animation: heroFadeIn 0.35s ease-out both;
+  /* Extra horizontal padding so text doesn't overlap the arrows */
+  padding: 0 56px;
+  /* Let clicks on empty areas (sides/edges) pass through to the arrows.
+     Children re-enable pointer events below. */
+  pointer-events: none;
+
+  @media (max-width: 480px) {
+    padding: 0 44px;
+  }
+
+  @media (--viewportMedium) {
+    padding: 0 80px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 0 96px;
+  }
+}
+
+/* Re-enable pointer events on direct children so the title, search bar etc.
+   are still interactive. */
+.slideContent > * {
+  pointer-events: auto;
+}
+
+/* Arrow buttons - estilo copiado do RecentlyViewedSection */
+.arrowLeft,
+.arrowRight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  &:hover:not(:disabled) > span {
+    background-color: #BAA38A;
+    color: #ffffff;
+  }
+}
+
+.arrowLeft {
+  left: 8px;
+
+  @media (--viewportMedium) {
+    left: 24px;
+  }
+
+  @media (--viewportLarge) {
+    left: 32px;
+  }
+}
+
+.arrowRight {
+  right: 8px;
+
+  @media (--viewportMedium) {
+    right: 24px;
+  }
+
+  @media (--viewportLarge) {
+    right: 32px;
+  }
+}
+
+.arrowLeft > span,
+.arrowRight > span {
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+  background-color: rgba(255, 255, 255, 0.88);
+  border: none;
+  font-size: 22px;
+  color: #2E2E2E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 4px 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+
+  @media (--viewportMedium) {
+    width: 48px;
+    height: 48px;
+    font-size: 34px;
+  }
+
+  @media (--viewportLarge) {
+    width: 54px;
+    height: 54px;
+    font-size: 38px;
+  }
+}
+
+/* Dot indicators */
+.dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  gap: 8px;
+
+  @media (--viewportMedium) {
+    bottom: 28px;
+    gap: 10px;
+  }
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+
+  @media (--viewportMedium) {
+    width: 12px;
+    height: 12px;
+  }
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background-color: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.dot:hover {
+  background-color: #7C6350;
+}
+
+.dotActive {
+  background-color: #BAA38A;
+  transform: scale(1.2);
+}
+
+@media (max-width: 767px) {
+  .root {
+    display: none;
+  }
+}

@@ -1,0 +1,54 @@
+.slideshowOuter {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin-top: 40px;
+  border-radius: 16px;
+  transition: background-color 0.65s ease;
+  padding: 40px 0 16px;
+}
+
+/* Fade in */
+.slideActive {
+  position: relative;
+  animation: fadeIn 0.65s ease forwards;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Dot indicators */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--colorGrey300);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dot:hover {
+  background-color: var(--colorGrey500);
+}
+
+.dotActive {
+  background-color: var(--colorGrey900);
+  transform: scale(1.2);
+}
