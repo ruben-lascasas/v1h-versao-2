@@ -181,20 +181,6 @@
 .firstRow {
 }
 
-.locationWrapper {
-  margin-top: 24px;
-
-  & [class*="icon"] {
-    display: none;
-  }
-  & input {
-    padding-left: 12px !important;
-  }
-
-  @media (--viewportMedium) {
-    margin-top: 32px;
-  }
-}
 
 .row,
 .customFields {

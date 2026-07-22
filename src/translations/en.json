@@ -1194,6 +1194,8 @@
   "SignupForm.confirmPasswordPlaceholder": "Confirm your password…",
   "SignupForm.confirmPasswordRequired": "Please confirm your password.",
   "SignupForm.confirmPasswordMismatch": "Passwords do not match.",
+  "SignupForm.cityLabel": "City",
+  "SignupForm.cityPlaceholder": "Start typing…",
   "SignupForm.phoneNumberLabel": "Phone number",
   "SignupForm.phoneNumberPlaceholder": "Enter your phone number.",
   "SignupForm.phoneNumberRequired": "Please enter your phone number.",

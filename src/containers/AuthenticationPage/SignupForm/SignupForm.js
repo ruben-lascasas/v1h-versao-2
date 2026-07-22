@@ -4,7 +4,6 @@ import arrayMutators from 'final-form-arrays';
 import classNames from 'classnames';
 
 import { useIntl } from '../../../util/reactIntl';
-import { useConfiguration } from '../../../context/configurationContext';
 import { propTypes } from '../../../util/types';
 import * as validators from '../../../util/validators';
 import { getPropsForCustomUserFieldInputs } from '../../../util/userHelpers';
@@ -15,13 +14,13 @@ import {
   FieldTextInput,
   CustomExtendedDataField,
   NamedLink,
-  FieldLocationAutocompleteInput,
 } from '../../../components';
 
 import FieldSelectUserType from '../FieldSelectUserType';
 import UserFieldDisplayName from '../UserFieldDisplayName';
 import UserFieldPhoneNumber from '../UserFieldPhoneNumber';
 import ProfessionField, { SEGMENT_FORM_NAME, findProfessionConfig } from '../ProfessionField';
+import CityAutocompleteField from '../CityAutocompleteField';
 
 import css from './SignupForm.module.css';
 
@@ -131,12 +130,6 @@ const PasswordStrengthMeter = ({ password, intl }) => {
 const SignupFormComponent = props => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const config = useConfiguration();
-  // Without a geocoder (e.g. missing Mapbox token) the autocomplete can never
-  // offer suggestions, so "picked a suggestion" must not gate the submit.
-  const hasGeocoderAccess = !!(
-    config?.maps?.mapboxAccessToken || config?.maps?.googleMapsAPIKey
-  );
 
   // ── Wizard ──────────────────────────────────────────────────────────────
   // Step 1 (tipo de conta) is skipped when there's a single/preselected type.
@@ -254,22 +247,12 @@ const SignupFormComponent = props => {
       const classes = classNames(rootClassName || css.root, className);
       const submitInProgress = inProgress;
 
-      // The location field is `{ search, predictions, selectedPlace }`. The
-      // user has typed something but not picked an option from the dropdown
-      // when `search` has text but `selectedPlace` is null. Block the submit
-      // in that intermediate state so they don't end up with no city saved.
-      const loc = values?.signupLocation;
-      const locationTypingButNotPicked =
-        hasGeocoderAccess &&
-        !!(loc && typeof loc.search === 'string' && loc.search.trim() && !loc.selectedPlace);
-
       const passwordRepeatedElsewhere = isPasswordUsedMoreThanOnce(values);
 
       // ── Gating por passo ──────────────────────────────────────────────
       // "O botão primário só fica ativo quando os obrigatórios mínimos
       // estão preenchidos."
-      const step2Invalid =
-        STEP2_FIELDS.some(fieldName => errors[fieldName]) || locationTypingButNotPicked;
+      const step2Invalid = STEP2_FIELDS.some(fieldName => errors[fieldName]);
       const step3Invalid =
         STEP3_FIELDS.some(fieldName => errors[fieldName]) || passwordRepeatedElsewhere;
 
@@ -280,11 +263,7 @@ const SignupFormComponent = props => {
       const professionMissing = !!professionOptions && !values?.profissao;
 
       const submitDisabled =
-        submitInProgress ||
-        invalid ||
-        locationTypingButNotPicked ||
-        segmentMissing ||
-        professionMissing;
+        submitInProgress || invalid || segmentMissing || professionMissing;
 
       // ── Cabeçalho do wizard ───────────────────────────────────────────
       const displayStep = hasUserTypeStep ? step : step - 1;
@@ -406,18 +385,7 @@ const SignupFormComponent = props => {
                   />
                 </div>
 
-                <div className={css.locationWrapper}>
-                  <FieldLocationAutocompleteInput
-                    name="signupLocation"
-                    placeholder="Cidade, País..."
-                    useDefaultPredictions={false}
-                    suggestCurrentLocation={false}
-                    hideSearchHistory
-                    hideExtras
-                    format={v => v}
-                    valueFromForm={values.signupLocation}
-                  />
-                </div>
+                <CityAutocompleteField name="signupLocation" className={css.row} formId={formId} />
               </div>
             ) : null}
           </div>

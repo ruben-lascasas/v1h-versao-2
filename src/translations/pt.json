@@ -1429,6 +1429,8 @@
   "SignupForm.confirmPasswordPlaceholder": "Confirme a sua password…",
   "SignupForm.confirmPasswordRequired": "Confirme a sua password.",
   "SignupForm.confirmPasswordMismatch": "As passwords não coincidem.",
+  "SignupForm.cityLabel": "Cidade",
+  "SignupForm.cityPlaceholder": "Comece a escrever…",
   "SignupForm.phoneNumberLabel": "Contacto",
   "SignupForm.phoneNumberPlaceholder": "Introduza o seu número de telefone.",
   "SignupForm.phoneNumberRequired": "Introduza o seu número de telefone.",

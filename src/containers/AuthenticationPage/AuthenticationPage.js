@@ -203,7 +203,9 @@ export const AuthenticationForms = props => {
       ...rest
     } = values;
     const displayNameMaybe = displayName ? { displayName: displayName.trim() } : {};
-    const locationAddress = signupLocation?.selectedPlace?.address || null;
+    // signupLocation is a plain city name (see CityAutocompleteField) — no
+    // geocoder involved, so no lat/lng, just the label the user picked/typed.
+    const locationAddress = signupLocation?.trim() || null;
     const profissaoResolved = resolveProfessionValue(values);
     const profissaoMaybe = profissaoResolved ? { profissao: profissaoResolved } : {};
 
