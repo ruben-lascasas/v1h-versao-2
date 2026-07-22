@@ -30,19 +30,12 @@ const getSoleUserTypeMaybe = userTypes =>
 
 const MIN_AGE = 18;
 
-// Fields that belong to step 2 ("Os seus dados"). Used to decide whether the
-// "Continuar" button can advance — unregistered names are simply ignored.
-const STEP2_FIELDS = [
-  'fname',
-  'lname',
-  'dob',
-  'email',
-  'displayName',
-  'password',
-  'confirmPassword',
-  'phoneNumber',
-  'signupLocation',
-];
+// Fields per step, used to decide whether "Continuar" can advance —
+// unregistered names are simply ignored.
+// Step 2 — "Os seus dados": identity.
+const STEP2_FIELDS = ['fname', 'lname', 'dob', 'displayName'];
+// Step 3 — "Conta e Contacto": how to log in and how to reach the user.
+const STEP3_FIELDS = ['email', 'password', 'confirmPassword', 'phoneNumber', 'signupLocation'];
 
 const isPasswordUsedMoreThanOnce = formValues => {
   // confirmPassword is supposed to match the password — exclude it, otherwise
@@ -275,8 +268,9 @@ const SignupFormComponent = props => {
       // ── Gating por passo ──────────────────────────────────────────────
       // "O botão primário só fica ativo quando os obrigatórios mínimos
       // estão preenchidos."
-      const step2Invalid =
-        STEP2_FIELDS.some(fieldName => errors[fieldName]) ||
+      const step2Invalid = STEP2_FIELDS.some(fieldName => errors[fieldName]);
+      const step3Invalid =
+        STEP3_FIELDS.some(fieldName => errors[fieldName]) ||
         locationTypingButNotPicked ||
         passwordRepeatedElsewhere;
 
@@ -295,9 +289,15 @@ const SignupFormComponent = props => {
 
       // ── Cabeçalho do wizard ───────────────────────────────────────────
       const displayStep = hasUserTypeStep ? step : step - 1;
-      const displayTotal = hasUserTypeStep ? 3 : 2;
+      const displayTotal = hasUserTypeStep ? 4 : 3;
       const stepTitleKey =
-        step === 1 ? 'SignupForm.step1Title' : step === 2 ? 'SignupForm.step2Title' : 'SignupForm.step3Title';
+        step === 1
+          ? 'SignupForm.step1Title'
+          : step === 2
+          ? 'SignupForm.step2Title'
+          : step === 3
+          ? 'SignupForm.step3Title'
+          : 'SignupForm.step4Title';
 
       return (
         <Form className={classes} onSubmit={handleSubmit}>
@@ -355,9 +355,9 @@ const SignupFormComponent = props => {
           <div className={step === 2 ? css.step : css.stepHidden}>
             {showDefaultUserFields ? (
               <div className={css.defaultUserFields}>
-                <div className={css.name}>
+                <div className={css.twoCol}>
                   <FieldTextInput
-                    className={css.firstNameRoot}
+                    className={css.twoColItem}
                     type="text"
                     id={formId ? `${formId}.fname` : 'fname'}
                     name="fname"
@@ -372,7 +372,7 @@ const SignupFormComponent = props => {
                     )}
                   />
                   <FieldTextInput
-                    className={css.lastNameRoot}
+                    className={css.twoColItem}
                     type="text"
                     id={formId ? `${formId}.lname` : 'lname'}
                     name="lname"
@@ -388,18 +388,34 @@ const SignupFormComponent = props => {
                   />
                 </div>
 
-                <FieldTextInput
-                  className={css.row}
-                  type="date"
-                  id={formId ? `${formId}.dob` : 'dob'}
-                  name="dob"
-                  autoComplete="bday"
-                  label={intl.formatMessage({ id: 'SignupForm.dobLabel' })}
-                  validate={validators.composeValidators(dobRequired, dobValidAge)}
-                />
+                <div className={classNames(css.twoCol, css.row)}>
+                  <FieldTextInput
+                    className={css.twoColItem}
+                    type="date"
+                    id={formId ? `${formId}.dob` : 'dob'}
+                    name="dob"
+                    autoComplete="bday"
+                    label={intl.formatMessage({ id: 'SignupForm.dobLabel' })}
+                    validate={validators.composeValidators(dobRequired, dobValidAge)}
+                  />
 
+                  <UserFieldDisplayName
+                    formName="SignupForm"
+                    className={css.twoColItem}
+                    userTypeConfig={userTypeConfig}
+                    intl={intl}
+                  />
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          {/* ── Passo 3 — Conta e Contacto ──────────────────────────────── */}
+          <div className={step === 3 ? css.step : css.stepHidden}>
+            {showDefaultUserFields ? (
+              <div className={css.defaultUserFields}>
                 <FieldTextInput
-                  className={css.row}
+                  className={css.firstRow}
                   type="email"
                   id={formId ? `${formId}.email` : 'email'}
                   name="email"
@@ -407,13 +423,6 @@ const SignupFormComponent = props => {
                   placeholder="jane.doe@example.com"
                   maxLength={100}
                   validate={validators.composeValidators(emailRequired, emailValid)}
-                />
-
-                <UserFieldDisplayName
-                  formName="SignupForm"
-                  className={css.row}
-                  userTypeConfig={userTypeConfig}
-                  intl={intl}
                 />
 
                 <div className={`${css.passwordWrapper} ${css.row}`}>
@@ -492,8 +501,8 @@ const SignupFormComponent = props => {
             ) : null}
           </div>
 
-          {/* ── Passo 3 — A sua atividade ───────────────────────────────── */}
-          <div className={step === 3 ? css.step : css.stepHidden}>
+          {/* ── Passo 4 — A sua atividade ───────────────────────────────── */}
+          <div className={step === 4 ? css.step : css.stepHidden}>
             {showCustomUserFields ? (
               <div className={css.customFields}>
                 {userFieldProps.map(({ key, ...fieldProps }) => (
@@ -508,12 +517,12 @@ const SignupFormComponent = props => {
           </div>
 
           <div className={css.bottomWrapper}>
-            {step < 3 ? (
+            {step < 4 ? (
               <PrimaryButton
                 rootClassName={css.submitButton}
                 type="button"
-                disabled={step === 1 ? !userType : step2Invalid}
-                onClick={() => setStep(s => Math.min(3, s + 1))}
+                disabled={step === 1 ? !userType : step === 2 ? step2Invalid : step3Invalid}
+                onClick={() => setStep(s => Math.min(4, s + 1))}
               >
                 {intl.formatMessage({ id: 'SignupForm.continue' })}
               </PrimaryButton>
@@ -542,8 +551,10 @@ const SignupFormComponent = props => {
 };
 
 /**
- * A component that renders the signup form as a 3-step wizard:
- * 1) tipo de conta, 2) dados pessoais, 3) atividade + termos.
+ * A component that renders the signup form as a 4-step wizard:
+ * 1) tipo de conta, 2) identidade (nome/apelido/dob/username),
+ * 3) conta e contacto (email/password/telefone/localização),
+ * 4) atividade (segmento/profissão) + termos.
  * All steps stay mounted (hidden via CSS) so field validators stay registered.
  *
  * @component

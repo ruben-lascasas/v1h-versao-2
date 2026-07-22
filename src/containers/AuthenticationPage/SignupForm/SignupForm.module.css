@@ -133,9 +133,11 @@
   list-style: none;
   margin: 6px 0 0 0;
   padding: 0;
+  /* Single column — each item takes the full available width so the label
+     never wraps awkwardly, on both mobile and desktop. */
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px 12px;
+  grid-template-columns: 1fr;
+  gap: 2px;
   font-size: 12px;
   line-height: 18px;
 }
@@ -156,14 +158,27 @@
    convenção global (ver landingDark.css) — o wizard herda essas cores e não
    precisa de overrides aqui. */
 
-.name {
+/* Generic 2-column row: stacked on mobile, side by side from tablet up.
+   Used for fname/lname and for dob/displayName. */
+.name,
+.twoCol {
   display: flex;
   flex-direction: column;
   gap: 24px;
 
   @media (--viewportMedium) {
+    flex-direction: row;
     gap: 32px;
   }
+}
+
+.twoColItem {
+  width: 100%;
+  min-width: 0;
+}
+
+/* First field of a step — no extra top margin needed. */
+.firstRow {
 }
 
 .locationWrapper {
@@ -188,14 +203,6 @@
   @media (--viewportMedium) {
     margin-top: 32px;
   }
-}
-
-.firstNameRoot {
-  width: 100%;
-}
-
-.lastNameRoot {
-  width: 100%;
 }
 
 .password {
