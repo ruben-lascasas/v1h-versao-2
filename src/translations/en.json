@@ -927,6 +927,7 @@
   "PasswordResetForm.passwordRequired": "This field is required.",
   "PasswordResetForm.passwordTooLong": "The password can't be longer than {maxLength} characters.",
   "PasswordResetForm.passwordTooShort": "The password should be at least {minLength} characters.",
+  "PasswordResetForm.passwordTooWeak": "The password must contain at least one uppercase letter, one lowercase letter and one number.",
   "PasswordResetForm.submitButtonText": "Reset password",
   "PasswordResetPage.helpText": "Please provide a new password.",
   "PasswordResetPage.invalidUrlParams": "Oops, looks like the password reset link is broken. Try again by clicking the email link, or request a new link on the {recoveryLink}.",

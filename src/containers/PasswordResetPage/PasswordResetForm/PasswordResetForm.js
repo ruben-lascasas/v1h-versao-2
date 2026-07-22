@@ -59,6 +59,9 @@ const PasswordResetForm = props => (
           maxLength: validators.PASSWORD_MAX_LENGTH,
         }
       );
+      const passwordTooWeakMessage = intl.formatMessage({
+        id: 'PasswordResetForm.passwordTooWeak',
+      });
       const passwordRequired = validators.requiredStringNoTrim(passwordRequiredMessage);
       const passwordMinLength = validators.minLength(
         passwordMinLengthMessage,
@@ -68,6 +71,9 @@ const PasswordResetForm = props => (
         passwordMaxLengthMessage,
         validators.PASSWORD_MAX_LENGTH
       );
+      // Same complexity rule as sign-up and password change — otherwise a
+      // reset could set a password weaker than what sign-up ever allowed.
+      const passwordFormatValid = validators.passwordFormatValid(passwordTooWeakMessage);
 
       const classes = classNames(rootClassName || css.root, className);
 
@@ -87,7 +93,8 @@ const PasswordResetForm = props => (
             validate={validators.composeValidators(
               passwordRequired,
               passwordMinLength,
-              passwordMaxLength
+              passwordMaxLength,
+              passwordFormatValid
             )}
           />
           <PrimaryButton type="submit" inProgress={submitInProgress} disabled={submitDisabled}>
