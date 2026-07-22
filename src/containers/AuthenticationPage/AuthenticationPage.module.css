@@ -174,7 +174,15 @@
 }
 
 .userTypeCardInput {
+  /* Explicit top/left/width/height override the global `input { width:
+     100% }` rule (marketplaceDefaults.css) — without them this invisible
+     input stretches to the viewport width (no positioned ancestor) and
+     causes horizontal overflow on mobile. */
   position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
   opacity: 0;
   pointer-events: none;
 }
