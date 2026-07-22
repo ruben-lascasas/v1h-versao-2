@@ -19,6 +19,7 @@ import {
   isTooManyEmailVerificationRequestsError,
 } from '../../util/errors';
 import { pickUserFieldsData, addScopePrefix } from '../../util/userHelpers';
+import { resolveProfessionValue, PROFESSAO_OUTRA_FIELD } from './ProfessionField';
 
 import { login, authenticationInProgress, signup, signupWithIdp } from '../../ducks/auth.duck';
 import { isScrollingDisabled, manageDisableScrolling } from '../../ducks/ui.duck';
@@ -198,11 +199,13 @@ export const AuthenticationForms = props => {
       displayName,
       signupLocation,
       profissao,
+      [PROFESSAO_OUTRA_FIELD]: profissaoOutra,
       ...rest
     } = values;
     const displayNameMaybe = displayName ? { displayName: displayName.trim() } : {};
     const locationAddress = signupLocation?.selectedPlace?.address || null;
-    const profissaoMaybe = profissao?.trim() ? { profissao: profissao.trim() } : {};
+    const profissaoResolved = resolveProfessionValue(values);
+    const profissaoMaybe = profissaoResolved ? { profissao: profissaoResolved } : {};
 
     const params = {
       email,
@@ -334,9 +337,11 @@ const ConfirmIdProviderInfoForm = props => {
       // profissao lives in operator-only metadata; it's passed forward and
       // written via /api/profile-metadata after signup (see auth.duck.js).
       profissao,
+      [PROFESSAO_OUTRA_FIELD]: profissaoOutra,
       ...rest
     } = values;
-    const profissaoMaybe = profissao?.trim() ? { profissao: profissao.trim() } : {};
+    const profissaoResolved = resolveProfessionValue(values);
+    const profissaoMaybe = profissaoResolved ? { profissao: profissaoResolved } : {};
 
     const displayNameMaybe = displayName ? { displayName: displayName.trim() } : {};
 

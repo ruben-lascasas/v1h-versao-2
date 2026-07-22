@@ -83,6 +83,12 @@ export const PROFESSIONS_BY_SEGMENT = [
 const SEGMENT_FIELD_KEY = 'segmento_de_negocio';
 export const SEGMENT_FORM_NAME = `pub_${SEGMENT_FIELD_KEY}`;
 
+// Sentinel option present in every dropdown segment. Picking it reveals a
+// free-text "Qual?" field (see mockup de UX) instead of saving the literal
+// string "Outra" with no further detail.
+const OTHER_OPTION = 'Outra';
+export const PROFESSAO_OUTRA_FIELD = 'profissaoOutra';
+
 export const findProfessionConfig = (segmentValue, userFields) => {
   if (!segmentValue) return null;
   // Also match against the Console option label so the mapping survives
@@ -91,6 +97,24 @@ export const findProfessionConfig = (segmentValue, userFields) => {
   const enumOption = segmentField?.enumOptions?.find(o => `${o.option}` === `${segmentValue}`);
   const haystack = stripAccents(`${segmentValue} ${enumOption?.label || ''}`);
   return PROFESSIONS_BY_SEGMENT.find(entry => entry.match.some(m => haystack.includes(m))) || null;
+};
+
+/**
+ * Resolves the value that should actually be persisted to `metadata.profissao`.
+ * When the user picked the "Outra" option in a dropdown segment, the specific
+ * text they typed in the follow-up field is saved instead of the literal
+ * "Outra" — otherwise that choice carries no information at all.
+ *
+ * @param {Object} values - Current form values (SignupForm/ConfirmSignupForm)
+ * @returns {string|undefined}
+ */
+export const resolveProfessionValue = values => {
+  const raw = values?.profissao;
+  if (raw === OTHER_OPTION) {
+    const detail = values?.[PROFESSAO_OUTRA_FIELD];
+    return detail?.trim() || undefined;
+  }
+  return raw?.trim() || undefined;
 };
 
 /**
@@ -128,6 +152,11 @@ const ProfessionField = props => {
     // longer belongs to the visible list, so drop it.
     form.change('profissao', undefined);
   }
+  const isOtherSelected = values?.profissao === OTHER_OPTION;
+  if (!isOtherSelected && values?.[PROFESSAO_OUTRA_FIELD]) {
+    // Left the "Outra" option (or the whole segment) — drop the leftover detail.
+    form.change(PROFESSAO_OUTRA_FIELD, undefined);
+  }
 
   const label = intl.formatMessage({ id: 'SignupForm.profissaoLabel' });
 
@@ -154,22 +183,40 @@ const ProfessionField = props => {
   }
 
   return professionOptions ? (
-    <FieldSelect
-      className={classNames(css.root, className)}
-      id={formId ? `${formId}.profissao` : 'profissao'}
-      name="profissao"
-      label={label}
-      validate={validators.required(intl.formatMessage({ id: 'SignupForm.profissaoRequired' }))}
-    >
-      <option disabled value="">
-        {intl.formatMessage({ id: 'SignupForm.profissaoPlaceholder' })}
-      </option>
-      {professionOptions.map(option => (
-        <option key={option} value={option}>
-          {option}
+    <>
+      <FieldSelect
+        className={classNames(css.root, className)}
+        id={formId ? `${formId}.profissao` : 'profissao'}
+        name="profissao"
+        label={label}
+        validate={validators.required(intl.formatMessage({ id: 'SignupForm.profissaoRequired' }))}
+      >
+        <option disabled value="">
+          {intl.formatMessage({ id: 'SignupForm.profissaoPlaceholder' })}
         </option>
-      ))}
-    </FieldSelect>
+        {professionOptions.map(option => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </FieldSelect>
+      {isOtherSelected ? (
+        <FieldTextInput
+          className={classNames(css.root, className)}
+          type="text"
+          id={formId ? `${formId}.${PROFESSAO_OUTRA_FIELD}` : PROFESSAO_OUTRA_FIELD}
+          name={PROFESSAO_OUTRA_FIELD}
+          label={intl.formatMessage({ id: 'SignupForm.profissaoOutraLabel' })}
+          placeholder={intl.formatMessage({ id: 'SignupForm.profissaoOutraPlaceholder' })}
+          maxLength={50}
+          validate={validators.composeValidators(
+            validators.required(intl.formatMessage({ id: 'SignupForm.profissaoOutraRequired' })),
+            validators.minLength(intl.formatMessage({ id: 'SignupForm.profissaoOutraInvalid' }), 2),
+            validators.maxLength(intl.formatMessage({ id: 'SignupForm.profissaoOutraInvalid' }), 50)
+          )}
+        />
+      ) : null}
+    </>
   ) : (
     <FieldTextInput
       className={classNames(css.root, className)}
