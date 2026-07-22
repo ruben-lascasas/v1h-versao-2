@@ -3,11 +3,11 @@
 .root {
   composes: marketplaceModalFormRootStyles from global;
 
+  /* The wizard's steps hold very different amounts of content — always flow
+     from the top. The inherited "space-between" (desktop only) pushed the
+     button far down whenever a step (e.g. "Os seus dados") has few fields,
+     leaving a huge dead gap above it. */
   justify-content: flex-start;
-
-  @media (--viewportMedium) {
-    justify-content: space-between;
-  }
 }
 
 .defaultUserFields {

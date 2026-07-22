@@ -1181,7 +1181,7 @@
   "SignupForm.stepOf": "Step {current} of {total}",
   "SignupForm.step1Title": "Account type",
   "SignupForm.step2Title": "Your details",
-  "SignupForm.step3Title": "Account & Contact",
+  "SignupForm.step3Title": "Account",
   "SignupForm.step4Title": "Your activity",
   "SignupForm.back": "Back",
   "SignupForm.continue": "Continue",

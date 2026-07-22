@@ -32,10 +32,10 @@ const MIN_AGE = 18;
 
 // Fields per step, used to decide whether "Continuar" can advance —
 // unregistered names are simply ignored.
-// Step 2 — "Os seus dados": identity.
-const STEP2_FIELDS = ['fname', 'lname', 'dob', 'displayName'];
-// Step 3 — "Conta e Contacto": how to log in and how to reach the user.
-const STEP3_FIELDS = ['email', 'password', 'confirmPassword', 'phoneNumber', 'signupLocation'];
+// Step 2 — "Os seus dados": identity + how to reach the user.
+const STEP2_FIELDS = ['fname', 'lname', 'dob', 'phoneNumber', 'signupLocation'];
+// Step 3 — "Conta": login credentials + username.
+const STEP3_FIELDS = ['email', 'password', 'confirmPassword', 'displayName'];
 
 const isPasswordUsedMoreThanOnce = formValues => {
   // confirmPassword is supposed to match the password — exclude it, otherwise
@@ -268,11 +268,10 @@ const SignupFormComponent = props => {
       // ── Gating por passo ──────────────────────────────────────────────
       // "O botão primário só fica ativo quando os obrigatórios mínimos
       // estão preenchidos."
-      const step2Invalid = STEP2_FIELDS.some(fieldName => errors[fieldName]);
+      const step2Invalid =
+        STEP2_FIELDS.some(fieldName => errors[fieldName]) || locationTypingButNotPicked;
       const step3Invalid =
-        STEP3_FIELDS.some(fieldName => errors[fieldName]) ||
-        locationTypingButNotPicked ||
-        passwordRepeatedElsewhere;
+        STEP3_FIELDS.some(fieldName => errors[fieldName]) || passwordRepeatedElsewhere;
 
       // O campo do segmento não está marcado como obrigatório na Console,
       // por isso reforçamos aqui; a profissão é required quando é dropdown.
@@ -399,18 +398,31 @@ const SignupFormComponent = props => {
                     validate={validators.composeValidators(dobRequired, dobValidAge)}
                   />
 
-                  <UserFieldDisplayName
+                  <UserFieldPhoneNumber
                     formName="SignupForm"
                     className={css.twoColItem}
                     userTypeConfig={userTypeConfig}
                     intl={intl}
                   />
                 </div>
+
+                <div className={css.locationWrapper}>
+                  <FieldLocationAutocompleteInput
+                    name="signupLocation"
+                    placeholder="Cidade, País..."
+                    useDefaultPredictions={false}
+                    suggestCurrentLocation={false}
+                    hideSearchHistory
+                    hideExtras
+                    format={v => v}
+                    valueFromForm={values.signupLocation}
+                  />
+                </div>
               </div>
             ) : null}
           </div>
 
-          {/* ── Passo 3 — Conta e Contacto ──────────────────────────────── */}
+          {/* ── Passo 3 — Conta ──────────────────────────────────────────── */}
           <div className={step === 3 ? css.step : css.stepHidden}>
             {showDefaultUserFields ? (
               <div className={css.defaultUserFields}>
@@ -479,24 +491,12 @@ const SignupFormComponent = props => {
                   </div>
                 ) : null}
 
-                <UserFieldPhoneNumber
+                <UserFieldDisplayName
                   formName="SignupForm"
                   className={css.row}
                   userTypeConfig={userTypeConfig}
                   intl={intl}
                 />
-                <div className={css.locationWrapper}>
-                  <FieldLocationAutocompleteInput
-                    name="signupLocation"
-                    placeholder="Cidade, País..."
-                    useDefaultPredictions={false}
-                    suggestCurrentLocation={false}
-                    hideSearchHistory
-                    hideExtras
-                    format={v => v}
-                    valueFromForm={values.signupLocation}
-                  />
-                </div>
               </div>
             ) : null}
           </div>
