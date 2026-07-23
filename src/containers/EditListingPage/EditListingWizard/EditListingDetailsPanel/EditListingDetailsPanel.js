@@ -25,6 +25,25 @@ import ErrorMessage from './ErrorMessage';
 import EditListingDetailsForm from './EditListingDetailsForm';
 import css from './EditListingDetailsPanel.module.css';
 
+// Sharetribe Console has no way to restrict a listing type to specific user
+// types (unlike listing fields, which do support that) — every listing type
+// configured in Console shows up for every user type in the "Tipo de
+// anúncio" dropdown. That's wrong here: a Prestador de Serviços should only
+// ever see "Serviço", and an Anunciante shouldn't see it at all. Since
+// Console can't express this, it's mapped here instead.
+const LISTING_TYPES_BY_USER_TYPE = {
+  anunciante: ['daily-rental', 'hourly-rental'],
+  prestador_de_servicos: ['servico'],
+};
+
+const filterListingTypesForUserType = (listingTypes, userType) => {
+  const allowedIds = LISTING_TYPES_BY_USER_TYPE[userType];
+  // Unmapped/unknown user type: fail open (show everything) rather than
+  // blocking listing creation entirely for a case we didn't anticipate.
+  if (!allowedIds) return listingTypes;
+  return listingTypes.filter(conf => allowedIds.includes(conf.listingType));
+};
+
 /**
  * Get listing configuration. For existing listings, it is stored to publicData.
  * For new listings, the data needs to be figured out from listingTypes configuration.
@@ -289,6 +308,9 @@ const getInitialValues = (
  * @param {boolean} props.updateInProgress - Whether the update is in progress
  * @param {Object} props.errors - The errors object
  * @param {Object} props.config - The config object
+ * @param {propTypes.currentUser} [props.currentUser] - Used to restrict which
+ *   listing types are selectable, based on the user's userType (see
+ *   LISTING_TYPES_BY_USER_TYPE above)
  * @returns {JSX.Element}
  */
 const EditListingDetailsPanel = props => {
@@ -309,11 +331,14 @@ const EditListingDetailsPanel = props => {
     config,
     updatePageTitle: UpdatePageTitle,
     intl,
+    currentUser,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
   const { publicData, state } = listing?.attributes || {};
   const listingTypes = config.listing.listingTypes;
+  const currentUserType = currentUser?.attributes?.profile?.publicData?.userType;
+  const listingTypesForUser = filterListingTypesForUserType(listingTypes, currentUserType);
   const listingFields = config.listing.listingFields;
   const listingCategories = config.categoryConfiguration.categories;
   const categoryKey = config.categoryConfiguration.key;
@@ -489,7 +514,7 @@ const EditListingDetailsPanel = props => {
 
             onSubmit(updateValues);
           }}
-          selectableListingTypes={listingTypes.map(conf =>
+          selectableListingTypes={listingTypesForUser.map(conf =>
             getTransactionInfo({
               listingTypes: [conf],
               existingListingTypeInfo: {},

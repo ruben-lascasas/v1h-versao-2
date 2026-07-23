@@ -717,6 +717,7 @@ class EditListingWizard extends Component {
                 config={config}
                 routeConfiguration={routeConfiguration}
                 intl={intl}
+                currentUser={currentUser}
               />
             );
           })}
