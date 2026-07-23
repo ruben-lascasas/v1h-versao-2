@@ -387,7 +387,12 @@ const EditListingDetailsForm = props => (
       );
       const maxLength2000Message = maxLength(descriptionMaxLengthMessage, DESCRIPTION_MAX_LENGTH);
 
-      const hasCategories = selectableCategories && selectableCategories.length > 0;
+      // A árvore de categorias da Console aplica-se sempre a todos os tipos de
+      // anúncio — não há forma de a restringir lá. Para "servico" (catering,
+      // limpeza, etc.) as categorias de espaço (Eventos & Festas, Casas de
+      // Campo...) não fazem sentido, por isso saltamos este passo aqui.
+      const hasCategories =
+        selectableCategories && selectableCategories.length > 0 && listingType !== 'servico';
       const showCategories = listingType && hasCategories;
 
       const showTitle = hasCategories ? allCategoriesChosen : listingType;
