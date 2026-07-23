@@ -1445,6 +1445,7 @@
   "FieldSelectUserType.required": "Escolha um tipo de utilizador.",
   "FieldSelectUserType.anuncianteDescription": "Anuncie e faça a gestão dos seus espaços",
   "FieldSelectUserType.visitanteDescription": "Descubra e reserve espaços únicos",
+  "FieldSelectUserType.prestador_de_servicosDescription": "Ofereça serviços complementares, como catering ou limpeza",
   "SignupForm.showPassword": "Mostrar password",
   "SignupForm.signUp": "Criar conta",
   "DirectMessagePage.title": "Mensagens",

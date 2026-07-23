@@ -1205,6 +1205,7 @@
   "SignupForm.profissaoFreeTextPlaceholder": "Your profession (optional)",
   "FieldSelectUserType.anuncianteDescription": "List and manage your spaces",
   "FieldSelectUserType.visitanteDescription": "Discover and book unique spaces",
+  "FieldSelectUserType.prestador_de_servicosDescription": "Offer complementary services, like catering or cleaning",
   "SignupForm.showPassword": "Show password",
   "SignupForm.signUp": "Create account",
   "SortBy.heading": "Sort by",
