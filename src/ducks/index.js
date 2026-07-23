@@ -26,6 +26,7 @@ import followAlerts from './followAlerts.duck';
 import extraAlerts from './extraAlerts.duck';
 import highlightedListings from './highlightedListings.duck';
 import similarListings from './similarListings.duck';
+import serviceListings from './serviceListings.duck';
 import mapListings from './mapListings.duck';
 import recommendations from './recommendations.duck';
 
@@ -52,6 +53,7 @@ export {
   extraAlerts,
   highlightedListings,
   similarListings,
+  serviceListings,
   mapListings,
   recommendations,
 };

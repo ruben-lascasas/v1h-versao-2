@@ -88,6 +88,7 @@ import {
 import SectionHero from './SectionHero';
 import SectionReviews from './SectionReviews';
 import SimilarListingsSection from '../../components/SimilarListingsSection/SimilarListingsSection';
+import ServiceListingsSection from '../../components/ServiceListingsSection/ServiceListingsSection';
 import ShareButtons from '../../components/ShareButtons/ShareButtons';
 import ReportListingModal from '../../components/ReportListingModal/ReportListingModal';
 import DestacarPromptModal from '../../components/DestacarPromptModal/DestacarPromptModal';
@@ -517,6 +518,12 @@ export const ListingPageComponent = props => {
             <ShareButtons title={title} />
           </div>
         </div>
+        {publicData?.listingType !== 'servico' ? (
+          <ServiceListingsSection
+            currentListingId={currentListing?.id?.uuid}
+            geolocation={geolocation}
+          />
+        ) : null}
         <SimilarListingsSection
           currentListingId={currentListing?.id?.uuid}
           categoryLevel1={publicData?.categoryLevel1}
