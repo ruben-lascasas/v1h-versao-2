@@ -89,7 +89,6 @@ const FieldSelectListingType = props => {
     }
     // listingTypes is a fresh array reference on every render (filtered with
     // .filter() upstream), so it can't be a dependency here without looping.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleOnChange = value => {
