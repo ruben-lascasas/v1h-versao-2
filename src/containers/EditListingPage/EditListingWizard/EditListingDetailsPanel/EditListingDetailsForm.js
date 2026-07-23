@@ -75,6 +75,23 @@ const FieldSelectListingType = props => {
   } = props;
   const hasMultipleListingTypes = listingTypes?.length > 1;
 
+  // When only one listing type is selectable (e.g. a Prestador de Serviços
+  // only ever sees "Serviço"), the <select> below never renders, so its
+  // onChange — the only place that normally calls onListingTypeChange —
+  // never fires. EditListingWizard's `hasListingTypeSelected` needs that
+  // call to know the listing type before the draft exists yet, otherwise it
+  // falls back to a details-only tab list and publishes right after the
+  // first "Seguinte" (skipping Localização/Preço/Disponibilidade). Firing
+  // it once on mount replicates what picking the sole option would do.
+  useEffect(() => {
+    if (!hasMultipleListingTypes && !hasPredefinedListingType && listingTypes?.length === 1) {
+      onListingTypeChange?.(listingTypes[0]);
+    }
+    // listingTypes is a fresh array reference on every render (filtered with
+    // .filter() upstream), so it can't be a dependency here without looping.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleOnChange = value => {
     const selectedListingType = listingTypes.find(config => config.listingType === value);
     formApi.change('transactionProcessAlias', selectedListingType.transactionProcessAlias);
