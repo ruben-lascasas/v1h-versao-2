@@ -366,10 +366,15 @@ const EditListingDetailsPanel = props => {
     }
   }, []);
 
+  // listingTypesForUser (not the unfiltered listingTypes) so that when a
+  // user's allowed set collapses to exactly one type, getTransactionInfo
+  // takes its "only one option" branch and auto-fills listingType instead of
+  // waiting for a dropdown that will never render (hasMultipleListingTypes
+  // is false whenever selectableListingTypes has a single entry).
   const initialValues = getInitialValues(
     props,
     existingListingTypeInfo,
-    listingTypes,
+    listingTypesForUser,
     listingFields,
     listingCategories,
     categoryKey
