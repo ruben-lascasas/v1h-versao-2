@@ -566,7 +566,7 @@ const TopbarComponent = props => {
         />
       )}
 
-      <WelcomeModal onClose={() => setWelcomePending(false)} />
+      <WelcomeModal onClose={() => setWelcomePending(false)} currentUser={currentUser} />
 
       <GenericError show={showGenericError} />
       {resolvedCurrentPage === 'LandingPage' ? <MobileBottomBar /> : null}

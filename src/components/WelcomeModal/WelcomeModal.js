@@ -22,21 +22,42 @@ const Check = () => (
   </svg>
 );
 
-const HeroIcon = () => (
-  <svg width="56" height="56" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <circle cx="12" cy="12" r="11" fill="#BAA38A" />
-    <polyline
-      points="7.5 12.5 10.5 15.5 16.5 8.5"
-      fill="none"
-      stroke="#ffffff"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
+// Conteúdo por tipo de utilizador — cada persona só publica ou só reserva
+// (ver roles no Console: Anunciante e Prestador de Serviços são só
+// "Provider", Visitante é só "Customer"), por isso o CTA e as dicas mudam
+// consoante quem acabou de se registar. "anunciante"/"prestador_de_servicos"
+// levam a /l/new; "visitante" e qualquer tipo não previsto levam a /s.
+const CONTENT_BY_USER_TYPE = {
+  anunciante: {
+    bullets: (isEN) => [
+      t(isEN, 'Anuncia o teu espaço em poucos minutos, gratuitamente.', 'List your space in minutes, for free.'),
+      t(isEN, 'Gere reservas e disponibilidade num calendário simples.', 'Manage bookings and availability with a simple calendar.'),
+      t(isEN, 'Pagamentos protegidos via Stripe, direto para ti.', 'Secure payments via Stripe, straight to you.'),
+    ],
+    primary: (isEN) => t(isEN, 'Anunciar o meu espaço', 'List my space'),
+    goTo: '/l/new',
+  },
+  prestador_de_servicos: {
+    bullets: (isEN) => [
+      t(isEN, 'Cria o teu anúncio de serviço — catering, limpeza, fotografia e mais.', 'Create your service listing — catering, cleaning, photography and more.'),
+      t(isEN, 'Aparece automaticamente como complemento em espaços perto de ti.', 'Shows up automatically as an add-on on nearby venues.'),
+      t(isEN, 'Pagamentos protegidos via Stripe, direto para ti.', 'Secure payments via Stripe, straight to you.'),
+    ],
+    primary: (isEN) => t(isEN, 'Criar o meu anúncio de serviço', 'Create my service listing'),
+    goTo: '/l/new',
+  },
+  visitante: {
+    bullets: (isEN) => [
+      t(isEN, 'Procura espaços por categoria, localização e datas.', 'Search venues by category, location and dates.'),
+      t(isEN, 'Reserva com pagamento seguro e contrato digital.', 'Book with secure payment and a digital contract.'),
+      t(isEN, 'Guarda os teus espaços favoritos para decidir com calma.', 'Save your favourite venues to decide later.'),
+    ],
+    primary: (isEN) => t(isEN, 'Procurar espaços', 'Find venues'),
+    goTo: '/s',
+  },
+};
 
-const WelcomeModal = ({ onClose }) => {
+const WelcomeModal = ({ onClose, currentUser }) => {
   const { locale } = useLocale();
   const isEN = locale === 'en';
   const history = useHistory();
@@ -59,15 +80,23 @@ const WelcomeModal = ({ onClose }) => {
     if (typeof onClose === 'function') onClose();
   };
 
+  const userType = currentUser?.attributes?.profile?.publicData?.userType;
+  const content = CONTENT_BY_USER_TYPE[userType] || CONTENT_BY_USER_TYPE.visitante;
+
+  const goPrimary = () => {
+    close();
+    history.push(content.goTo);
+  };
+
   const goSearch = () => {
     close();
     history.push('/s');
   };
 
-  const goPublish = () => {
-    close();
-    history.push('/l/new');
-  };
+  // O botão secundário só faz sentido para quem publica anúncios — dá para
+  // espreitar a plataforma antes de criar o primeiro anúncio. Para quem só
+  // reserva (visitante), o CTA principal já é "Procurar espaços".
+  const showSecondaryAction = content.goTo !== '/s';
 
   return (
     <div className={css.overlay} role="dialog" aria-modal="true">
@@ -90,42 +119,23 @@ const WelcomeModal = ({ onClose }) => {
         </p>
 
         <ul className={css.bullets}>
-          <li className={css.bullet}>
-            <span className={css.bulletIcon}><Check /></span>
-            <span>
-              {t(isEN,
-                'Procura espaços por categoria, localização e datas.',
-                'Search venues by category, location and dates.'
-              )}
-            </span>
-          </li>
-          <li className={css.bullet}>
-            <span className={css.bulletIcon}><Check /></span>
-            <span>
-              {t(isEN,
-                'Tens um espaço? Anuncia-o em poucos minutos, gratuitamente.',
-                'Have a space? List it in minutes, for free.'
-              )}
-            </span>
-          </li>
-          <li className={css.bullet}>
-            <span className={css.bulletIcon}><Check /></span>
-            <span>
-              {t(isEN,
-                'Pagamentos protegidos via Stripe e reservas com contrato digital.',
-                'Secure payments via Stripe and bookings with digital contract.'
-              )}
-            </span>
-          </li>
+          {content.bullets(isEN).map((text, index) => (
+            <li className={css.bullet} key={index}>
+              <span className={css.bulletIcon}><Check /></span>
+              <span>{text}</span>
+            </li>
+          ))}
         </ul>
 
         <div className={css.actions}>
-          <button type="button" className={css.primaryBtn} onClick={goSearch}>
-            {t(isEN, 'Procurar espaços', 'Find venues')}
+          <button type="button" className={css.primaryBtn} onClick={goPrimary}>
+            {content.primary(isEN)}
           </button>
-          <button type="button" className={css.secondaryBtn} onClick={goPublish}>
-            {t(isEN, 'Anunciar o meu espaço', 'List my space')}
-          </button>
+          {showSecondaryAction ? (
+            <button type="button" className={css.secondaryBtn} onClick={goSearch}>
+              {t(isEN, 'Explorar a plataforma', 'Explore the platform')}
+            </button>
+          ) : null}
         </div>
       </div>
     </div>
