@@ -12,6 +12,8 @@ import {
   createSlug,
 } from '../../util/urlHelpers';
 import { REQUEST } from '../../transactions/transaction';
+import { storeData as storeCheckoutData } from '../CheckoutPage/CheckoutPageSessionHelpers';
+import { CART_STORAGE_KEY } from '../CartPage/cartStorageKey';
 
 import { Page, LayoutSingleColumn } from '../../components';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
@@ -288,6 +290,27 @@ export const handleSubmit = parameters => values => {
     };
 
     const saveToSessionStorage = !currentUser;
+
+    // Space bookings are routed through the Cart page first, so the customer
+    // can add nearby complementary services (catering, cleaning, etc.) before
+    // paying — those are still separate transactions, just queued from here.
+    // Service listings booked directly (not as a complement) skip straight to
+    // checkout since a service has no complements of its own.
+    const listingType = listing?.attributes?.publicData?.listingType;
+    const isServiceListing = listingType === 'servico';
+
+    if (!isServiceListing) {
+      storeCheckoutData(initialValues.orderData, listing, null, CART_STORAGE_KEY);
+      history.push(
+        createResourceLocatorString(
+          'CartPage',
+          routes,
+          { id: listing.id.uuid, slug: createSlug(listing.attributes.title) },
+          {}
+        )
+      );
+      return;
+    }
 
     const { setInitialValues } = findRouteByRouteName('CheckoutPage', routes);
     callSetInitialValues(setInitialValues, initialValues, saveToSessionStorage);

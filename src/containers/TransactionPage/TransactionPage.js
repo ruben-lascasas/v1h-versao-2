@@ -65,6 +65,7 @@ import TransactionFields from './TransactionFields/TransactionFields.js';
 import ActivityFeed from './ActivityFeed/ActivityFeed';
 import DisputeModal from './DisputeModal/DisputeModal';
 import ReviewModal from './ReviewModal/ReviewModal';
+import CartPendingQueueBanner from '../../components/CartPendingQueueBanner/CartPendingQueueBanner';
 import RequestChangesModal from './RequestChangesModal/RequestChangesModal';
 import MakeCounterOfferModal from './MakeCounterOfferModal/MakeCounterOfferModal';
 import TransactionPanel from './TransactionPanel/TransactionPanel';
@@ -1127,7 +1128,10 @@ export const TransactionPageComponent = props => {
       scrollingDisabled={scrollingDisabled}
     >
       <LayoutSingleColumn topbar={<TopbarContainer />} footer={<FooterContainer />}>
-        <div className={css.root}>{panel}</div>
+        <div className={css.root}>
+          {isCustomerRole ? <CartPendingQueueBanner /> : null}
+          {panel}
+        </div>
         <ReviewModal
           id="ReviewOrderModal"
           isOpen={isReviewModalOpen}

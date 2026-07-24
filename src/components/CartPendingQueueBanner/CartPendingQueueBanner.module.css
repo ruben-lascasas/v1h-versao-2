@@ -1,0 +1,91 @@
+.root {
+  position: relative;
+  background: #f5f0eb;
+  border: 1px solid #E4DED6;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.heading {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+.subheading {
+  font-size: 13px;
+  color: #888;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #E4DED6;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.itemTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2E2E2E;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemPrice {
+  font-size: 12px;
+  color: #888;
+}
+
+.payButton {
+  flex-shrink: 0;
+  width: auto;
+  min-height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+  background-color: #1E7268;
+
+  &:hover {
+    background-color: #175a52;
+  }
+}
+
+.dismissButton {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #aaa;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: #888;
+  }
+}
