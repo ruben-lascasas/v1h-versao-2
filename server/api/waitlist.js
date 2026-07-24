@@ -43,7 +43,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Email inválido.' });
   }
   if (!listingId || !listingTitle) {
-    return res.status(400).json({ error: 'Dados do espaço em falta.' });
+    return res.status(400).json({ error: 'Dados do anúncio em falta.' });
   }
 
   const apiKey = process.env.RESEND_API_KEY;
@@ -76,7 +76,7 @@ module.exports = async (req, res) => {
             <div style="padding: 40px 24px;">
               <h2 style="color: #2E2E2E; margin: 0 0 8px;">Entrou na lista de espera!</h2>
               <p style="color: #555; line-height: 1.7; margin: 0 0 24px;">
-                Ficou registado(a) na lista de espera para o espaço
+                Ficou registado(a) na lista de espera para o anúncio
                 <strong>${listingTitle}</strong>${startDate ? ` para o período <strong>${dateInfo}</strong>` : ''}.
               </p>
               <p style="color: #555; line-height: 1.7; margin: 0 0 24px;">
@@ -85,7 +85,7 @@ module.exports = async (req, res) => {
               ${listingUrl ? `
               <div style="text-align: center; margin: 32px 0;">
                 <a href="${listingUrl}" style="background: #BAA38A; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 14px; letter-spacing: 0.05em;">
-                  VER O ESPAÇO
+                  VER ANÚNCIO
                 </a>
               </div>` : ''}
               <p style="color: #888; font-size: 13px; margin: 0;">
@@ -119,11 +119,11 @@ module.exports = async (req, res) => {
                 <td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${email}</td>
               </tr>
               <tr>
-                <td style="padding: 8px 12px; background: #f5f0eb; font-weight: 700;">Espaço</td>
+                <td style="padding: 8px 12px; background: #f5f0eb; font-weight: 700;">Anúncio</td>
                 <td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${listingTitle}</td>
               </tr>
               <tr>
-                <td style="padding: 8px 12px; background: #f5f0eb; font-weight: 700;">ID do espaço</td>
+                <td style="padding: 8px 12px; background: #f5f0eb; font-weight: 700;">ID do anúncio</td>
                 <td style="padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 12px; color: #999;">${listingId}</td>
               </tr>
               <tr>

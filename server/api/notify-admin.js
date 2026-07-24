@@ -84,13 +84,13 @@ module.exports = async (req, res) => {
 
   const headline =
     type === 'destaque'
-      ? 'Um anfitrião pediu um destaque'
-      : 'Um anfitrião publicou um anúncio novo';
+      ? 'Um utilizador pediu um destaque'
+      : 'Um utilizador publicou um anúncio novo';
 
   const pendingNote =
     type === 'destaque'
       ? 'Este pedido está <strong>pendente de aprovação</strong>. O anúncio só aparecerá na secção de destaques após aprovares abaixo.'
-      : 'Este anúncio está <strong>fechado e invisível</strong> até aprovares. O anfitrião não consegue reservas enquanto estiver pendente.';
+      : 'Este anúncio está <strong>fechado e invisível</strong> até aprovares. Não é possível receber reservas enquanto estiver pendente.';
 
   const approveLabel = type === 'destaque' ? '✓ Aprovar destaque' : '✓ Publicar anúncio';
 
@@ -120,7 +120,7 @@ module.exports = async (req, res) => {
               <td style="padding:8px 0; font-family: monospace; font-size: 12px;">${listingId}</td>
             </tr>
             <tr>
-              <td style="padding:8px 0; color:#666;"><strong>Anfitrião:</strong></td>
+              <td style="padding:8px 0; color:#666;"><strong>Publicado por:</strong></td>
               <td style="padding:8px 0;">${safeUser}</td>
             </tr>
           </table>

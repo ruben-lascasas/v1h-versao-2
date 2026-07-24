@@ -116,7 +116,7 @@ const buildExpiredEmail = ({ firstName, listingTitle }) => {
         O destaque do anúncio <strong>${safeTitle}</strong> terminou hoje, ao fim dos 30 dias habituais. A partir de agora deixa de aparecer na secção de destaques da página principal, mas continua publicado e disponível para reservas normalmente.
       </p>
       <p style="margin:0 0 16px;">
-        Os destaques ajudam a aumentar a visibilidade do espaço junto de quem está à procura. Se quiseres voltar a destacar este anúncio, podes fazê-lo a qualquer altura:
+        Os destaques ajudam a aumentar a visibilidade do anúncio junto de quem está à procura. Se quiseres voltar a destacar este anúncio, podes fazê-lo a qualquer altura:
       </p>
       <p style="margin:24px 0;">
         <a href="${renewUrl}"

@@ -100,7 +100,7 @@ module.exports = async (req, res) => {
       upcomingBookings.push({
         start: booking.attributes.start,
         end: booking.attributes.end,
-        listingTitle: listing?.attributes?.title || 'Espaço',
+        listingTitle: listing?.attributes?.title || 'Anúncio',
         amount: t.attributes.payinTotal?.amount || 0,
       });
     });

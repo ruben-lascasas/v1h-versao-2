@@ -163,6 +163,9 @@ const TransactionCard = ({ tx, intl, isCustomer }) => {
   const listing = tx?.listing;
   const title = listing?.attributes?.title || 'Anúncio indisponível';
   const listingPublicData = listing?.attributes?.publicData || {};
+  // "Anfitrião" só faz sentido quando o anúncio reservado é um espaço — um
+  // Prestador de Serviços (catering, limpeza...) não é um anfitrião.
+  const isServiceListing = listingPublicData?.listingType === 'servico';
   const listingLocation =
     listingPublicData?.location?.address ||
     (typeof listingPublicData?.location === 'string' ? listingPublicData.location : null) ||
@@ -215,6 +218,8 @@ const TransactionCard = ({ tx, intl, isCustomer }) => {
             <FormattedMessage
               id={isCustomer
                 ? 'HistoricoReservasPage.youWereCustomer'
+                : isServiceListing
+                ? 'HistoricoReservasPage.youWereServiceProvider'
                 : 'HistoricoReservasPage.youWereHost'}
             />
           </span>
@@ -266,7 +271,9 @@ const TransactionCard = ({ tx, intl, isCustomer }) => {
               <span className={css.bookingCardProviderRole}>
                 <FormattedMessage
                   id={isCustomer
-                    ? 'HistoricoReservasPage.roleHost'
+                    ? (isServiceListing
+                        ? 'HistoricoReservasPage.roleServiceProvider'
+                        : 'HistoricoReservasPage.roleHost')
                     : 'HistoricoReservasPage.roleCustomer'}
                 />
               </span>

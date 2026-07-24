@@ -43,7 +43,7 @@ module.exports = async (req, res) => {
               <h2 style="color: #2E2E2E; margin: 0 0 16px;">Obrigado por subscrever!</h2>
               <p style="color: #555; line-height: 1.7; margin: 0 0 24px;">
                 Está agora na lista de newsletters da <strong>Venue1Hub</strong>.
-                Irá receber novidades sobre novos espaços, promoções exclusivas e dicas para o seu próximo evento.
+                Irá receber novidades sobre novos espaços e serviços, promoções exclusivas e dicas para o seu próximo evento.
               </p>
               <p style="color: #888; font-size: 13px; margin: 0;">
                 Pode cancelar a subscrição a qualquer momento entrando em contacto connosco em
