@@ -34,8 +34,8 @@ const NewListingNotification = () => {
           {newListings.length === 1 ? (
             <span className={css.text}>
               {t(isEN,
-                'Um anfitrião que segues publicou:',
-                'A host you follow just published:'
+                'Alguém que segues publicou:',
+                'Someone you follow just published:'
               )}
               {' '}
               <NamedLink
@@ -57,7 +57,7 @@ const NewListingNotification = () => {
                 {t(isEN, 'novos anúncios', 'new listings')}
               </strong>
               {' '}
-              {t(isEN, 'de anfitriões que segues', 'from hosts you follow')}
+              {t(isEN, 'de quem segues', 'from people you follow')}
             </span>
           )}
         </div>
