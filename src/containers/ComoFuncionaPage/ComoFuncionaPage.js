@@ -126,6 +126,45 @@ const ComoFuncionaPage = props => {
     },
   ];
 
+  const providerSteps = [
+    {
+      icon: <IconHome />,
+      step: '01',
+      title: t(isEN, 'Cria o teu anúncio de serviço', 'Create your service listing'),
+      text: t(isEN,
+        'Cria a tua conta como Prestador de Serviços e publica o que ofereces — catering, limpeza, fotografia e muito mais. Descreve o serviço, junta fotos e mostra o que te distingue.',
+        'Create your account as a Service Provider and publish what you offer — catering, cleaning, photography and more. Describe your service, add photos and show what sets you apart.'
+      ),
+    },
+    {
+      icon: <IconCalendar />,
+      step: '02',
+      title: t(isEN, 'Define preço e disponibilidade', 'Set your price and availability'),
+      text: t(isEN,
+        'Escolhe o teu preço e a categoria do serviço. Controla o teu calendário e decide quando estás disponível para novos pedidos.',
+        'Choose your price and service category. Control your calendar and decide when you\'re available for new requests.'
+      ),
+    },
+    {
+      icon: <IconSearch />,
+      step: '03',
+      title: t(isEN, 'Aparece como complemento nos espaços', 'Show up as an add-on on venues'),
+      text: t(isEN,
+        'O teu serviço aparece automaticamente na página de espaços perto de ti, numa secção de "Serviços complementares" — quem reserva um espaço vê logo o que tens para oferecer.',
+        'Your service shows up automatically on nearby venue pages, in a "Complementary services" section — anyone booking a space sees what you offer right away.'
+      ),
+    },
+    {
+      icon: <IconEuro />,
+      step: '04',
+      title: t(isEN, 'Recebe pedidos e pagamentos', 'Receive requests and payments'),
+      text: t(isEN,
+        'Quando alguém reservar o teu serviço, recebes uma notificação e podes confirmar ou recusar. Os pagamentos são processados de forma segura e transferidos para a tua conta.',
+        'When someone books your service, you\'ll receive a notification and can confirm or decline. Payments are processed securely and transferred to your account.'
+      ),
+    },
+  ];
+
   const hostSteps = [
     {
       icon: <IconHome />,
@@ -182,8 +221,8 @@ const ComoFuncionaPage = props => {
             <h1 className={css.heroTitle}>{t(isEN, 'Como Funciona', 'How It Works')}</h1>
             <p className={css.heroSubtitle}>
               {t(isEN,
-                'A Venue1Hub é a plataforma que liga anfitriões com espaços únicos a organizadores de eventos em Portugal. Simples, seguro e eficiente.',
-                'Venue1Hub is the platform connecting hosts with unique spaces to event organisers across Portugal. Simple, secure and efficient.'
+                'A Venue1Hub liga anfitriões com espaços únicos, prestadores de serviços complementares e organizadores de eventos em Portugal. Simples, seguro e eficiente.',
+                'Venue1Hub connects hosts with unique spaces, complementary service providers and event organisers across Portugal. Simple, secure and efficient.'
               )}
             </p>
           </div>
@@ -263,6 +302,46 @@ const ComoFuncionaPage = props => {
             </div>
           </section>
 
+          {/* ── Divider ───────────────────────────────── */}
+          <div className={css.dividerWrap}>
+            <div className={css.divider} />
+          </div>
+
+          {/* ── Para Prestadores de Serviços ───────────── */}
+          <section className={css.section}>
+            <div className={css.sectionInner}>
+              <div className={css.sectionHeader}>
+                <span className={css.sectionTag}>{t(isEN, 'Prestadores de Serviços', 'Service providers')}</span>
+                <h2 className={css.sectionTitle}>
+                  {t(isEN, 'Oferece o teu serviço a quem procura espaços', 'Offer your service to people booking venues')}
+                </h2>
+                <p className={css.sectionSubtitle}>
+                  {t(isEN,
+                    'Catering, limpeza, fotografia, equipamento — transforma o que sabes fazer num negócio complementar.',
+                    'Catering, cleaning, photography, equipment — turn what you do into a complementary business.'
+                  )}
+                </p>
+              </div>
+              <div className={css.stepsGrid}>
+                {providerSteps.map(step => (
+                  <div key={step.step} className={css.stepCard}>
+                    <div className={css.stepTop}>
+                      <div className={css.stepIcon}>{step.icon}</div>
+                      <span className={css.stepNumber}>{step.step}</span>
+                    </div>
+                    <h3 className={css.stepTitle}>{step.title}</h3>
+                    <p className={css.stepText}>{step.text}</p>
+                  </div>
+                ))}
+              </div>
+              <div className={css.sectionCta}>
+                <NamedLink name="NewListingPage" className={css.ctaBtn}>
+                  {t(isEN, 'Criar o meu anúncio de serviço', 'Create my service listing')}
+                </NamedLink>
+              </div>
+            </div>
+          </section>
+
           {/* ── Garantias ─────────────────────────────── */}
           <section className={css.guaranteeSection}>
             <div className={css.sectionInner}>
@@ -297,8 +376,8 @@ const ComoFuncionaPage = props => {
                   <h3 className={css.guaranteeTitle}>{t(isEN, 'Suporte dedicado', 'Dedicated support')}</h3>
                   <p className={css.guaranteeText}>
                     {t(isEN,
-                      'A nossa equipa está disponível para apoiar anfitriões e organizadores em qualquer momento.',
-                      'Our team is available to support hosts and organisers at any time.'
+                      'A nossa equipa está disponível para apoiar anfitriões, prestadores de serviços e organizadores em qualquer momento.',
+                      'Our team is available to support hosts, service providers and organisers at any time.'
                     )}
                   </p>
                 </div>
@@ -325,8 +404,8 @@ const ComoFuncionaPage = props => {
             </h2>
             <p className={css.ctaText}>
               {t(isEN,
-                'Junte-se a centenas de anfitriões e organizadores que já confiam na Venue1Hub.',
-                'Join hundreds of hosts and organisers who already trust Venue1Hub.'
+                'Junte-se a centenas de anfitriões, prestadores de serviços e organizadores que já confiam na Venue1Hub.',
+                'Join hundreds of hosts, service providers and organisers who already trust Venue1Hub.'
               )}
             </p>
             <div className={css.ctaButtons}>
@@ -334,7 +413,7 @@ const ComoFuncionaPage = props => {
                 {t(isEN, 'Procurar espaços', 'Search venues')}
               </NamedLink>
               <NamedLink name="NewListingPage" className={css.ctaBtnSecondary}>
-                {t(isEN, 'Publicar o meu espaço', 'List my space')}
+                {t(isEN, 'Publicar anúncio', 'Create a listing')}
               </NamedLink>
             </div>
           </div>
