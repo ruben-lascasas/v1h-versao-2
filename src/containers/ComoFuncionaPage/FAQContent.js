@@ -16,7 +16,10 @@ const FAQ_PT = [
               A Venue1Hub é uma plataforma digital especializada no <strong>arrendamento de curta duração de espaços comerciais</strong> em Portugal: salas de reunião, escritórios, restaurantes, auditórios, estúdios e muito mais.
             </p>
             <p>
-              Funcionamos como intermediário digital: ligamos quem tem espaços subutilizados a quem precisa deles para reuniões, eventos, formações, sessões fotográficas, workshops, entre outros.
+              Também ligamos quem reserva um espaço a <strong>Prestadores de Serviços</strong> complementares perto desse espaço — catering, limpeza, fotografia, entre outros — que pode adicionar à sua reserva.
+            </p>
+            <p>
+              Funcionamos como intermediário digital: ligamos quem tem espaços ou serviços disponíveis a quem precisa deles para reuniões, eventos, formações, sessões fotográficas, workshops, entre outros.
             </p>
           </>
         ),
@@ -81,6 +84,15 @@ const FAQ_PT = [
           </>
         ),
       },
+      {
+        q: 'Posso adicionar serviços complementares à minha reserva (catering, limpeza, fotografia...)?',
+        a: (
+          <>
+            <p>Sim. Depois de escolher as datas do espaço, é apresentado um carrinho com os Prestadores de Serviços disponíveis perto desse espaço, que pode selecionar por checkbox. O total é atualizado à medida que adiciona ou remove serviços.</p>
+            <p>Cada serviço é uma reserva e um pagamento independentes do espaço — paga o espaço primeiro e, de seguida, cada serviço selecionado, um de cada vez.</p>
+          </>
+        ),
+      },
     ],
   },
   {
@@ -129,6 +141,43 @@ const FAQ_PT = [
     ],
   },
   {
+    category: 'Para Prestadores de Serviços',
+    items: [
+      {
+        q: 'O que é um Prestador de Serviços?',
+        a: (
+          <>
+            <p>É um tipo de conta pensado para quem oferece serviços complementares a eventos — catering, limpeza, fotografia, equipamento técnico, decoração, entre outros. Cria o seu anúncio de serviço da mesma forma que um anfitrião cria o anúncio de um espaço, mas com campos próprios para a sua atividade.</p>
+          </>
+        ),
+      },
+      {
+        q: 'Como crio um anúncio de serviço?',
+        a: (
+          <>
+            <p>Registe-se como Prestador de Serviços, clique em <strong>"Publicar um novo anúncio"</strong> e escolha o tipo <strong>Serviço</strong>. Preencha a categoria (por exemplo, catering ou fotografia), descrição, preço e disponibilidade. Tal como os anúncios de espaços, a primeira validação é manual e costuma demorar 24-48h úteis.</p>
+          </>
+        ),
+      },
+      {
+        q: 'Como é que os clientes encontram o meu serviço?',
+        a: (
+          <>
+            <p>O seu serviço aparece automaticamente na secção <strong>"Serviços complementares"</strong> dos espaços perto de si, sempre que alguém está a reservar um desses espaços. Não precisa de fazer nada além de manter o anúncio atualizado — a correspondência é feita por proximidade geográfica, não por categoria.</p>
+          </>
+        ),
+      },
+      {
+        q: 'Como funciona o pagamento de um serviço complementar?',
+        a: (
+          <>
+            <p>Cada serviço é uma reserva e um pagamento independentes do espaço a que está associado — o cliente paga o espaço e, se quiser, paga o(s) serviço(s) complementar(es) em separado, através do mesmo fluxo de checkout. Recebe o pagamento da mesma forma que um anfitrião, através da Stripe (ver secção Pagamentos e comissões abaixo).</p>
+          </>
+        ),
+      },
+    ],
+  },
+  {
     category: 'Pagamentos e comissões',
     items: [
       {
@@ -148,10 +197,10 @@ const FAQ_PT = [
         ),
       },
       {
-        q: 'Quando recebo o dinheiro como anfitrião?',
+        q: 'Quando recebo o dinheiro como anfitrião ou prestador de serviços?',
         a: (
           <>
-            <p>Após a conclusão da reserva, o valor (descontada a comissão) é transferido para a sua conta Stripe ligada à plataforma. O Stripe envia normalmente para o IBAN em 2-7 dias úteis.</p>
+            <p>Após a conclusão da reserva do espaço ou do serviço, o valor (descontada a comissão) é transferido para a sua conta Stripe ligada à plataforma. O Stripe envia normalmente para o IBAN em 2-7 dias úteis.</p>
           </>
         ),
       },
@@ -159,7 +208,7 @@ const FAQ_PT = [
         q: 'É emitida fatura?',
         a: (
           <>
-            <p>Sim. A Venue1Hub emite fatura/recibo da comissão cobrada. O anfitrião é responsável por emitir a sua própria fatura ao cliente final pelo valor do arrendamento, conforme as obrigações fiscais aplicáveis (IRS/IRC, IVA quando devido).</p>
+            <p>Sim. A Venue1Hub emite fatura/recibo da comissão cobrada. O anfitrião ou prestador de serviços é responsável por emitir a sua própria fatura ao cliente final pelo valor do arrendamento ou do serviço, conforme as obrigações fiscais aplicáveis (IRS/IRC, IVA quando devido).</p>
           </>
         ),
       },
@@ -185,10 +234,10 @@ const FAQ_PT = [
         ),
       },
       {
-        q: 'O anfitrião cancelou a minha reserva. O que acontece?',
+        q: 'O anfitrião ou prestador de serviços cancelou a minha reserva. O que acontece?',
         a: (
           <>
-            <p>Se o anfitrião cancelar, é reembolsado a 100%. Em casos de reincidência, o anfitrião pode ser sancionado pela plataforma.</p>
+            <p>Se a reserva for cancelada pelo anfitrião ou pelo prestador de serviços, é reembolsado a 100%. Em casos de reincidência, quem cancelou pode ser sancionado pela plataforma.</p>
           </>
         ),
       },
@@ -214,10 +263,10 @@ const FAQ_PT = [
         ),
       },
       {
-        q: 'A Venue1Hub é responsável pelo espaço arrendado?',
+        q: 'A Venue1Hub é responsável pelo espaço ou serviço reservado?',
         a: (
           <>
-            <p>A Venue1Hub atua como intermediário digital. O contrato de arrendamento é entre o anfitrião e o cliente. Validamos os anúncios, mediamos pagamentos e oferecemos suporte, mas não somos parte do contrato. Saiba mais nos <a href="/terms-of-service">Termos de Serviço</a>.</p>
+            <p>A Venue1Hub atua como intermediário digital. O contrato é sempre entre o cliente e o anfitrião ou prestador de serviços correspondente. Validamos os anúncios, mediamos pagamentos e oferecemos suporte, mas não somos parte do contrato. Saiba mais nos <a href="/terms-of-service">Termos de Serviço</a>.</p>
           </>
         ),
       },
@@ -269,7 +318,10 @@ const FAQ_EN = [
               Venue1Hub is a digital platform specialised in <strong>short-term rental of commercial spaces</strong> in Portugal: meeting rooms, offices, restaurants, auditoriums, studios and much more.
             </p>
             <p>
-              We act as a digital intermediary connecting space owners with people who need spaces for meetings, events, training sessions, photoshoots, workshops, and more.
+              We also connect anyone booking a space with nearby <strong>Service Providers</strong> — catering, cleaning, photography and more — that you can add to your booking.
+            </p>
+            <p>
+              We act as a digital intermediary connecting people with spaces or services available to those who need them for meetings, events, training sessions, photoshoots, workshops, and more.
             </p>
           </>
         ),
@@ -334,6 +386,15 @@ const FAQ_EN = [
           </>
         ),
       },
+      {
+        q: 'Can I add complementary services to my booking (catering, cleaning, photography...)?',
+        a: (
+          <>
+            <p>Yes. After choosing your space dates, you'll see a cart with the Service Providers available near that space, which you can select via checkbox. The total updates as you add or remove services.</p>
+            <p>Each service is its own separate booking and payment — you pay for the space first, then each selected service, one at a time.</p>
+          </>
+        ),
+      },
     ],
   },
   {
@@ -382,6 +443,43 @@ const FAQ_EN = [
     ],
   },
   {
+    category: 'For service providers',
+    items: [
+      {
+        q: 'What is a Service Provider?',
+        a: (
+          <>
+            <p>It's an account type for anyone offering complementary services for events — catering, cleaning, photography, technical equipment, decoration, and more. You create your service listing the same way a host creates a space listing, but with fields tailored to your activity.</p>
+          </>
+        ),
+      },
+      {
+        q: 'How do I create a service listing?',
+        a: (
+          <>
+            <p>Sign up as a Service Provider, click <strong>"Publish a new listing"</strong> and choose the <strong>Service</strong> type. Fill in the category (for example, catering or photography), description, price and availability. As with space listings, the first review is manual and typically takes 24-48 working hours.</p>
+          </>
+        ),
+      },
+      {
+        q: 'How do customers find my service?',
+        a: (
+          <>
+            <p>Your service automatically appears in the <strong>"Complementary services"</strong> section of nearby spaces, whenever someone is booking one of them. You don't need to do anything besides keeping your listing up to date — the matching is based on geographic proximity, not category.</p>
+          </>
+        ),
+      },
+      {
+        q: 'How does payment for a complementary service work?',
+        a: (
+          <>
+            <p>Each service is its own booking and payment, separate from the space it's linked to — the customer pays for the space and, if they choose to, pays for each complementary service separately, through the same checkout flow. You receive payment the same way a host does, via Stripe (see the Payments and fees section below).</p>
+          </>
+        ),
+      },
+    ],
+  },
+  {
     category: 'Payments and fees',
     items: [
       {
@@ -401,10 +499,10 @@ const FAQ_EN = [
         ),
       },
       {
-        q: 'When do I receive payment as a host?',
+        q: 'When do I receive payment as a host or service provider?',
         a: (
           <>
-            <p>After booking completion, the amount (minus commission) is transferred to your connected Stripe account. Stripe typically pays out to your IBAN within 2-7 business days.</p>
+            <p>After completion of the space or service booking, the amount (minus commission) is transferred to your connected Stripe account. Stripe typically pays out to your IBAN within 2-7 business days.</p>
           </>
         ),
       },
@@ -412,7 +510,7 @@ const FAQ_EN = [
         q: 'Are invoices issued?',
         a: (
           <>
-            <p>Yes. Venue1Hub issues an invoice/receipt for the commission charged. The host is responsible for issuing their own invoice to the end customer for the rental amount, in line with applicable tax obligations (IRS/IRC, VAT where due).</p>
+            <p>Yes. Venue1Hub issues an invoice/receipt for the commission charged. The host or service provider is responsible for issuing their own invoice to the end customer for the rental or service amount, in line with applicable tax obligations (IRS/IRC, VAT where due).</p>
           </>
         ),
       },
@@ -438,10 +536,10 @@ const FAQ_EN = [
         ),
       },
       {
-        q: 'The host cancelled my booking. What happens?',
+        q: 'The host or service provider cancelled my booking. What happens?',
         a: (
           <>
-            <p>If the host cancels, you receive a 100% refund. Repeat host cancellations may result in platform sanctions.</p>
+            <p>If the host or service provider cancels, you receive a 100% refund. Repeat cancellations may result in platform sanctions.</p>
           </>
         ),
       },
@@ -467,10 +565,10 @@ const FAQ_EN = [
         ),
       },
       {
-        q: 'Is Venue1Hub responsible for the rented space?',
+        q: 'Is Venue1Hub responsible for the rented space or booked service?',
         a: (
           <>
-            <p>Venue1Hub acts as a digital intermediary. The rental contract is between the host and the customer. We validate listings, mediate payments and offer support, but are not party to the contract. Learn more in the <a href="/terms-of-service">Terms of Service</a>.</p>
+            <p>Venue1Hub acts as a digital intermediary. The contract is always between the customer and the corresponding host or service provider. We validate listings, mediate payments and offer support, but are not party to the contract. Learn more in the <a href="/terms-of-service">Terms of Service</a>.</p>
           </>
         ),
       },
