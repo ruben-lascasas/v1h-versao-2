@@ -190,6 +190,14 @@ const CustomLinksMenu = ({
 
   const { priorityLinks, menuLinks, containerWidth } = layoutData;
 
+  // If there are no custom links and nothing to show (e.g. a Visitante
+  // account, which has no create-listing link), render nothing — the
+  // full measuring container below would otherwise claim the leftover
+  // topbar width as an empty gap.
+  if (customLinks?.length === 0 && !showCreateListingsLink) {
+    return null;
+  }
+
   // If there are no custom links, just render createListing link.
   if (customLinks?.length === 0 && showCreateListingsLink) {
     return <CreateListingMenuLink customLinksMenuClass={css.createListingLinkOnly} currentPage={currentPage} />;
