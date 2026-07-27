@@ -88,13 +88,21 @@ class PageComponent extends Component {
   }
 
   scrollingDisabledChanged(currentScrollingDisabled) {
-    if (currentScrollingDisabled && currentScrollingDisabled !== this.scrollingDisabled) {
+    if (currentScrollingDisabled === this.scrollingDisabled) {
+      return;
+    }
+    this.scrollingDisabled = currentScrollingDisabled;
+
+    // This is called from render(), which also runs on the server, where there's no DOM.
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    if (currentScrollingDisabled) {
       // Update current scroll position, if scrolling is disabled (e.g. modal is open)
       this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-      this.scrollingDisabled = currentScrollingDisabled;
       document.documentElement.style.overflow = 'hidden';
-    } else if (currentScrollingDisabled !== this.scrollingDisabled) {
-      this.scrollingDisabled = currentScrollingDisabled;
+    } else {
       document.documentElement.style.overflow = '';
     }
   }

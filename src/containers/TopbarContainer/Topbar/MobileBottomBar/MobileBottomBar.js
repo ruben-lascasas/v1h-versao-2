@@ -3,16 +3,37 @@ import css from './MobileBottomBar.module.css';
 
 const DISMISSED_KEY = 'v1hub_exploreBarDismissed';
 
+// Local storage is unavailable during server-side rendering and can also be
+// blocked by the browser (e.g. private mode), so every access is guarded.
+const readDismissed = () => {
+  try {
+    return window.localStorage.getItem(DISMISSED_KEY) === 'true';
+  } catch (e) {
+    return false;
+  }
+};
+
 const MobileBottomBar = () => {
-  const [dismissed, setDismissed] = useState(
-    () => localStorage.getItem(DISMISSED_KEY) === 'true'
-  );
+  // Starts as `false` so the server-rendered markup matches the first client
+  // render. The stored value is applied right after mount.
+  const [dismissed, setDismissed] = useState(false);
   const [visible, setVisible] = useState(true);
-  const lastScrollY = useRef(window.scrollY || 0);
+  const lastScrollY = useRef(0);
   const ticking = useRef(false);
 
+  useEffect(() => {
+    lastScrollY.current = window.scrollY || 0;
+    if (readDismissed()) {
+      setDismissed(true);
+    }
+  }, []);
+
   const dismiss = () => {
-    localStorage.setItem(DISMISSED_KEY, 'true');
+    try {
+      window.localStorage.setItem(DISMISSED_KEY, 'true');
+    } catch (e) {
+      // Ignored — the bar still hides for this session.
+    }
     setDismissed(true);
   };
 
