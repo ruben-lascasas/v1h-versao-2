@@ -3871,3 +3871,18 @@ body[data-dark-mode] div[class*="SearchPage_filterColumnContent"] {
 body[data-dark-mode] [class*="IntegerRangeFilter_inputSuffix"] {
   color: #cfc3b6 !important;
 }
+
+/* Cart availability states in dark mode. */
+body[data-dark-mode] [class*="CartPage_availabilityNotice"] {
+  background-color: #232323 !important;
+  border-top-color: #3d3d3d !important;
+  color: #a8a29a !important;
+}
+body[data-dark-mode] [class*="CartPage_availabilityNoticeError"] {
+  color: #e8a08f !important;
+}
+body[data-dark-mode] [class*="CartPage_dayChipUnavailable"] {
+  background-color: #262626 !important;
+  border-color: #3d3d3d !important;
+  color: #6f6a64 !important;
+}

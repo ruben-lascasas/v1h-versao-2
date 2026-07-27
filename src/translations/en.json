@@ -1870,5 +1870,9 @@
   "TransactionPanel.untitledListing": "Listing",
   "SectionRecommendations.title": "Suggestions for you",
   "TransactionPanel.follow": "Follow",
-  "TransactionPanel.following": "Following"
+  "TransactionPanel.following": "Following",
+  "CartPage.checkingAvailability": "Checking the provider’s availability…",
+  "CartPage.availabilityError": "We couldn’t check this provider’s availability. Please try again.",
+  "CartPage.noAvailability": "This provider has no availability during your booking dates.",
+  "CartPage.dayUnavailable": "The provider isn’t available on this day"
 }

@@ -382,6 +382,34 @@
   }
 }
 
+/* Days the provider isn't free: visibly inert, not just dimmed text. */
+.dayChipUnavailable {
+  composes: dayChip;
+  background: #F2EFEB;
+  border-color: #E4DED6;
+  color: #A39B92;
+  cursor: not-allowed;
+  text-decoration: line-through;
+
+  &:hover {
+    border-color: #E4DED6;
+    color: #A39B92;
+  }
+}
+
+.availabilityNotice {
+  border-top: 1px solid #EFEAE4;
+  background: #FBF9F7;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #6B6B6B;
+}
+
+.availabilityNoticeError {
+  composes: availabilityNotice;
+  color: #A8452F;
+}
+
 /* Full-width row: label on the left, checkbox at the far right — reads as a
    single setting line rather than a floating checkbox. */
 .sameTimeToggle {

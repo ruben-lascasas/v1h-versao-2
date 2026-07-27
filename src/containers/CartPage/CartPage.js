@@ -12,7 +12,12 @@ import { daysBetween, minutesBetween, timestampToDate } from '../../util/dates';
 import { types as sdkTypes } from '../../util/sdkLoader';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 import { initializeCardPaymentData } from '../../ducks/stripe.duck';
-import { fetchNearbyServiceListings, selectServiceListings } from '../../ducks/serviceListings.duck';
+import {
+  fetchNearbyServiceListings,
+  fetchServiceTimeSlots,
+  selectServiceListings,
+  selectServiceTimeSlots,
+} from '../../ducks/serviceListings.duck';
 
 import {
   Page,
@@ -35,18 +40,83 @@ import css from './CartPage.module.css';
 
 const { Money } = sdkTypes;
 
-// Business-hours window offered for hour-priced complementary services, in
-// 30-minute steps. There is no real per-provider availability check yet
-// (that would need each service's own availabilityPlan/timeSlots) — this is
-// a reasonable fixed window, not a slot-conflict guarantee.
-const TIME_OPTIONS = Array.from({ length: (22 - 8) * 2 + 1 }, (_, i) => {
-  const totalMinutes = 8 * 60 + i * 30;
-  const h = Math.floor(totalMinutes / 60);
-  const m = totalMinutes % 60;
+const SLOT_STEP_MINUTES = 30;
+
+const minutesToLabel = mins => {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-});
-const DEFAULT_START_HOUR = '10:00';
-const DEFAULT_END_HOUR = '12:00';
+};
+const labelToMinutes = label => {
+  const [h, m] = label.split(':').map(Number);
+  return h * 60 + m;
+};
+
+// Minutes-from-midnight of a Date, relative to the same local day the cart
+// builds its day list in, so slots and day boundaries are compared the same way.
+const minutesIntoDay = (date, dayStart) => Math.round((date - dayStart) / 60000);
+
+/**
+ * Turns the provider's raw time slots into, for each day of the stay, the
+ * bookable half-hour marks. A slot of type 'day' means the whole day is open.
+ * Returns { [dayIndex]: number[] } of minutes-from-midnight.
+ */
+const buildAvailableMarksByDay = (slots, days) => {
+  const marksByDay = {};
+  days.forEach((day, index) => {
+    const dayStart = new Date(day);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(dayStart);
+    dayEnd.setDate(dayEnd.getDate() + 1);
+
+    const marks = new Set();
+    (slots || []).forEach(slot => {
+      if (slot.seats != null && slot.seats < 1) return;
+      const slotStart = new Date(slot.start);
+      const slotEnd = new Date(slot.end);
+      if (slotEnd <= dayStart || slotStart >= dayEnd) return;
+
+      if (slot.type === 'time-slot/day' || slot.type === 'day') {
+        for (let m = 0; m <= 24 * 60; m += SLOT_STEP_MINUTES) marks.add(m);
+        return;
+      }
+      const from = Math.max(0, minutesIntoDay(slotStart, dayStart));
+      const to = Math.min(24 * 60, minutesIntoDay(slotEnd, dayStart));
+      const first = Math.ceil(from / SLOT_STEP_MINUTES) * SLOT_STEP_MINUTES;
+      for (let m = first; m <= to; m += SLOT_STEP_MINUTES) marks.add(m);
+    });
+
+    const sorted = [...marks].sort((a, b) => a - b);
+    // A day is only offerable if there is room for at least one booking
+    // (two marks = one 30-minute block).
+    if (sorted.length > 1) marksByDay[index] = sorted;
+  });
+  return marksByDay;
+};
+
+// Start marks are every mark that has a later contiguous mark after it.
+const startMarksFrom = marks =>
+  (marks || []).filter((m, i) => marks[i + 1] === m + SLOT_STEP_MINUTES);
+
+// End marks run from just after `start` up to the end of that contiguous block.
+const endMarksFrom = (marks, startMark) => {
+  const out = [];
+  let expected = startMark + SLOT_STEP_MINUTES;
+  while ((marks || []).includes(expected)) {
+    out.push(expected);
+    expected += SLOT_STEP_MINUTES;
+  }
+  return out;
+};
+
+// First bookable window of a day: earliest start, and up to 2h later if the
+// provider is free that long, otherwise the longest that fits.
+const defaultSlotForDay = marks => {
+  const start = startMarksFrom(marks)[0];
+  const ends = endMarksFrom(marks, start);
+  const preferred = ends.find(e => e === start + 120) || ends[ends.length - 1];
+  return { startHour: minutesToLabel(start), endHour: minutesToLabel(preferred) };
+};
 
 // Resolves the main listing's chosen booking period from orderData, tagged
 // with its own granularity (whole days vs a specific time-of-day range) so
@@ -138,11 +208,12 @@ const estimateServiceTotal = (listing, schedule) => {
 const isHourly = listing => listing?.attributes?.publicData?.unitType === 'hour';
 
 const ServiceScheduler = props => {
-  const { listing, schedule, days, onChange, intl } = props;
+  const { listing, schedule, days, marksByDay, onChange, intl } = props;
   const hourly = isHourly(listing);
   const selectedIndexes = Object.keys(schedule.days).map(Number).sort((a, b) => a - b);
 
   const toggleDay = index => {
+    if (!marksByDay[index]) return; // provider isn't available that day
     const next = { ...schedule.days };
     if (next[index]) {
       // Keep at least one day selected — a checked service with zero days is
@@ -150,26 +221,28 @@ const ServiceScheduler = props => {
       if (selectedIndexes.length === 1) return;
       delete next[index];
     } else {
-      const template = selectedIndexes.length > 0 ? schedule.days[selectedIndexes[0]] : null;
-      next[index] = {
-        startHour: template?.startHour || DEFAULT_START_HOUR,
-        endHour: template?.endHour || DEFAULT_END_HOUR,
-      };
+      next[index] = defaultSlotForDay(marksByDay[index]);
     }
     onChange({ ...schedule, days: next });
   };
 
   const setDayTime = (index, patch) => {
-    const current = schedule.days[index];
-    const updated = { ...current, ...patch };
-    // End time must stay after start time.
-    if (updated.endHour <= updated.startHour) {
-      updated.endHour = TIME_OPTIONS.find(t => t > updated.startHour) || updated.startHour;
+    const marks = marksByDay[index] || [];
+    const updated = { ...schedule.days[index], ...patch };
+    // Snap the end to the first valid mark after the start within the same
+    // contiguous block, so an out-of-range combination can't be produced.
+    const validEnds = endMarksFrom(marks, labelToMinutes(updated.startHour));
+    if (!validEnds.includes(labelToMinutes(updated.endHour))) {
+      updated.endHour = minutesToLabel(validEnds[0]);
     }
     if (schedule.sameTimeForAll) {
       const synced = {};
-      Object.keys(schedule.days).forEach(k => {
-        synced[k] = { ...updated };
+      selectedIndexes.forEach(k => {
+        // Only mirror onto days that can actually host that same window.
+        const ends = endMarksFrom(marksByDay[k] || [], labelToMinutes(updated.startHour));
+        synced[k] = ends.includes(labelToMinutes(updated.endHour))
+          ? { ...updated }
+          : schedule.days[k];
       });
       onChange({ ...schedule, days: synced });
       return;
@@ -178,15 +251,15 @@ const ServiceScheduler = props => {
   };
 
   const toggleSameTimeForAll = () => {
-    const nextFlag = !schedule.sameTimeForAll;
-    if (!nextFlag) {
+    if (schedule.sameTimeForAll) {
       onChange({ ...schedule, sameTimeForAll: false });
       return;
     }
     const first = schedule.days[selectedIndexes[0]];
     const synced = {};
     selectedIndexes.forEach(k => {
-      synced[k] = { ...first };
+      const ends = endMarksFrom(marksByDay[k] || [], labelToMinutes(first.startHour));
+      synced[k] = ends.includes(labelToMinutes(first.endHour)) ? { ...first } : schedule.days[k];
     });
     onChange({ sameTimeForAll: true, days: synced });
   };
@@ -198,14 +271,24 @@ const ServiceScheduler = props => {
       </div>
       <div className={css.dayChips}>
         {days.map((day, index) => {
+          const available = !!marksByDay[index];
           const selected = !!schedule.days[index];
+          const className = !available
+            ? css.dayChipUnavailable
+            : selected
+            ? css.dayChipSelected
+            : css.dayChip;
           return (
             <button
               key={day.toISOString()}
               type="button"
-              className={selected ? css.dayChipSelected : css.dayChip}
+              className={className}
               onClick={() => toggleDay(index)}
+              disabled={!available}
               aria-pressed={selected}
+              title={
+                available ? undefined : intl.formatMessage({ id: 'CartPage.dayUnavailable' })
+              }
             >
               {intl.formatDate(day, { weekday: 'short', day: 'numeric', month: 'short' })}
             </button>
@@ -231,7 +314,11 @@ const ServiceScheduler = props => {
           <div className={css.timeRows}>
             {(schedule.sameTimeForAll ? selectedIndexes.slice(0, 1) : selectedIndexes).map(index => {
               const day = schedule.days[index];
-              const endOptions = TIME_OPTIONS.filter(t => t > day.startHour);
+              const marks = marksByDay[index] || [];
+              const startOptions = startMarksFrom(marks).map(minutesToLabel);
+              const endOptions = endMarksFrom(marks, labelToMinutes(day.startHour)).map(
+                minutesToLabel
+              );
               return (
                 <div className={css.timeRow} key={index}>
                   <span className={css.timeRowDay}>
@@ -247,7 +334,7 @@ const ServiceScheduler = props => {
                     onChange={e => setDayTime(index, { startHour: e.target.value })}
                     aria-label={intl.formatMessage({ id: 'CartPage.scheduleStart' })}
                   >
-                    {TIME_OPTIONS.map(t => (
+                    {startOptions.map(t => (
                       <option key={t} value={t}>
                         {t}
                       </option>
@@ -285,10 +372,31 @@ const ServiceCard = props => {
   const price = listing?.attributes?.price;
   const hourly = isHourly(listing);
 
+  const timeSlots = useSelector(state => selectServiceTimeSlots(state, id));
+  const marksByDay = useMemo(
+    () => (timeSlots?.slots ? buildAvailableMarksByDay(timeSlots.slots, days) : {}),
+    [timeSlots, days]
+  );
+  const availabilityLoading = !timeSlots || timeSlots.loading;
+  const availabilityError = timeSlots?.error;
+  const hasAnyAvailability = Object.keys(marksByDay).length > 0;
+  const hasPickedDays = Object.keys(schedule?.days || {}).length > 0;
+
+  // Once the provider's real availability arrives, start the customer off on
+  // the first day they're actually free rather than a guessed default.
+  useEffect(() => {
+    if (!checked || availabilityLoading || hasPickedDays || !hasAnyAvailability) return;
+    const firstIndex = Object.keys(marksByDay).map(Number).sort((a, b) => a - b)[0];
+    onChangeSchedule(id, {
+      sameTimeForAll: false,
+      days: { [firstIndex]: defaultSlotForDay(marksByDay[firstIndex]) },
+    });
+  }, [checked, availabilityLoading, hasPickedDays, hasAnyAvailability, marksByDay, id]);
+
   const unitLabel = hourly
     ? intl.formatMessage({ id: 'CartPage.perHour' })
     : intl.formatMessage({ id: 'CartPage.perDay' });
-  const total = checked ? estimateServiceTotal(listing, schedule) : null;
+  const total = checked && hasPickedDays ? estimateServiceTotal(listing, schedule) : null;
 
   return (
     <div className={checked ? css.serviceCardSelected : css.serviceCard}>
@@ -330,13 +438,28 @@ const ServiceCard = props => {
       </label>
 
       {checked && days.length > 0 ? (
-        <ServiceScheduler
-          listing={listing}
-          schedule={schedule}
-          days={days}
-          onChange={next => onChangeSchedule(id, next)}
-          intl={intl}
-        />
+        availabilityLoading ? (
+          <div className={css.availabilityNotice}>
+            <FormattedMessage id="CartPage.checkingAvailability" />
+          </div>
+        ) : availabilityError ? (
+          <div className={css.availabilityNoticeError}>
+            <FormattedMessage id="CartPage.availabilityError" />
+          </div>
+        ) : !hasAnyAvailability ? (
+          <div className={css.availabilityNoticeError}>
+            <FormattedMessage id="CartPage.noAvailability" />
+          </div>
+        ) : (
+          <ServiceScheduler
+            listing={listing}
+            schedule={schedule}
+            days={days}
+            marksByDay={marksByDay}
+            onChange={next => onChangeSchedule(id, next)}
+            intl={intl}
+          />
+        )
       ) : null}
     </div>
   );
@@ -412,16 +535,22 @@ const CartPage = () => {
         const { [id]: _removed, ...rest } = prev;
         return rest;
       }
-      // Checking a service pre-selects the first day of the stay, so the
-      // customer always starts from a valid, priceable selection.
-      return {
-        ...prev,
-        [id]: {
-          sameTimeForAll: false,
-          days: { 0: { startHour: DEFAULT_START_HOUR, endHour: DEFAULT_END_HOUR } },
-        },
-      };
+      // Starts empty: the first day/time is filled in once the provider's real
+      // availability comes back (see ServiceCard), so we never pre-select a
+      // slot they aren't free for.
+      return { ...prev, [id]: { sameTimeForAll: false, days: {} } };
     });
+
+    const service = nearbyServices.find(s => s.id.uuid === id);
+    const alreadySelected = !!scheduleByServiceId[id];
+    if (service && !alreadySelected && days.length > 0) {
+      const rangeStart = new Date(days[0]);
+      rangeStart.setHours(0, 0, 0, 0);
+      const rangeEnd = new Date(days[days.length - 1]);
+      rangeEnd.setHours(0, 0, 0, 0);
+      rangeEnd.setDate(rangeEnd.getDate() + 1);
+      dispatch(fetchServiceTimeSlots(service.id, rangeStart, rangeEnd));
+    }
   };
 
   const updateSchedule = (id, schedule) => {

@@ -53,6 +53,8 @@ const serviceListingsSlice = createSlice({
   name: 'serviceListings',
   initialState: {
     listingsByListingId: {}, // { [currentListingId]: [listings] }
+    // { [serviceListingId]: { loading, error, slots: [{ start, end, seats }] } }
+    timeSlotsByServiceId: {},
   },
   reducers: {
     setServiceListings: (state, action) => {
@@ -62,13 +64,74 @@ const serviceListingsSlice = createSlice({
     clearServiceListings: state => {
       state.listingsByListingId = {};
     },
+    serviceTimeSlotsRequested: (state, action) => {
+      const { listingId } = action.payload;
+      state.timeSlotsByServiceId[listingId] = { loading: true, error: false, slots: [] };
+    },
+    serviceTimeSlotsReceived: (state, action) => {
+      const { listingId, slots } = action.payload;
+      state.timeSlotsByServiceId[listingId] = { loading: false, error: false, slots };
+    },
+    serviceTimeSlotsFailed: (state, action) => {
+      const { listingId } = action.payload;
+      state.timeSlotsByServiceId[listingId] = { loading: false, error: true, slots: [] };
+    },
   },
 });
 
-export const { setServiceListings, clearServiceListings } = serviceListingsSlice.actions;
+export const {
+  setServiceListings,
+  clearServiceListings,
+  serviceTimeSlotsRequested,
+  serviceTimeSlotsReceived,
+  serviceTimeSlotsFailed,
+} = serviceListingsSlice.actions;
 
 export const selectServiceListings = (state, listingId) =>
   state.serviceListings?.listingsByListingId?.[listingId] || [];
+
+export const selectServiceTimeSlots = (state, serviceListingId) =>
+  state.serviceListings?.timeSlotsByServiceId?.[serviceListingId] || null;
+
+/**
+ * Fetches the provider's real availability for one service listing over the
+ * space booking's date range, so the cart can offer only the days/hours the
+ * provider is actually free instead of a fixed business-hours window.
+ *
+ * @param {Object} listingId - the service listing's UUID (SDK type, not a string)
+ * @param {Date} start - range start (inclusive)
+ * @param {Date} end - range end (exclusive)
+ */
+export const fetchServiceTimeSlots = (listingId, start, end) => async (
+  dispatch,
+  getState,
+  sdk
+) => {
+  const id = listingId?.uuid || listingId;
+  if (!id || !start || !end) return;
+
+  dispatch(serviceTimeSlotsRequested({ listingId: id }));
+  try {
+    const response = await sdk.timeslots.query({
+      listingId,
+      start,
+      end,
+      perPage: 500,
+      page: 1,
+    });
+    const slots = (response?.data?.data || []).map(slot => ({
+      start: slot.attributes.start,
+      end: slot.attributes.end,
+      type: slot.attributes.type,
+      seats: slot.attributes.seats,
+    }));
+    dispatch(serviceTimeSlotsReceived({ listingId: id, slots }));
+  } catch (e) {
+    // Surfaced in the UI as "couldn't check availability" rather than
+    // silently pretending every hour is free.
+    dispatch(serviceTimeSlotsFailed({ listingId: id }));
+  }
+};
 
 /**
  * Busca anúncios de tipo "servico" perto de um ponto (geolocation do
