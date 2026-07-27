@@ -68,10 +68,9 @@ const UnitTypeFilter = props => {
   const toggle = v => {
     const next = isChecked(v) ? pending.filter(x => x !== v) : [...pending, v];
     setPending(next);
-    if (!isDesktop) commitValue(next);
+    commitValue(next);
   };
 
-  const onConfirm = () => commitValue(pending);
   const onClear = () => {
     setPending([]);
     onSubmit(null);
@@ -122,13 +121,10 @@ const UnitTypeFilter = props => {
           );
         })}
       </ul>
-      {isDesktop && isOpen ? (
+      {isOpen && pending.length > 0 ? (
         <div className={css.actions}>
           <button type="button" className={css.clearBtn} onClick={onClear}>
             <FormattedMessage id="UnitTypeFilter.clear" />
-          </button>
-          <button type="button" className={css.confirmBtn} onClick={onConfirm}>
-            <FormattedMessage id="UnitTypeFilter.confirm" />
           </button>
         </div>
       ) : null}

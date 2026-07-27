@@ -142,7 +142,7 @@ const CategoryMultiFilter = props => {
         );
       }
     }
-    if (!isDesktop) submitState(nextL1, nextL2);
+    submitState(nextL1, nextL2);
   };
 
   const toggleL2 = id => {
@@ -160,7 +160,7 @@ const CategoryMultiFilter = props => {
     }
     setPendingL1(nextL1);
     setPendingL2(nextL2);
-    if (!isDesktop) submitState(nextL1, nextL2);
+    submitState(nextL1, nextL2);
   };
 
   const handleConfirm = () => {
@@ -269,16 +269,15 @@ const CategoryMultiFilter = props => {
             })}
           </ul>
 
-          <div className={css.actionsRow}>
-            <button type="button" className={css.clearButton} onClick={handleClear}>
-              {intl?.formatMessage({ id: 'StarRatingFilter.clear' }) || 'LIMPAR'}
-            </button>
-            {isDesktop && (
-              <button type="button" className={css.confirmButton} onClick={handleConfirm}>
-                {intl?.formatMessage({ id: 'StarRatingFilter.confirm' }) || 'CONFIRMAR'}
+          {/* Toggles apply instantly, so there's no Confirmar — and Limpar
+              only appears when something is actually selected. */}
+          {pendingL1.length > 0 || pendingL2.length > 0 ? (
+            <div className={css.actionsRow}>
+              <button type="button" className={css.clearButton} onClick={handleClear}>
+                {intl?.formatMessage({ id: 'StarRatingFilter.clear' }) || 'LIMPAR'}
               </button>
-            )}
-          </div>
+            </div>
+          ) : null}
         </div>
       )}
     </div>

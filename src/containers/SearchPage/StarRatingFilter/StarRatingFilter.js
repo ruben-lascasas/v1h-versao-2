@@ -97,12 +97,9 @@ const StarRatingFilter = props => {
                 onClick={() => {
                   const next = star === pending ? null : star;
                   setPending(next);
-                  // Mobile auto-commits (no CONFIRMAR button). Desktop waits
-                  // for CONFIRMAR — but the title shows the pending value as
-                  // a preview, see `displayMin` below.
-                  if (!isDesktop) {
-                    onSubmit(next != null ? { [paramName]: `${next},5` } : { [paramName]: null });
-                  }
+                  // Picking a rating applies immediately — clicking the same
+                  // star again clears it.
+                  onSubmit(next != null ? { [paramName]: `${next},5` } : { [paramName]: null });
                 }}
                 onMouseEnter={() => setHovered(star)}
                 aria-label={intl?.formatMessage(
@@ -114,16 +111,13 @@ const StarRatingFilter = props => {
               </button>
             ))}
           </div>
-          <div className={css.actionsRow}>
-            <button type="button" className={css.clearButton} onClick={handleClear}>
-              {intl?.formatMessage({ id: 'StarRatingFilter.clear' })}
-            </button>
-            {isDesktop && (
-              <button type="button" className={css.confirmButton} onClick={handleConfirm}>
-                {intl?.formatMessage({ id: 'StarRatingFilter.confirm' })}
+          {pending != null ? (
+            <div className={css.actionsRow}>
+              <button type="button" className={css.clearButton} onClick={handleClear}>
+                {intl?.formatMessage({ id: 'StarRatingFilter.clear' })}
               </button>
-            )}
-          </div>
+            </div>
+          ) : null}
         </div>
       )}
     </div>

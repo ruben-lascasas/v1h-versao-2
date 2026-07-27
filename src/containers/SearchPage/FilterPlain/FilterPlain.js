@@ -81,30 +81,16 @@ class FilterPlainComponent extends Component {
     this.formRef = React.createRef();
     this.handleChange = this.handleChange.bind(this);
     this.handleClear = this.handleClear.bind(this);
-    this.handleConfirm = this.handleConfirm.bind(this);
     this.toggleIsOpen = this.toggleIsOpen.bind(this);
   }
 
   handleChange(values) {
-    // Desktop: store as pending until user clicks Confirmar.
-    // Mobile: auto-commit so the modal's "VER N ANÚNCIOS" reflects the new count.
-    this.setState({ pendingValues: values, hasPending: true });
-    if (!this.props.isDesktop) {
-      this.props.onSubmit(values);
-    }
-  }
-
-  handleConfirm(e) {
-    const { onSubmit } = this.props;
-    const { pendingValues } = this.state;
-    if (pendingValues == null) return;
-    onSubmit(pendingValues);
-    this.setState({ hasPending: false });
-    window.__focusedElementId__ = null;
-
-    if (e && e.currentTarget && e.currentTarget.blur) {
-      e.currentTarget.blur();
-    }
+    // Results update as soon as a value changes, on desktop and mobile alike —
+    // no "Confirmar" step. Range filters pass a debounced onSubmit (see
+    // IntegerRangeFilter), and the date filter only emits a value once both
+    // ends are picked, so this doesn't cause a request per keystroke/drag.
+    this.setState({ pendingValues: values, hasPending: false });
+    this.props.onSubmit(values);
   }
 
   handleClear(e) {
@@ -310,26 +296,20 @@ class FilterPlainComponent extends Component {
             keepDirtyOnReinitialize={keepDirtyOnReinitialize}
             formRef={this.formRef}
             clearButton={
-              <div className={css.actionsRow}>
-                <button
-                  id={`${formId}.clear`}
-                  type="button"
-                  className={css.clearButton}
-                  onClick={this.handleClear}
-                >
-                  <FormattedMessage id={'FilterPlain.clear'} />
-                </button>
-                {this.props.isDesktop && (
+              // Only an active filter gets a clear link — otherwise every
+              // filter would carry a permanent button that does nothing.
+              isSelected ? (
+                <div className={css.actionsRow}>
                   <button
-                    id={`${formId}.confirm`}
+                    id={`${formId}.clear`}
                     type="button"
-                    className={css.confirmButton}
-                    onClick={this.handleConfirm}
+                    className={css.clearButton}
+                    onClick={this.handleClear}
                   >
-                    <FormattedMessage id={'FilterPlain.confirm'} />
+                    <FormattedMessage id={'FilterPlain.clear'} />
                   </button>
-                )}
-              </div>
+                </div>
+              ) : null
             }
           >
             {children}
