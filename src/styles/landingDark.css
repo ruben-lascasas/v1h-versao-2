@@ -3735,3 +3735,139 @@ body[data-dark-mode] [class*="TransactionPanel_summaryTitleLink"]:hover [class*=
 body[data-dark-mode] [class*="TransactionPanel_summaryPrice"] {
   color: #f0ece6 !important;
 }
+
+/* ── CartPage ────────────────────────────────────────────────────────────
+   The global dark rules recolour text to cream, so the cart's cards must go
+   dark too — otherwise cream sits on a white card at ~1.2:1 contrast and is
+   effectively invisible. Cards, the day/time scheduler and the summary all
+   get the same dark surface used elsewhere (#2a2a2a). */
+body[data-dark-mode] [class*="CartPage_spaceCard"],
+body[data-dark-mode] [class*="CartPage_serviceCard"],
+body[data-dark-mode] [class*="CartPage_summaryCard"] {
+  background-color: #2a2a2a !important;
+  border-color: #3d3d3d !important;
+}
+body[data-dark-mode] [class*="CartPage_scheduler__"] {
+  background-color: #232323 !important;
+  border-top-color: #3d3d3d !important;
+}
+body[data-dark-mode] [class*="CartPage_removedNotice"] {
+  background-color: #232323 !important;
+  border-color: #4a4a4a !important;
+}
+body[data-dark-mode] [class*="CartPage_spaceTitle"],
+body[data-dark-mode] [class*="CartPage_spacePrice"],
+body[data-dark-mode] [class*="CartPage_serviceTitle"],
+body[data-dark-mode] [class*="CartPage_servicePriceUnit"],
+body[data-dark-mode] [class*="CartPage_summaryTitle"],
+body[data-dark-mode] [class*="CartPage_summaryLineLabel"],
+body[data-dark-mode] [class*="CartPage_summaryLineAmount"],
+body[data-dark-mode] [class*="CartPage_summaryTotalLabel"],
+body[data-dark-mode] [class*="CartPage_summaryTotalAmount"],
+body[data-dark-mode] [class*="CartPage_sectionTitle"],
+body[data-dark-mode] [class*="CartPage_heading"] {
+  color: #f0ece6 !important;
+}
+/* Muted/secondary text: #a8a29a keeps >4.5:1 on the #2a2a2a surface, unlike
+   the light-mode #888. */
+body[data-dark-mode] [class*="CartPage_subheading"],
+body[data-dark-mode] [class*="CartPage_sectionSubtitle"],
+body[data-dark-mode] [class*="CartPage_spaceMeta"],
+body[data-dark-mode] [class*="CartPage_serviceProvider"],
+body[data-dark-mode] [class*="CartPage_summaryLineSublabel"],
+body[data-dark-mode] [class*="CartPage_summaryTotalNote"],
+body[data-dark-mode] [class*="CartPage_servicePriceUnitLabel"],
+body[data-dark-mode] [class*="CartPage_schedulerLabel"],
+body[data-dark-mode] [class*="CartPage_removedNotice"],
+body[data-dark-mode] [class*="CartPage_timeRowDay"],
+body[data-dark-mode] [class*="CartPage_sameTimeToggle"],
+body[data-dark-mode] [class*="CartPage_emptyText"],
+body[data-dark-mode] [class*="CartPage_removeButton"] {
+  color: #a8a29a !important;
+}
+body[data-dark-mode] [class*="CartPage_servicePriceTotal"],
+body[data-dark-mode] [class*="CartPage_undoButton"],
+body[data-dark-mode] [class*="CartPage_emptyCta"] {
+  color: #7FC8BC !important;
+}
+/* Unselected day chips + time selects: dark surface, cream text. */
+body[data-dark-mode] [class*="CartPage_dayChip__"]:not([class*="dayChipSelected"]) {
+  background-color: #2f2f2f !important;
+  border-color: #4a4a4a !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="CartPage_timeSelect"] {
+  background-color: #2f2f2f !important;
+  border-color: #4a4a4a !important;
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="CartPage_summaryDivider"] {
+  background-color: #3d3d3d !important;
+}
+body[data-dark-mode] [class*="CartPage_timeSep"] {
+  color: #a8a29a !important;
+}
+
+/* ── ListingTypeFilter (Espaços / Serviços switch in the search sidebar) ── */
+body[data-dark-mode] [class*="ListingTypeFilter_header"],
+body[data-dark-mode] [class*="ListingTypeFilter_headerLabel"],
+body[data-dark-mode] [class*="ListingTypeFilter_headerToggle"],
+body[data-dark-mode] [class*="ListingTypeFilter_optionSelected"] {
+  color: #f0ece6 !important;
+}
+body[data-dark-mode] [class*="ListingTypeFilter_option"] {
+  color: #d6d0c8 !important;
+}
+body[data-dark-mode] [class*="ListingTypeFilter_root"] {
+  border-bottom-color: #3d3d3d !important;
+}
+body[data-dark-mode] [class*="CartPage_sameTimeToggle"] {
+  border-top-color: #3d3d3d !important;
+}
+
+/* ── Topbar separator in dark mode ───────────────────────────────────────
+   The light theme separates the header from the page with a soft drop
+   shadow, which is invisible against the dark page background. A hairline
+   border plus a deeper shadow restores that break in dark mode.
+   An earlier rule kills the shadow with `body[data-dark-mode] nav[class*=
+   "TopbarDesktop"]`, so this one repeats the `nav` element selector to match
+   that specificity and win on source order. */
+body[data-dark-mode] nav[class*="TopbarDesktop_root"],
+body[data-dark-mode] div[class*="Topbar_container"] {
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55) !important;
+}
+/* Drawn as an overlay rather than a border-bottom: the search input stretches
+   the full header height and has an opaque background in dark mode, so it
+   painted over a real border and left a gap across the middle of the header.
+   #555 also survives the partial coverage a 1px line gets at fractional zoom. */
+body[data-dark-mode] nav[class*="TopbarDesktop_root"]::after,
+body[data-dark-mode] div[class*="Topbar_container"]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: #555555;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── SearchPage: unify the sidebar/main surfaces in dark mode ────────────
+   The filter column and its wrapper painted #1e1e1e while the results area
+   painted #1a1a1a. That step showed up as a stray "line" running under the
+   header across the sidebar's width. Light mode has no such split. */
+body[data-dark-mode] div[class*="SearchPage_layoutWrapperContainer"],
+body[data-dark-mode] aside[class*="SearchPage_layoutWrapperFilterColumn"],
+body[data-dark-mode] div[class*="SearchPage_filterColumnContent"] {
+  background-color: #1a1a1a !important;
+}
+
+/* The "€" suffix next to the price inputs sits outside the (white) input box,
+   so on the dark sidebar the brand brown dropped to ~3:1. Lighten it.
+   Note: the dimmed day numbers in the date picker are *disabled* days and are
+   intentionally low-contrast — WCAG exempts inactive controls. */
+body[data-dark-mode] [class*="IntegerRangeFilter_inputSuffix"] {
+  color: #cfc3b6 !important;
+}
