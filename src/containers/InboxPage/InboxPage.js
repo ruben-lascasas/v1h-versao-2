@@ -633,7 +633,9 @@ export const InboxPageComponent = props => {
         }
         sideNav={
           <>
-            <H2 as="h1" className={css.title}>
+            {/* Section label for the nav; the page's h1 is the tab heading in
+                the content column, matching the account settings pages. */}
+            <H2 className={css.title}>
               <FormattedMessage id="InboxPage.title" />
             </H2>
             <TabNav
@@ -645,6 +647,17 @@ export const InboxPageComponent = props => {
           </>
         }
       >
+        <H2 as="h1" className={css.pageHeading}>
+          <FormattedMessage
+            id={
+              isMessages
+                ? 'InboxPage.messagesTabTitle'
+                : isOrders
+                ? 'InboxPage.ordersTabTitle'
+                : 'InboxPage.salesTabTitle'
+            }
+          />
+        </H2>
         <InboxSearchForm
           onSubmit={() => {}}
           onSelect={handleSortSelect(tab, routeConfiguration, history)}

@@ -121,6 +121,25 @@
   }
 }
 
+/* Page title in the content column, on the same scale as the other app
+   pages (cart, profile, account settings). */
+.pageHeading {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.15;
+  color: var(--colorBlack);
+  margin: 0 0 20px 0;
+
+  :global(body[data-dark-mode]) & {
+    color: #f0ece6;
+  }
+
+  @media (--viewportMedium) {
+    font-size: 40px;
+  }
+}
+
 .tabs {
   padding-top: 2px;
   width: 100%;

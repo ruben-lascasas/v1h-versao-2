@@ -23,8 +23,9 @@
   }
 }
 
+/* Same page-title scale as the app pages (cart, profile, account). */
 .title {
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 400;
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   color: var(--colorBlack);
@@ -33,7 +34,7 @@
   text-align: center;
 
   @media (--viewportMedium) {
-    font-size: 54px;
+    font-size: 40px;
     line-height: normal;
   }
 }
