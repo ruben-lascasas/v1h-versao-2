@@ -126,6 +126,25 @@ const searchListingsPayloadCreator = ({ searchParams, config }, thunkAPI) => {
       : {};
   };
 
+  // General region/keyword search (no listing-type-specific route, no
+  // explicit pub_listingType filter picked by the customer) should show
+  // rentable spaces by default — not complementary "servico" listings mixed
+  // in. The ListingTypeFilter sidebar filter lets the customer explicitly
+  // switch to Serviços, which sets pub_listingType=servico and is respected
+  // here (we never override an explicit choice).
+  const defaultToSpaceListingsOnly = (
+    listingTypes,
+    explicitPubListingType,
+    isListingTypeVariant
+  ) => {
+    const hasExplicitListingType = explicitPubListingType != null && explicitPubListingType !== '';
+    if (isListingTypeVariant || hasExplicitListingType) return {};
+    const spaceListingTypes = listingTypes
+      .map(l => l.listingType)
+      .filter(listingType => listingType !== 'servico');
+    return spaceListingTypes.length > 0 ? { pub_listingType: spaceListingTypes } : {};
+  };
+
   const constructCategoryPropertiesForAPI = (queryParamPrefix, categories, level, params) => {
     const levelKey = `${queryParamPrefix}${level}`;
     const rawValue =
@@ -428,6 +447,11 @@ const searchListingsPayloadCreator = ({ searchParams, config }, thunkAPI) => {
     ...searchValidListingTypes(
       config.listing.listingTypes,
       listingTypePathParam,
+      isListingTypeVariant
+    ),
+    ...defaultToSpaceListingsOnly(
+      config.listing.listingTypes,
+      restOfParams.pub_listingType,
       isListingTypeVariant
     ),
     ...priceMaybe,

@@ -55,6 +55,7 @@ import {
 
 import FilterComponent from './FilterComponent';
 import UnitTypeFilter from './UnitTypeFilter/UnitTypeFilter';
+import ListingTypeFilter from './ListingTypeFilter/ListingTypeFilter';
 import MainPanelHeader from './MainPanelHeader/MainPanelHeader';
 import SearchFiltersMobile from './SearchFiltersMobile/SearchFiltersMobile';
 import SortBy from './SortBy/SortBy';
@@ -88,6 +89,36 @@ export class SearchPageComponent extends Component {
     // SortBy
     this.handleSortBy = this.handleSortBy.bind(this);
     this.handleUnitTypeChange = this.handleUnitTypeChange.bind(this);
+    this.handleListingTypeChange = this.handleListingTypeChange.bind(this);
+  }
+
+  // Spaces vs Serviços switch. null → spaces (the default result set, no
+  // param); 'servico' → complementary services only. Category/unitType
+  // filters are space-specific, so they're dropped when switching away.
+  handleListingTypeChange(value) {
+    const { history, routeConfiguration, location } = this.props;
+    const urlQueryParams = validUrlQueryParamsFromProps(this.props);
+    const search = parse(location.search);
+    const merged = { ...urlQueryParams, ...omit(search, 'page') };
+    const withoutSpaceOnlyParams = omit(merged, [
+      'pub_categoryLevel1',
+      'pub_categoryLevel2',
+      'unitType',
+    ]);
+    const next =
+      value == null
+        ? omit(withoutSpaceOnlyParams, 'pub_listingType')
+        : { ...withoutSpaceOnlyParams, pub_listingType: value };
+    const { routeName, pathParams } = getSearchPageResourceLocatorStringParams(
+      routeConfiguration,
+      location
+    );
+    // Drop the in-component filter state as well. It still holds the previous
+    // pub_listingType, and the next filter change merges it back on top of the
+    // URL — which silently flipped the results back to the old listing type.
+    this.setState({ currentQueryParams: {} }, () => {
+      history.push(createResourceLocatorString(routeName, routeConfiguration, pathParams, next));
+    });
   }
 
   // Custom standalone "Tipo de reserva" filter — pushes/clears the
@@ -105,7 +136,11 @@ export class SearchPageComponent extends Component {
       routeConfiguration,
       location
     );
-    history.push(createResourceLocatorString(routeName, routeConfiguration, pathParams, next));
+    // Same reason as in handleListingTypeChange: the URL is the source of
+    // truth here, so stale in-component filter state must not be merged back.
+    this.setState({ currentQueryParams: {} }, () => {
+      history.push(createResourceLocatorString(routeName, routeConfiguration, pathParams, next));
+    });
   }
 
   // Invoked when a modal is opened from a child component,
@@ -137,6 +172,7 @@ export class SearchPageComponent extends Component {
     const queryParams = omit(parse(location.search), [
       ...filterQueryParamNames,
       'unitType',
+      'pub_listingType',
     ]);
 
     const { routeName, pathParams } = getSearchPageResourceLocatorStringParams(
@@ -322,10 +358,26 @@ export class SearchPageComponent extends Component {
     const { listingFields } = config?.listing || {};
     const { defaultFilters: defaultFiltersRaw, sortConfig, mainSearch } = config?.search || {};
 
-    const activeListingTypes = config?.listing?.listingTypes.map(config => config.listingType);
-    const defaultFiltersConfig = listingTypePathParam
-      ? defaultFiltersRaw.filter(f => f.key !== 'listingType')
+    // Spaces vs Serviços: results default to spaces, and the sidebar
+    // ListingTypeFilter switches to services via ?pub_listingType=servico.
+    // Narrowing activeListingTypes to the picked side means listing-field
+    // filters scoped to one listing type (e.g. "Categoria de serviço") only
+    // appear for that side, instead of all of them showing at once.
+    const allListingTypes = config?.listing?.listingTypes.map(config => config.listingType);
+    const selectedListingTypeParam = parse(location.search).pub_listingType;
+    const isServicesSearch = selectedListingTypeParam === 'servico';
+    const activeListingTypes = isServicesSearch
+      ? ['servico']
+      : allListingTypes.filter(lt => lt !== 'servico');
+
+    // Space-only built-in filters make no sense for services (services have
+    // no space categories and aren't priced by rental unit).
+    const defaultFiltersAfterListingType = isServicesSearch
+      ? defaultFiltersRaw.filter(f => !['categoryLevel', 'seats'].includes(f.key))
       : defaultFiltersRaw;
+    const defaultFiltersConfig = listingTypePathParam
+      ? defaultFiltersAfterListingType.filter(f => f.key !== 'listingType')
+      : defaultFiltersAfterListingType;
 
     const marketplaceCurrency = config.currency;
     const categoryConfiguration = config.categoryConfiguration;
@@ -378,13 +430,31 @@ export class SearchPageComponent extends Component {
       listingFieldsConfig,
       activeListingTypes
     );
-    // Order: category → built-in (price, dates) → custom primary (numero_pessoas)
-    // → custom secondary → rating (last).
+    // When searching Serviços, the service-specific listing fields (e.g.
+    // "Categoria de serviço") play the same role "Categoria" does for spaces,
+    // so they lead the sidebar right after the Tipo de anúncio switch instead
+    // of being buried below Preço/Datas.
+    const isServiceScopedField = f =>
+      f?.listingTypeConfig?.limitToListingTypeIds &&
+      (f.listingTypeConfig.listingTypeIds || []).every(lt => lt === 'servico');
+    const leadingServiceFilters = isServicesSearch
+      ? [...customPrimaryFilters, ...customSecondaryFilters].filter(isServiceScopedField)
+      : [];
+    const remainingCustomPrimary = customPrimaryFilters.filter(
+      f => !leadingServiceFilters.includes(f)
+    );
+    const remainingCustomSecondary = customSecondaryFilters.filter(
+      f => !leadingServiceFilters.includes(f)
+    );
+
+    // Order: category (or service category) → built-in (price, dates) →
+    // custom primary (numero_pessoas) → custom secondary → rating (last).
     const availableFilters = [
       ...builtInPrimaryFilters,
+      ...leadingServiceFilters,
       ...builtInFilters,
-      ...customPrimaryFilters,
-      ...customSecondaryFilters,
+      ...remainingCustomPrimary,
+      ...remainingCustomSecondary,
       ...ratingBuiltInFilter,
     ];
 
@@ -475,6 +545,10 @@ export class SearchPageComponent extends Component {
         <div className={css.layoutWrapperContainer}>
           <aside className={css.layoutWrapperFilterColumn} data-testid="filterColumnAside">
             <div className={css.filterColumnContent}>
+              <ListingTypeFilter
+                urlValue={selectedListingTypeParam}
+                onSubmit={this.handleListingTypeChange}
+              />
               {availableFilters.map(filterConfig => {
                 const key = `SearchFiltersDesktop.${filterConfig.scope || 'built-in'}.${
                   filterConfig.key
@@ -500,11 +574,13 @@ export class SearchPageComponent extends Component {
                   />
                 );
               })}
-              <UnitTypeFilter
-                urlValue={parse(location.search).unitType}
-                isDesktop
-                onSubmit={this.handleUnitTypeChange}
-              />
+              {isServicesSearch ? null : (
+                <UnitTypeFilter
+                  urlValue={parse(location.search).unitType}
+                  isDesktop
+                  onSubmit={this.handleUnitTypeChange}
+                />
+              )}
               <button className={css.resetAllButton} onClick={e => this.handleResetAll(e)}>
                 <FormattedMessage id={'SearchFiltersMobile.resetAll'} />
               </button>
@@ -531,6 +607,10 @@ export class SearchPageComponent extends Component {
                 noResultsInfo={noResultsInfo}
                 location={location}
               >
+                <ListingTypeFilter
+                  urlValue={selectedListingTypeParam}
+                  onSubmit={this.handleListingTypeChange}
+                />
                 {availableFilters.map(filterConfig => {
                   const key = `SearchFiltersMobile.${filterConfig.scope || 'built-in'}.${
                     filterConfig.key
@@ -555,10 +635,12 @@ export class SearchPageComponent extends Component {
                     />
                   );
                 })}
-                <UnitTypeFilter
-                  urlValue={parse(location.search).unitType}
-                  onSubmit={this.handleUnitTypeChange}
-                />
+                {isServicesSearch ? null : (
+                  <UnitTypeFilter
+                    urlValue={parse(location.search).unitType}
+                    onSubmit={this.handleUnitTypeChange}
+                  />
+                )}
               </SearchFiltersMobile>
               <MainPanelHeader
                 className={css.mainPanel}
