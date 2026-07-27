@@ -12,7 +12,7 @@ import { showCreateListingLinkForUser, showPaymentDetailsForUser } from '../../u
 import { sendVerificationEmail } from '../../ducks/user.duck';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 
-import { H3, Page, LayoutSideNavigation } from '../../components';
+import { H2, Page, LayoutSideNavigation } from '../../components';
 
 import TopbarContainer from '../../containers/TopbarContainer/TopbarContainer';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
@@ -132,9 +132,9 @@ export const ContactDetailsPageComponent = props => {
         intl={intl}
       >
         <div className={css.content}>
-          <H3 as="h1">
+          <H2 as="h1">
             <FormattedMessage id="ContactDetailsPage.heading" />
-          </H3>
+          </H2>
           {contactInfoForm}
         </div>
       </LayoutSideNavigation>

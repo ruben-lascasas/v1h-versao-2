@@ -9,7 +9,7 @@ import { userHasPassword } from '../../util/data';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 import { showCreateListingLinkForUser, showPaymentDetailsForUser } from '../../util/userHelpers';
 
-import { Page, H3, LayoutSideNavigation } from '../../components';
+import { Page, H2, LayoutSideNavigation } from '../../components';
 
 import TopbarContainer from '../../containers/TopbarContainer/TopbarContainer';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
@@ -102,9 +102,9 @@ export const PasswordChangePageComponent = props => {
         intl={intl}
       >
         <div className={css.content}>
-          <H3 as="h1">
+          <H2 as="h1">
             <FormattedMessage id="PasswordChangePage.heading" />
-          </H3>
+          </H2>
           {changePasswordForm}
         </div>
       </LayoutSideNavigation>

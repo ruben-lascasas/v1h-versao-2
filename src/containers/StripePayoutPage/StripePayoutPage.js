@@ -16,7 +16,7 @@ import {
 } from '../../ducks/stripeConnectAccount.duck';
 
 import {
-  H3,
+  H2,
   NamedRedirect,
   Page,
   StripeConnectAccountStatusBox,
@@ -201,9 +201,9 @@ export const StripePayoutPageComponent = props => {
         intl={intl}
       >
         <div className={css.content}>
-          <H3 as="h1" className={css.heading}>
+          <H2 as="h1" className={css.heading}>
             <FormattedMessage id="StripePayoutPage.heading" />
-          </H3>
+          </H2>
           {!currentUserLoaded ? (
             <FormattedMessage id="StripePayoutPage.loadingData" />
           ) : returnedAbnormallyFromStripe && !getAccountLinkError ? (

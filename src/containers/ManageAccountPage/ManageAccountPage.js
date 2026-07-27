@@ -18,7 +18,7 @@ import { pathByRouteName } from '../../util/routes';
 
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 
-import { H3, H4, Page, LayoutSideNavigation } from '../../components';
+import { H2, H4, Page, LayoutSideNavigation } from '../../components';
 
 import TopbarContainer from '../TopbarContainer/TopbarContainer';
 import FooterContainer from '../FooterContainer/FooterContainer';
@@ -137,9 +137,9 @@ export const ManageAccountPageComponent = props => {
         intl={intl}
       >
         <div className={css.content}>
-          <H3 as="h1">
+          <H2 as="h1">
             <FormattedMessage id="ManageAccountPage.heading" />
-          </H3>
+          </H2>
           {hasUserTypeFields ? (
             <>
               <PrivateDetailsForm

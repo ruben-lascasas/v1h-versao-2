@@ -45,7 +45,7 @@
 .label {
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-weight: 400;
-  font-size: 24px;
+  font-size: 18px;
   letter-spacing: 0.02em;
   margin-top: 0;
   margin-bottom: 12px;
@@ -58,7 +58,7 @@
 
 .labelSelected {
   font-family: 'Britannic Bold', 'Impact', sans-serif;
-  font-size: 24px;
+  font-size: 18px;
   color: var(--colorBlack);
 }
 

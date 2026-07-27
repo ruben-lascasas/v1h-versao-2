@@ -54,10 +54,12 @@
   }
 }
 
+/* Sidebar heading scale, shared with Definições de Conta / Caixa de Entrada
+   / the listing wizard. */
 .infoTitle {
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-weight: 400;
-  font-size: 30px;
+  font-size: 24px;
   color: var(--colorBlack);
   margin: 0 0 12px -17px;
   text-align: center;
@@ -303,19 +305,17 @@
   }
 }
 
+/* App-page title scale, shared with the other logged-in pages (cart, direct
+   messages). Marketing pages keep their larger hero scale. */
 .pageTitle {
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-weight: 400;
-  font-size: 36px;
+  font-size: 34px;
   color: var(--colorBlack);
   margin: 0 0 12px 0;
 
-  @media (min-width: 480px) {
-    font-size: 52px;
-  }
-
   @media (--viewportMedium) {
-    font-size: 68px;
+    font-size: 40px;
   }
 }
 

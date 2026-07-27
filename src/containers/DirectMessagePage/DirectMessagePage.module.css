@@ -20,15 +20,16 @@
   }
 }
 
+/* App-page title scale, shared with the profile settings / cart pages. */
 .title {
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-weight: 400;
-  font-size: 42px;
+  font-size: 34px;
   color: var(--colorBlack);
   margin: 0 0 4px;
 
   @media (--viewportMedium) {
-    font-size: 56px;
+    font-size: 40px;
   }
 
   :global(body[data-dark-mode]) & {

@@ -49,7 +49,9 @@
   @media (--viewportLarge) {
     font-family: 'Britannic Bold', 'Impact', sans-serif;
     font-weight: 400;
-    font-size: 24px;
+    /* Matches the search sidebar's filter headings so every sidebar in the
+       app shares one type scale. */
+    font-size: 18px;
     line-height: 1.2;
     color: var(--colorBlack);
 
