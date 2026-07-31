@@ -14,7 +14,12 @@ import { ASSET_NAME } from './LandingPage.duck';
 import { fetchFeaturedListings } from '../../ducks/featuredListings.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import { getFeaturedListingsProps } from '../../util/data';
-import { highlightedListingExampleConfig, whyUsConfig, landingMapConfig } from '../../config/landingPageConfigExamples';
+// NOTE: `highlightedListingExampleConfig` powers the "Anúncios em Destaque"
+// section, currently disabled on the home page. To bring it back, add it to
+// this import and uncomment its entry in `injectedSections` below.
+// The build runs with CI=true on Render, where an unused import is treated as
+// an error — hence it is commented out here rather than left dangling.
+import { whyUsConfig, landingMapConfig } from '../../config/landingPageConfigExamples';
 import { useLocale } from '../../context/localeContext';
 import { useDarkMode } from '../../context/darkModeContext';
 import landingPageContentEN from '../../translations/landingPageContentEN';
@@ -100,7 +105,7 @@ export const LandingPageComponent = props => {
   // Get the page asset from Console
   let consoleAsset = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
 
-  // If we have a Console asset, inject the highlighted listing section just after Marketplace intro
+  // If we have a Console asset, inject our own sections just after the Marketplace intro
   let finalPageAsset = consoleAsset;
   if (consoleAsset && Array.isArray(consoleAsset.sections)) {
     // Filter out console sections that are replaced by programmatic injections
@@ -172,17 +177,27 @@ export const LandingPageComponent = props => {
     });
 
     const insertionIndex = introIndex >= 0 ? introIndex + 1 : 0;
-    sections.splice(insertionIndex, 0, highlightedListingExampleConfig);
-    // "Para si" / "For you" recommendations — rendered immediately under the
-    // highlighted (Destaque) section. Component returns null for logged-out
-    // users, so anonymous visitors don't see an empty slot.
-    sections.splice(insertionIndex + 1, 0, {
-      sectionId: 'section-recommendations',
-      sectionName: 'Para si',
-      sectionType: 'recommendations',
-    });
-    sections.splice(insertionIndex + 2, 0, landingMapConfig);
-    sections.splice(insertionIndex + 3, 0, whyUsConfig);
+
+    // Sections injected right after the Marketplace intro, in this order.
+    // Kept as a list (instead of separate splices with +1/+2/+3 offsets) so a
+    // section can be switched off by commenting one line, without the ones
+    // below it landing in the wrong place.
+    const injectedSections = [
+      // "Anúncios em Destaque" — temporarily disabled. Uncomment this line and
+      // restore the import at the top of the file to bring it back.
+      // highlightedListingExampleConfig,
+
+      // "Para si" / "For you" recommendations. The component returns null for
+      // logged-out users, so anonymous visitors don't see an empty slot.
+      {
+        sectionId: 'section-recommendations',
+        sectionName: 'Para si',
+        sectionType: 'recommendations',
+      },
+      landingMapConfig,
+      whyUsConfig,
+    ];
+    sections.splice(insertionIndex, 0, ...injectedSections);
 
     // Apply English content overrides after all sections (including highlighted) are assembled
     const overriddenSections = locale === 'en' ? applyENOverrides(sections) : sections;
