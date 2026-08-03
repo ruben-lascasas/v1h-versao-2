@@ -250,9 +250,10 @@ export const fetchRecommendationCandidates = config => async (dispatch, getState
       'publicData.favoritesCount',
       'publicData.featured',
     ],
-    'fields.image': [`variants.${variantPrefix}`, `variants.${variantPrefix}-2x`],
+    'fields.image': [`variants.${variantPrefix}`, `variants.${variantPrefix}-2x`, `variants.${variantPrefix}-4x`],
     ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
     ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+    ...createImageVariantConfig(`${variantPrefix}-4x`, 1600, aspectRatio),
     'limit.images': 1,
     sort: '-createdAt',
   };

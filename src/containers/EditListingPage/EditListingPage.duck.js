@@ -69,13 +69,14 @@ const updateUploadedImagesState = (state, payload) => {
 const getImageVariantInfo = listingImageConfig => {
   const { aspectWidth = 1, aspectHeight = 1, variantPrefix = 'listing-card' } = listingImageConfig;
   const aspectRatio = aspectHeight / aspectWidth;
-  const fieldsImage = [`variants.${variantPrefix}`, `variants.${variantPrefix}-2x`];
+  const fieldsImage = [`variants.${variantPrefix}`, `variants.${variantPrefix}-2x`, `variants.${variantPrefix}-4x`];
 
   return {
     fieldsImage,
     imageVariants: {
       ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
       ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+      ...createImageVariantConfig(`${variantPrefix}-4x`, 1600, aspectRatio),
     },
   };
 };

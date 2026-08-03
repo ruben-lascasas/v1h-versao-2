@@ -28,9 +28,11 @@ const getImageVariants = listingImageConfig => {
       // Listing images:
       `variants.${variantPrefix}`,
       `variants.${variantPrefix}-2x`,
+      `variants.${variantPrefix}-4x`,
     ],
     ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
     ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+    ...createImageVariantConfig(`${variantPrefix}-4x`, 1600, aspectRatio),
   };
 };
 
@@ -83,6 +85,7 @@ const showListingPayloadCreator = (
       // Cropped variants for listing thumbnail images
       `variants.${variantPrefix}`,
       `variants.${variantPrefix}-2x`,
+      `variants.${variantPrefix}-4x`,
 
       // Avatars
       'variants.square-small',
@@ -90,6 +93,7 @@ const showListingPayloadCreator = (
     ],
     ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
     ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+    ...createImageVariantConfig(`${variantPrefix}-4x`, 1600, aspectRatio),
   };
 
   const show = isOwn ? sdk.ownListings.show(params) : sdk.listings.show(params);

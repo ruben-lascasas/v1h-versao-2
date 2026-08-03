@@ -119,7 +119,7 @@ const SectionHero = props => {
       >
         <ImageCarousel
           images={listing.images}
-          imageVariants={['scaled-small', 'scaled-medium', 'scaled-large', 'scaled-xlarge']}
+          imageVariants={['scaled-small', 'scaled-medium', 'scaled-large', 'scaled-1600', 'scaled-xlarge']}
         />
       </Modal>
     </section>

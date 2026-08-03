@@ -71,6 +71,7 @@ const fetchFeaturedListingsPayloadCreator = async (arg, thunkAPI) => {
       ],
       ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
       ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+      ...createImageVariantConfig(`${variantPrefix}-4x`, 1600, aspectRatio),
       'limit.images': 1,
     })
     .then(response => {

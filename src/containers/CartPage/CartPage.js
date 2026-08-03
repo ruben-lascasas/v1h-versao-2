@@ -414,7 +414,7 @@ const ServiceCard = props => {
               rootClassName={css.serviceImage}
               alt={title}
               image={firstImage}
-              variants={['listing-card', 'listing-card-2x']}
+              variants={['listing-card', 'listing-card-2x', 'listing-card-4x']}
               sizes="64px"
             />
           ) : (
@@ -713,7 +713,7 @@ const CartPage = () => {
                           rootClassName={css.spaceImage}
                           alt={title}
                           image={firstImage}
-                          variants={['listing-card', 'listing-card-2x']}
+                          variants={['listing-card', 'listing-card-2x', 'listing-card-4x']}
                           sizes="112px"
                         />
                       ) : (

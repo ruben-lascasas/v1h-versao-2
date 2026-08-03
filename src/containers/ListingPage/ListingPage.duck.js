@@ -69,10 +69,14 @@ const showListingPayloadCreator = ({ listingId, config, isOwn = false }, thunkAP
     id: listingId,
     include: ['author', 'author.profileImage', 'images', 'currentStock'],
     'fields.image': [
-      // Scaled variants for large images
+      // Scaled variants for large images. `scaled-1600` is a custom step:
+      // Sharetribe's defaults jump straight from 1024 to 2400, so a gallery
+      // ~900px wide on a 1.25–2x display had to choose between an image too
+      // small (soft) and one far larger than needed.
       'variants.scaled-small',
       'variants.scaled-medium',
       'variants.scaled-large',
+      'variants.scaled-1600',
       'variants.scaled-xlarge',
 
       // Cropped variants for listing thumbnail images
@@ -93,6 +97,8 @@ const showListingPayloadCreator = ({ listingId, config, isOwn = false }, thunkAP
     ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
     ...createImageVariantConfig(`${variantPrefix}-4x`, 1600, aspectRatio),
     ...createImageVariantConfig(`${variantPrefix}-6x`, 2400, aspectRatio),
+    // Scaled (aspect-preserving) 1600 step for the gallery — see fields.image.
+    'imageVariant.scaled-1600': 'w:1600;h:1600;fit:scale',
   };
 
   // Retry on 429 (Sharetribe rate limit) with exponential backoff: 800ms, 1600ms, 3200ms.

@@ -55,9 +55,10 @@ const queryUserListingsPayloadCreator = (
 
   const queryParams = {
     include: ['author', 'images'],
-    'fields.image': [`variants.${variantPrefix}`, `variants.${variantPrefix}-2x`],
+    'fields.image': [`variants.${variantPrefix}`, `variants.${variantPrefix}-2x`, `variants.${variantPrefix}-4x`],
     ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
     ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+    ...createImageVariantConfig(`${variantPrefix}-4x`, 1600, aspectRatio),
   };
 
   const listingsPromise = ownProfileOnly

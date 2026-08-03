@@ -43,6 +43,7 @@ const showListingPayloadCreator = (
       // Cropped variants for listing thumbnail images
       `variants.${variantPrefix}`,
       `variants.${variantPrefix}-2x`,
+      `variants.${variantPrefix}-4x`,
 
       // Avatars
       'variants.square-small',
@@ -50,6 +51,7 @@ const showListingPayloadCreator = (
     ],
     ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
     ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+    ...createImageVariantConfig(`${variantPrefix}-4x`, 1600, aspectRatio),
   };
 
   return sdk.listings

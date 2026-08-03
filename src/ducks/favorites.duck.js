@@ -218,9 +218,10 @@ export const fetchFavoriteListings = config => async (dispatch, getState, sdk) =
     const params = {
       id: listingId,
       include: ['author', 'author.profileImage', 'images'],
-      'fields.image': [`variants.${variantPrefix}`, `variants.${variantPrefix}-2x`],
+      'fields.image': [`variants.${variantPrefix}`, `variants.${variantPrefix}-2x`, `variants.${variantPrefix}-4x`],
       ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
       ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+      ...createImageVariantConfig(`${variantPrefix}-4x`, 1600, aspectRatio),
     };
     // eslint-disable-next-line no-await-in-loop
     const response = await showWithRetry(params);

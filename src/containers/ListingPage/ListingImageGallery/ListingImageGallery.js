@@ -163,8 +163,13 @@ const ListingImageGallery = props => {
     };
   }, [modalOpen, nextImage, prevImage]);
 
+  // Measured gallery widths: 900px viewport -> 809px, 1100 -> 457, 1280 -> 637,
+  // 1900 -> 872. The previous fixed `708px` under-declared on wide screens, so
+  // the browser picked the 750w variant for an 872px box and the main listing
+  // image rendered soft. 50vw covers the real width at every measured size
+  // without ever under-declaring (over-declaring only costs a sharper pick).
   const imageSizesMaybe = {
-    sizes: `(max-width: 1024px) 100vw, (max-width: 1200px) calc(100vw - 192px), 708px`,
+    sizes: `(max-width: 1024px) 100vw, 50vw`,
   };
   const renderItem = item => {
     const i = item.__index;

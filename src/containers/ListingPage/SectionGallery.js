@@ -11,7 +11,7 @@ const SectionGallery = props => {
   const images = listing.images;
   const youtubeUrl = listing?.attributes?.publicData?.youtubeUrl || null;
   const imageVariants = useMemo(
-    () => ['scaled-small', 'scaled-medium', 'scaled-large', 'scaled-xlarge'],
+    () => ['scaled-small', 'scaled-medium', 'scaled-large', 'scaled-1600', 'scaled-xlarge'],
     []
   );
   const thumbnailVariants = useMemo(
