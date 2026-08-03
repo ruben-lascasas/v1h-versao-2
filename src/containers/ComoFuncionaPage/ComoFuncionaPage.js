@@ -148,7 +148,10 @@ const ComoFuncionaPage = props => {
     {
       icon: <IconSearch />,
       step: '03',
-      title: t(isEN, 'Aparece como complemento nos espaços', 'Show up as an add-on on venues'),
+      // Trimmed from "Aparece como complemento nos espaços": it was the only
+      // step title too long for one line, and the body copy right below it
+      // already says where the service shows up.
+      title: t(isEN, 'Aparece como complemento', 'Show up as an add-on'),
       text: t(isEN,
         'O teu serviço aparece automaticamente na página de espaços perto de ti, numa secção de "Serviços complementares". Quem reserva um espaço vê logo o que tens para oferecer.',
         'Your service shows up automatically on nearby venue pages, in a "Complementary services" section, so anyone booking a space sees what you offer right away.'
@@ -229,7 +232,7 @@ const ComoFuncionaPage = props => {
 
           {/* ── Para Organizadores ─────────────────────── */}
           <section className={css.section}>
-            <div className={css.sectionInner}>
+            <div className={css.sectionInnerWide}>
               <div className={css.sectionHeader}>
                 <span className={css.sectionTag}>{t(isEN, 'Organizadores de eventos', 'Event organisers')}</span>
                 <h2 className={css.sectionTitle}>
@@ -269,7 +272,7 @@ const ComoFuncionaPage = props => {
 
           {/* ── Para Anfitriões ────────────────────────── */}
           <section className={css.section}>
-            <div className={css.sectionInner}>
+            <div className={css.sectionInnerWide}>
               <div className={css.sectionHeader}>
                 <span className={css.sectionTag}>{t(isEN, 'Anfitriões', 'Hosts')}</span>
                 <h2 className={css.sectionTitle}>
@@ -309,7 +312,7 @@ const ComoFuncionaPage = props => {
 
           {/* ── Para Prestadores de Serviços ───────────── */}
           <section className={css.section}>
-            <div className={css.sectionInner}>
+            <div className={css.sectionInnerWide}>
               <div className={css.sectionHeader}>
                 <span className={css.sectionTag}>{t(isEN, 'Prestadores de Serviços', 'Service providers')}</span>
                 <h2 className={css.sectionTitle}>
