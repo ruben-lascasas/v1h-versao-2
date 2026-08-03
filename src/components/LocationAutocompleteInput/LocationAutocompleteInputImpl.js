@@ -844,6 +844,27 @@ class LocationAutocompleteInputImplementation extends Component {
 
   handleOnBlur() {
     if (this.props.closeOnBlur && !this.state.selectionInProgress) {
+      // On forms where a resolved place is mandatory (the listing wizard),
+      // leaving the field with typed text but no selection would otherwise
+      // keep the form silently invalid: `input.onBlur` is what sets
+      // final-form's `touched`, and without it ValidationError never renders.
+      // Resolving the top prediction here means a correctly typed address
+      // just works, and anything unrecognised surfaces its error.
+      if (this.props.selectOnBlur) {
+        const { search, selectedPlace } = currentValue(this.props);
+        const predictions = this.currentPredictions();
+        // Only resolve predictions that are already on screen — never kick off
+        // a new geocoder request from a blur, which would throw if the map
+        // library failed to load.
+        if (search && !selectedPlace && predictions.length > 0) {
+          const index = this.state.highlightedIndex !== -1 ? this.state.highlightedIndex : 0;
+          const prediction = predictions[index];
+          const geocoderVariant = getGeocoderVariant(this.props.config.maps.mapProvider);
+          if (prediction && prediction.id !== geocoderVariant.CURRENT_LOCATION_ID) {
+            this.selectPrediction(prediction);
+          }
+        }
+      }
       this.finalizeSelection();
     }
   }
@@ -1090,6 +1111,8 @@ class LocationAutocompleteInputImplementation extends Component {
  * @param {string?} props.validClassName
  * @param {boolean} props.autoFocus
  * @param {boolean} props.closeOnBlur
+ * @param {boolean} props.selectOnBlur resolve the top prediction when the field
+ *   is left with typed text but no selected place (requires closeOnBlur)
  * @param {string?} props.placeholder
  * @param {boolean} props.useDefaultPredictions
  * @param {Object} props.input

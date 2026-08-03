@@ -357,8 +357,10 @@ class ProfileSettingsFormComponent extends Component {
                 <div className={css.locationWrapper}>
                   <FieldLocationAutocompleteInput
                     name="profileLocation"
-                    label="Localização"
-                    placeholder="Cidade, País..."
+                    label={intl.formatMessage({ id: 'ProfileSettingsForm.locationLabel' })}
+                    placeholder={intl.formatMessage({
+                      id: 'ProfileSettingsForm.locationPlaceholder',
+                    })}
                     useDefaultPredictions={false}
                     suggestCurrentLocation={false}
                     hideSearchHistory

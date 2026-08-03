@@ -167,6 +167,8 @@ export const EditListingDeliveryForm = props => (
                 id: 'EditListingDeliveryForm.addressPlaceholder',
               })}
               useDefaultPredictions={false}
+              closeOnBlur
+              selectOnBlur
               format={identity}
               valueFromForm={values.location}
               validate={

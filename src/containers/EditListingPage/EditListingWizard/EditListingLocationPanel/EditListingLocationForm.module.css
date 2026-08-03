@@ -65,3 +65,11 @@
     margin-top: 100px;
   }
 }
+
+/* Explains why the submit button is disabled. Sits under the button, so the
+   button keeps its `margin-top: auto` bottom alignment. */
+.submitHint {
+  composes: marketplaceTinyFontStyles from global;
+  color: var(--colorGrey700);
+  margin: -16px 0 24px 0;
+}

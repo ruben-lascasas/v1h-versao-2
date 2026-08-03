@@ -96,6 +96,9 @@ export const EditListingLocationForm = props => (
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
       const submitDisabled = invalid || disabled || submitInProgress;
+      // A disabled button with no explanation is a dead end: the address field
+      // is the only thing that can block this step, so say so.
+      const showAddressHint = invalid && !disabled && !submitInProgress;
 
       return (
         <Form className={classes} onSubmit={handleSubmit}>
@@ -128,6 +131,8 @@ export const EditListingLocationForm = props => (
             hideSearchHistory={true}
             suggestCurrentLocation={false}
             hideExtras={true}
+            closeOnBlur
+            selectOnBlur
             format={identity}
             valueFromForm={values.location}
             validate={composeValidators(
@@ -169,6 +174,12 @@ export const EditListingLocationForm = props => (
           >
             {saveActionMsg}
           </Button>
+
+          {showAddressHint ? (
+            <p className={css.submitHint}>
+              <FormattedMessage id="EditListingLocationForm.selectAddressHint" />
+            </p>
+          ) : null}
         </Form>
       );
     }}
