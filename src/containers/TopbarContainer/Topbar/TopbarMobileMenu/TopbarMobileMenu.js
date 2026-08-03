@@ -20,6 +20,7 @@ import {
 } from '../../../../components';
 
 import { useLocale } from '../../../../context/localeContext';
+import { listingHighlightsEnabled } from '../../../../config/configFeatures';
 
 import css from './TopbarMobileMenu.module.css';
 
@@ -218,7 +219,7 @@ const TopbarMobileMenu = props => {
     </li>
   ) : null;
 
-  const destacarAnuncioLinkMaybe = showCreateListingsLink ? (
+  const destacarAnuncioLinkMaybe = showCreateListingsLink && listingHighlightsEnabled ? (
     <li className={classNames(css.navigationLink, currentPageClass('DestacaAnuncioPage'))}>
       <NamedLink name="DestacaAnuncioPage">
         <FormattedMessage id="TopbarMobileMenu.destacarAnuncioLink" />

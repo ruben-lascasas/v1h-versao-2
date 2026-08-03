@@ -19,6 +19,8 @@ import EditListingPricingPanel from './EditListingPricingPanel/EditListingPricin
 import EditListingPricingAndStockPanel from './EditListingPricingAndStockPanel/EditListingPricingAndStockPanel';
 import EditListingStylePanel from './EditListingStylePanel/EditListingStylePanel';
 
+import { listingHighlightsEnabled } from '../../../config/configFeatures';
+
 import css from './EditListingWizardTab.module.css';
 
 export const DETAILS = 'details';
@@ -164,7 +166,7 @@ const EditListingWizardTab = props => {
           // Set localStorage flag so DestacarPromptModal pops on the
           // ListingPage we're about to land on. Modal handles its own
           // clearing on close/Destacar.
-          if (typeof window !== 'undefined' && params?.id) {
+          if (listingHighlightsEnabled && typeof window !== 'undefined' && params?.id) {
             try {
               window.localStorage.setItem('v1h_pending_destacar_prompt', params.id);
             } catch (_) { /* quota / privacy mode — non-fatal */ }

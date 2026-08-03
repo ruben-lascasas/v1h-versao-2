@@ -16,7 +16,7 @@ const FAQ_PT = [
               A Venue1Hub é uma plataforma digital especializada no <strong>arrendamento de curta duração de espaços comerciais</strong> em Portugal: salas de reunião, escritórios, restaurantes, auditórios, estúdios e muito mais.
             </p>
             <p>
-              Também ligamos quem reserva um espaço a <strong>Prestadores de Serviços</strong> complementares perto desse espaço — catering, limpeza, fotografia, entre outros — que pode adicionar à sua reserva.
+              Também ligamos quem reserva um espaço a <strong>Prestadores de Serviços</strong> complementares perto desse espaço (catering, limpeza, fotografia, entre outros) que pode adicionar à sua reserva.
             </p>
             <p>
               Funcionamos como intermediário digital: ligamos quem tem espaços ou serviços disponíveis a quem precisa deles para reuniões, eventos, formações, sessões fotográficas, workshops, entre outros.
@@ -89,7 +89,7 @@ const FAQ_PT = [
         a: (
           <>
             <p>Sim. Depois de escolher as datas do espaço, é apresentado um carrinho com os Prestadores de Serviços disponíveis perto desse espaço, que pode selecionar por checkbox. O total é atualizado à medida que adiciona ou remove serviços.</p>
-            <p>Cada serviço é uma reserva e um pagamento independentes do espaço — paga o espaço primeiro e, de seguida, cada serviço selecionado, um de cada vez.</p>
+            <p>Cada serviço é uma reserva e um pagamento independentes do espaço: paga o espaço primeiro e, de seguida, cada serviço selecionado, um de cada vez.</p>
           </>
         ),
       },
@@ -147,7 +147,7 @@ const FAQ_PT = [
         q: 'O que é um Prestador de Serviços?',
         a: (
           <>
-            <p>É um tipo de conta pensado para quem oferece serviços complementares a eventos — catering, limpeza, fotografia, equipamento técnico, decoração, entre outros. Cria o seu anúncio de serviço da mesma forma que um anfitrião cria o anúncio de um espaço, mas com campos próprios para a sua atividade.</p>
+            <p>É um tipo de conta pensado para quem oferece serviços complementares a eventos: catering, limpeza, fotografia, equipamento técnico, decoração, entre outros. Cria o seu anúncio de serviço da mesma forma que um anfitrião cria o anúncio de um espaço, mas com campos próprios para a sua atividade.</p>
           </>
         ),
       },
@@ -171,7 +171,7 @@ const FAQ_PT = [
         q: 'Como funciona o pagamento de um serviço complementar?',
         a: (
           <>
-            <p>Cada serviço é uma reserva e um pagamento independentes do espaço a que está associado — o cliente paga o espaço e, se quiser, paga o(s) serviço(s) complementar(es) em separado, através do mesmo fluxo de checkout. Recebe o pagamento da mesma forma que um anfitrião, através da Stripe (ver secção Pagamentos e comissões abaixo).</p>
+            <p>Cada serviço é uma reserva e um pagamento independentes do espaço a que está associado: o cliente paga o espaço e, se quiser, paga o(s) serviço(s) complementar(es) em separado, através do mesmo fluxo de checkout. Recebe o pagamento da mesma forma que um anfitrião, através da Stripe (ver secção Pagamentos e comissões abaixo).</p>
           </>
         ),
       },
@@ -318,7 +318,7 @@ const FAQ_EN = [
               Venue1Hub is a digital platform specialised in <strong>short-term rental of commercial spaces</strong> in Portugal: meeting rooms, offices, restaurants, auditoriums, studios and much more.
             </p>
             <p>
-              We also connect anyone booking a space with nearby <strong>Service Providers</strong> — catering, cleaning, photography and more — that you can add to your booking.
+              We also connect anyone booking a space with nearby <strong>Service Providers</strong> (catering, cleaning, photography and more) that you can add to your booking.
             </p>
             <p>
               We act as a digital intermediary connecting people with spaces or services available to those who need them for meetings, events, training sessions, photoshoots, workshops, and more.
@@ -391,7 +391,7 @@ const FAQ_EN = [
         a: (
           <>
             <p>Yes. After choosing your space dates, you'll see a cart with the Service Providers available near that space, which you can select via checkbox. The total updates as you add or remove services.</p>
-            <p>Each service is its own separate booking and payment — you pay for the space first, then each selected service, one at a time.</p>
+            <p>Each service is its own separate booking and payment: you pay for the space first, then each selected service, one at a time.</p>
           </>
         ),
       },
@@ -449,7 +449,7 @@ const FAQ_EN = [
         q: 'What is a Service Provider?',
         a: (
           <>
-            <p>It's an account type for anyone offering complementary services for events — catering, cleaning, photography, technical equipment, decoration, and more. You create your service listing the same way a host creates a space listing, but with fields tailored to your activity.</p>
+            <p>It's an account type for anyone offering complementary services for events: catering, cleaning, photography, technical equipment, decoration, and more. You create your service listing the same way a host creates a space listing, but with fields tailored to your activity.</p>
           </>
         ),
       },
@@ -473,7 +473,7 @@ const FAQ_EN = [
         q: 'How does payment for a complementary service work?',
         a: (
           <>
-            <p>Each service is its own booking and payment, separate from the space it's linked to — the customer pays for the space and, if they choose to, pays for each complementary service separately, through the same checkout flow. You receive payment the same way a host does, via Stripe (see the Payments and fees section below).</p>
+            <p>Each service is its own booking and payment, separate from the space it's linked to: the customer pays for the space and, if they choose to, pays for each complementary service separately, through the same checkout flow. You receive payment the same way a host does, via Stripe (see the Payments and fees section below).</p>
           </>
         ),
       },

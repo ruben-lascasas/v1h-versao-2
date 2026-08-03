@@ -47,6 +47,7 @@ import {
   removeListingImage,
   savePayoutDetails,
 } from './EditListingPage.duck';
+import { listingHighlightsEnabled } from '../../config/configFeatures';
 import EditListingWizard from './EditListingWizard/EditListingWizard';
 import css from './EditListingPage.module.css';
 
@@ -203,7 +204,7 @@ export const EditListingPageComponent = props => {
     // Set localStorage flag so DestacarPromptModal opens on the ListingPage we
     // are about to redirect to. The modal reads the flag on mount and clears
     // it on close/Destacar action.
-    if (typeof window !== 'undefined' && listingId?.uuid) {
+    if (listingHighlightsEnabled && typeof window !== 'undefined' && listingId?.uuid) {
       try {
         window.localStorage.setItem('v1h_pending_destacar_prompt', listingId.uuid);
       } catch (_) { /* quota / privacy mode — non-fatal */ }

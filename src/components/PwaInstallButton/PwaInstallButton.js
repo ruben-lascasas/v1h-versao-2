@@ -421,8 +421,8 @@ const PwaInstallButton = ({ className }) => {
               </li>
               <li>
                 {isEN
-                  ? 'Confirm "Install" — V1HUB shows up as an app icon.'
-                  : 'Confirma "Instalar" — a V1HUB fica como ícone de app.'}
+                  ? 'Confirm "Install" and V1HUB shows up as an app icon.'
+                  : 'Confirma "Instalar" e a V1HUB fica como ícone de app.'}
               </li>
             </ol>
           </div>
@@ -547,8 +547,8 @@ const PwaInstallButton = ({ className }) => {
               </li>
               <li>
                 {isEN
-                  ? 'Confirm "Add" — V1HUB shows up in the Dock as an app.'
-                  : 'Confirma "Adicionar" — a V1HUB fica no Dock como app.'}
+                  ? 'Confirm "Add" and V1HUB shows up in the Dock as an app.'
+                  : 'Confirma "Adicionar" e a V1HUB fica no Dock como app.'}
               </li>
             </ol>
             <p className={css.modalText} style={{ marginTop: 12, fontSize: 13, opacity: 0.75 }}>
@@ -635,8 +635,8 @@ const PwaInstallButton = ({ className }) => {
               </li>
               <li>
                 {isEN
-                  ? 'Tap “Add” — V1HUB shows up as an app icon.'
-                  : 'Toca em “Adicionar” — a V1HUB fica como ícone de app.'}
+                  ? 'Tap “Add” and V1HUB shows up as an app icon.'
+                  : 'Toca em “Adicionar” e a V1HUB fica como ícone de app.'}
               </li>
             </ol>
           </div>

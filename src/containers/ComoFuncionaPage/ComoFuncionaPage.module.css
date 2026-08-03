@@ -147,7 +147,10 @@
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-weight: 400;
   font-size: 36px;
-  color: rgba(255, 255, 255, 0.15);
+  /* Was 0.15, which measured 1.6:1 against the card and read as a smudge.
+     0.45 is 3.9:1 — over the 3:1 AA threshold for large text, while still
+     clearly a watermark rather than a heading. */
+  color: rgba(255, 255, 255, 0.45);
   letter-spacing: 0.02em;
   line-height: 1;
 }

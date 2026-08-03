@@ -23,6 +23,7 @@ import { updateLastOnline } from '../../../../ducks/follow.duck';
 import { checkNewListingsFromFollowed } from '../../../../ducks/notifications.duck';
 import { fetchCurrentUserNotifications } from '../../../../ducks/user.duck';
 
+import { listingHighlightsEnabled } from '../../../../config/configFeatures';
 import logoBlack from '../../../../assets/images/V1H-LOGO-BLACK.png';
 import css from './TopbarDesktop.module.css';
 
@@ -211,7 +212,7 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout, showManageListingsLin
             <FormattedMessage id="TopbarDesktop.historicoReservasLink" />
           </NamedLink>
         </MenuItem>
-        {showManageListingsLink ? (
+        {showManageListingsLink && listingHighlightsEnabled ? (
           <MenuItem key="DestacaAnuncioPage">
             <NamedLink className={classNames(css.menuLink, currentPageClass('DestacaAnuncioPage'))} name="DestacaAnuncioPage">
               <span className={css.menuItemBorder} />

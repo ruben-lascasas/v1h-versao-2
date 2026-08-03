@@ -44,12 +44,12 @@ const landingPageContentEN = [
     match: { sectionType: 'hero' },
     title: 'Empty Spaces? We Have the People Who Want to Use Them!',
     description:
-      'Have a space that deserves more? At Venue1Hub we help transform underused commercial spaces into sources of income. Whether you have a meeting room, office, farmhouse, restaurant, or any space with potential for events, workshops, sessions, or experiences — you\'re in the right place. Join the platform that\'s set to revolutionise the space rental market in Portugal. No fixed costs, full control and security. Make the most of what you already have. Become a Venue1Host.',
+      'Have a space that deserves more? At Venue1Hub we help transform underused commercial spaces into sources of income. Whether you have a meeting room, office, farmhouse, restaurant, or any space with potential for events, workshops, sessions, or experiences, you\'re in the right place. Join the platform that\'s set to revolutionise the space rental market in Portugal. No fixed costs, full control and security. Make the most of what you already have. Become a Venue1Host.',
     callToAction: { content: 'LIST YOUR SPACE' },
     blocks: [
       {
         title: 'Publish Your Space',
-        text: 'Create a listing with your space\'s details — room, farmhouse, office or other. Add descriptions, photos and set your availability by the hour, by the day or both.',
+        text: 'Create a listing with your space\'s details: room, farmhouse, office or other. Add descriptions, photos and set your availability by the hour, by the day or both.',
         callToAction: { content: 'Publish Your Space' },
       },
       {
@@ -64,7 +64,7 @@ const landingPageContentEN = [
       },
       {
         title: 'Count on Our Protection',
-        text: 'All bookings are covered by public liability insurance and transaction protection. Guaranteed trust — for you and for those who book.',
+        text: 'All bookings are covered by public liability insurance and transaction protection. Guaranteed trust, for you and for those who book.',
         callToAction: { content: 'About our protection', href: '/terms-of-service' },
       },
     ],
@@ -76,11 +76,11 @@ const landingPageContentEN = [
     match: { sectionNameIncludes: 'maneira' },
     title: 'The Smartest Way to Use Your Space',
     description:
-      'Do you have a space free for a few hours a day? An empty office in the afternoon? A room only used at weekends? At Venue1Hub, you can rent out your space by the hour, by the day, or for one-off events — with total flexibility, control and security. Turn what you already have into a source of income with just a few clicks. See how it works:',
+      'Do you have a space free for a few hours a day? An empty office in the afternoon? A room only used at weekends? At Venue1Hub, you can rent out your space by the hour, by the day, or for one-off events, with total flexibility, control and security. Turn what you already have into a source of income with just a few clicks. See how it works:',
     blocks: [
       {
         title: 'Publish Your Space',
-        text: 'Create a listing with your space\'s details — room, farmhouse, office or other. Add descriptions, photos and set your availability by the hour, by the day or both.',
+        text: 'Create a listing with your space\'s details: room, farmhouse, office or other. Add descriptions, photos and set your availability by the hour, by the day or both.',
         callToAction: { content: 'Publish Your Space' },
       },
       {
@@ -95,7 +95,7 @@ const landingPageContentEN = [
       },
       {
         title: 'Count on Our Protection',
-        text: 'All bookings are covered by public liability insurance and transaction protection. Guaranteed trust — for you and for those who book.',
+        text: 'All bookings are covered by public liability insurance and transaction protection. Guaranteed trust, for you and for those who book.',
         callToAction: { content: 'About our protection' },
       },
     ],
@@ -106,12 +106,12 @@ const landingPageContentEN = [
     match: { sectionNameIncludes: 'localiza' },
     title: 'Available Spaces',
     description:
-      'Explore the spaces listed on Venue1Hub — ready to book, with full details, real photos and up-to-date availability. Here you will find meeting rooms, farmhouses, offices, studios, restaurants and much more, available to rent by the hour, day or event.',
+      'Explore the spaces listed on Venue1Hub, ready to book, with full details, real photos and up-to-date availability. Here you will find meeting rooms, farmhouses, offices, studios, restaurants and much more, available to rent by the hour, day or event.',
     blocks: [
       {
         // 1 — Trabalho & Reuniões
         title: 'Work & Meetings',
-        text: 'Spaces ready to host meetings, coaching sessions, consultancies, training or individual work — with privacy, structure and flexibility.',
+        text: 'Spaces ready to host meetings, coaching sessions, consultancies, training or individual work, with privacy, structure and flexibility.',
       },
       {
         // 2 — Educação & Cultura
@@ -121,37 +121,37 @@ const landingPageContentEN = [
       {
         // 3 — Gastronomia & Convívio
         title: 'Gastronomy & Social',
-        text: 'Restaurants, cafés, shared kitchens and showcooking spaces — perfect for private dinners, gastronomic experiences or flavourful events.',
+        text: 'Restaurants, cafés, shared kitchens and showcooking spaces, perfect for private dinners, gastronomic experiences or flavourful events.',
       },
       {
         // 4 — Eventos & Festas
         title: 'Events & Parties',
-        text: 'From farmhouses to party halls, rooftops and clubs — unique spaces to celebrate weddings, birthdays, launches or corporate gatherings.',
+        text: 'From farmhouses to party halls, rooftops and clubs: unique spaces to celebrate weddings, birthdays, launches or corporate gatherings.',
       },
       {
         // 5 — Criatividade & Produção
         title: 'Creativity & Production',
-        text: 'Photography, recording, rehearsal and exhibition studios — designed for artists, creators, brands and producers who need space to bring their ideas to life.',
+        text: 'Photography, recording, rehearsal and exhibition studios, designed for artists, creators, brands and producers who need space to bring their ideas to life.',
       },
       {
         // 6 — Saúde, Bem-estar & Corpo
         title: 'Health, Wellness & Body',
-        text: 'Therapy rooms, yoga studios and gyms — everything to take care of body, mind and soul, with comfort, silence and purpose.',
+        text: 'Therapy rooms, yoga studios and gyms: everything to take care of body, mind and soul, with comfort, silence and purpose.',
       },
       {
         // 7 — Desporto & Actividade Física
         title: 'Sport & Physical Activity',
-        text: 'Pavilions, fields, pools and training spaces for those who move, compete or coach — available by the hour, by the day or for one-off sporting events.',
+        text: 'Pavilions, fields, pools and training spaces for those who move, compete or coach, available by the hour, by the day or for one-off sporting events.',
       },
       {
         // 8 — Espaços ao Ar Livre
         title: 'Outdoor Spaces',
-        text: 'Gardens, courtyards, parks and grounds — ideal for outdoor experiences, retreats, team buildings or celebrations in contact with nature.',
+        text: 'Gardens, courtyards, parks and grounds: ideal for outdoor experiences, retreats, team buildings or celebrations in contact with nature.',
       },
       {
         // 9 — Espaços Inusitados & Alternativos
         title: 'Unusual & Alternative Spaces',
-        text: 'Old factories, deactivated churches, carriages or creative containers — because the perfect setting isn\'t always the obvious one. Surprise yourself, here.',
+        text: 'Old factories, deactivated churches, carriages or creative containers, because the perfect setting isn\'t always the obvious one. Surprise yourself, here.',
       },
     ],
   },

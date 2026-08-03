@@ -13,6 +13,7 @@ import { useLocale } from '../../context/localeContext';
 import { requireListingImage } from '../../util/configHelpers';
 import { lazyLoadWithDimensions } from '../../util/uiHelpers';
 import { createSlug } from '../../util/urlHelpers';
+import { listingHighlightsEnabled } from '../../config/configFeatures';
 
 import {
   AspectRatioWrapper,
@@ -157,7 +158,8 @@ export const ListingCard = props => {
   // Mirrors the badge logic on ListingPageCarousel so users see the same
   // signal across grid and detail.
   const todayCount = viewCounts?.[id]?.todayCount || 0;
-  const isFeatured = listing?.attributes?.publicData?.featured === 'true';
+  const isFeatured =
+    listingHighlightsEnabled && listing?.attributes?.publicData?.featured === 'true';
   const createdAt = listing?.attributes?.createdAt;
   const isNewListing =
     !!createdAt &&

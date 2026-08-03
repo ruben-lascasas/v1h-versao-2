@@ -39,7 +39,7 @@ const CONTENT_BY_USER_TYPE = {
   },
   prestador_de_servicos: {
     bullets: (isEN) => [
-      t(isEN, 'Cria o teu anúncio de serviço — catering, limpeza, fotografia e mais.', 'Create your service listing — catering, cleaning, photography and more.'),
+      t(isEN, 'Cria o teu anúncio de serviço: catering, limpeza, fotografia e mais.', 'Create your service listing: catering, cleaning, photography and more.'),
       t(isEN, 'Aparece automaticamente como complemento em espaços perto de ti.', 'Shows up automatically as an add-on on nearby venues.'),
       t(isEN, 'Pagamentos protegidos via Stripe, direto para ti.', 'Secure payments via Stripe, straight to you.'),
     ],

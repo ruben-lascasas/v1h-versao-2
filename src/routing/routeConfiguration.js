@@ -9,6 +9,7 @@ import PreviewResolverPage from '../containers/PreviewResolverPage/PreviewResolv
 // Otherwise, components will import form container eventually and
 // at that point css bundling / imports will happen in wrong order.
 import { NamedRedirect } from '../components';
+import { listingHighlightsEnabled } from '../config/configFeatures';
 
 const pageDataLoadingAPI = getPageDataLoadingAPI();
 
@@ -339,13 +340,20 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       component: ManageListingsPage,
       loadData: pageDataLoadingAPI.ManageListingsPage.loadData,
     },
+    // The route stays registered even when highlights are switched off, so that
+    // any NamedLink to it still resolves; it just sends the visitor home
+    // instead of opening a flow that isn't in service.
     {
       path: '/destacar-anuncio',
       name: 'DestacaAnuncioPage',
       auth: true,
       authPage: 'LoginPage',
-      component: DestacaAnuncioPage,
-      loadData: pageDataLoadingAPI.DestacaAnuncioPage.loadData,
+      component: listingHighlightsEnabled
+        ? DestacaAnuncioPage
+        : () => <NamedRedirect name="LandingPage" />,
+      ...(listingHighlightsEnabled
+        ? { loadData: pageDataLoadingAPI.DestacaAnuncioPage.loadData }
+        : {}),
     },
     {
       path: '/account',

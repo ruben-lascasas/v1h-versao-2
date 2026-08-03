@@ -93,7 +93,7 @@ export class NotFoundPageComponent extends Component {
     const homeLink = createResourceLocatorString('LandingPage', routeConfiguration, {}, {});
 
     return (
-      <Page title="Página não encontrada — Venue1Hub" scrollingDisabled={scrollingDisabled}>
+      <Page title="Página não encontrada | Venue1Hub" scrollingDisabled={scrollingDisabled}>
         <LayoutSingleColumn
           hideRecentlyViewed
           topbar={null}

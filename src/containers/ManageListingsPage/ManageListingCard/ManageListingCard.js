@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { selectHighlightedListings } from '../../../ducks/highlightedListings.duck';
+import { listingHighlightsEnabled } from '../../../config/configFeatures';
 import {
   selectListingRating,
   selectListingReviewCount,
@@ -785,7 +786,7 @@ export const ManageListingCard = props => {
           </div>
         </div>
 
-        {highlightedListings.some(h => h.id === id) ? (
+        {!listingHighlightsEnabled ? null : highlightedListings.some(h => h.id === id) ? (
           <span className={css.editarDestaqueButton}>
             <IconEdit className={css.editarDestaqueIcon} />
             <FormattedMessage id="ManageListingCard.editarDestaque" />

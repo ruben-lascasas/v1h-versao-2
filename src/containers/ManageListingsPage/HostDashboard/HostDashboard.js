@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NamedLink } from '../../../components';
+import { listingHighlightsEnabled } from '../../../config/configFeatures';
 import css from './HostDashboard.module.css';
 
 const MONTH_NAMES_PT = [
@@ -27,7 +28,7 @@ const RevenueChart = ({ data }) => {
 
   return (
     <div className={css.section}>
-      <div className={css.sectionTitle}>Receita — últimos 6 meses</div>
+      <div className={css.sectionTitle}>Receita nos últimos 6 meses</div>
       {!hasRevenue ? (
         <div className={css.emptyState}>
           Ainda não há reservas concluídas. O gráfico aparecerá assim que tiveres receita registada.
@@ -91,7 +92,7 @@ const BookingCalendar = ({ upcomingBookings }) => {
     <div className={css.section}>
       <div className={css.sectionHeader}>
         <div className={css.sectionTitle}>
-          Calendário — {MONTH_NAMES_PT[month]} {year}
+          Calendário de {MONTH_NAMES_PT[month]} {year}
         </div>
         <button className={css.toggleBtn} onClick={() => setOpen(o => !o)}>
           {open ? '−' : '+'}
@@ -206,11 +207,13 @@ const HostDashboard = ({ listings, activeCount, currentUser }) => {
       <RevenueChart data={stats?.monthlyData} />
       <BookingCalendar upcomingBookings={stats?.upcomingBookings} />
 
-      <div className={css.actions}>
-        <NamedLink name="DestacaAnuncioPage" className={css.highlightBtn}>
-          ⚡ Destacar um anúncio
-        </NamedLink>
-      </div>
+      {listingHighlightsEnabled ? (
+        <div className={css.actions}>
+          <NamedLink name="DestacaAnuncioPage" className={css.highlightBtn}>
+            ⚡ Destacar um anúncio
+          </NamedLink>
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -13,6 +13,7 @@ import {
 import { constructQueryParamName, isOriginInUse } from '../../util/search';
 import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelpers';
 import { parse } from '../../util/urlHelpers';
+import { listingHighlightsEnabled } from '../../config/configFeatures';
 
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import { setListingRating } from '../../ducks/ratings.duck';
@@ -699,7 +700,9 @@ const searchListingsPayloadCreator = ({ searchParams, config }, thunkAPI) => {
       // from the user's chosen sort. Same UX as OLX/Idealista — destaques
       // are anchored to the front but still respect "Preço mais baixo",
       // "Aleatório", etc within their own group.
-      {
+      // Skipped while highlights are off: with no badge to explain it, the
+      // promotion would just look like a broken sort.
+      if (listingHighlightsEnabled) {
         const featured = [];
         const others = [];
         processedData.forEach(l => {

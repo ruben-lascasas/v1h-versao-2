@@ -3026,10 +3026,11 @@ body[data-dark-mode] [class*="TopbarDesktop"] [class*="helpIcon"] {
   color: #ffffff !important;
 }
 
-/* Step numbers â€” preserve original faint opacity (rgba(255,255,255,0.15)) so they look
-   the same as light mode. The general span cascade makes them solid #f0ece6 otherwise. */
+/* Step numbers: match the light-mode watermark opacity. Needed because the
+   general span cascade would otherwise make them solid #f0ece6.
+   Keep in sync with .stepNumber in ComoFuncionaPage.module.css. */
 body[data-dark-mode] [class*="ComoFuncionaPage_stepNumber"] {
-  color: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.45) !important;
 }
 
 /* Step card text â€” keep same colors as light mode (already on dark #3F3131 bg) */
@@ -3885,4 +3886,58 @@ body[data-dark-mode] [class*="CartPage_dayChipUnavailable"] {
   background-color: #262626 !important;
   border-color: #3d3d3d !important;
   color: #6f6a64 !important;
+}
+
+/* ── Serviços complementares (página do espaço) ──────────────────────────
+   The section and its cards were built after the dark theme sweep and had no
+   overrides at all: a white band with white cards on a dark page. */
+body[data-dark-mode] [class*="ServiceListingsSection_root"] {
+  background-color: #1a1a1a !important;
+  border-top-color: #3d3d3d !important;
+}
+body[data-dark-mode] [class*="ServiceListingsSection_heading"] {
+  color: #f2ede7 !important;
+}
+body[data-dark-mode] [class*="ServiceListingsSection_subheading"] {
+  color: #a8a29a !important;
+}
+/* Carousel arrows: the light theme uses a near-white disc on a light band. */
+body[data-dark-mode] [class*="ServiceListingsSection_arrowLeft"] > span,
+body[data-dark-mode] [class*="ServiceListingsSection_arrowRight"] > span {
+  background-color: rgba(38, 38, 38, 0.9) !important;
+  border-color: #4a4a4a !important;
+  color: #f2ede7 !important;
+}
+body[data-dark-mode] [class*="ServiceListingsSection_scrollContainer"] {
+  scrollbar-color: #4a4a4a transparent;
+}
+body[data-dark-mode] [class*="ServiceListingsSection_scrollContainer"]::-webkit-scrollbar-thumb {
+  background-color: #4a4a4a;
+}
+body[data-dark-mode] [class*="ServiceListingsSection_scrollContainer"]::-webkit-scrollbar-thumb:hover {
+  background-color: #5f5f5f;
+}
+
+/* Service cards. Also used by the cart's suggestions, so keyed off the card
+   itself rather than the section. */
+body[data-dark-mode] [class*="ServiceListingCard_root"] {
+  background: #232323 !important;
+  border-color: #3d3d3d !important;
+}
+body[data-dark-mode] [class*="ServiceListingCard_title"] {
+  color: #f2ede7 !important;
+}
+/* #888 on #232323 is 3.3:1 — under AA for this size. */
+body[data-dark-mode] [class*="ServiceListingCard_provider"] {
+  color: #a8a29a !important;
+}
+body[data-dark-mode] [class*="ServiceListingCard_price"],
+body[data-dark-mode] [class*="ServiceListingCard_perUnit"] {
+  color: #f2ede7 !important;
+}
+body[data-dark-mode] [class*="ServiceListingCard_providerIcon"] {
+  color: #6ec8bb !important;
+}
+body[data-dark-mode] [class*="ServiceListingCard_imagePlaceholder"] {
+  background: #2b2b2b !important;
 }

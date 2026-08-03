@@ -12,6 +12,10 @@ const TranslateButton = ({ text, onResult, isShowingOriginal = true }) => {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const [cached, setCached] = useState(null);
+  // Set once we know the text is already in the language the user is reading in.
+  // Clicking "Traduzir" and seeing nothing change reads as a broken button, so
+  // say why instead.
+  const [alreadyInTargetLanguage, setAlreadyInTargetLanguage] = useState(false);
 
   const handleClick = async () => {
     setError(null);
@@ -34,6 +38,15 @@ const TranslateButton = ({ text, onResult, isShowingOriginal = true }) => {
       const data = await res.json();
       const translated = data?.[0]?.map(chunk => chunk?.[0] || '').join('') || '';
       if (!translated) throw new Error('no-translation');
+
+      // data[2] is the language Google detected in the source text.
+      const detected = typeof data?.[2] === 'string' ? data[2].slice(0, 2) : null;
+      const unchanged = translated.trim() === text.trim();
+      if (detected === target || unchanged) {
+        setAlreadyInTargetLanguage(true);
+        return;
+      }
+
       setCached(translated);
       onResult(translated);
     } catch (_) {
@@ -50,6 +63,16 @@ const TranslateButton = ({ text, onResult, isShowingOriginal = true }) => {
     : isShowingOriginal
       ? isEN ? 'Translate' : 'Traduzir'
       : isEN ? 'See original' : 'Ver original';
+
+  // Once we know translating is a no-op, drop the button entirely: leaving it
+  // there just invites another click that does nothing.
+  if (alreadyInTargetLanguage) {
+    return (
+      <span className={css.note}>
+        {isEN ? 'This text is already in English.' : 'Este texto já está em português.'}
+      </span>
+    );
+  }
 
   return (
     <>

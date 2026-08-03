@@ -26,10 +26,12 @@ import {
 } from '../../util/fieldHelpers';
 import {
   getCurrentUserTypeRoles,
+  showCreateListingLinkForUser,
   hasPermissionToViewData,
   isUserAuthorized,
 } from '../../util/userHelpers';
 import { richText } from '../../util/richText';
+import { listingHighlightsEnabled } from '../../config/configFeatures';
 import ReportUserModal from '../../components/ReportUserModal/ReportUserModal';
 
 import { isScrollingDisabled } from '../../ducks/ui.duck';
@@ -85,8 +87,25 @@ const formatLastOnline = isoString => {
   return null;
 };
 
+/**
+ * Whether to offer "Destacar anúncio" on the profile. Only on your own profile,
+ * only while the feature is switched on, and only for user types that can post
+ * listings at all — a "visitante" has nothing to promote, so the button was
+ * pure noise for them.
+ */
+const useCanHighlightListings = isCurrentUser => {
+  const config = useConfiguration();
+  const currentUser = useSelector(state => state.user.currentUser);
+  return (
+    listingHighlightsEnabled &&
+    isCurrentUser &&
+    showCreateListingLinkForUser(config, currentUser)
+  );
+};
+
 export const AsideContent = props => {
   const { user, displayName, showLinkToProfileSettingsPage, isCurrentUser } = props;
+  const canHighlightListings = useCanHighlightListings(isCurrentUser);
   const currentUser = useSelector(state => state.user.currentUser);
   const history = useHistory();
   const location = useLocation();
@@ -224,7 +243,7 @@ export const AsideContent = props => {
           <FormattedMessage id="ProfilePage.viewHistory" defaultMessage="Ver histórico" />
         </button>
       ) : null}
-      {isCurrentUser ? (
+      {canHighlightListings ? (
         <button
           type="button"
           className={css.highlightLinkSidebar}
@@ -242,6 +261,7 @@ export const AsideContent = props => {
 };
 
 const MobileProfileActions = ({ user, isCurrentUser }) => {
+  const canHighlightListings = useCanHighlightListings(isCurrentUser);
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -265,16 +285,18 @@ const MobileProfileActions = ({ user, isCurrentUser }) => {
         >
           <FormattedMessage id="ProfilePage.viewHistory" defaultMessage="Ver histórico" />
         </button>
-        <button
-          type="button"
-          className={css.highlightLinkMobile}
-          onClick={() => history.push('/destacar-anuncio')}
-        >
-          <svg width="14" height="14" viewBox="4 2 16 20" fill="currentColor" stroke="none" style={{ flexShrink: 0, marginRight: -1, verticalAlign: 'middle' }}>
-            <polygon points="13,2 4,14 11,14 10,22 20,10 13,10 14,2" />
-          </svg>
-          <FormattedMessage id="ProfilePage.highlightListing" defaultMessage="Destacar anúncio" />
-        </button>
+        {canHighlightListings ? (
+          <button
+            type="button"
+            className={css.highlightLinkMobile}
+            onClick={() => history.push('/destacar-anuncio')}
+          >
+            <svg width="14" height="14" viewBox="4 2 16 20" fill="currentColor" stroke="none" style={{ flexShrink: 0, marginRight: -1, verticalAlign: 'middle' }}>
+              <polygon points="13,2 4,14 11,14 10,22 20,10 13,10 14,2" />
+            </svg>
+            <FormattedMessage id="ProfilePage.highlightListing" defaultMessage="Destacar anúncio" />
+          </button>
+        ) : null}
       </div>
     );
   }
@@ -785,7 +807,7 @@ export const MainContent = props => {
                 <li className={css.listing} key={l.id.uuid}>
                   <div className={css.listingCardWrapper}>
                     <ListingCard listing={l} showAuthorInfo={false} />
-                    {isCurrentUser ? (
+                    {isCurrentUser && listingHighlightsEnabled ? (
                       highlightedListings.some(h => h.id === l.id.uuid) ? (
                         <span className={css.editarDestaqueButton}>
                           <IconEdit className={css.editarDestaqueIcon} />

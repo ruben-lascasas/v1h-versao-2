@@ -103,6 +103,7 @@ import ServiceListingsSection from '../../components/ServiceListingsSection/Serv
 import ShareButtons from '../../components/ShareButtons/ShareButtons';
 import ReportListingModal from '../../components/ReportListingModal/ReportListingModal';
 import DestacarPromptModal from '../../components/DestacarPromptModal/DestacarPromptModal';
+import { listingHighlightsEnabled } from '../../config/configFeatures';
 import SectionAuthorMaybe from './SectionAuthorMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
 import SectionGallery from './SectionGallery';
@@ -691,6 +692,7 @@ export const ListingPageComponent = props => {
                   // via the daily cron) the badge naturally falls back to
                   // Popular (if still 5+ views today) or Novo (if <7d).
                   const isFeatured =
+                    listingHighlightsEnabled &&
                     currentListing?.attributes?.publicData?.featured === 'true';
                   if (!isFeatured && !isNewListing && !isPopular) return null;
 

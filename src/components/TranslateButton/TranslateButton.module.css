@@ -33,3 +33,14 @@
   color: #d33;
   font-style: italic;
 }
+
+/* Replaces the button when the text is already in the reader's language.
+   Same size as the button, but plainly non-interactive. */
+.note {
+  display: inline-block;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #6B6B6B;
+  line-height: 1.4;
+  font-style: italic;
+}

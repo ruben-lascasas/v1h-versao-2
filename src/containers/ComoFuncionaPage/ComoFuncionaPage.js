@@ -132,8 +132,8 @@ const ComoFuncionaPage = props => {
       step: '01',
       title: t(isEN, 'Cria o teu anúncio de serviço', 'Create your service listing'),
       text: t(isEN,
-        'Cria a tua conta como Prestador de Serviços e publica o que ofereces — catering, limpeza, fotografia e muito mais. Descreve o serviço, junta fotos e mostra o que te distingue.',
-        'Create your account as a Service Provider and publish what you offer — catering, cleaning, photography and more. Describe your service, add photos and show what sets you apart.'
+        'Cria a tua conta como Prestador de Serviços e publica o que ofereces: catering, limpeza, fotografia e muito mais. Descreve o serviço, junta fotos e mostra o que te distingue.',
+        'Create your account as a Service Provider and publish what you offer: catering, cleaning, photography and more. Describe your service, add photos and show what sets you apart.'
       ),
     },
     {
@@ -150,8 +150,8 @@ const ComoFuncionaPage = props => {
       step: '03',
       title: t(isEN, 'Aparece como complemento nos espaços', 'Show up as an add-on on venues'),
       text: t(isEN,
-        'O teu serviço aparece automaticamente na página de espaços perto de ti, numa secção de "Serviços complementares" — quem reserva um espaço vê logo o que tens para oferecer.',
-        'Your service shows up automatically on nearby venue pages, in a "Complementary services" section — anyone booking a space sees what you offer right away.'
+        'O teu serviço aparece automaticamente na página de espaços perto de ti, numa secção de "Serviços complementares". Quem reserva um espaço vê logo o que tens para oferecer.',
+        'Your service shows up automatically on nearby venue pages, in a "Complementary services" section, so anyone booking a space sees what you offer right away.'
       ),
     },
     {
@@ -317,8 +317,8 @@ const ComoFuncionaPage = props => {
                 </h2>
                 <p className={css.sectionSubtitle}>
                   {t(isEN,
-                    'Catering, limpeza, fotografia, equipamento — transforma o que sabes fazer num negócio complementar.',
-                    'Catering, cleaning, photography, equipment — turn what you do into a complementary business.'
+                    'Catering, limpeza, fotografia, equipamento: transforma o que sabes fazer num negócio complementar.',
+                    'Catering, cleaning, photography, equipment: turn what you do into a complementary business.'
                   )}
                 </p>
               </div>

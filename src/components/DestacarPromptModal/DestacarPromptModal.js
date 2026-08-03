@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useLocale } from '../../context/localeContext';
+import { listingHighlightsEnabled } from '../../config/configFeatures';
 
 import css from './DestacarPromptModal.module.css';
 
@@ -56,10 +57,15 @@ const DestacarPromptModal = ({ listingId }) => {
     if (typeof window === 'undefined') return;
     let pending = null;
     try { pending = window.localStorage.getItem(STORAGE_KEY); } catch (_) {}
-    if (pending) {
-      setStoredId(pending);
-      setOpen(true);
+    if (!pending) return;
+    if (!listingHighlightsEnabled) {
+      // Feature is off: drop any flag left over from before, so the prompt
+      // doesn't fire the moment it is switched back on.
+      clearFlag();
+      return;
     }
+    setStoredId(pending);
+    setOpen(true);
   }, []);
 
   if (!open) return null;

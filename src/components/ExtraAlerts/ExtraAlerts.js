@@ -10,6 +10,7 @@ import {
   refreshExtraAlertsFromUser,
 } from '../../ducks/extraAlerts.duck';
 import { createSlug } from '../../util/urlHelpers';
+import { listingHighlightsEnabled } from '../../config/configFeatures';
 import css from './ExtraAlerts.module.css';
 
 // Show at most this many banners at once. Anything beyond stays queued and
@@ -149,7 +150,13 @@ const ExtraAlerts = () => {
   }, [isAuth, dispatch]);
 
   if (!alerts || alerts.length === 0) return null;
-  const visible = alerts.slice(0, MAX_VISIBLE);
+  // Destaque alerts push the user towards a flow that is switched off, so drop
+  // them rather than offer a dead end.
+  const relevant = listingHighlightsEnabled
+    ? alerts
+    : alerts.filter(a => a.kind !== 'destaque-expired' && a.kind !== 'destaque-expiring-soon');
+  if (relevant.length === 0) return null;
+  const visible = relevant.slice(0, MAX_VISIBLE);
 
   const go = entry => {
     // Destaque alerts open the "Destacar Anúncio" page so the user can

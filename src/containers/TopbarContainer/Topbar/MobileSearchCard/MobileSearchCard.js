@@ -668,8 +668,8 @@ const MobileSearchCard = () => {
               {geoDenied && (
                 <p className={css.geoDeniedHint}>
                   {isPt
-                    ? <>Permissão bloqueada — abre as definições do browser, vai a <strong>Privacidade → Localização</strong> e permite para este site.</>
-                    : <>Permission blocked — open browser settings, go to <strong>Privacy → Location</strong> and allow this site.</>}
+                    ? <>Permissão bloqueada. Abre as definições do browser, vai a <strong>Privacidade → Localização</strong> e permite para este site.</>
+                    : <>Permission blocked. Open browser settings, go to <strong>Privacy → Location</strong> and allow this site.</>}
                 </p>
               )}
               <button type="button" className={css.geoBtnPortugal} onClick={handleShowPortugalMap}>
