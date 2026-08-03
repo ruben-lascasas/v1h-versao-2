@@ -490,6 +490,9 @@ class LocationAutocompleteInputImplementation extends Component {
       searchHistory: [],
       keywordCount: null,
       keywordCountFor: '',
+      // True when the geocoder could not be reached at all (SDK missing, network
+      // blocked). Without this the field just sits there offering nothing.
+      predictionsFailed: false,
     };
 
     // Ref to the input element.
@@ -584,12 +587,15 @@ class LocationAutocompleteInputImplementation extends Component {
   }
 
   getGeocoder() {
-    const geocoderVariant = getGeocoderVariant(this.props.config.maps.mapProvider);
+    const { maps } = this.props.config;
+    const geocoderVariant = getGeocoderVariant(maps.mapProvider);
     const Geocoder = geocoderVariant.default;
 
     // Create the Geocoder as late as possible only when it is needed.
     if (!this._geocoder) {
-      this._geocoder = new Geocoder();
+      // Pass the configured token so geocoding doesn't depend on mapbox-gl.js
+      // having loaded and published one on `window`.
+      this._geocoder = new Geocoder(maps.mapboxAccessToken);
     }
     return this._geocoder;
   }
@@ -784,7 +790,7 @@ class LocationAutocompleteInputImplementation extends Component {
       .getPlacePredictions(search, config.maps.search.countryLimit, config.localization.locale)
       .then(results => {
         const { search: currentSearch } = currentValue(this.props);
-        this.setState({ fetchingPredictions: false });
+        this.setState({ fetchingPredictions: false, predictionsFailed: false });
 
         // If the earlier predictions arrive when the user has already
         // changed the search term, ignore and wait until the latest
@@ -803,7 +809,7 @@ class LocationAutocompleteInputImplementation extends Component {
         }
       })
       .catch(e => {
-        this.setState({ fetchingPredictions: false });
+        this.setState({ fetchingPredictions: false, predictionsFailed: true });
         // eslint-disable-next-line no-console
         console.error(e);
         const value = currentValue(this.props);
@@ -1019,6 +1025,11 @@ class LocationAutocompleteInputImplementation extends Component {
           this.state.keywordCountFor === (search || '').trim() && (
             <span className={css.liveCount}>{this.state.keywordCount}</span>
           )}
+        {this.state.predictionsFailed ? (
+          <p className={css.predictionsError}>
+            <FormattedMessage id="LocationAutocompleteInput.predictionsFailed" />
+          </p>
+        ) : null}
         {renderPredictions ? (
           <LocationPredictionsList
             id={predictionsId}

@@ -20,15 +20,88 @@ const PLACE_TYPE_BOUNDS_DISTANCES = {
   'poi.landmark': 2000,
 };
 
+// The geocoding SDK is served from our own /static folder, so address
+// autocomplete must not depend on mapbox-gl.js loading from the Mapbox CDN —
+// that script is only needed to *draw* maps, and it is the part that goes
+// missing when the CDN is blocked or the script tag never made it into <head>.
+const MAPBOX_SDK_SCRIPT_ID = 'mapbox_SDK_JS';
+const MAPBOX_SDK_SRC = '/static/scripts/mapbox/mapbox-sdk@0.16.2/mapbox-sdk.min.js';
+const MAPBOX_SDK_LOAD_TIMEOUT = 10000;
+
+let sdkLoadPromise = null;
+
+/**
+ * Resolve once window.mapboxSdk exists, injecting the self-hosted script if
+ * whatever was supposed to add it (IncludeScripts via react-helmet) did not.
+ *
+ * @return {Promise<void>}
+ */
+export const ensureMapboxSdk = () => {
+  if (typeof window === 'undefined') {
+    return Promise.reject(new Error('Mapbox SDK can only be loaded in a browser'));
+  }
+  if (window.mapboxSdk) {
+    return Promise.resolve();
+  }
+  if (sdkLoadPromise) {
+    return sdkLoadPromise;
+  }
+
+  sdkLoadPromise = new Promise((resolve, reject) => {
+    const existing = document.getElementById(MAPBOX_SDK_SCRIPT_ID);
+    // A request that neither loads nor errors (blocked by an extension, stalled
+    // proxy) would otherwise leave the field waiting forever with no feedback.
+    const timeoutId = window.setTimeout(() => {
+      sdkLoadPromise = null;
+      reject(new Error(`Timed out loading the Mapbox SDK from ${MAPBOX_SDK_SRC}`));
+    }, MAPBOX_SDK_LOAD_TIMEOUT);
+
+    const onLoad = () => {
+      window.clearTimeout(timeoutId);
+      return window.mapboxSdk ? resolve() : reject(new Error('Mapbox SDK not found'));
+    };
+    const onError = () => {
+      window.clearTimeout(timeoutId);
+      // Allow a later attempt to retry the download.
+      sdkLoadPromise = null;
+      reject(new Error(`Failed to load the Mapbox SDK from ${MAPBOX_SDK_SRC}`));
+    };
+
+    if (existing) {
+      existing.addEventListener('load', onLoad, { once: true });
+      existing.addEventListener('error', onError, { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = MAPBOX_SDK_SCRIPT_ID;
+    // Root-relative on purpose: the file is same-origin, so this keeps working
+    // even if marketplaceRootURL is misconfigured for the deployed host.
+    script.src = MAPBOX_SDK_SRC;
+    script.async = true;
+    script.addEventListener('load', onLoad, { once: true });
+    script.addEventListener('error', onError, { once: true });
+    document.head.appendChild(script);
+  });
+
+  return sdkLoadPromise;
+};
+
+// Same math as mapbox-gl's LngLat.toBounds, inlined so bounds can be computed
+// without the mapbox-gl library being present.
+const EARTH_CIRCUMFERENCE_METERS = 40075017;
+
 const locationBounds = (latlng, distance) => {
   if (!latlng) {
     return null;
   }
 
-  const bounds = new window.mapboxgl.LngLat(latlng.lng, latlng.lat).toBounds(distance);
+  const latAccuracy = (360 * distance) / EARTH_CIRCUMFERENCE_METERS;
+  const lngAccuracy = latAccuracy / Math.cos((Math.PI / 180) * latlng.lat);
+
   return new SDKLatLngBounds(
-    new SDKLatLng(bounds.getNorth(), bounds.getEast()),
-    new SDKLatLng(bounds.getSouth(), bounds.getWest())
+    new SDKLatLng(latlng.lat + latAccuracy, latlng.lng + lngAccuracy),
+    new SDKLatLng(latlng.lat - latAccuracy, latlng.lng - lngAccuracy)
   );
 };
 
@@ -70,15 +143,28 @@ export const GeocoderAttribution = () => null;
  * using the Mapbox Geocoding API.
  */
 class GeocoderMapbox {
+  /**
+   * @param {string} [accessToken] token from the app config. Falls back to the
+   *   one mapbox-gl publishes on window, for callers that don't pass it.
+   */
+  constructor(accessToken) {
+    this._accessToken = accessToken;
+  }
+
+  getAccessToken() {
+    return this._accessToken || (typeof window !== 'undefined' && window?.mapboxgl?.accessToken);
+  }
+
   getClient() {
-    const libLoaded = typeof window !== 'undefined' && window.mapboxgl && window.mapboxSdk;
-    if (!libLoaded) {
-      throw new Error('Mapbox libraries are required for GeocoderMapbox');
+    if (typeof window === 'undefined' || !window.mapboxSdk) {
+      throw new Error('The Mapbox SDK is required for GeocoderMapbox');
     }
-    if (!this._client && window?.mapboxgl?.accessToken) {
-      this._client = window.mapboxSdk({
-        accessToken: window.mapboxgl.accessToken,
-      });
+    const accessToken = this.getAccessToken();
+    if (!accessToken) {
+      throw new Error('A Mapbox access token is required for GeocoderMapbox');
+    }
+    if (!this._client) {
+      this._client = window.mapboxSdk({ accessToken });
     }
     return this._client;
   }
@@ -99,14 +185,19 @@ class GeocoderMapbox {
   getPlacePredictions(search, countryLimit, locale) {
     const limitCountriesMaybe = countryLimit ? { countries: countryLimit } : {};
 
-    return this.getClient()
-      .geocoding.forwardGeocode({
-        query: search,
-        limit: 5,
-        ...limitCountriesMaybe,
-        language: [locale],
-      })
-      .send()
+    // Load-on-demand inside the promise chain, so a missing SDK surfaces as a
+    // rejected promise the caller can handle instead of a synchronous throw.
+    return ensureMapboxSdk()
+      .then(() =>
+        this.getClient()
+          .geocoding.forwardGeocode({
+            query: search,
+            limit: 5,
+            ...limitCountriesMaybe,
+            language: [locale],
+          })
+          .send()
+      )
       .then(response => {
         return {
           search,

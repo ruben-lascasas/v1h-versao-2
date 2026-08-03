@@ -315,3 +315,11 @@ bottom of the container.
   overflow-wrap: break-word;
   word-break: break-word;
 }
+
+/* Shown when the geocoder can't be reached at all, so the field never looks
+   like it is simply ignoring what the user types. */
+.predictionsError {
+  composes: marketplaceTinyFontStyles from global;
+  color: var(--colorFail);
+  margin: 6px 0 0 0;
+}

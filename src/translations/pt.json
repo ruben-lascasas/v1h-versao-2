@@ -216,6 +216,7 @@
   "PageBuilder.SearchCTA.dateFilterPlaceholder": "Datas",
   "PageBuilder.SearchCTA.currentLocationPlaceholder": "Localização atual",
   "LocationAutocompleteInput.currentLocation": "Localização atual",
+  "LocationAutocompleteInput.predictionsFailed": "Não conseguimos carregar as sugestões de morada. Verifique a ligação ou desative o bloqueador de anúncios e tente novamente.",
   "LocationAutocompleteInput.predictionsLabel": "Clique numa destas opções para melhores resultados de localização",
   "LocationAutocompleteInput.currentLocationLabel": "Clique nesta opção para ver resultados perto de si",
   "PageBuilder.SearchCTA.locationPlaceholder": "Localização",

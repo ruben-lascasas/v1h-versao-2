@@ -736,6 +736,7 @@
   "LoadableComponentErrorBoundaryPage.heading": "Oops, we couldn't fetch the page.",
   "LoadableComponentErrorBoundaryPage.landingPageLink": "landing page",
   "LocationAutocompleteInput.currentLocation": "Current location",
+  "LocationAutocompleteInput.predictionsFailed": "We couldn't load the address suggestions. Check your connection or disable any ad blocker, then try again.",
   "LocationAutocompleteInput.predictionsLabel": "Click one of these options for better location results",
   "LocationAutocompleteInput.currentLocationLabel": "Click this option to see results near you",
   "LocationAutocompleteInput.screenreader.search": "Search",
