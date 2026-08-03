@@ -127,9 +127,46 @@
 }
 
 .stepCard {
-  background-color: #3F3131;
-  border-radius: 8px;
-  padding: 32px 24px 36px;
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(160deg, #473838 0%, #3A2D2D 100%);
+  border: 1px solid rgba(186, 163, 138, 0.18);
+  border-radius: 12px;
+  padding: 30px 24px 34px;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Brand rule along the top edge. Sits at rest and widens on hover, so the row
+   of steps reads as a sequence rather than four identical blocks. */
+.stepCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 3px;
+  background-color: #BAA38A;
+  transition: width 0.3s ease;
+}
+
+.stepCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(186, 163, 138, 0.45);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.stepCard:hover::before {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stepCard,
+  .stepCard::before {
+    transition: none;
+  }
+  .stepCard:hover {
+    transform: none;
+  }
 }
 
 .stepTop {
@@ -139,18 +176,28 @@
   margin-bottom: 20px;
 }
 
+/* The bare stroke icons floated in the corner with nothing anchoring them.
+   A tinted disc gives them presence and picks up the brand tan. */
 .stepIcon {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: rgba(186, 163, 138, 0.14);
+  border: 1px solid rgba(186, 163, 138, 0.26);
 }
 
 .stepNumber {
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-weight: 400;
-  font-size: 36px;
-  /* Was 0.15, which measured 1.6:1 against the card and read as a smudge.
-     0.45 is 3.9:1 — over the 3:1 AA threshold for large text, while still
-     clearly a watermark rather than a heading. */
-  color: rgba(255, 255, 255, 0.45);
+  font-size: 40px;
+  /* Was rgba(255,255,255,0.15), which measured 1.6:1 and read as a smudge.
+     Solid brand tan is both legible and a deliberate accent.
+     Keep in sync with the dark-mode override in styles/landingDark.css. */
+  color: #BAA38A;
   letter-spacing: 0.02em;
   line-height: 1;
 }
@@ -162,7 +209,9 @@
   color: #ffffff;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(186, 163, 138, 0.2);
 }
 
 .stepText {

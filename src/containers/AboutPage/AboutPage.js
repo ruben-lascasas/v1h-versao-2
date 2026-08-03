@@ -12,7 +12,6 @@ import imgBeatriz from '../../assets/images/Beatriz.jpg';
 import imgAlexandre from '../../assets/images/Alexandre.jpg';
 import imgAnabela from '../../assets/images/Anabela.jpg';
 import imgLidia from '../../assets/images/Lidia.jpg';
-import imgTeresa from '../../assets/images/Teresa.jpg';
 
 import css from './AboutPage.module.css';
 
@@ -20,7 +19,6 @@ const t = (isEN, pt, en) => (isEN ? en : pt);
 
 const TEAM = [
   { img: imgAnabela,   name: 'Anabela Moreira',     role: 'Career Manager | HR Director', pos: 'center center' },
-  { img: imgTeresa,    name: 'Teresa Chaves',        role: 'Business Developer',           pos: '70% 20%' },
   { img: imgLidia,     name: 'Lídia Leitão',         role: 'Community Manager',            pos: 'center center' },
   { img: imgAlexandre, name: 'Alexandre Gandarinho', role: 'Designer',                     pos: '60% 20%' },
   { img: imgBeatriz,   name: 'Beatriz Jerónimo',     role: 'Career Support',               pos: 'center center' },
@@ -37,6 +35,16 @@ const IconCompass = () => (
     <circle cx="12" cy="12" r="10" stroke="#ffffff" strokeWidth="1.5"/>
     <path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     <circle cx="12" cy="12" r="1" fill="#ffffff"/>
+  </svg>
+);
+
+/* Vision had the same compass as Mission — a telescope reads as "looking
+   ahead" and keeps the four cards distinguishable at a glance. */
+const IconTelescope = () => (
+  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14.5 3.5l5 2.5-2 4-5-2.5 2-4z" stroke="#ffffff" strokeWidth="1.5" strokeLinejoin="round"/>
+    <path d="M12.5 7.5l-8 4 2 4 8-4" stroke="#ffffff" strokeWidth="1.5" strokeLinejoin="round"/>
+    <path d="M8.5 15.5L7 21M11 21H3" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round"/>
   </svg>
 );
 
@@ -71,7 +79,7 @@ const AboutPage = props => {
       ),
     },
     {
-      icon: <IconCompass />,
+      icon: <IconTelescope />,
       title: t(isEN, 'Qual é a nossa visão?', 'What is our vision?'),
       text: t(isEN,
         'Tornar-nos a referência global para o arrendamento de espaços comerciais de curta duração, promovendo a reutilização inteligente de infraestruturas subutilizadas e democratizando o acesso a espaços para criar, trabalhar e celebrar.',

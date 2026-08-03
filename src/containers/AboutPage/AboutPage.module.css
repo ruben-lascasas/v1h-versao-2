@@ -159,18 +159,22 @@
   max-width: 480px;
 }
 
+/* Columns are capped rather than free-flowing 1fr: the two smallest source
+   photos are only 200px wide, so letting the cards stretch would upscale them
+   further. Centred so the row stays balanced whatever the member count. */
 .teamGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 172px));
+  justify-content: center;
   gap: 40px 32px;
 
   @media (min-width: 600px) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 172px));
     gap: 40px 40px;
   }
 
   @media (--viewportLarge) {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 172px));
     gap: 40px 48px;
   }
 }
@@ -181,9 +185,13 @@
   align-items: flex-start;
 }
 
+/* Square, not 3/4. Two of the source photos are 200x200: in a portrait frame
+   `cover` had to scale them up to fill the height and then crop the sides,
+   burning resolution on pixels nobody sees. A square frame renders them close
+   to 1:1 instead. */
 .teamAvatar {
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1;
   border-radius: 8px;
   object-fit: cover;
   display: block;
@@ -207,7 +215,9 @@
 .teamRole {
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
-  color: #BAA38A;
+  /* The brand tan (#BAA38A) is only 2.26:1 on this background. Reuse the
+     brown already used for body copy on this page instead. */
+  color: #7C6350;
   margin: 0;
 }
 

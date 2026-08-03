@@ -2732,8 +2732,11 @@ body[data-dark-mode] [class*="AboutPage_teamSection"] {
   background-color: #1a1a1a !important;
 }
 
-/* Titles */
+/* Titles. `AboutPage_valuesTitle` needs listing separately — it is not a
+   substring match for `AboutPage_title`, so it was left at the light-mode
+   #3F3131 and measured 1.4:1 against the dark page. */
 body[data-dark-mode] [class*="AboutPage_title"],
+body[data-dark-mode] [class*="AboutPage_valuesTitle"],
 body[data-dark-mode] [class*="AboutPage_teamTitle"] {
   color: #f0ece6 !important;
 }
@@ -3030,7 +3033,7 @@ body[data-dark-mode] [class*="TopbarDesktop"] [class*="helpIcon"] {
    general span cascade would otherwise make them solid #f0ece6.
    Keep in sync with .stepNumber in ComoFuncionaPage.module.css. */
 body[data-dark-mode] [class*="ComoFuncionaPage_stepNumber"] {
-  color: rgba(255, 255, 255, 0.45) !important;
+  color: #BAA38A !important;
 }
 
 /* Step card text â€” keep same colors as light mode (already on dark #3F3131 bg) */
