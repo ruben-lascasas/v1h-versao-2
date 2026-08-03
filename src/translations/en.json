@@ -934,6 +934,7 @@
   "PasswordChangeForm.resetPasswordLinkText": "Send reset instructions.",
   "PasswordChangeForm.saveChanges": "Save changes",
   "PasswordChangePage.heading": "Password settings",
+  "PasswordChangePage.noPasswordSet": "Your account was created with Google. A password cannot be set for this type of account.",
   "PasswordChangePage.title": "Password",
   "PasswordRecoveryForm.emailInvalid": "A valid email address is required.",
   "PasswordRecoveryForm.emailLabel": "Email",
