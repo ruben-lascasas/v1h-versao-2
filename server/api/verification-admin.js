@@ -16,10 +16,13 @@
 
 const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
 const r2 = require('../api-util/r2');
+const emails = require('../api-util/verificationEmails');
 const {
   STATUS,
   DOC_KEYS,
-  ANUNCIANTE_USER_TYPE,
+  verificationUserTypes,
+  REQUIRED_DOCS,
+  ACCOUNT_STATUS,
   readDocs,
   syncPermissions,
   publicShape,
@@ -83,7 +86,7 @@ const list = async (req, res) => {
     }
 
     const rows = collected
-      .filter(u => u?.attributes?.profile?.publicData?.userType === ANUNCIANTE_USER_TYPE)
+      .filter(u => verificationUserTypes().includes(u?.attributes?.profile?.publicData?.userType))
       .map(u => {
         const profile = u.attributes.profile || {};
         const verification = profile.privateData?.verification || {};
@@ -195,6 +198,28 @@ const decision = async (req, res) => {
     console.log(
       `[verification-admin] ${admin.email} ${verdict}d ${docKey} for ${userId} → ${status}`
     );
+
+    // Best effort — the decision is already saved, and the panel should not
+    // report a failure because a mailbox was unreachable.
+    const def = REQUIRED_DOCS.find(d => d.key === docKey);
+    const to = response?.data?.data?.attributes?.email;
+    const displayName = profile.displayName;
+    if (verdict === 'reject') {
+      emails
+        .documentRejected({
+          to,
+          displayName,
+          docLabel: def.label,
+          docLabelEN: def.labelEN,
+          reason: trimmedReason,
+        })
+        .catch(() => {});
+    } else if (status === ACCOUNT_STATUS.APPROVED) {
+      // Only when the last outstanding document lands — one email per account,
+      // not one per document.
+      emails.accountApproved({ to, displayName }).catch(() => {});
+    }
+
     return res.json({ status, docs: publicShape(docs) });
   } catch (e) {
     console.error('[verification-admin] decision failed:', e?.message || e);

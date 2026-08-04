@@ -25,6 +25,21 @@ const { getIntegrationSdk } = require('./sdk');
 
 const ANUNCIANTE_USER_TYPE = 'anunciante';
 
+/**
+ * Which user types must verify. Configurable because the Console user type ids
+ * can change, and because legacy accounts can carry ids that no longer exist
+ * there — a hardcoded string silently exempts them instead of failing loudly.
+ *
+ * VERIFICATION_USER_TYPES=anunciante,prestador_de_servicos
+ */
+const verificationUserTypes = () => {
+  const raw = (process.env.VERIFICATION_USER_TYPES || ANUNCIANTE_USER_TYPE).trim();
+  return raw
+    .split(',')
+    .map(t => t.trim())
+    .filter(Boolean);
+};
+
 const STATUS = {
   MISSING: 'em_falta',
   PENDING: 'pendente',
@@ -82,7 +97,7 @@ const EXTENSION_BY_MIME = {
 };
 
 const isAnunciante = user =>
-  user?.attributes?.profile?.publicData?.userType === ANUNCIANTE_USER_TYPE;
+  verificationUserTypes().includes(user?.attributes?.profile?.publicData?.userType);
 
 /**
  * Normalise whatever is stored into a full per-document map, so callers never
@@ -181,6 +196,7 @@ const publicShape = docs =>
 
 module.exports = {
   ANUNCIANTE_USER_TYPE,
+  verificationUserTypes,
   STATUS,
   ACCOUNT_STATUS,
   REQUIRED_DOCS,

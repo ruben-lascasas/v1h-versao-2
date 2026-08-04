@@ -65,4 +65,9 @@ app.listen(PORT, () => {
   } catch (e) {
     console.error('[expireFeatured] failed to start:', e?.message || e);
   }
+  try {
+    require('./jobs/purgeVerificationDocsJob').start();
+  } catch (e) {
+    console.error('[purgeVerificationDocs] failed to start:', e?.message || e);
+  }
 });

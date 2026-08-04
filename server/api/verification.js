@@ -15,6 +15,8 @@
 
 const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
 const r2 = require('../api-util/r2');
+const emails = require('../api-util/verificationEmails');
+const { REQUIRED_DOCS } = require('../api-util/verification');
 const {
   STATUS,
   DOC_KEYS,
@@ -157,6 +159,26 @@ const upload = async (req, res) => {
         console.error('[verification] failed to delete superseded object:', err?.message || err)
       );
     }
+
+    // Best effort: the document is already saved, so a mail failure must
+    // not turn a successful upload into an error for the user.
+    const def = REQUIRED_DOCS.find(d => d.key === docKey);
+    const profile = user.attributes.profile || {};
+    emails
+      .documentSubmitted({
+        to: user.attributes.email,
+        displayName: profile.displayName,
+        docLabel: def.label,
+        docLabelEN: def.labelEN,
+      })
+      .catch(() => {});
+    emails
+      .adminNewSubmission({
+        displayName: profile.displayName,
+        email: user.attributes.email,
+        docLabel: def.label,
+      })
+      .catch(() => {});
 
     return res.json({ status, docs: publicShape(docs) });
   } catch (e) {
