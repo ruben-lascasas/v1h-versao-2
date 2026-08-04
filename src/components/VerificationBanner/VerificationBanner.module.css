@@ -5,10 +5,10 @@
 .root {
   background-color: #FBF7F2;
   border-bottom: 1px solid #E4D9CB;
-  padding: 16px 24px;
+  padding: 12px 24px;
 
   @media (--viewportMedium) {
-    padding: 18px 48px;
+    padding: 14px 48px;
   }
 }
 
@@ -42,19 +42,21 @@
   font-size: 15px;
   font-weight: 700;
   color: #2E2E2E;
-  margin: 0 0 4px 0;
+  line-height: 1.35;
+  margin: 0 0 2px 0;
 }
 
 .body {
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
   color: #6B6B6B;
-  line-height: 1.6;
+  line-height: 1.45;
   margin: 0;
 }
 
 .action {
   flex-shrink: 0;
+  /* Stacked on mobile: without this the button stretches the full width. */
   align-self: flex-start;
   padding: 10px 20px;
   background-color: #2E2E2E;
@@ -69,6 +71,12 @@
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.15s ease;
+
+  /* Side by side with the text: centre it against the two lines. The mobile
+     `flex-start` above would otherwise win over the row's align-items. */
+  @media (--viewportMedium) {
+    align-self: center;
+  }
 
   &:hover {
     background-color: #BAA38A;

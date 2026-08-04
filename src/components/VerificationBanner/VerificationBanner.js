@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classNames from 'classnames';
@@ -24,6 +24,11 @@ import css from './VerificationBanner.module.css';
 
 const t = (isEN, pt, en) => (isEN ? en : pt);
 
+// The offset below has to be applied before paint, or the banner visibly jumps
+// on every load. useLayoutEffect does that but warns during server rendering,
+// where it never runs anyway — so fall back to useEffect there.
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 const VerificationBanner = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -40,6 +45,39 @@ const VerificationBanner = () => {
     if (!isAuthenticated || !currentUser?.id) return;
     dispatch(fetchVerificationStatus());
   }, [isAuthenticated, currentUser?.id?.uuid, dispatch]);
+
+  // TopbarContainer renders this straight after <Topbar/>. On most pages the
+  // topbar sits in normal flow and the banner simply follows it, but the search
+  // page pins the topbar with `position: fixed`. There the banner would start
+  // at y=0 and spend its first 72px hidden behind the topbar — which is exactly
+  // what it did.
+  //
+  // Rather than special-casing pages, measure the preceding sibling: if it was
+  // taken out of the flow, offset by its height. The resulting banner height is
+  // published as a CSS variable so layouts that hardcode a topbar offset can
+  // add it (see SearchPage.module.css).
+  const ref = useRef(null);
+  const syncOffset = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const previous = el.previousElementSibling;
+    const isDetached =
+      previous && ['fixed', 'absolute'].includes(getComputedStyle(previous).position);
+    el.style.marginTop = isDetached ? `${previous.getBoundingClientRect().height}px` : '';
+    document.documentElement.style.setProperty(
+      '--verificationBannerHeight',
+      `${el.getBoundingClientRect().height}px`
+    );
+  }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    syncOffset();
+    window.addEventListener('resize', syncOffset);
+    return () => {
+      window.removeEventListener('resize', syncOffset);
+      document.documentElement.style.removeProperty('--verificationBannerHeight');
+    };
+  });
 
   if (!isAuthenticated || !fetched || !required) return null;
   if (status === 'aprovado') return null;
@@ -74,7 +112,7 @@ const VerificationBanner = () => {
       );
 
   return (
-    <div className={classNames(css.root, { [css.rootAlert]: isRejected })}>
+    <div ref={ref} className={classNames(css.root, { [css.rootAlert]: isRejected })}>
       <div className={css.inner}>
         <div className={css.text}>
           <p className={css.heading}>{heading}</p>

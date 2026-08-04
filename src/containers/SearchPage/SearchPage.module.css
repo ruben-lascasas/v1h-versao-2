@@ -28,11 +28,19 @@
   flex-grow: 1;
   display: flex;
 
+  /* The topbar is fixed here, so the results have to reserve its height
+     themselves. The verification banner sits between the two and publishes its
+     own height as --verificationBannerHeight; without adding it, the banner
+     would overlap the first row of results. Defaults to 0 when absent. */
   @media (--viewportMedium) {
     position: relative;
-    padding-top: var(--topbarHeightDesktop);
-    min-height: calc(100vh - var(--topbarHeightDesktop));
-    scroll-margin-top: var(--topbarHeightDesktop);
+    padding-top: calc(var(--topbarHeightDesktop) + var(--verificationBannerHeight, 0px));
+    min-height: calc(
+      100vh - var(--topbarHeightDesktop) - var(--verificationBannerHeight, 0px)
+    );
+    scroll-margin-top: calc(
+      var(--topbarHeightDesktop) + var(--verificationBannerHeight, 0px)
+    );
   }
 }
 
