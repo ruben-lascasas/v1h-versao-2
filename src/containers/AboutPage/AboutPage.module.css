@@ -41,17 +41,19 @@
 
 /* ── 3 Cards ──────────────────────────────────────── */
 
+/* Brown band carrying the four cards, per the designer's mock. Replaces the
+   previous negative margin that pulled isolated dark cards up over the hero:
+   the band is what ties this section to the rest of the site's palette. */
 .cardsSection {
-  padding: 0 24px 32px;
-  margin-top: -36px;
+  background-color: #BAA38A;
+  padding: 48px 24px 56px;
 
   @media (--viewportMedium) {
-    padding: 0 48px 40px;
-    margin-top: -48px;
+    padding: 56px 48px 64px;
   }
 
   @media (--viewportLarge) {
-    padding: 0 64px 40px;
+    padding: 64px 64px 72px;
   }
 }
 
@@ -73,13 +75,51 @@
   }
 }
 
+/* Dark brown on the tan band. The mock had the cards lighter than the band,
+   but white text on that tone measured 3.8:1 on the title and 2.9:1 on the
+   body — under AA. Inverting keeps the contrast between band and card that the
+   design asks for, while staying readable. */
 .card {
-  background-color: #3F3131;
-  border-radius: 8px;
-  padding: 36px 28px 40px;
+  background-color: #6B5748;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 32px 26px 36px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  background-color: #7C6350;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+}
+
+/* Dark mode next to the light rule, not in landingDark.css: that stylesheet is
+   injected before this module, so an override there loses whatever its
+   specificity. */
+:global(body[data-dark-mode]) .card {
+  background-color: #2b2b2b;
+  border-color: #3d3d3d;
+}
+
+:global(body[data-dark-mode]) .card:hover {
+  background-color: #333333;
+}
+
+:global(body[data-dark-mode]) .cardsSection,
+:global(body[data-dark-mode]) .valuesSection {
+  background-color: #1f1f1f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+  .card:hover {
+    transform: none;
+  }
 }
 
 .cardHeader {
@@ -108,7 +148,7 @@
 .cardText {
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.75;
   margin: 0;
 }
@@ -196,11 +236,15 @@
   object-fit: cover;
   display: block;
   margin-bottom: 14px;
-  transition: filter 0.3s ease;
+  border: 3px solid #E4D9CB;
+  box-sizing: border-box;
+  transition: filter 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
   filter: grayscale(15%);
 
   &:hover {
     filter: grayscale(0%);
+    border-color: #BAA38A;
+    transform: translateY(-4px);
   }
 }
 
@@ -223,8 +267,10 @@
 
 /* ── Values ──────────────────────────────────────── */
 
+/* Second band, deliberately lighter than the cards one so the page reads as
+   light → brown → light → tan rather than two identical slabs. */
 .valuesSection {
-  background-color: transparent;
+  background-color: #7C6350;
   padding: 56px 24px;
 
   @media (--viewportMedium) {
@@ -245,7 +291,7 @@
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-weight: 400;
   font-size: 40px;
-  color: #3F3131;
+  color: #ffffff;
   margin: 0 0 40px 0;
   text-align: center;
 
@@ -275,7 +321,31 @@
   background-color: #ffffff;
   padding: 24px 22px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.valueItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .valueItem {
+    transition: none;
+  }
+  .valueItem:hover {
+    transform: none;
+  }
+}
+
+:global(body[data-dark-mode]) .valueItem {
+  background-color: #2b2b2b;
+  box-shadow: none;
+}
+
+:global(body[data-dark-mode]) .teamAvatar {
+  border-color: #4a4238;
 }
 
 .valueTitle {

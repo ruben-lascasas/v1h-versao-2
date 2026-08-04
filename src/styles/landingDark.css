@@ -3005,12 +3005,14 @@ body[data-dark-mode] [class*="ComoFuncionaPage_ctaText"] {
 
 /* SVG icons in step cards and guarantee section â€” force white stroke explicitly.
    The SVGs have hardcoded stroke="#ffffff" but this protects against any CSS override. */
+/* The step icons now sit on a solid tan disc in both themes, so they stay dark
+   here too — white on tan would be the unreadable combination. */
 body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg path,
 body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg circle,
 body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg rect,
 body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg line,
 body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg polygon {
-  stroke: #ffffff !important;
+  stroke: #7C6350 !important;
   fill: none !important;
 }
 
@@ -4029,4 +4031,22 @@ body[data-dark-mode] [class*="VerificationAdminPage_reasonInput"] {
   background-color: #1a1a1a !important;
   border-color: #4a4a4a !important;
   color: #f2ede7 !important;
+}
+
+/* Section tag pill: the light-mode tint is nearly invisible on the dark page,
+   and its dark brown text would be unreadable there. */
+body[data-dark-mode] [class*="ComoFuncionaPage_sectionTag"] {
+  background-color: rgba(186, 163, 138, 0.18) !important;
+  color: #d9c9b4 !important;
+}
+
+/* About page bands. The tan band and the brown card already carry their own
+   contrast, so they stay as designed; only the surrounding page surface and
+   the light-mode card shadows need adjusting. */
+body[data-dark-mode] [class*="AboutPage_valueItem"] {
+  background-color: #232323 !important;
+  box-shadow: none !important;
+}
+body[data-dark-mode] [class*="AboutPage_teamAvatar"] {
+  border-color: #4a4238 !important;
 }

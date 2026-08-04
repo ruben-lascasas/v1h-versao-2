@@ -85,6 +85,9 @@
   margin-bottom: 12px;
 }
 
+/* Was plain tan text, which measured 2.42:1 on white at 11px. Turning it into
+   a tinted pill keeps the tan in the design while moving the letters onto a
+   readable tone — and it echoes the icon discs on the step cards. */
 .sectionTag {
   display: inline-block;
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
@@ -92,7 +95,10 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #BAA38A;
+  color: #5C4A3E;
+  background-color: rgba(186, 163, 138, 0.28);
+  padding: 5px 12px;
+  border-radius: 999px;
   margin-bottom: 12px;
 }
 
@@ -135,14 +141,16 @@
   }
 }
 
+/* Same brown as the About page cards. The previous near-black gradient was not
+   a site colour and read as a separate design language across the two pages. */
 .stepCard {
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(160deg, #473838 0%, #3A2D2D 100%);
-  border: 1px solid rgba(186, 163, 138, 0.18);
+  background-color: #6B5748;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 30px 24px 34px;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* Brand rule along the top edge. Sits at rest and widens on hover, so the row
@@ -160,8 +168,21 @@
 
 .stepCard:hover {
   transform: translateY(-4px);
-  border-color: rgba(186, 163, 138, 0.45);
+  background-color: #7C6350;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+/* Dark mode lives here rather than in landingDark.css: an override there loses
+   to this module no matter the specificity, because the module's stylesheet is
+   injected later by the bundler. Next to the light rule it simply wins on
+   source order, and the two can never drift apart. */
+:global(body[data-dark-mode]) .stepCard {
+  background-color: #2b2b2b;
+  border-color: #3d3d3d;
+}
+
+:global(body[data-dark-mode]) .stepCard:hover {
+  background-color: #333333;
 }
 
 .stepCard:hover::before {
@@ -185,8 +206,11 @@
   margin-bottom: 20px;
 }
 
-/* The bare stroke icons floated in the corner with nothing anchoring them.
-   A tinted disc gives them presence and picks up the brand tan. */
+/* The bare stroke icons floated in the corner with nothing anchoring them; a
+   solid disc gives them presence, as the designer asked.
+   Cream disc with the icon in the brand brown: brown on the tan disc measures
+   only 2.31:1, so lightening the disc is what gets these two brand tones to a
+   readable 4.56:1 without falling back on the near-black. */
 .stepIcon {
   display: flex;
   align-items: center;
@@ -195,8 +219,22 @@
   height: 54px;
   flex-shrink: 0;
   border-radius: 50%;
-  background-color: rgba(186, 163, 138, 0.14);
-  border: 1px solid rgba(186, 163, 138, 0.26);
+  background-color: #EFE7DC;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.stepCard:hover .stepIcon {
+  background-color: #FFFFFF;
+  transform: scale(1.06);
+}
+
+/* The SVGs carry stroke="#ffffff" as an attribute; the CSS property wins. */
+.stepIcon svg path,
+.stepIcon svg circle,
+.stepIcon svg rect,
+.stepIcon svg line,
+.stepIcon svg polygon {
+  stroke: #7C6350;
 }
 
 .stepNumber {
@@ -291,13 +329,19 @@
 
 /* ── Guarantee Section ─────────────────────────────── */
 
+/* Brand brown, matching the values band on the About page. #2E2E2E was a
+   near-black that belonged to no part of the palette. */
 .guaranteeSection {
-  background-color: #2E2E2E;
+  background-color: #7C6350;
   padding: 56px 0;
 
   @media (--viewportMedium) {
     padding: 72px 0;
   }
+}
+
+:global(body[data-dark-mode]) .guaranteeSection {
+  background-color: #1f1f1f;
 }
 
 .guaranteeGrid {
@@ -335,7 +379,7 @@
 .guaranteeText {
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.75;
   margin: 0;
 }
