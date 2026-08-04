@@ -95,11 +95,19 @@ const REQUIRED_DOCS = [
     hintEN: 'ID card, passport or residence permit. Both sides, clearly legible.',
   },
   {
-    key: 'morada',
-    label: 'Comprovativo de morada',
-    labelEN: 'Proof of address',
-    hint: 'Fatura de água, luz ou telecomunicações emitida nos últimos 3 meses.',
-    hintEN: 'Utility bill issued within the last 3 months.',
+    key: 'morada_anunciante',
+    label: 'Comprovativo de morada do anunciante',
+    labelEN: "Proof of the host's home address",
+    hint: 'Morada de residência de quem publica o anúncio. Fatura de água, luz ou telecomunicações emitida nos últimos 6 meses.',
+    hintEN:
+      'Home address of the person publishing the listing. Utility bill issued within the last 6 months.',
+  },
+  {
+    key: 'morada_espaco',
+    label: 'Comprovativo de morada do espaço',
+    labelEN: "Proof of the venue's address",
+    hint: 'Documento que confirme a morada do espaço anunciado, emitido nos últimos 6 meses.',
+    hintEN: "Document confirming the advertised venue's address, issued within the last 6 months.",
   },
   {
     key: 'titularidade',
