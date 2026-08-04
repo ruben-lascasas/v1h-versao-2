@@ -23,6 +23,8 @@ const {
   ACCEPTED_MIME,
   MAX_BYTES,
   isAnunciante,
+  ensurePostingAllowed,
+  EXEMPT_MARKER,
   readDocs,
   syncPermissions,
   buildObjectKey,
@@ -68,7 +70,19 @@ const getStatus = async (req, res) => {
     if (!user) return res.status(401).json({ error: 'not-authenticated' });
 
     if (!isAnunciante(user)) {
-      // Not an anunciante: nothing to submit, and nothing to block.
+      // Nothing to submit — but with Console's "Restrict posting rights" on,
+      // a type like prestador_de_servicos starts out denied and has no
+      // documents that could ever unblock it. Grant the permission once.
+      const userType = user.attributes.profile?.publicData?.userType;
+      const verification = await loadVerification(user.id.uuid);
+      const granted = await ensurePostingAllowed(
+        user.id.uuid,
+        userType,
+        verification.appliedStatus
+      );
+      if (granted) {
+        await persist(user.id.uuid, { ...verification, appliedStatus: EXEMPT_MARKER });
+      }
       return res.json({ required: false, docs: [], status: null });
     }
 

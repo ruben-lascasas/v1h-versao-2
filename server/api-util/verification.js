@@ -40,6 +40,32 @@ const verificationUserTypes = () => {
     .filter(Boolean);
 };
 
+/**
+ * User types that may publish without verifying.
+ *
+ * This exists because of a trap in Console's "Restrict posting rights": once
+ * it is on, every NEW user starts with postListings denied — including types
+ * this flow never touches. A prestador de serviços would be blocked forever,
+ * with no documents to submit that could unblock them.
+ *
+ * Types listed here are granted the permission once, on their first status
+ * read. Anything in neither list (a visitante, say) is left denied, which is
+ * the correct outcome for an account that is not meant to publish at all.
+ *
+ * POSTING_ALLOWED_USER_TYPES=prestador_de_servicos
+ */
+const postingAllowedUserTypes = () => {
+  const raw = (process.env.POSTING_ALLOWED_USER_TYPES || 'prestador_de_servicos').trim();
+  return raw
+    .split(',')
+    .map(t => t.trim())
+    .filter(Boolean);
+};
+
+// Marker stored in privateData so the grant below runs once per account
+// instead of on every page load.
+const EXEMPT_MARKER = 'isento';
+
 const STATUS = {
   MISSING: 'em_falta',
   PENDING: 'pendente',
@@ -167,6 +193,28 @@ const syncPermissions = async (userId, docs, appliedStatus = null) => {
 };
 
 /**
+ * Grant postListings to a user type that publishes without verifying.
+ *
+ * Idempotent via the marker in privateData, so this costs one API call per
+ * account ever, not one per page load.
+ *
+ * @param {string} userId
+ * @param {string} userType
+ * @param {string} [appliedStatus] marker last written for this user
+ * @returns {Promise<boolean>} true when a grant was written
+ */
+const ensurePostingAllowed = async (userId, userType, appliedStatus = null) => {
+  if (appliedStatus === EXEMPT_MARKER) return false;
+  if (!postingAllowedUserTypes().includes(userType)) return false;
+
+  const sdk = getIntegrationSdk();
+  if (!sdk) throw new Error('integration-sdk-not-configured');
+
+  await sdk.users.updatePermissions({ id: userId, postListings: 'permission/allow' });
+  return true;
+};
+
+/**
  * Build the object key for a document. Includes a timestamp so a re-upload
  * never silently overwrites the file a reviewer is looking at.
  */
@@ -197,6 +245,9 @@ const publicShape = docs =>
 module.exports = {
   ANUNCIANTE_USER_TYPE,
   verificationUserTypes,
+  postingAllowedUserTypes,
+  ensurePostingAllowed,
+  EXEMPT_MARKER,
   STATUS,
   ACCOUNT_STATUS,
   REQUIRED_DOCS,
