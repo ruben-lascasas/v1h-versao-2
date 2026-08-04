@@ -16,33 +16,13 @@ import css from './VerificationBanner.module.css';
  *
  * Rendered app-wide rather than on one page: the point is that someone who
  * signs in and goes straight to "publicar anúncio" finds out why they can't
- * before they have filled in a wizard. It carries the per-document state so
- * the answer to "what is missing?" needs no extra click.
+ * before they have filled in a wizard. It stays deliberately short — the
+ * per-document detail lives on /verificacao, one click away.
  *
  * Renders nothing for every other account type, and nothing once approved.
  */
 
-const DOT_CLASS = {
-  aprovado: css.dotApproved,
-  pendente: css.dotPending,
-  recusado: css.dotRejected,
-  em_falta: css.dotMissing,
-};
-
 const t = (isEN, pt, en) => (isEN ? en : pt);
-
-const docStatusLabel = (status, isEN) => {
-  switch (status) {
-    case 'aprovado':
-      return t(isEN, 'Aprovado', 'Approved');
-    case 'pendente':
-      return t(isEN, 'Em análise', 'Under review');
-    case 'recusado':
-      return t(isEN, 'Recusado', 'Rejected');
-    default:
-      return t(isEN, 'Por enviar', 'Not submitted');
-  }
-};
 
 const VerificationBanner = () => {
   const dispatch = useDispatch();
@@ -99,19 +79,6 @@ const VerificationBanner = () => {
         <div className={css.text}>
           <p className={css.heading}>{heading}</p>
           <p className={css.body}>{body}</p>
-
-          <ul className={css.docList}>
-            {docs.map(doc => (
-              <li key={doc.key} className={css.docItem}>
-                <span className={classNames(css.dot, DOT_CLASS[doc.status])} />
-                <span className={css.docLabel}>{isEN ? doc.labelEN : doc.label}</span>
-                <span className={css.docStatus}>{docStatusLabel(doc.status, isEN)}</span>
-                {doc.status === 'recusado' && doc.reason ? (
-                  <span className={css.docReason}>{doc.reason}</span>
-                ) : null}
-              </li>
-            ))}
-          </ul>
         </div>
 
         {missing.length > 0 || isRejected ? (

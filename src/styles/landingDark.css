@@ -3957,16 +3957,11 @@ body[data-dark-mode] [class*="VerificationBanner_rootAlert"] {
   background-color: #2a201c !important;
   border-bottom-color: #4a352c !important;
 }
-body[data-dark-mode] [class*="VerificationBanner_heading"],
-body[data-dark-mode] [class*="VerificationBanner_docLabel"] {
+body[data-dark-mode] [class*="VerificationBanner_heading"] {
   color: #f2ede7 !important;
 }
-body[data-dark-mode] [class*="VerificationBanner_body"],
-body[data-dark-mode] [class*="VerificationBanner_docStatus"] {
+body[data-dark-mode] [class*="VerificationBanner_body"] {
   color: #a8a29a !important;
-}
-body[data-dark-mode] [class*="VerificationBanner_docReason"] {
-  color: #e8a08f !important;
 }
 
 body[data-dark-mode] [class*="VerificationPage_docItem"],

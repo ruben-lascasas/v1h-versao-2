@@ -161,6 +161,7 @@ export const EditListingPageComponent = props => {
     stripeAccount,
     updateStripeAccountError,
     authScopes,
+    verification,
   } = props;
 
   const { id, type, returnURLType } = params;
@@ -172,7 +173,18 @@ export const EditListingPageComponent = props => {
   const currentListing = ensureOwnListing(getOwnListing(listingId));
   const { state: currentListingState } = currentListing.attributes;
 
-  const hasPostingRights = hasPermissionToPostListings(currentUser);
+  // Verification gate. We can't rely on the postListings permission alone:
+  // users.updatePermissions stores the deny, but the *effective* permission set
+  // only honours it once the marketplace enables listing-posting access control
+  // in Console. Until then the API keeps answering "allow", so this reads the
+  // verification state instead — the same one the server computes.
+  //
+  // Only blocks once the status has actually been fetched: redirecting on an
+  // unknown state would bounce every host out of the wizard on a cold load.
+  const blockedByVerification =
+    verification?.fetched && verification?.required && verification?.status !== 'aprovado';
+
+  const hasPostingRights = hasPermissionToPostListings(currentUser) && !blockedByVerification;
   const hasPostingRightsError = isErrorNoPermissionToPostListings(page.publishListingError?.error);
   const shouldRedirectNoPostingRights =
     !!currentUser?.id && ((isNewListingFlow && !hasPostingRights) || hasPostingRightsError);
@@ -369,6 +381,7 @@ const mapStateToProps = state => {
   const { authScopes } = state.auth;
 
   return {
+    verification: state.verification,
     getAccountLinkInProgress,
     getAccountLinkError,
     createStripeAccountError,

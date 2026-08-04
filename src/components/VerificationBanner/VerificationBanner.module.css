@@ -27,7 +27,7 @@
 
   @media (--viewportMedium) {
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 32px;
   }
@@ -51,61 +51,6 @@
   color: #6B6B6B;
   line-height: 1.6;
   margin: 0;
-}
-
-.docList {
-  list-style: none;
-  margin: 12px 0 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.docItem {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
-  font-size: 13px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* Colour is never the only signal — the written status sits right beside it,
-   so this still reads for anyone who can't tell the dots apart. */
-.dotApproved {
-  background-color: #2E6E3E;
-}
-.dotPending {
-  background-color: #B0872B;
-}
-.dotRejected {
-  background-color: #B4432A;
-}
-.dotMissing {
-  background-color: #B9B2A9;
-}
-
-.docLabel {
-  color: #2E2E2E;
-}
-
-.docStatus {
-  color: #6B6B6B;
-}
-
-.docReason {
-  flex-basis: 100%;
-  padding-left: 16px;
-  color: #B4432A;
-  font-style: italic;
 }
 
 .action {
