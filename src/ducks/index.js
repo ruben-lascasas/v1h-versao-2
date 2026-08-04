@@ -27,6 +27,7 @@ import extraAlerts from './extraAlerts.duck';
 import highlightedListings from './highlightedListings.duck';
 import similarListings from './similarListings.duck';
 import serviceListings from './serviceListings.duck';
+import verification from './verification.duck';
 import mapListings from './mapListings.duck';
 import recommendations from './recommendations.duck';
 
@@ -54,6 +55,7 @@ export {
   highlightedListings,
   similarListings,
   serviceListings,
+  verification,
   mapListings,
   recommendations,
 };

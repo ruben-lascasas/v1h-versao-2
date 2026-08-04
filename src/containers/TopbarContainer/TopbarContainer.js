@@ -12,6 +12,7 @@ import SavedSearchAlert from '../../components/SavedSearchAlert/SavedSearchAlert
 import FavoriteAlert from '../../components/FavoriteAlert/FavoriteAlert';
 import FollowAlert from '../../components/FollowAlert/FollowAlert';
 import ExtraAlerts from '../../components/ExtraAlerts/ExtraAlerts';
+import VerificationBanner from '../../components/VerificationBanner/VerificationBanner';
 
 const Topbar = loadable(() => import(/* webpackChunkName: "Topbar" */ './Topbar/Topbar'));
 
@@ -34,6 +35,7 @@ export const TopbarContainerComponent = props => {
   return (
     <>
       <Topbar notificationCount={notificationCount} showGenericError={hasGenericError} {...rest} />
+      <VerificationBanner />
       <NewListingNotification />
       <SavedSearchAlert />
       <FavoriteAlert />

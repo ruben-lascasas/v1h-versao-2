@@ -3944,3 +3944,94 @@ body[data-dark-mode] [class*="ServiceListingCard_providerIcon"] {
 body[data-dark-mode] [class*="ServiceListingCard_imagePlaceholder"] {
   background: #2b2b2b !important;
 }
+
+/* ── Verificação de anunciantes ──────────────────────────────────────────
+   Banner, página de submissão e painel do operador. Os tons de estado
+   (aprovado/pendente/recusado) são escurecidos mantendo a matiz, para que a
+   leitura por cor continue igual à do modo claro. */
+body[data-dark-mode] [class*="VerificationBanner_root"] {
+  background-color: #23201c !important;
+  border-bottom-color: #3d3a34 !important;
+}
+body[data-dark-mode] [class*="VerificationBanner_rootAlert"] {
+  background-color: #2a201c !important;
+  border-bottom-color: #4a352c !important;
+}
+body[data-dark-mode] [class*="VerificationBanner_heading"],
+body[data-dark-mode] [class*="VerificationBanner_docLabel"] {
+  color: #f2ede7 !important;
+}
+body[data-dark-mode] [class*="VerificationBanner_body"],
+body[data-dark-mode] [class*="VerificationBanner_docStatus"] {
+  color: #a8a29a !important;
+}
+body[data-dark-mode] [class*="VerificationBanner_docReason"] {
+  color: #e8a08f !important;
+}
+
+body[data-dark-mode] [class*="VerificationPage_docItem"],
+body[data-dark-mode] [class*="VerificationAdminPage_userItem"] {
+  background-color: #232323 !important;
+  border-color: #3d3d3d !important;
+}
+body[data-dark-mode] [class*="VerificationAdminPage_docCard"] {
+  background-color: #1f1f1f !important;
+  border-color: #3a3a3a !important;
+}
+body[data-dark-mode] [class*="VerificationPage_docLabel"],
+body[data-dark-mode] [class*="VerificationAdminPage_docLabel"],
+body[data-dark-mode] [class*="VerificationAdminPage_userName"] {
+  color: #f2ede7 !important;
+}
+body[data-dark-mode] [class*="VerificationPage_intro"],
+body[data-dark-mode] [class*="VerificationPage_docHint"],
+body[data-dark-mode] [class*="VerificationPage_muted"],
+body[data-dark-mode] [class*="VerificationPage_filename"],
+body[data-dark-mode] [class*="VerificationPage_footnote"],
+body[data-dark-mode] [class*="VerificationAdminPage_notice"],
+body[data-dark-mode] [class*="VerificationAdminPage_userMeta"],
+body[data-dark-mode] [class*="VerificationAdminPage_meta"],
+body[data-dark-mode] [class*="VerificationAdminPage_filename"],
+body[data-dark-mode] [class*="VerificationAdminPage_reasonLabel"] {
+  color: #a8a29a !important;
+}
+body[data-dark-mode] [class*="VerificationPage_reason"],
+body[data-dark-mode] [class*="VerificationPage_error"],
+body[data-dark-mode] [class*="VerificationAdminPage_reason"],
+body[data-dark-mode] [class*="VerificationAdminPage_error"] {
+  color: #e8a08f !important;
+}
+
+/* Estados: fundo escurecido, texto claro na mesma matiz. */
+body[data-dark-mode] [class*="_badgeApproved"] {
+  background-color: #1c3324 !important;
+  color: #8fd3a4 !important;
+}
+body[data-dark-mode] [class*="_badgePending"] {
+  background-color: #332c17 !important;
+  color: #e0c078 !important;
+}
+body[data-dark-mode] [class*="_badgeRejected"] {
+  background-color: #35211b !important;
+  color: #e8a08f !important;
+}
+body[data-dark-mode] [class*="_badgeMissing"] {
+  background-color: #2a2a2a !important;
+  color: #b0aaa2 !important;
+}
+
+body[data-dark-mode] [class*="VerificationAdminPage_linkButton"] {
+  background-color: #2b2b2b !important;
+  border-color: #4a4a4a !important;
+  color: #f2ede7 !important;
+}
+body[data-dark-mode] [class*="VerificationAdminPage_rejectButton"] {
+  background-color: #2b2b2b !important;
+  border-color: #7a4a3c !important;
+  color: #e8a08f !important;
+}
+body[data-dark-mode] [class*="VerificationAdminPage_reasonInput"] {
+  background-color: #1a1a1a !important;
+  border-color: #4a4a4a !important;
+  color: #f2ede7 !important;
+}

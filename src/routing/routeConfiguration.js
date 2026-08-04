@@ -52,6 +52,8 @@ const TransactionPage = loadable(() => import(/* webpackChunkName: "TransactionP
 const NoAccessPage = loadable(() => import(/* webpackChunkName: "NoAccessPage" */ '../containers/NoAccessPage/NoAccessPage'));
 const AboutPage = loadable(() => import(/* webpackChunkName: "AboutPage" */ '../containers/AboutPage/AboutPage'));
 const ComoFuncionaPage = loadable(() => import(/* webpackChunkName: "ComoFuncionaPage" */ '../containers/ComoFuncionaPage/ComoFuncionaPage'));
+const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ '../containers/VerificationPage/VerificationPage'));
+const VerificationAdminPage = loadable(() => import(/* webpackChunkName: "VerificationAdminPage" */ '../containers/VerificationAdminPage/VerificationAdminPage'));
 
 // Styleguide helps you to review current components and develop new ones
 const StyleguidePage = loadable(() => import(/* webpackChunkName: "StyleguidePage" */ '../containers/StyleguidePage/StyleguidePage'));
@@ -343,6 +345,22 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
     // The route stays registered even when highlights are switched off, so that
     // any NamedLink to it still resolves; it just sends the visitor home
     // instead of opening a flow that isn't in service.
+    {
+      path: '/verificacao',
+      name: 'VerificationPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: VerificationPage,
+    },
+    // Painel do operador. O acesso e decidido pelo servidor (ADMIN_EMAILS),
+    // nao por este caminho ser dificil de adivinhar.
+    {
+      path: '/verificacoes',
+      name: 'VerificationAdminPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: VerificationAdminPage,
+    },
     {
       path: '/destacar-anuncio',
       name: 'DestacaAnuncioPage',

@@ -1,0 +1,164 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  width: 100%;
+  min-width: 0;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+
+  @media (--viewportMedium) {
+    padding: 48px 24px 80px;
+  }
+}
+
+/* Same page-title scale as the cart and the account pages. */
+.title {
+  margin: 0 0 12px 0;
+}
+
+.intro {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #6B6B6B;
+  line-height: 1.7;
+  margin: 0 0 28px 0;
+}
+
+.muted {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #6B6B6B;
+}
+
+.error {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #B4432A;
+  margin: 0 0 16px 0;
+}
+
+.docList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.docItem {
+  border: 1px solid #E4D9CB;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.docHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.docTitles {
+  min-width: 0;
+}
+
+.docLabel {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin: 0 0 4px 0;
+}
+
+.docHint {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #6B6B6B;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Every badge carries its own words, so the colour is reinforcement and never
+   the only thing distinguishing one state from another. */
+.badgeApproved {
+  background-color: #E3F0E6;
+  color: #1F5730;
+}
+.badgePending {
+  background-color: #F7EEDA;
+  color: #7A5C13;
+}
+.badgeRejected {
+  background-color: #F8E3DC;
+  color: #8E3220;
+}
+.badgeMissing {
+  background-color: #EFECE8;
+  color: #5A544D;
+}
+
+.reason {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #8E3220;
+  line-height: 1.6;
+  margin: 12px 0 0 0;
+}
+
+.filename {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #6B6B6B;
+  margin: 12px 0 0 0;
+  overflow-wrap: anywhere;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.uploadButton {
+  margin-top: 16px;
+  padding: 9px 18px;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #BAA38A;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}
+
+.footnote {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #6B6B6B;
+  line-height: 1.7;
+  margin: 28px 0 0 0;
+}

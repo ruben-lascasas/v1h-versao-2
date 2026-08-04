@@ -1,0 +1,131 @@
+@import '../../styles/customMediaQueries.css';
+
+/* Sits under the topbar, in the page flow rather than fixed: it is information
+   the anunciante has to act on, not a toast to dismiss. */
+.root {
+  background-color: #FBF7F2;
+  border-bottom: 1px solid #E4D9CB;
+  padding: 16px 24px;
+
+  @media (--viewportMedium) {
+    padding: 18px 48px;
+  }
+}
+
+/* Rejected documents get the warmer, more urgent surface. */
+.rootAlert {
+  background-color: #FCF2EE;
+  border-bottom-color: #E8C4B4;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  @media (--viewportMedium) {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+  }
+}
+
+.text {
+  min-width: 0;
+}
+
+.heading {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin: 0 0 4px 0;
+}
+
+.body {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #6B6B6B;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.docList {
+  list-style: none;
+  margin: 12px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.docItem {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Colour is never the only signal — the written status sits right beside it,
+   so this still reads for anyone who can't tell the dots apart. */
+.dotApproved {
+  background-color: #2E6E3E;
+}
+.dotPending {
+  background-color: #B0872B;
+}
+.dotRejected {
+  background-color: #B4432A;
+}
+.dotMissing {
+  background-color: #B9B2A9;
+}
+
+.docLabel {
+  color: #2E2E2E;
+}
+
+.docStatus {
+  color: #6B6B6B;
+}
+
+.docReason {
+  flex-basis: 100%;
+  padding-left: 16px;
+  color: #B4432A;
+  font-style: italic;
+}
+
+.action {
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: 10px 20px;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: #BAA38A;
+  }
+}

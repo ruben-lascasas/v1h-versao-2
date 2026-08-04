@@ -1,0 +1,210 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  width: 100%;
+  min-width: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+
+  @media (--viewportMedium) {
+    padding: 48px 32px 80px;
+  }
+}
+
+.title {
+  margin: 0 0 24px 0;
+}
+
+.notice {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #6B6B6B;
+}
+
+.userList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.userItem {
+  border: 1px solid #E4D9CB;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.userHead {
+  margin-bottom: 16px;
+}
+
+.userName {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin: 0 0 2px 0;
+}
+
+.userMeta {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #6B6B6B;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.docGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.docCard {
+  border: 1px solid #EDE6DC;
+  border-radius: 8px;
+  padding: 14px;
+  background-color: #FCFAF7;
+  min-width: 0;
+}
+
+.docHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.docLabel {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badgeApproved {
+  background-color: #E3F0E6;
+  color: #1F5730;
+}
+.badgePending {
+  background-color: #F7EEDA;
+  color: #7A5C13;
+}
+.badgeRejected {
+  background-color: #F8E3DC;
+  color: #8E3220;
+}
+.badgeMissing {
+  background-color: #EFECE8;
+  color: #5A544D;
+}
+
+.filename,
+.meta {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #6B6B6B;
+  margin: 0 0 4px 0;
+  overflow-wrap: anywhere;
+}
+
+.reason {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #8E3220;
+  margin: 4px 0 0 0;
+}
+
+.docActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.linkButton,
+.approveButton,
+.rejectButton {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: opacity 0.15s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.linkButton {
+  background-color: #ffffff;
+  border-color: #D9CEC0;
+  color: #2E2E2E;
+}
+
+.approveButton {
+  background-color: #1F5730;
+  color: #ffffff;
+}
+
+.rejectButton {
+  background-color: #ffffff;
+  border-color: #C98C7A;
+  color: #8E3220;
+}
+
+.reasonBox {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reasonLabel {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  color: #6B6B6B;
+}
+
+/* The global `textarea` rule sets its own font; keep this readable and sized
+   to the card rather than the page. */
+.reasonInput {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  padding: 8px;
+  border: 1px solid #D9CEC0;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.error {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #B4432A;
+  margin: 8px 0 0 0;
+}
