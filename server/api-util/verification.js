@@ -205,7 +205,16 @@ const syncPermissions = async (userId, docs, appliedStatus = null) => {
  */
 const ensurePostingAllowed = async (userId, userType, appliedStatus = null) => {
   if (appliedStatus === EXEMPT_MARKER) return false;
-  if (!postingAllowedUserTypes().includes(userType)) return false;
+
+  const allowed = postingAllowedUserTypes();
+  // "*" means every type that isn't required to verify. Chosen deliberately:
+  // with "Restrict posting rights" on, anything not granted here starts denied
+  // for new accounts, and being denied with no way out is a worse failure than
+  // being allowed something the UI never offers.
+  const isAllowed = allowed.includes('*')
+    ? !verificationUserTypes().includes(userType)
+    : allowed.includes(userType);
+  if (!isAllowed) return false;
 
   const sdk = getIntegrationSdk();
   if (!sdk) throw new Error('integration-sdk-not-configured');
