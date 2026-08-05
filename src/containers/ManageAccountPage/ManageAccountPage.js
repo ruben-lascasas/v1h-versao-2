@@ -24,6 +24,7 @@ import TopbarContainer from '../TopbarContainer/TopbarContainer';
 import FooterContainer from '../FooterContainer/FooterContainer';
 
 import DeleteAccountForm from './DeleteAccountForm/DeleteAccountForm';
+import AccountTypeSection from './AccountTypeSection/AccountTypeSection';
 
 import { deleteAccount, resetPassword, updateProfile } from './ManageAccountPage.duck';
 import css from './ManageAccountPage.module.css';
@@ -140,6 +141,19 @@ export const ManageAccountPageComponent = props => {
           <H2 as="h1">
             <FormattedMessage id="ManageAccountPage.heading" />
           </H2>
+          {user.id ? (
+            <>
+              <AccountTypeSection
+                currentUserType={userType}
+                // The type drives roles, permissions and which fields this page
+                // shows, so reload rather than trying to patch state in place.
+                onChanged={() => {
+                  if (typeof window !== 'undefined') window.location.reload();
+                }}
+              />
+              <hr className={css.accountPageDivider} />
+            </>
+          ) : null}
           {hasUserTypeFields ? (
             <>
               <PrivateDetailsForm

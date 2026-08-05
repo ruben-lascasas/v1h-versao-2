@@ -1,0 +1,88 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  margin: 0 0 32px 0;
+}
+
+.title {
+  margin: 0 0 6px 0;
+}
+
+.help {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #6B6B6B;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @media (--viewportSmall) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* The global `select` rule is display:block/width:100%, which would push the
+   button onto its own line even on wide viewports. */
+.select {
+  display: inline-block;
+  width: 100%;
+  min-width: 0;
+
+  @media (--viewportSmall) {
+    width: auto;
+    min-width: 260px;
+  }
+}
+
+.button {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  background-color: #2E2E2E;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #BAA38A;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.notice,
+.error,
+.success {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 12px 0 0 0;
+}
+
+.notice {
+  color: #6B6B6B;
+}
+
+.error {
+  color: #B4432A;
+}
+
+.success {
+  color: #1F5730;
+}

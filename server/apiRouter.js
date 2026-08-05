@@ -23,6 +23,7 @@ const contact = require('./api/contact');
 const notifyAdmin = require('./api/notify-admin');
 const verification = require('./api/verification');
 const verificationAdmin = require('./api/verification-admin');
+const changeUserType = require('./api/change-user-type');
 const newsletter = require('./api/newsletter');
 const reportListing = require('./api/report-listing');
 const reportListingStatus = require('./api/report-listing-status');
@@ -88,6 +89,10 @@ router.post('/notify-admin', notifyAdmin);
 // Verificação de anunciantes: o próprio utilizador consulta e submete.
 router.get('/verification', verification.getStatus);
 router.post('/verification/upload', verification.upload);
+
+// Mudanca de tipo de conta apos o registo.
+router.get('/user-types', changeUserType.list);
+router.post('/change-user-type', changeUserType.change);
 
 // Painel do operador. Protegido por ADMIN_EMAILS, não por URL secreto.
 router.get('/verification-admin/list', verificationAdmin.list);
