@@ -327,10 +327,12 @@
   margin-top: 40px;
 }
 
+/* Neutral dark, same as the About page button. #3F3131 carries a +14 red bias
+   and at that darkness reads as burgundy rather than brown. */
 .ctaBtn {
   display: inline-block;
   padding: 11px 28px;
-  background-color: #3F3131;
+  background-color: #2E2E2E;
   border-radius: 4px;
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
@@ -533,7 +535,7 @@
 .ctaBtnPrimary {
   display: inline-block;
   padding: 12px 32px;
-  background-color: #3F3131;
+  background-color: #2E2E2E;
   border-radius: 4px;
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
@@ -555,19 +557,19 @@
   display: inline-block;
   padding: 12px 32px;
   background-color: transparent;
-  border: 2px solid #3F3131;
+  border: 2px solid #2E2E2E;
   border-radius: 4px;
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #3F3131;
+  color: #2E2E2E;
   text-decoration: none;
   transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 
   &:hover {
-    background-color: #3F3131;
+    background-color: #2E2E2E;
     color: #ffffff;
     text-decoration: none;
   }
