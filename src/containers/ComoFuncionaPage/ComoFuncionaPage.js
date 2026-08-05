@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import classNames from 'classnames';
 
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 import { useLocale } from '../../context/localeContext';
@@ -231,7 +232,7 @@ const ComoFuncionaPage = props => {
           </div>
 
           {/* ── Para Organizadores ─────────────────────── */}
-          <section className={css.section}>
+          <section className={classNames(css.section, css.sectionTinted)}>
             <div className={css.sectionInnerWide}>
               <div className={css.sectionHeader}>
                 <span className={css.sectionTag}>{t(isEN, 'Organizadores de eventos', 'Event organisers')}</span>
@@ -311,7 +312,7 @@ const ComoFuncionaPage = props => {
           </div>
 
           {/* ── Para Prestadores de Serviços ───────────── */}
-          <section className={css.section}>
+          <section className={classNames(css.section, css.sectionTinted)}>
             <div className={css.sectionInnerWide}>
               <div className={css.sectionHeader}>
                 <span className={css.sectionTag}>{t(isEN, 'Prestadores de Serviços', 'Service providers')}</span>
