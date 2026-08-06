@@ -370,8 +370,10 @@
   text-decoration: none;
   transition: background-color 0.15s ease;
 
+  /* Era #BAA38A, onde o texto branco media 2,42:1. O castanho do cartao
+     mantem a inversao de tom e da 6,84:1. */
   &:hover {
-    background-color: #BAA38A;
+    background-color: #6A5748;
     color: #ffffff;
     text-decoration: none;
   }
@@ -429,6 +431,17 @@
 .guaranteeCard {
   text-align: center;
   padding: 32px 24px;
+}
+
+/* Mesmo problema dos icones dos passos: sem fill:none em CSS os glifos vem
+   preenchidos a escuro, porque o atributo fill="none" perde para a cascata. */
+.guaranteeIcon svg path,
+.guaranteeIcon svg circle,
+.guaranteeIcon svg rect,
+.guaranteeIcon svg line,
+.guaranteeIcon svg polygon {
+  fill: none;
+  stroke: #ffffff;
 }
 
 .guaranteeIcon {
@@ -573,8 +586,10 @@
   text-decoration: none;
   transition: background-color 0.15s ease;
 
+  /* Era #BAA38A, onde o texto branco media 2,42:1. O castanho do cartao
+     mantem a inversao de tom e da 6,84:1. */
   &:hover {
-    background-color: #BAA38A;
+    background-color: #6A5748;
     color: #ffffff;
     text-decoration: none;
   }

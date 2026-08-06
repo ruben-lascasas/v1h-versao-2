@@ -434,8 +434,9 @@
   white-space: nowrap;
   transition: background-color 0.15s ease;
 
+  /* Era #BAA38A: texto branco a 2,42:1. */
   &:hover {
-    background-color: #BAA38A;
+    background-color: #6A5748;
     color: #ffffff;
     text-decoration: none;
   }
