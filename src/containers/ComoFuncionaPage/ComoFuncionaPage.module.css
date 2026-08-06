@@ -252,11 +252,10 @@
   margin-bottom: 20px;
 }
 
-/* The bare stroke icons floated in the corner with nothing anchoring them; a
-   solid disc gives them presence, as the designer asked.
-   Cream disc with the icon in the brand brown: brown on the tan disc measures
-   only 2.31:1, so lightening the disc is what gets these two brand tones to a
-   readable 4.56:1 without falling back on the near-black. */
+/* Tan disc with a warm dark-brown glyph, as the designer drew it.
+   The glyph tone is picked, not assumed: the brand brown #7C6350 on this disc
+   is only 2.31:1, and #3F3131 reads burgundy. #42352C is 4.89:1 and has the
+   lowest red bias of the tones that clear AA. */
 .stepIcon {
   display: flex;
   align-items: center;
@@ -265,12 +264,12 @@
   height: 54px;
   flex-shrink: 0;
   border-radius: 50%;
-  background-color: #EFE7DC;
+  background-color: #BAA38A;
   transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
 .stepCard:hover .stepIcon {
-  background-color: #FFFFFF;
+  background-color: #D2BFA8;
   transform: scale(1.06);
 }
 
@@ -280,7 +279,7 @@
 .stepIcon svg rect,
 .stepIcon svg line,
 .stepIcon svg polygon {
-  stroke: #7C6350;
+  stroke: #42352C;
 }
 
 .stepNumber {

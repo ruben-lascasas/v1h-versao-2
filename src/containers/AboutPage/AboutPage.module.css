@@ -129,9 +129,46 @@
   margin-bottom: 16px;
 }
 
+/* Same tan disc as the step cards on Como Funciona. These icons were bare white
+   strokes floating on the brown card, so the two pages treated the same element
+   in two different ways. Smaller here (44px) because the icon sits inline with
+   the title rather than on its own row. */
 .cardIcon {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
+  border-radius: 50%;
+  background-color: #BAA38A;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.card:hover .cardIcon {
+  background-color: #D2BFA8;
+  transform: scale(1.06);
+}
+
+/* The SVGs carry stroke="#ffffff" as an attribute; the CSS property wins.
+   #42352C is 4.89:1 on the disc — see the note in ComoFuncionaPage.module.css
+   for why neither the brand brown nor the near-black works here. */
+.cardIcon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.cardIcon svg path,
+.cardIcon svg circle,
+.cardIcon svg rect,
+.cardIcon svg line,
+.cardIcon svg polygon {
+  stroke: #42352C;
+}
+
+/* The compass and telescope have one filled dot each; keep it in step. */
+.cardIcon svg circle[r='1'] {
+  fill: #42352C;
 }
 
 .cardTitle {

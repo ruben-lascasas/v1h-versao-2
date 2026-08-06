@@ -2768,20 +2768,6 @@ body[data-dark-mode] [class*="AboutPage_cardTitle"] {
 
 /* Card SVG icons â€” protect strokes and prevent fill bleed from currentColor cascade.
    Do NOT set color on the wrapper (would cause fill:currentColor = white on the compass circle). */
-body[data-dark-mode] [class*="AboutPage_cardIcon"] svg path,
-body[data-dark-mode] [class*="AboutPage_cardIcon"] svg rect,
-body[data-dark-mode] [class*="AboutPage_cardIcon"] svg line {
-  stroke: #ffffff !important;
-  fill: none !important;
-}
-body[data-dark-mode] [class*="AboutPage_cardIcon"] svg circle {
-  fill: none !important;
-  stroke: #ffffff !important;
-}
-/* The compass centre dot (r=1) must be filled white */
-body[data-dark-mode] [class*="AboutPage_cardIcon"] svg circle[r="1"] {
-  fill: #ffffff !important;
-}
 
 /* "Comece a explorar" CTA button â€” keep white text in both states.
    The global #main-content a rule forces #f0ece6 which blends with #BAA38A on hover. */
@@ -3012,7 +2998,7 @@ body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg circle,
 body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg rect,
 body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg line,
 body[data-dark-mode] [class*="ComoFuncionaPage_stepIcon"] svg polygon {
-  stroke: #7C6350 !important;
+  stroke: #42352C !important;
   fill: none !important;
 }
 
