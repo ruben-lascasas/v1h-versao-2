@@ -88,7 +88,14 @@
    Sem ela os cartoes castanhos flutuavam sobre o fundo claro e as duas paginas
    nao se pareciam. */
 .sectionTinted {
-  background-color: #BAA38A;
+  background-color: #7C6350;
+}
+
+/* Titulo e subtitulo a branco sobre a faixa, como o designer desenhou. A faixa
+   teve de escurecer para isso: sobre o tan #BAA38A o branco media 2,42:1 no
+   titulo e 2,15:1 no subtitulo. Com #7C6350 sao 5,59:1 e 4,57:1. */
+.sectionTinted .sectionTitle {
+  color: #ffffff;
 }
 
 /* The header text was coloured for a white page. On the tan band the subtitle
@@ -103,7 +110,7 @@
 }
 
 .sectionTinted .sectionSubtitle {
-  color: #3F3131;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 :global(body[data-dark-mode]) .sectionTinted {
@@ -192,8 +199,10 @@
 .stepCard {
   position: relative;
   overflow: hidden;
-  background-color: #6B5748;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #4A3B31;
+  /* Contorno tan: sobre a faixa escurecida o cartao so separa a 1,9:1, e uma
+     aresta nitida faz o trabalho que a diferenca de tom ja nao faz. */
+  border: 1px solid rgba(186, 163, 138, 0.55);
   border-radius: 12px;
   padding: 30px 24px 34px;
   transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
@@ -214,7 +223,7 @@
 
 .stepCard:hover {
   transform: translateY(-4px);
-  background-color: #7C6350;
+  background-color: #57463A;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
 }
 

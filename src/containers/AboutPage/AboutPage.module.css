@@ -45,7 +45,7 @@
    previous negative margin that pulled isolated dark cards up over the hero:
    the band is what ties this section to the rest of the site's palette. */
 .cardsSection {
-  background-color: #BAA38A;
+  background-color: #7C6350;
   padding: 48px 24px 56px;
 
   @media (--viewportMedium) {
@@ -80,8 +80,9 @@
    body — under AA. Inverting keeps the contrast between band and card that the
    design asks for, while staying readable. */
 .card {
-  background-color: #6B5748;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #4A3B31;
+  /* Contorno tan, para a aresta se ler sobre a faixa escurecida. */
+  border: 1px solid rgba(186, 163, 138, 0.55);
   border-radius: 10px;
   padding: 32px 26px 36px;
   display: flex;
@@ -92,7 +93,7 @@
 
 .card:hover {
   transform: translateY(-5px);
-  background-color: #7C6350;
+  background-color: #57463A;
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
 }
 
