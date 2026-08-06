@@ -45,7 +45,7 @@
    previous negative margin that pulled isolated dark cards up over the hero:
    the band is what ties this section to the rest of the site's palette. */
 .cardsSection {
-  background-color: #7C6350;
+  background-color: #B3A08B;
   padding: 48px 24px 56px;
 
   @media (--viewportMedium) {
@@ -80,9 +80,7 @@
    body — under AA. Inverting keeps the contrast between band and card that the
    design asks for, while staying readable. */
 .card {
-  background-color: #4A3B31;
-  /* Contorno tan, para a aresta se ler sobre a faixa escurecida. */
-  border: 1px solid rgba(186, 163, 138, 0.55);
+  background-color: #6A5748;
   border-radius: 10px;
   padding: 32px 26px 36px;
   display: flex;
@@ -93,7 +91,7 @@
 
 .card:hover {
   transform: translateY(-5px);
-  background-color: #57463A;
+  background-color: #7A6554;
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
 }
 
@@ -142,12 +140,12 @@
   height: 44px;
   flex-shrink: 0;
   border-radius: 50%;
-  background-color: #BAA38A;
+  background-color: #ECE8DC;
   transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
 .card:hover .cardIcon {
-  background-color: #D2BFA8;
+  background-color: #FFFFFF;
   transform: scale(1.06);
 }
 
@@ -164,12 +162,12 @@
 .cardIcon svg rect,
 .cardIcon svg line,
 .cardIcon svg polygon {
-  stroke: #42352C;
+  stroke: #6A5748;
 }
 
 /* The compass and telescope have one filled dot each; keep it in step. */
 .cardIcon svg circle[r='1'] {
-  fill: #42352C;
+  fill: #6A5748;
 }
 
 .cardTitle {
@@ -308,7 +306,7 @@
 /* Second band, deliberately lighter than the cards one so the page reads as
    light → brown → light → tan rather than two identical slabs. */
 .valuesSection {
-  background-color: #7C6350;
+  background-color: #B3A08B;
   padding: 56px 24px;
 
   @media (--viewportMedium) {
@@ -329,7 +327,7 @@
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-weight: 400;
   font-size: 40px;
-  color: #ffffff;
+  color: #3F3131;
   margin: 0 0 40px 0;
   text-align: center;
 

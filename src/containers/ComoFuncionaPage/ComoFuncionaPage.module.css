@@ -88,14 +88,18 @@
    Sem ela os cartoes castanhos flutuavam sobre o fundo claro e as duas paginas
    nao se pareciam. */
 .sectionTinted {
-  background-color: #7C6350;
+  background-color: #B3A08B;
 }
 
 /* Titulo e subtitulo a branco sobre a faixa, como o designer desenhou. A faixa
    teve de escurecer para isso: sobre o tan #BAA38A o branco media 2,42:1 no
    titulo e 2,15:1 no subtitulo. Com #7C6350 sao 5,59:1 e 4,57:1. */
+/* O desenho tem este texto a creme, mas sobre a faixa #B3A08B isso mede
+   2,06:1 no titulo e 2,24:1 no subtitulo — nao se le ao sol, que foi onde o
+   problema foi notado. Manter a faixa e escurecer o texto e a unica
+   combinacao que preserva os valores do cartao, do disco e do icone. */
 .sectionTinted .sectionTitle {
-  color: #ffffff;
+  color: #3F3131;
 }
 
 /* The header text was coloured for a white page. On the tan band the subtitle
@@ -110,7 +114,7 @@
 }
 
 .sectionTinted .sectionSubtitle {
-  color: rgba(255, 255, 255, 0.85);
+  color: #3F3131;
 }
 
 :global(body[data-dark-mode]) .sectionTinted {
@@ -198,19 +202,36 @@
    a site colour and read as a separate design language across the two pages. */
 .stepCard {
   position: relative;
-  overflow: hidden;
-  background-color: #4A3B31;
+  background-color: #6A5748;
   /* Contorno tan: sobre a faixa escurecida o cartao so separa a 1,9:1, e uma
      aresta nitida faz o trabalho que a diferenca de tom ja nao faz. */
-  border: 1px solid rgba(186, 163, 138, 0.55);
   border-radius: 12px;
   padding: 30px 24px 34px;
   transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
 }
 
+/* Aba clara acima do canto superior esquerdo, como no desenho do designer.
+   Fica FORA do cartao (top negativo) e por isso o cartao nao pode ter
+   overflow: hidden — foi isso que antes a cortava na diagonal contra o canto
+   arredondado e a fazia parecer um defeito. */
+.stepCard::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 18px;
+  width: 76px;
+  height: 12px;
+  background-color: #ECE8DC;
+  border-radius: 4px 4px 0 0;
+  transition: width 0.3s ease;
+}
+
+.stepCard:hover::before {
+  width: 120px;
+}
 .stepCard:hover {
   transform: translateY(-4px);
-  background-color: #57463A;
+  background-color: #7A6554;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
 }
 
@@ -255,12 +276,12 @@
   height: 54px;
   flex-shrink: 0;
   border-radius: 50%;
-  background-color: #BAA38A;
+  background-color: #ECE8DC;
   transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
 .stepCard:hover .stepIcon {
-  background-color: #D2BFA8;
+  background-color: #FFFFFF;
   transform: scale(1.06);
 }
 
@@ -270,7 +291,7 @@
 .stepIcon svg rect,
 .stepIcon svg line,
 .stepIcon svg polygon {
-  stroke: #42352C;
+  stroke: #6A5748;
 }
 
 .stepNumber {
@@ -279,7 +300,7 @@
   font-size: 40px;
   /* Was rgba(255,255,255,0.15), which measured 1.6:1 and read as a smudge.
      Solid brand tan is both legible and a deliberate accent. */
-  color: #D2BFA8;
+  color: #ECE8DC;
   letter-spacing: 0.02em;
   line-height: 1;
 }
