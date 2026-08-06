@@ -94,9 +94,12 @@
 /* The header text was coloured for a white page. On the tan band the subtitle
    dropped to 2.31:1 and the tag pill to 3.47:1, so both get band-specific
    tones: a cream pill echoing the icon discs, and a darker subtitle. */
+/* #7C6350 on the cream pill measured 4.56:1 — 0.06 above the AA floor. At 11px
+   uppercase with 0.15em tracking this is the hardest text on the page to read,
+   so it gets the widest margin, not the narrowest: #5C4A3E is 6.84:1. */
 .sectionTinted .sectionTag {
   background-color: #EFE7DC;
-  color: #7C6350;
+  color: #5C4A3E;
 }
 
 .sectionTinted .sectionSubtitle {
