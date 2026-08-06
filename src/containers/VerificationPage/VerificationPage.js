@@ -24,7 +24,20 @@ import css from './VerificationPage.module.css';
 
 const t = (isEN, pt, en) => (isEN ? en : pt);
 
-const ACCEPT = '.pdf,.jpg,.jpeg,.png,.webp';
+// O servidor manda os limites reais em GET /api/verification. Isto é só o que
+// se usa no primeiro render, antes de a resposta chegar; se divergir do
+// servidor, quem manda é a resposta.
+const FALLBACK_LIMITS = {
+  accept: 'application/pdf,image/jpeg,image/png,image/webp',
+  formats: ['PDF', 'JPG', 'PNG', 'WEBP'],
+  maxMb: 8,
+};
+
+const formatList = (limits, isEN) => {
+  const f = limits.formats;
+  if (f.length < 2) return f.join('');
+  return `${f.slice(0, -1).join(', ')} ${t(isEN, 'ou', 'or')} ${f[f.length - 1]}`;
+};
 
 const STATUS_TEXT = {
   aprovado: (isEN) => t(isEN, 'Aprovado', 'Approved'),
@@ -41,14 +54,23 @@ const STATUS_CLASS = {
 };
 
 const UPLOAD_ERROR_TEXT = {
-  'too-large': (isEN) => t(isEN, 'O ficheiro excede 8 MB.', 'The file is larger than 8 MB.'),
-  'invalid-type': (isEN) =>
-    t(isEN, 'Formato não aceite. Use PDF, JPG, PNG ou WEBP.', 'Unsupported format. Use PDF, JPG, PNG or WEBP.'),
+  'too-large': (isEN, limits) =>
+    t(
+      isEN,
+      `O ficheiro excede ${limits.maxMb} MB.`,
+      `The file is larger than ${limits.maxMb} MB.`
+    ),
+  'invalid-type': (isEN, limits) =>
+    t(
+      isEN,
+      `Formato não aceite. Use ${formatList(limits, isEN)}.`,
+      `Unsupported format. Use ${formatList(limits, isEN)}.`
+    ),
   'already-approved': (isEN) =>
     t(isEN, 'Este documento já foi aprovado.', 'This document has already been approved.'),
 };
 
-const DocRow = ({ doc, isEN, uploading, onPick }) => {
+const DocRow = ({ doc, isEN, uploading, limits, onPick }) => {
   const inputRef = useRef(null);
   const isApproved = doc.status === 'aprovado';
 
@@ -77,7 +99,7 @@ const DocRow = ({ doc, isEN, uploading, onPick }) => {
           <input
             ref={inputRef}
             type="file"
-            accept={ACCEPT}
+            accept={limits.accept}
             className={css.hiddenInput}
             onChange={e => {
               const file = e.target.files?.[0];
@@ -111,9 +133,18 @@ const VerificationPage = props => {
   const isEN = locale === 'en';
 
   const currentUser = useSelector(state => state.user?.currentUser);
-  const { fetched, loading, required, status, docs, uploadingDocKey, uploadError } = useSelector(
-    selectVerification
-  );
+  const {
+    fetched,
+    loading,
+    required,
+    status,
+    docs,
+    limits: serverLimits,
+    uploadingDocKey,
+    uploadError,
+  } = useSelector(selectVerification);
+
+  const limits = serverLimits || FALLBACK_LIMITS;
 
   useEffect(() => {
     if (currentUser?.id) dispatch(fetchVerificationStatus());
@@ -167,23 +198,34 @@ const VerificationPage = props => {
             <p className={css.error}>
               {(UPLOAD_ERROR_TEXT[uploadError] ||
                 (() => t(isEN, 'Não foi possível enviar. Tente novamente.', 'Upload failed. Please try again.')))(
-                isEN
+                isEN,
+                limits
               )}
             </p>
           ) : null}
 
           {required ? (
-            <ul className={css.docList}>
+            <>
+              <p className={css.limits}>
+                {t(
+                  isEN,
+                  `Formatos aceites: ${formatList(limits, isEN)}. Tamanho máximo: ${limits.maxMb} MB por ficheiro.`,
+                  `Accepted formats: ${formatList(limits, isEN)}. Maximum size: ${limits.maxMb} MB per file.`
+                )}
+              </p>
+              <ul className={css.docList}>
               {docs.map(doc => (
                 <DocRow
                   key={doc.key}
                   doc={doc}
                   isEN={isEN}
                   uploading={uploadingDocKey === doc.key}
+                  limits={limits}
                   onPick={handlePick}
                 />
               ))}
-            </ul>
+              </ul>
+            </>
           ) : null}
 
           {required && status !== 'aprovado' ? (

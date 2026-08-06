@@ -22,6 +22,7 @@ const {
   DOC_KEYS,
   ACCEPTED_MIME,
   MAX_BYTES,
+  UPLOAD_LIMITS,
   isAnunciante,
   ensurePostingAllowed,
   EXEMPT_MARKER,
@@ -83,7 +84,7 @@ const getStatus = async (req, res) => {
       if (granted) {
         await persist(user.id.uuid, { ...verification, appliedStatus: EXEMPT_MARKER });
       }
-      return res.json({ required: false, docs: [], status: null });
+      return res.json({ required: false, docs: [], status: null, limits: UPLOAD_LIMITS });
     }
 
     const verification = await loadVerification(user.id.uuid);
@@ -97,7 +98,7 @@ const getStatus = async (req, res) => {
       await persist(user.id.uuid, { ...verification, appliedStatus: status });
     }
 
-    return res.json({ required: true, status, docs: publicShape(docs) });
+    return res.json({ required: true, status, docs: publicShape(docs), limits: UPLOAD_LIMITS });
   } catch (e) {
     console.error('[verification] getStatus failed:', e?.message || e);
     return res.status(500).json({ error: 'status-failed' });

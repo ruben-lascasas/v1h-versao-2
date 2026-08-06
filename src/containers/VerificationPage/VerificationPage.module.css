@@ -38,6 +38,20 @@
   margin: 0 0 16px 0;
 }
 
+/* Formatos e tamanho, imediatamente antes da lista: o utilizador lê a regra
+   antes de abrir o seletor de ficheiros, e nao so quando o envio falha. */
+.limits {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #6B6B6B;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+:global(body[data-dark-mode]) .limits {
+  color: #A9A9A9;
+}
+
 .docList {
   list-style: none;
   margin: 0;

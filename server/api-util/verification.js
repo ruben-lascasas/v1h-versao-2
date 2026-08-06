@@ -130,6 +130,20 @@ const EXTENSION_BY_MIME = {
   'image/webp': 'webp',
 };
 
+/**
+ * What the upload endpoint will actually accept, in a shape the browser and the
+ * page copy can both use. Derived from the two constants above rather than
+ * restated, so the limits shown to the anunciante cannot drift away from the
+ * ones enforced on POST. `accept` is the MIME list itself, which also covers
+ * .jpeg without having to list both spellings.
+ */
+const UPLOAD_LIMITS = {
+  accept: ACCEPTED_MIME.join(','),
+  formats: ACCEPTED_MIME.map(m => EXTENSION_BY_MIME[m].toUpperCase()),
+  maxBytes: MAX_BYTES,
+  maxMb: Math.round(MAX_BYTES / (1024 * 1024)),
+};
+
 const isAnunciante = user =>
   verificationUserTypes().includes(user?.attributes?.profile?.publicData?.userType);
 
@@ -271,6 +285,7 @@ module.exports = {
   DOC_KEYS,
   ACCEPTED_MIME,
   MAX_BYTES,
+  UPLOAD_LIMITS,
   isAnunciante,
   readDocs,
   accountStatusFrom,

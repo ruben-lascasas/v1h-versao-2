@@ -14,6 +14,9 @@ const initialState = {
   required: false,
   status: null, // 'nao_iniciado' | 'pendente' | 'aprovado' | 'recusado'
   docs: [],
+  // Formatos e tamanho aceites, vindos do servidor para nao divergirem do que
+  // o upload valida de facto. Null ate a primeira resposta chegar.
+  limits: null,
   uploadingDocKey: null,
   uploadError: null,
 };
@@ -31,6 +34,7 @@ const slice = createSlice({
       state.required = !!action.payload.required;
       state.status = action.payload.status || null;
       state.docs = action.payload.docs || [];
+      state.limits = action.payload.limits || state.limits;
     },
     statusFailed: state => {
       state.loading = false;
