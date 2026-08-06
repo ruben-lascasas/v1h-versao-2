@@ -285,6 +285,14 @@
   transform: scale(1.06);
 }
 
+/* O glifo enche o disco, como na referencia: medido a ~40px num disco de
+   54,5px (74%). Estava a 32px (59%), o que o deixava pequeno e com o traco
+   mais fino do que no desenho. */
+.stepIcon svg {
+  width: 40px;
+  height: 40px;
+}
+
 /* The SVGs carry stroke="#ffffff" as an attribute; the CSS property wins. */
 .stepIcon svg path,
 .stepIcon svg circle,
@@ -292,6 +300,11 @@
 .stepIcon svg line,
 .stepIcon svg polygon {
   stroke: #615040;
+  /* Sem isto os glifos aparecem preenchidos a escuro: o atributo fill="none"
+     do SVG perde para o valor que vem da cascata, e a lupa, o calendario e o
+     retangulo ficam manchas solidas em vez de contornos. Era este o "fundo
+     preto nos icones". */
+  fill: none;
 }
 
 .stepNumber {

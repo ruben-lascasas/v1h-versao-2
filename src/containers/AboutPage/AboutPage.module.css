@@ -152,9 +152,10 @@
 /* The SVGs carry stroke="#ffffff" as an attribute; the CSS property wins.
    #42352C is 4.89:1 on the disc — see the note in ComoFuncionaPage.module.css
    for why neither the brand brown nor the near-black works here. */
+/* Mesma proporcao que no Como Funciona: 74% do disco (44px). */
 .cardIcon svg {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
 }
 
 .cardIcon svg path,
@@ -163,6 +164,9 @@
 .cardIcon svg line,
 .cardIcon svg polygon {
   stroke: #615040;
+  /* Ver a nota em ComoFuncionaPage.module.css: sem fill:none os glifos vem
+     preenchidos a escuro. */
+  fill: none;
 }
 
 /* The compass and telescope have one filled dot each; keep it in step. */
