@@ -2,7 +2,7 @@
 
 .root {
   flex-grow: 1;
-  background-color: var(--colorGrey50);
+  background-color: #F8F7F5;
 }
 
 /* ── Hero ─────────────────────────────────────────── */
@@ -45,7 +45,7 @@
    previous negative margin that pulled isolated dark cards up over the hero:
    the band is what ties this section to the rest of the site's palette. */
 .cardsSection {
-  background-color: #B3A08B;
+  background-color: #BBA38B;
   padding: 48px 24px 56px;
 
   @media (--viewportMedium) {
@@ -140,7 +140,7 @@
   height: 44px;
   flex-shrink: 0;
   border-radius: 50%;
-  background-color: #ECE8DC;
+  background-color: #EDE8DD;
   transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
@@ -162,12 +162,12 @@
 .cardIcon svg rect,
 .cardIcon svg line,
 .cardIcon svg polygon {
-  stroke: #6A5748;
+  stroke: #615040;
 }
 
 /* The compass and telescope have one filled dot each; keep it in step. */
 .cardIcon svg circle[r='1'] {
-  fill: #6A5748;
+  fill: #615040;
 }
 
 .cardTitle {
@@ -184,7 +184,7 @@
 .cardText {
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  color: #EEDED1;
   line-height: 1.75;
   margin: 0;
 }
@@ -306,7 +306,7 @@
 /* Second band, deliberately lighter than the cards one so the page reads as
    light → brown → light → tan rather than two identical slabs. */
 .valuesSection {
-  background-color: #B3A08B;
+  background-color: #BBA38B;
   padding: 56px 24px;
 
   @media (--viewportMedium) {

@@ -2,7 +2,7 @@
 
 .root {
   flex-grow: 1;
-  background-color: var(--colorGrey50);
+  background-color: #F8F7F5;
 }
 
 /* ── Hero ──────────────────────────────────────────── */
@@ -88,18 +88,18 @@
    Sem ela os cartoes castanhos flutuavam sobre o fundo claro e as duas paginas
    nao se pareciam. */
 .sectionTinted {
-  background-color: #B3A08B;
+  background-color: #BBA38B;
 }
 
 /* Titulo e subtitulo a branco sobre a faixa, como o designer desenhou. A faixa
    teve de escurecer para isso: sobre o tan #BAA38A o branco media 2,42:1 no
    titulo e 2,15:1 no subtitulo. Com #7C6350 sao 5,59:1 e 4,57:1. */
-/* O desenho tem este texto a creme, mas sobre a faixa #B3A08B isso mede
-   2,06:1 no titulo e 2,24:1 no subtitulo — nao se le ao sol, que foi onde o
-   problema foi notado. Manter a faixa e escurecer o texto e a unica
-   combinacao que preserva os valores do cartao, do disco e do icone. */
+/* Creme sobre a faixa, exatamente como na imagem de referencia (amostrado
+   pixel a pixel, nao estimado). Fica registado que nao cumpre AA: o titulo
+   mede 2,2:1 (minimo 3) e o subtitulo 2,09:1 (minimo 4,5). Foi decisao
+   explicita de seguir o desenho; o resto da pagina passa. */
 .sectionTinted .sectionTitle {
-  color: #3F3131;
+  color: #FDF3E9;
 }
 
 /* The header text was coloured for a white page. On the tan band the subtitle
@@ -109,12 +109,12 @@
    uppercase with 0.15em tracking this is the hardest text on the page to read,
    so it gets the widest margin, not the narrowest: #5C4A3E is 6.84:1. */
 .sectionTinted .sectionTag {
-  background-color: #EFE7DC;
-  color: #5C4A3E;
+  background-color: #F3E9DF;
+  color: #685747;
 }
 
 .sectionTinted .sectionSubtitle {
-  color: #3F3131;
+  color: #FCEDDA;
 }
 
 :global(body[data-dark-mode]) .sectionTinted {
@@ -221,7 +221,7 @@
   left: 18px;
   width: 76px;
   height: 12px;
-  background-color: #ECE8DC;
+  background-color: #F9EDE0;
   border-radius: 4px 4px 0 0;
   transition: width 0.3s ease;
 }
@@ -276,7 +276,7 @@
   height: 54px;
   flex-shrink: 0;
   border-radius: 50%;
-  background-color: #ECE8DC;
+  background-color: #EDE8DD;
   transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
@@ -291,7 +291,7 @@
 .stepIcon svg rect,
 .stepIcon svg line,
 .stepIcon svg polygon {
-  stroke: #6A5748;
+  stroke: #615040;
 }
 
 .stepNumber {
@@ -300,7 +300,7 @@
   font-size: 40px;
   /* Was rgba(255,255,255,0.15), which measured 1.6:1 and read as a smudge.
      Solid brand tan is both legible and a deliberate accent. */
-  color: #ECE8DC;
+  color: #F9F2E9;
   letter-spacing: 0.02em;
   line-height: 1;
 }
@@ -317,7 +317,7 @@
   line-height: 1.35;
   margin: 0 0 10px 0;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(186, 163, 138, 0.2);
+  border-bottom: 1px solid #736051;
 
   /* Reserve two lines once the cards sit side by side, so one wrapped title
      doesn't push its divider and body copy out of line with the others. */
@@ -329,7 +329,7 @@
 .stepText {
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  color: #EEDED1;
   line-height: 1.75;
   margin: 0;
 }
@@ -437,7 +437,7 @@
 .guaranteeText {
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  color: #EEDED1;
   line-height: 1.75;
   margin: 0;
 }
