@@ -1,22 +1,28 @@
 const { transactionLineItems } = require('../api-util/lineItems');
 const { getSdk, handleError, serialize, fetchCommission } = require('../api-util/sdk');
 const { constructValidLineItems } = require('../api-util/lineItemHelpers');
+const { resolveCommission, hostMetadataFrom } = require('../api-util/hostCommission');
 
 module.exports = (req, res) => {
   const { isOwnListing, listingId, orderData } = req.body || {};
 
   const sdk = getSdk(req, res);
 
+  // O autor vem incluído para se saber o modelo de comissão do anfitrião.
   const listingPromise = () =>
-    isOwnListing ? sdk.ownListings.show({ id: listingId }) : sdk.listings.show({ id: listingId });
+    isOwnListing
+      ? sdk.ownListings.show({ id: listingId, include: ['author'] })
+      : sdk.listings.show({ id: listingId, include: ['author'] });
 
   Promise.all([listingPromise(), fetchCommission(sdk)])
     .then(([showListingResponse, fetchAssetsResponse]) => {
       const listing = showListingResponse.data.data;
       const commissionAsset = fetchAssetsResponse.data.data[0];
 
-      const { providerCommission, customerCommission } =
-        commissionAsset?.type === 'jsonAsset' ? commissionAsset.attributes.data : {};
+      const { providerCommission, customerCommission } = resolveCommission(
+        commissionAsset?.type === 'jsonAsset' ? commissionAsset.attributes.data : {},
+        hostMetadataFrom(showListingResponse)
+      );
 
       const lineItems = transactionLineItems(
         listing,

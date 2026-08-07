@@ -18,6 +18,7 @@ const {
   fetchCommission,
 } = require('../api-util/sdk');
 const log = require('../log');
+const { resolveCommission, hostMetadataFrom } = require('../api-util/hostCommission');
 
 // After a multi-booking transaction is created, block the dates of the
 // additional slots on the listing's availability calendar so other users
@@ -49,7 +50,9 @@ const createMultiBookingExceptions = (listingId, multipleBookings) => {
 
 const { Money } = sharetribeSdk.types;
 
-const transactionPromise = (sdk, id) => sdk.transactions.show({ id, include: ['listing'] });
+const transactionPromise = (sdk, id) =>
+  // listing.author para se saber o modelo de comissao do anfitriao.
+  sdk.transactions.show({ id, include: ['listing', 'listing.author'] });
 const getListingRelationShip = transactionShowAPIData => {
   const { data, included } = transactionShowAPIData;
   const { relationships } = data;
@@ -169,8 +172,10 @@ module.exports = (req, res) => {
         transaction.attributes.payinTotal?.currency ||
         listing.attributes.price?.currency ||
         orderData.currency;
-      const { providerCommission, customerCommission } =
-        commissionAsset?.type === 'jsonAsset' ? commissionAsset.attributes.data : {};
+      const { providerCommission, customerCommission } = resolveCommission(
+        commissionAsset?.type === 'jsonAsset' ? commissionAsset.attributes.data : {},
+        hostMetadataFrom(showTransactionResponse)
+      );
 
       lineItems = transactionLineItems(
         listing,
