@@ -367,6 +367,7 @@ const server = app.listen(PORT, () => {
   }
   try {
     require('./jobs/expireFeaturedListingsJob').start();
+    require('./jobs/monthlyReportJob').start();
   } catch (e) {
     console.error('[expireFeatured] failed to start:', e?.message || e);
   }
