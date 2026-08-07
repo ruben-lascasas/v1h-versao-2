@@ -1181,3 +1181,16 @@
   color: #e53935;
   margin: 4px 0 0 0;
 }
+
+/* Explica onde o pagamento acontece, já que o cartão deixou de ser pedido
+   nesta página e passou para o Checkout do Stripe. */
+.paymentNote {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6B6B6B;
+  margin: 12px 0 0 0;
+}
+
+:global(body[data-dark-mode]) .paymentNote {
+  color: #A9A9A9;
+}

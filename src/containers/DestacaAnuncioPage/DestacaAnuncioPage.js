@@ -46,7 +46,7 @@ import TopbarContainer from '../TopbarContainer/TopbarContainer';
 import FooterContainer from '../FooterContainer/FooterContainer';
 
 import { getOwnListingsById } from '../ManageListingsPage/ManageListingsPage.duck';
-import { addHighlightedListing, featureListing, selectHighlightedListings } from '../../ducks/highlightedListings.duck';
+import { saveDestaqueDetails, selectHighlightedListings } from '../../ducks/highlightedListings.duck';
 import css from './DestacaAnuncioPage.module.css';
 
 // ─── Card preview igual ao da landing page ────────────────────────────────────
@@ -477,68 +477,23 @@ const ListingSelectCard = ({ listing, onSelect }) => {
 
 const FEATURING_PRICE = '9,99 €';
 
-const cardStyles = {
-  base: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", Helvetica, Arial, sans-serif',
-    fontSize: typeof window !== 'undefined' && window.innerWidth < 768 ? '14px' : '16px',
-    fontSmoothing: 'antialiased',
-    lineHeight: '24px',
-    color: '#111',
-    '::placeholder': { color: '#aab7c4' },
-  },
-  invalid: { color: '#e53935' },
-};
-
-const PaymentSection = ({ cardRef, cardError, setCardError, setCardComplete, isEN }) => {
-  const cardContainerRef = useRef(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.Stripe || !cardContainerRef.current) return;
-    const publishableKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
-    if (!publishableKey) return;
-
-    const stripe = window.Stripe(publishableKey);
-    const elements = stripe.elements({
-      fonts: [{ cssSrc: 'https://fonts.googleapis.com/css?family=Inter' }],
-    });
-    const card = elements.create('card', { style: cardStyles });
-    card.mount(cardContainerRef.current);
-    card.addEventListener('change', e => {
-      setCardError(e.error ? e.error.message : null);
-      setCardComplete(!!e.complete);
-    });
-    cardRef.current = { card, stripe };
-
-    return () => {
-      card.unmount();
-      cardRef.current = null;
-    };
-  }, []);
-
-  return (
-    <div className={css.paymentSection}>
-      <h4 className={css.paymentSectionTitle}>
-        {isEN ? 'Payment method' : 'Método de pagamento'}
-      </h4>
-      <div className={css.paymentPriceRow}>
-        <span className={css.paymentPriceLabel}>
-          {isEN ? 'Featuring fee' : 'Taxa de destaque'}
-        </span>
-        <span className={css.paymentPriceValue}>
-          {FEATURING_PRICE}
-          <span className={css.paymentPricePeriod}> {isEN ? '/ month' : '/ mês'}</span>
-        </span>
-      </div>
-      <div className={css.paymentCardWrapper}>
-        <label className={css.paymentLabel}>
-          {isEN ? 'Payment card details' : 'Dados do cartão'}
-        </label>
-        <div className={css.stripeCardElement} ref={cardContainerRef} />
-        {cardError && <p className={css.paymentError}>{cardError}</p>}
-      </div>
+const PaymentSection = ({ isEN }) => (
+  <div className={css.paymentSection}>
+    <h4 className={css.paymentSectionTitle}>{isEN ? 'Payment' : 'Pagamento'}</h4>
+    <div className={css.paymentPriceRow}>
+      <span className={css.paymentPriceLabel}>{isEN ? 'Featuring fee' : 'Taxa de destaque'}</span>
+      <span className={css.paymentPriceValue}>
+        {FEATURING_PRICE}
+        <span className={css.paymentPricePeriod}> {isEN ? '/ month' : '/ mês'}</span>
+      </span>
     </div>
-  );
-};
+    <p className={css.paymentNote}>
+      {isEN
+        ? 'You will be taken to Stripe to pay. The listing is featured as soon as the payment is confirmed, and stays featured while the subscription is active.'
+        : 'Vai ser encaminhado para o Stripe para pagar. O anúncio fica em destaque assim que o pagamento for confirmado, e mantém-se enquanto a subscrição estiver activa.'}
+    </p>
+  </div>
+);
 
 const HIGHLIGHTED_SECTION_ID = 'highlighted-space';
 
@@ -585,9 +540,9 @@ const ListingDetail = ({ listing, currentUser, onBack }) => {
 
   const [highlighted, setHighlighted] = useState(false);
   const [extraImages, setExtraImages] = useState([]);
-  const cardRef = useRef(null);
-  const [cardError, setCardError] = useState(null);
-  const [cardComplete, setCardComplete] = useState(false);
+  // O pagamento passa a ser no Stripe; aqui só se sabe se estamos a caminho de lá.
+  const [redirecting, setRedirecting] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   // Estado editável levantado do HighlightedPreviewCard
@@ -612,68 +567,47 @@ const ListingDetail = ({ listing, currentUser, onBack }) => {
     e.target.value = '';
   };
 
-  const handleDestacar = () => {
+  /**
+   * Guarda o que o anfitrião editou e encaminha-o para o Stripe.
+   *
+   * O destaque não é ligado aqui: quem o liga é o webhook, depois de o Stripe
+   * confirmar a cobrança. Antes disto, esta função marcava o pedido como
+   * pendente e mostrava um popup de sucesso sem que nada fosse cobrado — o
+   * formulário de cartão desta página nunca chegava a ser usado.
+   */
+  const handleDestacar = async () => {
     const id = currentListing.id.uuid;
-    const slug = createSlug(editedTitle || title);
-
-    // Obter URL da primeira imagem a partir dos variants
-    const images = currentListing.images || [];
-    const firstImg = images[0] || null;
-    const imgVariants = firstImg?.attributes?.variants || {};
-    const imageUrl =
-      imgVariants['listing-card-2x']?.url ||
-      imgVariants['listing-card']?.url ||
-      Object.values(imgVariants)[0]?.url ||
-      null;
 
     // Comodidades (multi-enum) — guarda os option keys brutos para tradução on-the-fly
     const amenityKeys = (config.listing.listingFields || [])
       .filter(f => f.schemaType === 'multi-enum' && publicData?.[f.key]?.length > 0)
       .flatMap(f => publicData[f.key] || []);
 
-    // Labels para a pré-visualização local (usa o config já traduzido)
-    const amenityChips = amenityKeys.map(val => {
-      for (const f of config.listing.listingFields || []) {
-        if (f.schemaType === 'multi-enum') {
-          const opt = f.enumOptions?.find(o => o.option === val);
-          if (opt) return opt.label;
-        }
-      }
-      return val;
-    });
+    setRedirecting(true);
+    setCheckoutError(null);
 
-    const hostName =
-      currentUser?.attributes?.profile?.displayName ||
-      currentUser?.attributes?.profile?.firstName ||
-      null;
+    try {
+      await dispatch(
+        saveDestaqueDetails(id, {
+          description: editedDescription || description || null,
+          amenityKeys,
+        })
+      );
 
-    // Grava publicData.featured=true no Sharetribe — torna o anúncio visível
-    // para todos os dispositivos via query pub_featured=true na landing page.
-    // Também persiste descrição e amenidades para ficarem disponíveis cross-browser via API.
-    dispatch(featureListing(id, { description: editedDescription || description || null, amenityKeys }));
+      const response = await fetch('/api/destaque/checkout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listingId: id, locale }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.url) throw new Error(data.error || String(response.status));
 
-    // Atualiza o estado local para feedback imediato na sessão atual.
-    dispatch(
-      addHighlightedListing({
-        id,
-        slug,
-        title: editedTitle || title,
-        description: editedDescription || description || '',
-        priceFormatted: price ? formatMoney(intl, price) : null,
-        location: publicData?.location?.address || null,
-        imageUrl,
-        extraImageUrls: extraImages,
-        hostName,
-        hostInitial: hostName ? hostName.charAt(0).toUpperCase() : '?',
-        amenityChips,
-        amenityKeys,
-        rating: averageRating ?? null,
-        reviewCount: reviewCount ?? 0,
-        category: publicData?.categoryLevel1 || null,
-      })
-    );
-    setHighlighted(true);
-    setShowSuccessPopup(true);
+      window.location.assign(data.url);
+    } catch (e) {
+      setRedirecting(false);
+      setCheckoutError(e.message);
+    }
   };
 
   const firstImage =
@@ -794,21 +728,27 @@ const ListingDetail = ({ listing, currentUser, onBack }) => {
         </label>
       </div>
 
-      <PaymentSection
-        cardRef={cardRef}
-        cardError={cardError}
-        setCardError={setCardError}
-        setCardComplete={setCardComplete}
-        isEN={isEN}
-      />
+      <PaymentSection isEN={isEN} />
 
       <div className={css.destacarSection}>
-        <PrimaryButton
-          onClick={handleDestacar}
-          disabled={!cardComplete || !!cardError || highlighted}
-        >
-          <FormattedMessage id="DestacaAnuncioPage.destacarButton" />
+        <PrimaryButton onClick={handleDestacar} disabled={redirecting || highlighted}>
+          {redirecting ? (
+            isEN ? 'Opening payment…' : 'A abrir o pagamento…'
+          ) : (
+            <FormattedMessage id="DestacaAnuncioPage.destacarButton" />
+          )}
         </PrimaryButton>
+        {checkoutError ? (
+          <p className={css.paymentError}>
+            {checkoutError === 'price-not-configured' || checkoutError === 'billing-not-configured'
+              ? isEN
+                ? 'Featuring is not available right now. Please try again later.'
+                : 'O destaque não está disponível de momento. Tente mais tarde.'
+              : isEN
+              ? 'Could not open the payment page. Please try again.'
+              : 'Não foi possível abrir a página de pagamento. Tente novamente.'}
+          </p>
+        ) : null}
       </div>
 
       {/* ── Popup de sucesso ── */}

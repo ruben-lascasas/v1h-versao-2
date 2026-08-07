@@ -57,6 +57,28 @@ export const clearHighlightedListings = () => ({ type: CLEAR_HIGHLIGHTED });
 // Após a gravação, dispara uma chamada (fire-and-forget) ao endpoint do
 // V1H `/api/notify-admin` para que o admin receba um email a avisar do
 // novo destaque, com link direto para o Sharetribe Console.
+/**
+ * Guarda o texto e as comodidades que o anfitrião editou na página de destaque,
+ * sem pedir destaque nenhum.
+ *
+ * Existe separado do `featureListing` porque o destaque passou a ser pago: o
+ * anfitrião é encaminhado para o Stripe e pode desistir a meio. Marcar
+ * `featuredPending` antes de haver pagamento deixava pedidos pendentes por
+ * pagar à espera de aprovação.
+ */
+export const saveDestaqueDetails = (listingId, { description, amenityKeys } = {}) => (
+  dispatch,
+  getState,
+  sdk
+) =>
+  sdk.ownListings.update({
+    id: listingId,
+    publicData: {
+      featuredDescription: description || null,
+      featuredAmenityKeys: amenityKeys?.length > 0 ? amenityKeys : null,
+    },
+  });
+
 export const featureListing = (listingId, { description, amenityKeys } = {}) => (dispatch, getState, sdk) => {
   return sdk.ownListings
     .update(

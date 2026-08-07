@@ -22,7 +22,8 @@
 
 const billing = require('../api-util/stripeBilling');
 const store = require('../api-util/hostPlanStore');
-const { planForPriceId, normalisePlan, FREE } = require('../api-util/plans');
+const { planForPriceId, normalisePlan, FREE, DESTAQUE } = require('../api-util/plans');
+const { getIntegrationSdk } = require('../api-util/sdk');
 
 /**
  * De quem é esta subscrição. O ID do utilizador vem dos metadata que gravámos
@@ -58,7 +59,56 @@ const planForSubscription = subscription => {
   return fromMetadata ? normalisePlan(fromMetadata) : null;
 };
 
+/**
+ * Destaque de um anúncio: activa enquanto a subscrição estiver boa, desliga
+ * quando deixar de estar.
+ *
+ * Marca-se `featuredSource: 'subscription'` para o job diário de expiração
+ * deixar este anúncio em paz. Um destaque pago mensalmente não pode cair ao fim
+ * de 30 dias enquanto o cartão continua a ser cobrado — quem manda aqui é o
+ * estado da subscrição, não o relógio.
+ */
+const handleDestaqueChange = async subscription => {
+  const listingId = subscription?.metadata?.listingId;
+  if (!listingId) {
+    console.error('[stripe-webhook] destaque sem listingId:', subscription?.id);
+    return;
+  }
+
+  const sdk = getIntegrationSdk();
+  if (!sdk) throw new Error('integration-sdk-not-configured');
+
+  const active = billing.isActiveStatus(subscription.status);
+
+  await sdk.listings.update({
+    id: listingId,
+    publicData: active
+      ? {
+          featured: 'true',
+          featuredAt: new Date().toISOString(),
+          featuredSource: 'subscription',
+          featuredSubscriptionId: subscription.id,
+          featuredPending: null,
+        }
+      : {
+          featured: 'false',
+          featuredSource: null,
+          featuredSubscriptionId: null,
+          featuredPending: null,
+        },
+  });
+
+  console.log(
+    `[stripe-webhook] destaque ${listingId}: ${subscription.status} → ${active ? 'activo' : 'desligado'}`
+  );
+};
+
 const handleSubscriptionChange = async subscription => {
+  // Uma subscrição de destaque não mexe no plano da conta.
+  if (subscription?.metadata?.kind === DESTAQUE.key) {
+    return handleDestaqueChange(subscription);
+  }
+
   const userId = await resolveUserId(subscription);
   if (!userId) {
     console.error('[stripe-webhook] subscription without a resolvable user:', subscription?.id);
@@ -88,6 +138,9 @@ const handleSubscriptionChange = async subscription => {
 };
 
 const handleSubscriptionDeleted = async subscription => {
+  if (subscription?.metadata?.kind === DESTAQUE.key) {
+    return handleDestaqueChange(subscription);
+  }
   const userId = await resolveUserId(subscription);
   if (!userId) return;
   await store.revertToFree(userId, billing.subscriptionSummary(subscription));
@@ -157,6 +210,7 @@ module.exports = {
   // Exportados para teste.
   resolveUserId,
   planForSubscription,
+  handleDestaqueChange,
   handleSubscriptionChange,
   FREE,
 };

@@ -8,10 +8,13 @@
  * links, the prompt modal after publishing, the "Em destaque" badges on cards
  * and listing pages, and the destaque expiry alerts.
  *
- * Turned off while the flow has no payment provider wired up. Nothing was
- * deleted: flip this to `true` to bring the whole feature back.
+ * Esteve desligado enquanto o fluxo não cobrava nada: a página mostrava um
+ * formulário de cartão que era montado e nunca lido, e confirmar apenas marcava
+ * o pedido como pendente para aprovação manual. O pagamento passou a ser feito
+ * no Checkout do Stripe (server/api/destaque-billing.js), com o destaque a ser
+ * activado pelo webhook depois de a cobrança confirmar.
  *
- * Note: this hides the UI. Listings already carrying `featured` public data
- * keep it, and the ordering the API applies to them is unaffected.
+ * Nota: isto esconde a interface. Anúncios que já tenham `featured` em
+ * publicData mantêm-no, e a ordenação que a API lhes aplica não é afectada.
  */
-export const listingHighlightsEnabled = false;
+export const listingHighlightsEnabled = true;

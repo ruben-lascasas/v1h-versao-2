@@ -24,6 +24,7 @@ const notifyAdmin = require('./api/notify-admin');
 const verification = require('./api/verification');
 const verificationAdmin = require('./api/verification-admin');
 const subscriptions = require('./api/subscriptions');
+const destaqueBilling = require('./api/destaque-billing');
 const changeUserType = require('./api/change-user-type');
 const newsletter = require('./api/newsletter');
 const reportListing = require('./api/report-listing');
@@ -110,6 +111,7 @@ router.post('/change-user-type', changeUserType.change);
 router.get('/subscriptions', subscriptions.status);
 router.post('/subscriptions/checkout', subscriptions.checkout);
 router.post('/subscriptions/portal', subscriptions.portal);
+router.post('/destaque/checkout', destaqueBilling.checkout);
 
 router.get('/verification-admin/list', verificationAdmin.list);
 router.get('/verification-admin/doc', verificationAdmin.docUrl);

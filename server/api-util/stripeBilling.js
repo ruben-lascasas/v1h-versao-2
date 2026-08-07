@@ -95,8 +95,12 @@ const createCheckoutSession = async ({
   successUrl,
   cancelUrl,
   locale,
+  extraMetadata,
 }) => {
   const stripe = client();
+  // Os metadata vão à sessão e à subscrição: o webhook lê os da subscrição, que
+  // é o objecto que chega nos eventos de renovação e cancelamento.
+  const metadata = { sharetribeUserId: userId, plan: planKey, ...(extraMetadata || {}) };
   return stripe.checkout.sessions.create({
     mode: 'subscription',
     customer: customerId,
@@ -109,10 +113,8 @@ const createCheckoutSession = async ({
     // permite ao Stripe emitir recibos corretos.
     billing_address_collection: 'required',
     automatic_tax: { enabled: false },
-    subscription_data: {
-      metadata: { sharetribeUserId: userId, plan: planKey },
-    },
-    metadata: { sharetribeUserId: userId, plan: planKey },
+    subscription_data: { metadata },
+    metadata,
   });
 };
 

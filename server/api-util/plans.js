@@ -88,6 +88,19 @@ const PLANS = {
   },
 };
 
+/**
+ * Destaque de um anúncio: 9,99 €/mês, recorrente, um por anúncio. Não é um
+ * plano de conta — é o quarto pilar de receita (§8.3), vendido à parte — mas
+ * assenta na mesma maquinaria de subscrições.
+ */
+const DESTAQUE = {
+  key: 'destaque',
+  monthly: 9.99,
+  priceEnv: 'STRIPE_PRICE_DESTAQUE_MONTH',
+};
+
+const destaquePriceId = () => process.env[DESTAQUE.priceEnv] || null;
+
 const isPlanKey = key => PLAN_KEYS.includes(key);
 
 /** Normaliza o que vier da metadata; desconhecido ou ausente é Gratuito. */
@@ -158,6 +171,8 @@ const publicCatalogue = () =>
   });
 
 module.exports = {
+  DESTAQUE,
+  destaquePriceId,
   FREE,
   PRO,
   BUSINESS,

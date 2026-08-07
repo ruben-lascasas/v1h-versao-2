@@ -231,6 +231,15 @@ const runOnce = async ({ dryRun = false } = {}) => {
       listing?.author?.id?.uuid ||
       null;
 
+    // Destaques pagos por subscrição não expiram pelo relógio: quem os liga e
+    // desliga é o webhook do Stripe, conforme o estado da subscrição. Deixá-los
+    // cair aos 30 dias tirava o destaque a quem continua a ser cobrado.
+    if (publicData.featuredSource === 'subscription') {
+      skipped += 1;
+      console.log(`  ${id}  ${title}  → destaque por subscrição, gerido pelo Stripe`);
+      continue;
+    }
+
     if (!featuredAt) {
       skipped += 1;
       console.log(`  ${id}  ${title}  → no featuredAt, skipped`);
