@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { compose } from 'redux';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -33,31 +33,100 @@ const money = (value, isEN) =>
     minimumFractionDigits: 0,
   }).format(value);
 
-// O que cada plano dá, do §8.3. Fica no frontend por ser texto de marketing;
-// os números todos vêm do servidor.
+// Transcrito do §8.3 do plano de negócios, item a item e pela mesma ordem.
+// Fica no frontend por ser texto comercial; os preços vêm todos do servidor.
 const BENEFITS = {
   gratuito: {
-    pt: ['Publicação de espaços', 'Gestão de reservas', 'Calendário e mensagens', 'Pagamentos integrados'],
-    en: ['Listing publication', 'Booking management', 'Calendar and messaging', 'Integrated payments'],
+    pt: [
+      'Publicação de espaços',
+      'Gestão de reservas',
+      'Calendário básico',
+      'Sistema de mensagens',
+      'Pagamentos integrados',
+      'Acesso ao marketplace',
+    ],
+    en: [
+      'Listing publication',
+      'Booking management',
+      'Basic calendar',
+      'Messaging system',
+      'Integrated payments',
+      'Marketplace access',
+    ],
   },
   pro: {
-    pt: ['Tudo do plano Gratuito', 'Destaque nas pesquisas', 'Estatísticas detalhadas', 'Relatórios mensais', 'Apoio prioritário'],
-    en: ['Everything in Free', 'Search highlighting', 'Detailed statistics', 'Monthly reports', 'Priority support'],
+    pt: [
+      'Tudo do plano Gratuito',
+      'Destaque moderado nas pesquisas',
+      'Estatísticas detalhadas',
+      'Relatórios mensais',
+      'Integração com Google Calendar',
+      'Personalização do perfil',
+      'Apoio prioritário',
+    ],
+    en: [
+      'Everything in Free',
+      'Moderate search highlighting',
+      'Detailed statistics',
+      'Monthly reports',
+      'Google Calendar integration',
+      'Profile customisation',
+      'Priority support',
+    ],
   },
   business: {
-    pt: ['Tudo do plano Pro', 'Gestão multi-espaço', 'Comissão reduzida', 'Painel comercial', 'Gestão de equipas'],
-    en: ['Everything in Pro', 'Multi-venue management', 'Reduced commission', 'Commercial dashboard', 'Team management'],
+    pt: [
+      'Gestão multi-espaço',
+      'Relatórios avançados',
+      'Dashboard comercial',
+      'Gestão de equipas',
+      'Ferramentas de marketing',
+      'Campanhas promocionais',
+      'Integração com ferramentas externas',
+    ],
+    en: [
+      'Multi-venue management',
+      'Advanced reports',
+      'Commercial dashboard',
+      'Team management',
+      'Marketing tools',
+      'Promotional campaigns',
+      'External tool integrations',
+    ],
   },
   enterprise: {
-    pt: ['Soluções personalizadas', 'Múltiplas localizações', 'Comissão negociada', 'Gestor de conta dedicado', 'Acordos de nível de serviço'],
-    en: ['Custom solutions', 'Multiple locations', 'Negotiated commission', 'Dedicated account manager', 'Service level agreements'],
+    pt: [
+      'Soluções personalizadas',
+      'Gestão de múltiplas localizações',
+      'Relatórios executivos',
+      'Integrações específicas',
+      'Suporte dedicado',
+      'Acordos de nível de serviço (SLA)',
+      'Funcionalidades exclusivas',
+    ],
+    en: [
+      'Custom solutions',
+      'Multiple location management',
+      'Executive reports',
+      'Specific integrations',
+      'Dedicated support',
+      'Service level agreements (SLA)',
+      'Exclusive features',
+    ],
   },
 };
 
-const PlanCard = ({ plan, isCurrent, isEN, redirecting, onSubscribe }) => {
+/** Quanto se poupa ao pagar o ano de uma vez, em meses oferecidos. */
+const monthsSaved = plan =>
+  plan.monthly && plan.yearly ? Math.round((plan.monthly * 12 - plan.yearly) / plan.monthly) : 0;
+
+const PlanCard = ({ plan, isCurrent, isEN, interval, redirecting, onSubscribe }) => {
   const label = isEN ? plan.labelEN : plan.label;
   const benefits = BENEFITS[plan.key]?.[isEN ? 'en' : 'pt'] || [];
   const isQuoteOnly = plan.monthly === null;
+  const isYear = interval === 'year';
+  const amount = isYear ? plan.yearly : plan.monthly;
+  const saved = monthsSaved(plan);
 
   return (
     <li className={classNames(css.card, { [css.cardCurrent]: isCurrent })}>
@@ -72,19 +141,26 @@ const PlanCard = ({ plan, isCurrent, isEN, redirecting, onSubscribe }) => {
           <span className={css.priceQuote}>{t(isEN, 'Sob consulta', 'On request')}</span>
         ) : (
           <>
-            <span className={css.priceValue}>{money(plan.monthly, isEN)}</span>
-            <span className={css.pricePeriod}> {t(isEN, '/ mês', '/ month')}</span>
+            <span className={css.priceValue}>{money(amount, isEN)}</span>
+            <span className={css.pricePeriod}>
+              {' '}
+              {isYear ? t(isEN, '/ ano', '/ year') : t(isEN, '/ mês', '/ month')}
+            </span>
           </>
         )}
       </p>
 
-      {plan.yearly ? (
+      {isQuoteOnly ? null : isYear && saved > 0 ? (
         <p className={css.priceYearly}>
           {t(
             isEN,
-            `ou ${money(plan.yearly, isEN)} / ano`,
-            `or ${money(plan.yearly, isEN)} / year`
+            `Equivale a ${saved} ${saved === 1 ? 'mês' : 'meses'} oferecidos`,
+            `That is ${saved} ${saved === 1 ? 'month' : 'months'} free`
           )}
+        </p>
+      ) : plan.yearly ? (
+        <p className={css.priceYearly}>
+          {t(isEN, `ou ${money(plan.yearly, isEN)} / ano`, `or ${money(plan.yearly, isEN)} / year`)}
         </p>
       ) : null}
 
@@ -98,10 +174,15 @@ const PlanCard = ({ plan, isCurrent, isEN, redirecting, onSubscribe }) => {
 
       <div className={css.cardFooter}>
         {isCurrent ? null : isQuoteOnly ? (
-          <a className={css.buttonSecondary} href="/contacto">
+          <a className={css.buttonSecondary} href="/contact">
             {t(isEN, 'Falar connosco', 'Contact us')}
           </a>
-        ) : plan.available ? (
+        ) : (
+          // O botão está sempre presente, mesmo antes de o Stripe estar
+          // configurado: o percurso completo já existe e passa a funcionar
+          // assim que as chaves e os Prices entrarem, sem alterar código. Sem
+          // configuração, o servidor recusa e a página explica porquê, em vez
+          // de haver aqui um botão morto a dizer "brevemente".
           <button
             type="button"
             className={css.button}
@@ -112,8 +193,6 @@ const PlanCard = ({ plan, isCurrent, isEN, redirecting, onSubscribe }) => {
               ? t(isEN, 'A abrir…', 'Opening…')
               : t(isEN, 'Assinar', 'Subscribe')}
           </button>
-        ) : (
-          <span className={css.unavailable}>{t(isEN, 'Brevemente', 'Coming soon')}</span>
         )}
       </div>
     </li>
@@ -133,7 +212,6 @@ const SubscriptionsPage = props => {
     plan,
     subscription,
     catalogue,
-    billingConfigured,
     redirecting,
     error,
   } = useSelector(selectSubscriptions);
@@ -149,7 +227,39 @@ const SubscriptionsPage = props => {
   const checkoutResult =
     typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('checkout') : null;
 
-  const handleSubscribe = key => dispatch(startCheckout(key, 'month', locale));
+  const [interval, setInterval] = useState('month');
+  const handleSubscribe = key => dispatch(startCheckout(key, interval, locale));
+
+  // O servidor distingue "não há chave nenhuma" de "falta o Price deste plano";
+  // a segunda é a que acontece se alguém criar uns Prices e esquecer outros.
+  const errorText = code => {
+    switch (code) {
+      case 'billing-not-configured':
+        return t(
+          isEN,
+          'Os pagamentos ainda não estão ligados. Assim que a configuração estiver feita, este botão passa a funcionar.',
+          'Payments are not connected yet. This button will work as soon as the configuration is in place.'
+        );
+      case 'price-not-configured':
+        return t(
+          isEN,
+          'Este plano ainda não tem preço configurado no Stripe.',
+          'This plan has no price configured in Stripe yet.'
+        );
+      case 'plan-not-purchasable':
+        return t(
+          isEN,
+          'Este plano não se assina aqui — fale connosco.',
+          'This plan is not purchased here — please contact us.'
+        );
+      default:
+        return t(
+          isEN,
+          'Não foi possível abrir a página de pagamento. Tente novamente.',
+          'Could not open the payment page. Please try again.'
+        );
+    }
+  };
 
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
@@ -181,27 +291,29 @@ const SubscriptionsPage = props => {
             </p>
           ) : null}
 
-          {error ? (
-            <p className={css.error}>
-              {t(
-                isEN,
-                'Não foi possível falar com o serviço de pagamentos. Tente novamente.',
-                'Could not reach the payment service. Please try again.'
-              )}
-            </p>
-          ) : null}
+          {error ? <p className={css.error}>{errorText(error)}</p> : null}
+
+          <div className={css.intervalToggle} role="group" aria-label={t(isEN, 'Periodicidade', 'Billing period')}>
+            <button
+              type="button"
+              className={classNames(css.intervalOption, { [css.intervalActive]: interval === 'month' })}
+              aria-pressed={interval === 'month'}
+              onClick={() => setInterval('month')}
+            >
+              {t(isEN, 'Mensal', 'Monthly')}
+            </button>
+            <button
+              type="button"
+              className={classNames(css.intervalOption, { [css.intervalActive]: interval === 'year' })}
+              aria-pressed={interval === 'year'}
+              onClick={() => setInterval('year')}
+            >
+              {t(isEN, 'Anual', 'Yearly')}
+              <span className={css.intervalHint}>{t(isEN, '2 meses grátis', '2 months free')}</span>
+            </button>
+          </div>
 
           {!fetched && loading ? <p className={css.muted}>{t(isEN, 'A carregar…', 'Loading…')}</p> : null}
-
-          {fetched && !billingConfigured ? (
-            <p className={css.notice}>
-              {t(
-                isEN,
-                'As subscrições ainda não estão activas nesta instalação.',
-                'Subscriptions are not enabled on this installation yet.'
-              )}
-            </p>
-          ) : null}
 
           {fetched && catalogue.length > 0 ? (
             <ul className={css.grid}>
@@ -211,6 +323,7 @@ const SubscriptionsPage = props => {
                   plan={p}
                   isCurrent={p.key === plan}
                   isEN={isEN}
+                  interval={interval}
                   redirecting={redirecting}
                   onSubscribe={handleSubscribe}
                 />
