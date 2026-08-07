@@ -5,7 +5,7 @@
  * responde 400 a tudo, em produção, sem erro nenhum nos testes unitários.
  *
  * Este teste levanta um Express com a mesma ordem de middleware do apiRouter e
- * envia um pedido assinado a sério, com a biblioteca do Stripe a gerar o
+ * envia pedidos assinados a sério, com a biblioteca do Stripe a gerar o
  * cabeçalho. Não precisa de conta Stripe: a assinatura é HMAC com o segredo.
  */
 
@@ -14,8 +14,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Stripe = require('stripe');
 
-jest.mock('../api-util/hostPlanStore');
-const store = require('../api-util/hostPlanStore');
+const mockListingsUpdate = jest.fn();
+jest.mock('../api-util/sdk', () => ({
+  ...jest.requireActual('../api-util/sdk'),
+  getIntegrationSdk: () => ({ listings: { update: mockListingsUpdate } }),
+}));
+
 const webhook = require('./stripe-webhook');
 
 const SECRET = 'whsec_teste_do_corpo_em_bruto';
@@ -40,23 +44,23 @@ const post = (server, path, body, headers) =>
     req.end(body);
   });
 
-describe('o corpo em bruto chega intacto ao webhook', () => {
-  let server;
-  const OLD_ENV = process.env;
-
-  const payload = JSON.stringify({
+const sessionEvent = (over = {}) =>
+  JSON.stringify({
     id: 'evt_1',
-    type: 'customer.subscription.updated',
+    type: 'checkout.session.completed',
     data: {
       object: {
-        id: 'sub_1',
-        status: 'active',
-        customer: 'cus_1',
-        metadata: { sharetribeUserId: 'user-1', plan: 'pro' },
-        items: { data: [{ price: { id: 'price_pro_m', recurring: { interval: 'month' } } }] },
+        id: 'cs_1',
+        payment_status: 'paid',
+        metadata: { sharetribeUserId: 'user-1', kind: 'destaque', listingId: 'listing-1' },
+        ...over,
       },
     },
   });
+
+describe('webhook do destaque', () => {
+  let server;
+  const OLD_ENV = process.env;
 
   beforeAll(done => {
     const app = express();
@@ -66,66 +70,84 @@ describe('o corpo em bruto chega intacto ao webhook', () => {
     server = http.createServer(app).listen(0, done);
   });
 
-  // close() entrega um Error ao callback se ainda houver ligacoes abertas; o
-  // teste ja terminou, por isso ignora-se em vez de o passar ao done.
   afterAll(done => {
     server.close(() => done());
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    process.env = {
-      ...OLD_ENV,
-      STRIPE_SECRET_KEY: 'sk_test_x',
-      STRIPE_WEBHOOK_SECRET: SECRET,
-      STRIPE_PRICE_PRO_MONTH: 'price_pro_m',
-    };
-    store.applyPlan.mockResolvedValue({});
-    store.revertToFree.mockResolvedValue({});
+    mockListingsUpdate.mockReset();
+    mockListingsUpdate.mockResolvedValue({});
+    process.env = { ...OLD_ENV, STRIPE_SECRET_KEY: 'sk_test_x', STRIPE_WEBHOOK_SECRET: SECRET };
   });
   afterEach(() => {
     process.env = OLD_ENV;
   });
 
-  const signatureFor = body =>
-    Stripe.webhooks.generateTestHeaderString({ payload: body, secret: SECRET });
+  const sign = body => Stripe.webhooks.generateTestHeaderString({ payload: body, secret: SECRET });
 
-  it('aceita um pedido assinado e aplica o plano', async () => {
-    const res = await post(server, '/api/stripe/webhook', payload, {
-      'stripe-signature': signatureFor(payload),
-    });
+  it('activa o destaque quando o pagamento está concluído', async () => {
+    const body = sessionEvent();
+    const res = await post(server, '/api/stripe/webhook', body, { 'stripe-signature': sign(body) });
 
     expect(res.status).toBe(200);
-    expect(store.applyPlan).toHaveBeenCalledWith('user-1', 'pro', expect.objectContaining({ active: true }));
+    expect(mockListingsUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'listing-1',
+        publicData: expect.objectContaining({ featured: 'true', featuredPending: null }),
+      })
+    );
+  });
+
+  // Um Checkout em modo payment pode ficar pendente (multibanco, por exemplo).
+  it('não activa nada enquanto o pagamento não estiver pago', async () => {
+    const body = sessionEvent({ payment_status: 'unpaid' });
+    const res = await post(server, '/api/stripe/webhook', body, { 'stripe-signature': sign(body) });
+
+    expect(res.status).toBe(200);
+    expect(mockListingsUpdate).not.toHaveBeenCalled();
+  });
+
+  it('ignora pagamentos que não sejam destaques', async () => {
+    const body = sessionEvent({ metadata: { sharetribeUserId: 'user-1' } });
+    const res = await post(server, '/api/stripe/webhook', body, { 'stripe-signature': sign(body) });
+
+    expect(res.status).toBe(200);
+    expect(mockListingsUpdate).not.toHaveBeenCalled();
   });
 
   it('recusa o mesmo corpo com a assinatura de outro segredo', async () => {
-    const wrong = Stripe.webhooks.generateTestHeaderString({
-      payload,
-      secret: 'whsec_outro_segredo',
-    });
-    const res = await post(server, '/api/stripe/webhook', payload, { 'stripe-signature': wrong });
+    const body = sessionEvent();
+    const wrong = Stripe.webhooks.generateTestHeaderString({ payload: body, secret: 'whsec_outro' });
+    const res = await post(server, '/api/stripe/webhook', body, { 'stripe-signature': wrong });
 
     expect(res.status).toBe(400);
-    expect(store.applyPlan).not.toHaveBeenCalled();
+    expect(mockListingsUpdate).not.toHaveBeenCalled();
   });
 
-  // O caso que a assinatura existe para apanhar: alguém intercepta e muda o
-  // plano de pro para business no corpo, mantendo a assinatura original.
+  // O caso que a assinatura existe para apanhar: alguém intercepta e troca o
+  // anúncio a destacar, mantendo a assinatura original.
   it('recusa um corpo adulterado depois de assinado', async () => {
-    const signature = signatureFor(payload);
-    const tampered = payload.replace('"plan":"pro"', '"plan":"business"');
+    const body = sessionEvent();
+    const signature = sign(body);
+    const tampered = body.replace('"listing-1"', '"listing-do-atacante"');
     const res = await post(server, '/api/stripe/webhook', tampered, {
       'stripe-signature': signature,
     });
 
     expect(res.status).toBe(400);
-    expect(store.applyPlan).not.toHaveBeenCalled();
+    expect(mockListingsUpdate).not.toHaveBeenCalled();
   });
 
   it('recusa um pedido sem assinatura nenhuma', async () => {
-    const res = await post(server, '/api/stripe/webhook', payload, {});
+    const res = await post(server, '/api/stripe/webhook', sessionEvent(), {});
     expect(res.status).toBe(400);
-    expect(store.applyPlan).not.toHaveBeenCalled();
+    expect(mockListingsUpdate).not.toHaveBeenCalled();
+  });
+
+  it('devolve 500 quando a escrita falha, para o Stripe repetir', async () => {
+    mockListingsUpdate.mockRejectedValue(new Error('integration api em baixo'));
+    const body = sessionEvent();
+    const res = await post(server, '/api/stripe/webhook', body, { 'stripe-signature': sign(body) });
+    expect(res.status).toBe(500);
   });
 });

@@ -52,7 +52,6 @@ const TransactionPage = loadable(() => import(/* webpackChunkName: "TransactionP
 const NoAccessPage = loadable(() => import(/* webpackChunkName: "NoAccessPage" */ '../containers/NoAccessPage/NoAccessPage'));
 const AboutPage = loadable(() => import(/* webpackChunkName: "AboutPage" */ '../containers/AboutPage/AboutPage'));
 const ComoFuncionaPage = loadable(() => import(/* webpackChunkName: "ComoFuncionaPage" */ '../containers/ComoFuncionaPage/ComoFuncionaPage'));
-const SubscriptionsPage = loadable(() => import(/* webpackChunkName: "SubscriptionsPage" */ '../containers/SubscriptionsPage/SubscriptionsPage'));
 const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ '../containers/VerificationPage/VerificationPage'));
 const VerificationAdminPage = loadable(() => import(/* webpackChunkName: "VerificationAdminPage" */ '../containers/VerificationAdminPage/VerificationAdminPage'));
 
@@ -346,13 +345,6 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
     // The route stays registered even when highlights are switched off, so that
     // any NamedLink to it still resolves; it just sends the visitor home
     // instead of opening a flow that isn't in service.
-    {
-      path: '/subscricoes',
-      name: 'SubscriptionsPage',
-      auth: true,
-      authPage: 'LoginPage',
-      component: SubscriptionsPage,
-    },
     {
       path: '/verificacao',
       name: 'VerificationPage',

@@ -95,8 +95,6 @@ const LayoutWrapperAccountSettingsSideNav = props => {
     showPaymentMethods,
     showPayoutDetails,
     showPasswordChange = true,
-    // Planos so interessam a quem publica espacos; o mesmo criterio dos payouts.
-    showSubscriptions = showPayoutDetails,
   } = accountSettingsNavProps;
   const payoutDetailsMaybe = showPayoutDetails
     ? [
@@ -126,17 +124,6 @@ const LayoutWrapperAccountSettingsSideNav = props => {
       ]
     : [];
 
-  const subscriptionsMaybe = showSubscriptions
-    ? [
-        {
-          text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.subscriptionsTabTitle" />,
-          selected: currentPage === 'SubscriptionsPage',
-          id: 'SubscriptionsPageTab',
-          linkProps: { name: 'SubscriptionsPage' },
-        },
-      ]
-    : [];
-
   const passwordTabMaybe = showPasswordChange
     ? [
         {
@@ -162,7 +149,6 @@ const LayoutWrapperAccountSettingsSideNav = props => {
     ...passwordTabMaybe,
     ...payoutDetailsMaybe,
     ...paymentMethodsMaybe,
-    ...subscriptionsMaybe,
     {
       text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.manageAccountTabTitle" />,
       selected: currentPage === 'ManageAccountPage',

@@ -1,16 +1,15 @@
 /**
- * Stripe Billing — subscrições dos anfitriões (§8.3) e destaques recorrentes.
+ * Stripe — pagamentos únicos (hoje, apenas o destaque de anúncio).
  *
  * Isto é uma integração *nossa*, separada do Stripe que a Sharetribe usa para as
- * transações do marketplace. A API da Sharetribe não tem cobrança recorrente:
- * ela cria PaymentIntents por reserva, não subscrições. As duas convivem na
- * mesma conta Stripe sem se tocarem — a Sharetribe mexe em Connect e
- * PaymentIntents, isto mexe em Customers, Prices e Subscriptions.
+ * transações do marketplace. A Sharetribe trata das reservas e da comissão —
+ * que é de onde vem a receita da plataforma — através de Connect e
+ * PaymentIntents. Isto trata do que se vende à parte, e convive na mesma conta
+ * sem lhe tocar.
  *
  * Usamos Checkout alojado pelo Stripe em vez de Elements: assim nunca passam
  * dados de cartão pelo nosso servidor, e SCA, 3-D Secure, IVA e recibos ficam
- * do lado deles. O cancelamento e a troca de cartão vão para o Billing Portal
- * pela mesma razão.
+ * do lado deles.
  */
 
 const Stripe = require('stripe');
@@ -82,48 +81,37 @@ const ensureCustomer = async ({ userId, email, name, existingCustomerId }) => {
 };
 
 /**
- * Sessão de Checkout para assinar um plano.
+ * Sessão de Checkout para um pagamento único.
  *
- * `client_reference_id` leva o UUID do utilizador para o webhook não ter de
- * adivinhar de quem é a subscrição.
+ * Modo "payment", não "subscription": a plataforma não cobra mensalidades a
+ * ninguém — vive da comissão por reserva. O que se compra aqui paga-se uma vez.
+ *
+ * O client_reference_id leva o UUID do utilizador para o webhook não ter de
+ * adivinhar de quem é o pagamento.
  */
 const createCheckoutSession = async ({
   customerId,
   priceId,
   userId,
-  planKey,
   successUrl,
   cancelUrl,
   locale,
   extraMetadata,
 }) => {
   const stripe = client();
-  // Os metadata vão à sessão e à subscrição: o webhook lê os da subscrição, que
-  // é o objecto que chega nos eventos de renovação e cancelamento.
-  const metadata = { sharetribeUserId: userId, plan: planKey, ...(extraMetadata || {}) };
+  const metadata = { sharetribeUserId: userId, ...(extraMetadata || {}) };
   return stripe.checkout.sessions.create({
-    mode: 'subscription',
+    mode: 'payment',
     customer: customerId,
     client_reference_id: userId,
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: successUrl,
     cancel_url: cancelUrl,
     locale: locale === 'en' ? 'en' : 'pt',
-    // Recolher a morada de faturação é necessário para o IVA e é o que
-    // permite ao Stripe emitir recibos corretos.
+    // A morada de faturação é precisa para o IVA e para o Stripe emitir recibo.
     billing_address_collection: 'required',
     automatic_tax: { enabled: false },
-    subscription_data: { metadata },
     metadata,
-  });
-};
-
-/** Portal de faturação: mudar cartão, ver recibos, cancelar. */
-const createPortalSession = async ({ customerId, returnUrl }) => {
-  const stripe = client();
-  return stripe.billingPortal.sessions.create({
-    customer: customerId,
-    return_url: returnUrl,
   });
 };
 
@@ -137,45 +125,11 @@ const constructWebhookEvent = (rawBody, signature) => {
   return client().webhooks.constructEvent(rawBody, signature, secret);
 };
 
-/** Estados do Stripe que significam "esta subscrição dá direito ao plano". */
-const ACTIVE_STATUSES = ['active', 'trialing'];
-
-const isActiveStatus = status => ACTIVE_STATUSES.includes(status);
-
-/**
- * Reduz uma subscrição do Stripe ao que guardamos.
- *
- * Guarda-se o mínimo: o suficiente para mostrar o estado ao anfitrião e para
- * decidir a comissão. Tudo o resto vive no Stripe, que é onde está a verdade.
- */
-const subscriptionSummary = subscription => {
-  if (!subscription) return null;
-  const item = subscription.items?.data?.[0];
-  return {
-    id: subscription.id,
-    status: subscription.status,
-    active: isActiveStatus(subscription.status),
-    priceId: item?.price?.id || null,
-    interval: item?.price?.recurring?.interval || null,
-    cancelAtPeriodEnd: Boolean(subscription.cancel_at_period_end),
-    currentPeriodEnd: subscription.current_period_end
-      ? new Date(subscription.current_period_end * 1000).toISOString()
-      : null,
-  };
-};
-
-const getSubscription = async id => client().subscriptions.retrieve(id);
-
 module.exports = {
   isConfigured,
   client,
   __setClient,
   ensureCustomer,
   createCheckoutSession,
-  createPortalSession,
   constructWebhookEvent,
-  subscriptionSummary,
-  isActiveStatus,
-  ACTIVE_STATUSES,
-  getSubscription,
 };

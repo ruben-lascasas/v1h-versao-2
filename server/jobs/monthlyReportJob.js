@@ -1,9 +1,12 @@
 /**
- * Relatório mensal por email — benefício do plano Pro (§8.3).
+ * Relatório mensal por email, para todos os anfitriões.
  *
- * Corre no dia 1 de cada mês e envia a cada anfitrião com plano elegível o
- * resumo do mês que acabou: reservas, receita, ticket médio, taxa de
- * cancelamento e receita por espaço.
+ * Corre no dia 1 de cada mês e envia o resumo do mês que acabou: reservas,
+ * receita, ticket médio, taxa de cancelamento e receita por espaço.
+ *
+ * Chegou a estar reservado a um plano pago. Com as subscrições fora — a
+ * plataforma passa a viver só da comissão por reserva — deixou de haver plano
+ * a que o prender, e é de toda a gente.
  *
  * Quem não teve actividade nenhuma no mês não recebe nada. Um relatório de
  * zeros todos os meses é a forma mais rápida de acabar no spam, e não diz ao
@@ -18,23 +21,19 @@
 const cron = require('node-cron');
 const { Resend } = require('resend');
 const { getIntegrationSdk } = require('../api-util/sdk');
-const { allows } = require('../api-util/planFeatures');
 const { buildReport, renderEmail } = require('../api-util/monthlyReport');
 
 const PER_PAGE = 100;
 const FROM = 'Venue1Hub <onboarding@resend.dev>';
 
-/** Anfitriões cujo plano inclui relatórios mensais. */
-const fetchEligibleHosts = async sdk => {
+/** Todos os utilizadores. Quem não tiver actividade no mês é saltado adiante. */
+const fetchHosts = async sdk => {
   const result = [];
   let page = 1;
   while (true) {
     const res = await sdk.users.query({ page, perPage: PER_PAGE });
     const items = res?.data?.data || [];
-    items.forEach(u => {
-      const plan = u?.attributes?.profile?.metadata?.plan;
-      if (allows(plan, 'monthlyReports')) result.push(u);
-    });
+    result.push(...items);
     const meta = res?.data?.meta || {};
     if (!meta.totalPages || page >= meta.totalPages) break;
     page += 1;
@@ -71,7 +70,7 @@ const runOnce = async (reference = new Date()) => {
   }
   const resend = new Resend(apiKey);
 
-  const hosts = await fetchEligibleHosts(sdk);
+  const hosts = await fetchHosts(sdk);
   let sent = 0;
   let skipped = 0;
 
@@ -123,4 +122,4 @@ const start = () => {
   }
 };
 
-module.exports = { start, runOnce, fetchEligibleHosts };
+module.exports = { start, runOnce, fetchHosts };

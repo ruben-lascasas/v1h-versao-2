@@ -1,12 +1,13 @@
 /**
- * Pagamento do destaque de um anúncio (§8.3, quarto pilar de receita).
+ * Pagamento do destaque de um anúncio.
  *
  *   POST /api/destaque/checkout   abre uma sessão de Checkout para um anúncio
- *   POST /api/destaque/portal     gere ou cancela o destaque
  *
- * 9,99 €/mês recorrente, uma subscrição por anúncio. Antes disto, a página de
- * destaques mostrava um formulário de cartão que nunca cobrava nada: o elemento
- * do Stripe era criado e nunca lido, e confirmar apenas escrevia no localStorage.
+ * Pagamento único: 9,99 € por período de destaque. Não é subscrição — a
+ * plataforma não cobra mensalidades, vive da comissão por reserva.
+ *
+ * Antes disto, a página de destaques mostrava um formulário de cartão que nunca
+ * cobrava nada: o elemento do Stripe era criado e nunca lido.
  *
  * Quem activa o destaque é o webhook, depois de o Stripe confirmar a cobrança.
  * A posse do anúncio é verificada aqui com ownListings.show, que só devolve
@@ -15,7 +16,6 @@
 
 const { getSdk } = require('../api-util/sdk');
 const billing = require('../api-util/stripeBilling');
-const store = require('../api-util/hostPlanStore');
 const { destaquePriceId, DESTAQUE } = require('../api-util/plans');
 
 const ROOT_URL = () => process.env.REACT_APP_MARKETPLACE_ROOT_URL || 'http://localhost:3000';
@@ -61,28 +61,25 @@ const checkout = async (req, res) => {
   }
 
   try {
-    const state = await store.load(user.id.uuid);
+    // Um Customer por anfitrião, para os recibos do Stripe saírem em nome
+    // dele. Não se guarda o id do nosso lado: o Stripe encontra-o pelo email, e
+    // um pagamento único não precisa de o reutilizar.
     const customerId = await billing.ensureCustomer({
       userId: user.id.uuid,
-      email: state.email,
-      name: state.name,
-      existingCustomerId: state.stripeCustomerId,
+      email: user.attributes?.email,
+      name: user.attributes?.profile?.firstName || null,
     });
-    if (customerId !== state.stripeCustomerId) {
-      await store.saveCustomerId(user.id.uuid, customerId);
-    }
 
     const root = ROOT_URL();
     const session = await billing.createCheckoutSession({
       customerId,
       priceId,
       userId: user.id.uuid,
-      planKey: DESTAQUE.key,
       successUrl: `${root}/destacar-anuncio?destaque=sucesso`,
       cancelUrl: `${root}/destacar-anuncio?destaque=cancelado`,
       locale: req.body?.locale,
-      // É por aqui que o webhook sabe que esta subscrição é um destaque e de
-      // que anúncio, em vez de um plano de conta.
+      // É por aqui que o webhook sabe que este pagamento é um destaque e de
+      // que anúncio.
       extraMetadata: { kind: DESTAQUE.key, listingId },
     });
 

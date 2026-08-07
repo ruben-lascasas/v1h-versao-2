@@ -476,6 +476,8 @@ const ListingSelectCard = ({ listing, onSelect }) => {
 // ── Payment section ───────────────────────────────────────────────────────────
 
 const FEATURING_PRICE = '9,99 €';
+// Espelha FEATURED_EXPIRY_DAYS no servidor, que é quem conta os dias.
+const FEATURING_DAYS = 30;
 
 const PaymentSection = ({ isEN }) => (
   <div className={css.paymentSection}>
@@ -484,13 +486,16 @@ const PaymentSection = ({ isEN }) => (
       <span className={css.paymentPriceLabel}>{isEN ? 'Featuring fee' : 'Taxa de destaque'}</span>
       <span className={css.paymentPriceValue}>
         {FEATURING_PRICE}
-        <span className={css.paymentPricePeriod}> {isEN ? '/ month' : '/ mês'}</span>
+        <span className={css.paymentPricePeriod}>
+          {' '}
+          {isEN ? `/ ${FEATURING_DAYS} days` : `/ ${FEATURING_DAYS} dias`}
+        </span>
       </span>
     </div>
     <p className={css.paymentNote}>
       {isEN
-        ? 'You will be taken to Stripe to pay. The listing is featured as soon as the payment is confirmed, and stays featured while the subscription is active.'
-        : 'Vai ser encaminhado para o Stripe para pagar. O anúncio fica em destaque assim que o pagamento for confirmado, e mantém-se enquanto a subscrição estiver activa.'}
+        ? `You will be taken to Stripe to pay. The listing is featured as soon as the payment is confirmed and stays featured for ${FEATURING_DAYS} days. This is a one-off payment — nothing renews automatically.`
+        : `Vai ser encaminhado para o Stripe para pagar. O anúncio fica em destaque assim que o pagamento for confirmado e mantém-se durante ${FEATURING_DAYS} dias. É um pagamento único — não há renovação automática.`}
     </p>
   </div>
 );
