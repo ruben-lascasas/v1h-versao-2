@@ -1,4 +1,6 @@
 const { getSdk } = require('../api-util/sdk');
+const { detailedMetrics } = require('../api-util/hostMetrics');
+const { allows } = require('../api-util/planFeatures');
 
 const MONTH_NAMES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
@@ -107,6 +109,18 @@ module.exports = async (req, res) => {
 
     upcomingBookings.sort((a, b) => new Date(a.start) - new Date(b.start));
 
+    // Métricas detalhadas só para quem tem plano que as inclua. O plano vem da
+    // metadata do próprio utilizador, lida no servidor — nunca do pedido.
+    let plan = null;
+    try {
+      const me = await sdk.currentUser.show();
+      plan = me?.data?.data?.attributes?.profile?.metadata?.plan || null;
+    } catch (e) {
+      // Sem plano legível, trata-se como Gratuito em vez de falhar o painel.
+      console.warn('[host-stats] plano ilegível:', e?.message || e);
+    }
+    const hasDetailed = allows(plan, 'detailedStats');
+
     return res.json({
       weeklyBookings,
       monthlyRevenue,
@@ -114,6 +128,10 @@ module.exports = async (req, res) => {
       seasonLabel,
       currentOccupancy,
       upcomingBookings,
+      // O painel usa isto para decidir entre mostrar as métricas ou o convite
+      // a assinar; o servidor não envia os números a quem não tem direito.
+      hasDetailedStats: hasDetailed,
+      detailed: hasDetailed ? detailedMetrics(transactions, listingsMap, now) : null,
     });
   } catch (e) {
     console.error('[host-stats]', e.message);

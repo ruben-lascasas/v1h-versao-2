@@ -18,6 +18,7 @@ const { getSdk } = require('../api-util/sdk');
 const billing = require('../api-util/stripeBilling');
 const store = require('../api-util/hostPlanStore');
 const { publicCatalogue, priceIdFor, normalisePlan, PLANS } = require('../api-util/plans');
+const { featuresFor } = require('../api-util/planFeatures');
 
 const ROOT_URL = () =>
   process.env.REACT_APP_MARKETPLACE_ROOT_URL || 'http://localhost:3000';
@@ -45,6 +46,8 @@ const status = async (req, res) => {
     return res.json({
       plan: state.plan,
       commissionModel: state.commissionModel,
+      // Já resolvidas: o frontend não sabe que plano dá o quê.
+      features: featuresFor(state.plan),
       subscription: state.subscription,
       catalogue: publicCatalogue(),
       // O frontend precisa de saber se pode sequer mostrar os botões.

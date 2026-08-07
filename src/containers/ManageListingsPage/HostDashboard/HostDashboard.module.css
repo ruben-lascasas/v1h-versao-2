@@ -496,3 +496,176 @@
     color: #ffffff;
   }
 }
+
+/* ── Estatísticas detalhadas (plano Pro) ─────────────────────────── */
+
+/* Convite a assinar, mostrado no lugar das métricas a quem não as tem. */
+.upsell {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 20px 22px;
+  margin-bottom: 24px;
+  border-radius: 10px;
+  background-color: #F3E9DF;
+
+  @media (--viewportMedium) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.upsellTitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #3F3131;
+  margin: 0 0 4px 0;
+}
+
+.upsellText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #685747;
+  margin: 0;
+  max-width: 520px;
+}
+
+.upsellLink {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  border-radius: 4px;
+  background-color: #2E2E2E;
+  color: #ffffff;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* #6A5748 com branco dá 6,84:1; o tan da marca daria 2,42:1. */
+.upsellLink:hover {
+  background-color: #6A5748;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* Verde e vermelho escuros o suficiente para passarem em fundo claro:
+   4,9:1 e 5,1:1. A seta do sinal acompanha a cor, para nao depender dela. */
+.changeUp {
+  color: #1F5730;
+}
+
+.changeDown {
+  color: #B4432A;
+}
+
+.changeFlat {
+  color: #6B6B6B;
+}
+
+.byListing {
+  margin-top: 20px;
+}
+
+.byListingTitle {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #3F3131;
+  margin: 0 0 10px 0;
+}
+
+.byListingList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.byListingRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 16px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid #EDE6DD;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+
+  @media (--viewportMedium) {
+    grid-template-columns: 1fr auto auto;
+  }
+}
+
+.byListingRow:last-child {
+  border-bottom: none;
+}
+
+.byListingName {
+  color: #3F3131;
+  font-weight: 700;
+}
+
+.byListingCount {
+  color: #6B6B6B;
+  grid-column: 1;
+
+  @media (--viewportMedium) {
+    grid-column: auto;
+    text-align: right;
+    min-width: 90px;
+  }
+}
+
+.byListingRevenue {
+  color: #3F3131;
+  font-weight: 700;
+  text-align: right;
+  grid-row: 1;
+  grid-column: 2;
+
+  @media (--viewportMedium) {
+    grid-column: auto;
+    min-width: 90px;
+  }
+}
+
+:global(body[data-dark-mode]) .upsell {
+  background-color: #2b2b2b;
+}
+
+:global(body[data-dark-mode]) .upsellTitle,
+:global(body[data-dark-mode]) .byListingName,
+:global(body[data-dark-mode]) .byListingRevenue,
+:global(body[data-dark-mode]) .byListingTitle {
+  color: #F0EAE2;
+}
+
+:global(body[data-dark-mode]) .upsellText,
+:global(body[data-dark-mode]) .byListingCount {
+  color: #C7BCAF;
+}
+
+:global(body[data-dark-mode]) .upsellLink {
+  background-color: #BAA38A;
+  color: #1f1f1f;
+}
+
+:global(body[data-dark-mode]) .byListingRow {
+  border-bottom-color: #3d3d3d;
+}
+
+/* Em fundo escuro os tons claros passam: 7,4:1 e 5,3:1. */
+:global(body[data-dark-mode]) .changeUp {
+  color: #7ED694;
+}
+
+:global(body[data-dark-mode]) .changeDown {
+  color: #F09383;
+}
