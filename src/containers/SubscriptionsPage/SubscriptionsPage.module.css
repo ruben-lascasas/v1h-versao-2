@@ -1,0 +1,291 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+
+  @media (--viewportMedium) {
+    padding: 56px 32px 80px;
+  }
+}
+
+.title {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  color: #3F3131;
+  margin: 0 0 12px 0;
+}
+
+.intro,
+.muted,
+.notice {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #7C6350;
+  line-height: 1.7;
+  margin: 0 0 24px 0;
+  max-width: 620px;
+}
+
+.notice {
+  padding: 12px 16px;
+  background-color: #F3E9DF;
+  border-radius: 6px;
+  color: #685747;
+}
+
+.error {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #B4432A;
+  margin: 0 0 20px 0;
+}
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+
+  @media (min-width: 700px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Mesma linguagem dos cartões do Sobre Nós: castanho escuro, cantos suaves. */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #6A5748;
+  border-radius: 10px;
+  padding: 28px 24px 24px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+.cardCurrent {
+  outline: 3px solid #BAA38A;
+  outline-offset: 2px;
+}
+
+.currentBadge {
+  position: absolute;
+  top: -11px;
+  left: 24px;
+  padding: 3px 12px;
+  border-radius: 11px;
+  background-color: #F3E9DF;
+  color: #685747;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cardTitle {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  color: #ffffff;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+}
+
+.price {
+  margin: 0 0 2px 0;
+  color: #ffffff;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+}
+
+.priceValue {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.pricePeriod,
+.priceQuote {
+  font-size: 14px;
+  color: #EEDED1;
+}
+
+.priceQuote {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.priceYearly {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #EEDED1;
+  margin: 0 0 18px 0;
+}
+
+.benefits {
+  list-style: none;
+  margin: 16px 0 24px 0;
+  padding: 0;
+  flex-grow: 1;
+}
+
+.benefit {
+  position: relative;
+  padding-left: 20px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #EEDED1;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.benefit::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #BAA38A;
+}
+
+.cardFooter {
+  margin-top: auto;
+}
+
+.button,
+.buttonSecondary {
+  display: inline-block;
+  width: 100%;
+  padding: 11px 18px;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.button {
+  background-color: #F3E9DF;
+  border: none;
+  color: #3F3131;
+}
+
+/* Sobre o castanho do cartão, um hover mais claro mantém o contraste do texto
+   escuro: #FFFFFF com #3F3131 dá 13,4:1. */
+.button:hover:not(:disabled) {
+  background-color: #ffffff;
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.buttonSecondary {
+  background-color: transparent;
+  border: 2px solid #F3E9DF;
+  color: #F3E9DF;
+}
+
+.buttonSecondary:hover:not(:disabled) {
+  background-color: #F3E9DF;
+  color: #3F3131;
+  text-decoration: none;
+}
+
+.unavailable {
+  display: block;
+  text-align: center;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #EEDED1;
+  padding: 12px 0;
+}
+
+.manage {
+  margin-top: 40px;
+  padding: 24px;
+  border-radius: 10px;
+  background-color: #F3E9DF;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+
+  @media (--viewportMedium) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.manageText {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #685747;
+  margin: 0;
+}
+
+/* O botão de gerir vive numa faixa clara, ao contrário dos dos cartões. */
+.manage .buttonSecondary {
+  width: auto;
+  border-color: #6A5748;
+  color: #6A5748;
+  flex-shrink: 0;
+}
+
+.manage .buttonSecondary:hover:not(:disabled) {
+  background-color: #6A5748;
+  color: #ffffff;
+}
+
+:global(body[data-dark-mode]) .title {
+  color: #F0EAE2;
+}
+
+:global(body[data-dark-mode]) .intro,
+:global(body[data-dark-mode]) .muted {
+  color: #C7BCAF;
+}
+
+:global(body[data-dark-mode]) .card {
+  background-color: #2b2b2b;
+}
+
+:global(body[data-dark-mode]) .notice,
+:global(body[data-dark-mode]) .manage {
+  background-color: #2b2b2b;
+  color: #E6DED4;
+}
+
+:global(body[data-dark-mode]) .manageText {
+  color: #E6DED4;
+}

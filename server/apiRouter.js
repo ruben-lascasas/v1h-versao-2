@@ -23,6 +23,7 @@ const contact = require('./api/contact');
 const notifyAdmin = require('./api/notify-admin');
 const verification = require('./api/verification');
 const verificationAdmin = require('./api/verification-admin');
+const subscriptions = require('./api/subscriptions');
 const changeUserType = require('./api/change-user-type');
 const newsletter = require('./api/newsletter');
 const reportListing = require('./api/report-listing');
@@ -48,6 +49,17 @@ const { authenticateFacebook, authenticateFacebookCallback } = require('./api/au
 const { authenticateGoogle, authenticateGoogleCallback } = require('./api/auth/google');
 
 const router = express.Router();
+
+// ================ Webhook do Stripe ================ //
+
+// Antes de qualquer parser de corpo: a verificacao da assinatura precisa dos
+// bytes exactos que o Stripe enviou, e bodyParser.json() destroi-os.
+const stripeWebhook = require('./api/stripe-webhook');
+router.post(
+  '/stripe/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  stripeWebhook.handler
+);
 
 // ================ API router middleware: ================ //
 
@@ -95,6 +107,10 @@ router.get('/user-types', changeUserType.list);
 router.post('/change-user-type', changeUserType.change);
 
 // Painel do operador. Protegido por ADMIN_EMAILS, não por URL secreto.
+router.get('/subscriptions', subscriptions.status);
+router.post('/subscriptions/checkout', subscriptions.checkout);
+router.post('/subscriptions/portal', subscriptions.portal);
+
 router.get('/verification-admin/list', verificationAdmin.list);
 router.get('/verification-admin/doc', verificationAdmin.docUrl);
 router.post('/verification-admin/decision', verificationAdmin.decision);
