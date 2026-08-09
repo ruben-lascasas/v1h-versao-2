@@ -21,7 +21,10 @@ import css from './CareersPage.module.css';
  * "block" em produção.
  */
 
-const CAREERS_SRC = 'https://venue1hub.careers-page.com/?include_header=true';
+// Sem include_header: com ele, o embed trazia outra vez o logótipo Venue1Hub no
+// topo e uma faixa preta de redes sociais no fundo, a duplicar o cabeçalho e o
+// rodapé que a página já tem à volta.
+const CAREERS_SRC = 'https://venue1hub.careers-page.com/';
 
 const t = (isEN, pt, en) => (isEN ? en : pt);
 
