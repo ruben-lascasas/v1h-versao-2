@@ -71,6 +71,8 @@ const defaultDirectives = {
   formAction: [self],
   frameSrc: [
     self,
+    // Vagas de emprego, embebidas em /carreiras.
+    '*.careers-page.com',
     '*.stripe.com',
     '*.youtube-nocookie.com',
     'https://bid.g.doubleclick.net',

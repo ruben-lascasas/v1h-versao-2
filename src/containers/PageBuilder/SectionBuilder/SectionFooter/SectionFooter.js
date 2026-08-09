@@ -124,6 +124,7 @@ const SectionFooter = () => {
               <ul className={css.linkList}>
                 <li><NamedLink name="AboutPage">{isEN ? 'About us' : 'Sobre nós'}</NamedLink></li>
                 <li><NamedLink name="ContactPage">{isEN ? 'Contact' : 'Contacto'}</NamedLink></li>
+                <li><NamedLink name="CareersPage">{isEN ? 'Careers' : 'Trabalhar connosco'}</NamedLink></li>
               </ul>
             </div>
             <div className={css.column}>
