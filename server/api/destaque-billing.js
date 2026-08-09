@@ -49,10 +49,19 @@ const ownsListing = async (req, res, listingId) => {
 const checkout = async (req, res) => {
   const user = await loadCaller(req, res);
   if (!user) return res.status(401).json({ error: 'not-authenticated' });
-  if (!billing.isConfigured()) return res.status(503).json({ error: 'billing-not-configured' });
+  // Estas duas recusas são de configuração, não do utilizador. Sem log, quem
+  // opera o site vê o anfitrião a queixar-se e não tem por onde começar: as
+  // duas causas dão a mesma mensagem no ecrã.
+  if (!billing.isConfigured()) {
+    console.error('[destaque] recusado: STRIPE_SECRET_KEY não está configurada');
+    return res.status(503).json({ error: 'billing-not-configured' });
+  }
 
   const priceId = destaquePriceId();
-  if (!priceId) return res.status(503).json({ error: 'price-not-configured' });
+  if (!priceId) {
+    console.error('[destaque] recusado: STRIPE_PRICE_DESTAQUE não está configurado');
+    return res.status(503).json({ error: 'price-not-configured' });
+  }
 
   const listingId = req.body?.listingId;
   if (!listingId) return res.status(400).json({ error: 'missing-listing' });
