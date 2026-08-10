@@ -841,7 +841,6 @@
   "NoAccessPage.initiateTransactions.schemaTitle": "No transaction rights",
   "NoAccessPage.postListings.content": "To publish listings you need a Host or Service Provider account.",
   "NoAccessPage.postListings.ctaChangeType": "Change account type",
-  "NoAccessPage.postListings.ctaVerify": "View my documents",
   "NoAccessPage.postListings.heading": "You don't have posting rights",
   "NoAccessPage.postListings.schemaTitle": "No posting rights",
   "NoAccessPage.userPendingApproval.content": "You need approval from the {marketplaceName} team to get access to the marketplace.",

@@ -15,6 +15,7 @@ import {
 import { generateLinkProps } from '../../util/routes';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 import { selectVerification } from '../../ducks/verification.duck';
+import { verificationCopy } from '../../util/verificationCopy';
 
 import {
   Heading,
@@ -103,31 +104,26 @@ export const NoAccessPageComponent = props => {
   const isPostingRightsPage = missingAccessRight === NO_ACCESS_PAGE_POST_LISTINGS;
 
   /**
-   * Saída para quem chega aqui por não poder publicar.
+   * Quem chega aqui por não poder publicar cai num de dois casos muito
+   * diferentes, e a página dizia o mesmo a ambos.
    *
-   * Sem isto a página é um beco: dizia para pedir permissões à equipa, o que só
-   * é verdade em parte. Um anunciante está à espera dos documentos e o caminho
-   * é a página de verificação; qualquer outro tipo — um visitante, tipicamente
-   * — só precisa de mudar o tipo de conta, e isso faz-se sozinho.
+   * Um anunciante *tem* a conta certa — só lhe faltam os documentos, ou estão
+   * em análise. Dizer-lhe que "precisa de uma conta de Anunciante" não faz
+   * sentido nenhum. Para esse, o texto é o mesmo do aviso do topo, vindo de
+   * util/verificationCopy, e o caminho é a página de verificação.
+   *
+   * Qualquer outro tipo — um visitante, tipicamente — precisa mesmo de mudar de
+   * conta, e isso faz-se sozinho na gestão de conta.
    *
    * O discriminador é o `required` do estado de verificação, que o servidor já
-   * calcula e a app já busca para o aviso do topo. Não se repete aqui nenhuma
-   * regra sobre que tipos podem publicar.
+   * calcula. Não se repete aqui nenhuma regra sobre que tipos podem publicar.
    */
-  const PostListingsWayOut = () => {
-    const verification = useSelector(selectVerification);
-    if (!currentUser?.id) return null;
-
-    return verification?.required ? (
-      <NamedLink name="VerificationPage" className={css.wayOutLink}>
-        {intl.formatMessage({ id: 'NoAccessPage.postListings.ctaVerify' })}
-      </NamedLink>
-    ) : (
-      <NamedLink name="ManageAccountPage" className={css.wayOutLink}>
-        {intl.formatMessage({ id: 'NoAccessPage.postListings.ctaChangeType' })}
-      </NamedLink>
-    );
-  };
+  const verification = useSelector(selectVerification);
+  const isEN = String(intl.locale || '').toLowerCase().startsWith('en');
+  const needsVerification = !!currentUser?.id && verification?.required;
+  const verificationText = needsVerification
+    ? verificationCopy({ status: verification.status, docs: verification.docs, isEN })
+    : null;
   const isInitiateTransactionsPage = missingAccessRight === NO_ACCESS_PAGE_INITIATE_TRANSACTIONS;
   const isViewingRightsPage = missingAccessRight === NO_ACCESS_PAGE_VIEW_LISTINGS;
 
@@ -201,12 +197,26 @@ export const NoAccessPageComponent = props => {
           <div className={css.emailSubmittedContent}>
             <IconDoor className={css.modalIcon} />
             <Heading as="h1" rootClassName={css.modalTitle}>
-              {intl.formatMessage({ id: pageData.heading })}
+              {isPostingRightsPage && verificationText
+                ? verificationText.heading
+                : intl.formatMessage({ id: pageData.heading })}
             </Heading>
             <p className={css.modalMessage}>
-              {intl.formatMessage({ id: pageData.content }, { marketplaceName })}
+              {isPostingRightsPage && verificationText
+                ? verificationText.body
+                : intl.formatMessage({ id: pageData.content }, { marketplaceName })}
             </p>
-            {isPostingRightsPage ? <PostListingsWayOut /> : null}
+            {isPostingRightsPage && currentUser?.id ? (
+              needsVerification ? (
+                <NamedLink name="VerificationPage" className={css.wayOutLink}>
+                  {verificationText.action}
+                </NamedLink>
+              ) : (
+                <NamedLink name="ManageAccountPage" className={css.wayOutLink}>
+                  {intl.formatMessage({ id: 'NoAccessPage.postListings.ctaChangeType' })}
+                </NamedLink>
+              )
+            ) : null}
             <CTAButtonMaybe
               data={pageData.ctaData}
               routeConfiguration={routeConfiguration}

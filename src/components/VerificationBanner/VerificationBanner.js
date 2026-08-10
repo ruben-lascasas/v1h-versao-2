@@ -8,6 +8,7 @@ import {
   fetchVerificationStatus,
   selectVerification,
 } from '../../ducks/verification.duck';
+import { verificationCopy } from '../../util/verificationCopy';
 
 import css from './VerificationBanner.module.css';
 
@@ -21,8 +22,6 @@ import css from './VerificationBanner.module.css';
  *
  * Renders nothing for every other account type, and nothing once approved.
  */
-
-const t = (isEN, pt, en) => (isEN ? en : pt);
 
 // The offset below has to be applied before paint, or the banner visibly jumps
 // on every load. useLayoutEffect does that but warns during server rendering,
@@ -85,31 +84,11 @@ const VerificationBanner = () => {
   const rejected = docs.filter(d => d.status === 'recusado');
   const missing = docs.filter(d => d.status === 'em_falta');
   const isRejected = rejected.length > 0;
-  const notStarted = status === 'nao_iniciado';
 
-  const heading = isRejected
-    ? t(isEN, 'Há documentos por corrigir', 'Some documents need fixing')
-    : notStarted
-    ? t(isEN, 'Falta verificar a sua conta', 'Your account needs verifying')
-    : t(isEN, 'Documentos em análise', 'Documents under review');
-
-  const body = isRejected
-    ? t(
-        isEN,
-        'Reveja os documentos assinalados e volte a submeter apenas esses.',
-        'Review the flagged documents and re-submit only those.'
-      )
-    : notStarted
-    ? t(
-        isEN,
-        'Para publicar anúncios, submeta os documentos de verificação. A análise demora até 48 horas.',
-        'To publish listings, submit your verification documents. Review takes up to 48 hours.'
-      )
-    : t(
-        isEN,
-        'Recebemos os seus documentos. A análise demora até 48 horas e avisamos assim que estiver concluída.',
-        'We have your documents. Review takes up to 48 hours and we will let you know as soon as it is done.'
-      );
+  // A redação vive em util/verificationCopy para este aviso e a NoAccessPage
+  // dizerem sempre o mesmo. Estavam escritos à parte, e a NoAccessPage acabou a
+  // dizer a um anunciante que precisava de "uma conta de Anunciante".
+  const { heading, body, action } = verificationCopy({ status, docs, isEN });
 
   return (
     <div ref={ref} className={classNames(css.root, { [css.rootAlert]: isRejected })}>
@@ -125,9 +104,7 @@ const VerificationBanner = () => {
             className={css.action}
             onClick={() => history.push('/verificacao')}
           >
-            {isRejected
-              ? t(isEN, 'Corrigir documentos', 'Fix documents')
-              : t(isEN, 'Submeter documentos', 'Submit documents')}
+            {action}
           </button>
         ) : null}
       </div>
