@@ -4,6 +4,13 @@ import Field, { hasDataInFields } from '../../Field';
 import SectionContainer from '../SectionContainer';
 import { useLocale } from '../../../../context/localeContext';
 
+import {
+  CornerTopLeft,
+  CornerTopRight,
+  CornerBottomLeft,
+  CornerBottomRight,
+} from './Corners';
+
 import css from './SectionWhyUs.module.css';
 
 /* Headset / 24-7 support icon */
@@ -85,19 +92,22 @@ const SectionWhyUs = props => {
       className={className}
       appearance={appearance}
     >
-      {/* Title row with bars on both sides */}
-      <div className={css.titleBarRow}>
-        <div className={css.topBarLeft} />
-        <div className={css.titleWrapper}>
-          {hasTitle && <Field data={title} className={css.titleField} options={fieldOptions} />}
-        </div>
-        <div className={css.topBar} />
-      </div>
+      {/* Os quatro cantos que emolduram a secção. Substituem as barras
+          horizontais que atravessavam o topo e o fundo. */}
+      <CornerTopLeft className={`${css.corner} ${css.cornerTopLeft}`} />
+      <CornerTopRight className={`${css.corner} ${css.cornerTopRight}`} />
+      <CornerBottomLeft className={`${css.corner} ${css.cornerBottomLeft}`} />
+      <CornerBottomRight className={`${css.corner} ${css.cornerBottomRight}`} />
 
       {/* Main content */}
       <div className={css.inner}>
         {/* Left side */}
         <div className={css.left}>
+          {hasTitle && (
+            <div className={css.titleWrapper}>
+              <Field data={title} className={css.titleField} options={fieldOptions} />
+            </div>
+          )}
           {hasDescription && (
             <Field data={description} className={css.descriptionField} options={fieldOptions} />
           )}
@@ -127,8 +137,6 @@ const SectionWhyUs = props => {
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className={css.bottomBar} />
     </SectionContainer>
   );
 };

@@ -4,23 +4,13 @@
   background: #fff;
   padding: 0;
   overflow: visible;
-}
-
-/* ── Title + bar row ──────────────────────── */
-.titleBarRow {
-  display: flex;
-  align-items: center;
-  padding: 0;
   position: relative;
-  z-index: 2;
 }
 
+/* O título passou da barra do topo para dentro da coluna da esquerda, por
+   cima do texto, como na proposta do designer. */
 .titleWrapper {
-  flex-shrink: 0;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .titleField h1,
@@ -39,27 +29,6 @@
   }
 }
 
-.topBarLeft {
-  flex: 0 0 400px;
-  height: 26px;
-  background: #BAA38A;
-}
-
-.topBar {
-  flex: 1;
-  height: 26px;
-  background: #BAA38A;
-}
-
-/* ── Bottom bar ───────────────────────────── */
-.bottomBar {
-  height: 26px;
-  background: #BAA38A;
-  width: 100%;
-  position: relative;
-  z-index: 0;
-}
-
 /* ── Main content row ─────────────────────── */
 .inner {
   display: flex;
@@ -69,6 +38,8 @@
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
+  /* Acima dos cantos, que são moldura e ficam no z-index 0. */
+  z-index: 1;
   overflow: visible;
 }
 
@@ -298,4 +269,56 @@
   .p1 { top: 10px; right: 10px; }
   .p2 { top: 100px; left: 0; }
   .p3 { top: 60px; right: 50%; transform: translateX(50%) rotate(-3deg); }
+}
+
+/* ── Cantos ─────────────────────────────────
+   Quatro Ls em vez das barras que atravessavam o topo e o fundo.
+
+   A cor vem daqui e não do SVG: os ficheiros do designer traziam-na num
+   <style> com a classe cls-1, que em quatro cópias no mesmo documento
+   colidiria. O currentColor herda deste elemento, o que também deixa o modo
+   escuro mudá-la numa linha.
+
+   Ficam atrás do conteúdo (z-index 0 contra 1 do .inner) porque são moldura,
+   e sem eventos de rato para não engolirem cliques no que está por baixo.
+
+   Encostam aos cantos do sectionContent, que é quem tem position:relative e já
+   traz 64px de padding — é esse padding que afasta o texto da moldura. Pôr
+   padding também na secção só empurrava os cantos para dentro. */
+.corner {
+  position: absolute;
+  width: 148px;
+  height: auto;
+  color: #BAA38A;
+  z-index: 0;
+  pointer-events: none;
+
+  @media (max-width: 767px) {
+    width: 92px;
+  }
+}
+
+.cornerTopLeft {
+  top: 0;
+  left: 0;
+}
+
+.cornerTopRight {
+  top: 0;
+  right: 0;
+}
+
+.cornerBottomLeft {
+  bottom: 0;
+  left: 0;
+}
+
+.cornerBottomRight {
+  bottom: 0;
+  right: 0;
+}
+
+:global(body[data-landing-dark]) .corner,
+:global(body[data-dark-mode]) .corner {
+  color: #6A5748;
 }
