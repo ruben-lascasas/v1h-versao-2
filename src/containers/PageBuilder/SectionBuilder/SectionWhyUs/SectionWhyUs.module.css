@@ -68,11 +68,15 @@
 }
 
 /* ── Left side ────────────────────────────── */
+/* Centrado na vertical, não colado ao topo. A coluna da direita é mais alta do
+   que este bloco por causa das polaroids, e sem isto o título ficava encostado
+   ao topo com um vazio a meio. */
 .left {
   flex: 1 1 52%;
   max-width: 52%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .descriptionField p {
@@ -89,7 +93,8 @@
      quebravam para duas linhas. Abaixo dos 1024px voltam a poder quebrar. */
   flex-wrap: nowrap;
   gap: 10px;
-  margin-top: auto;
+  /* Sem margin-top:auto: era ele que colava os badges ao fundo e abria o vazio
+     entre o parágrafo e eles. Agora o grupo todo fica junto e centrado. */
   padding-top: 32px;
 }
 
