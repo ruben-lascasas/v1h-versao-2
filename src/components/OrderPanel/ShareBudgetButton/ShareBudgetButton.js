@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logoWhite from '../../../assets/images/V1H-LOGO-WHITE.png';
 import css from './ShareBudgetButton.module.css';
 
 const ShareIcon = () => (
@@ -107,6 +108,14 @@ const buildPrintHTML = ({ listingTitle, values, lineItems, currency, locale }) =
   const dateLocale = locale === 'en' ? 'en-GB' : 'pt-PT';
   const now = new Date().toLocaleDateString(dateLocale, { day: '2-digit', month: '2-digit', year: 'numeric' });
 
+  // O documento é escrito numa janela about:blank, onde um caminho relativo não
+  // resolve contra nada. Tem de ir o URL absoluto. A versão branca do logótipo
+  // porque a faixa do cabeçalho é #2E2E2E — a preta, que é a do site, ficaria
+  // invisível. E o `window.print()` está preso ao window.onload, que espera
+  // pelas imagens, por isso o logótipo chega a tempo de sair no PDF.
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const logoSrc = `${origin}${logoWhite}`;
+
   const customerItems = (lineItems || []).filter(
     li => !li.includeFor || li.includeFor.includes('customer')
   );
@@ -144,8 +153,7 @@ const buildPrintHTML = ({ listingTitle, values, lineItems, currency, locale }) =
     .doc-title-sub { font-size: 12px; color: #999; margin-top: 4px; }
     .page { max-width: 680px; margin: 0 auto; padding: 0 40px 48px; }
     .header { background: #2E2E2E; padding: 28px 32px; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-between; }
-    .logo { color: #fff; font-size: 22px; font-weight: 900; letter-spacing: 0.06em; }
-    .logo span { color: #BAA38A; }
+    .logo { display: block; height: 30px; width: auto; }
     .header-sub { color: rgba(255,255,255,0.6); font-size: 12px; text-align: right; }
     .body { border: 1px solid #e8e0d8; border-top: none; border-radius: 0 0 8px 8px; padding: 40px 32px 32px; }
     .title-block { text-align: center; padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid #f0ebe4; }
@@ -169,7 +177,7 @@ const buildPrintHTML = ({ listingTitle, values, lineItems, currency, locale }) =
   </div>
   <div class="page">
     <div class="header">
-      <div class="logo">V1<span>HUB</span></div>
+      <img class="logo" src="${logoSrc}" alt="Venue1Hub" />
       <div class="header-sub">${s.quoteTitle}<br/>${now}</div>
     </div>
     <div class="body">

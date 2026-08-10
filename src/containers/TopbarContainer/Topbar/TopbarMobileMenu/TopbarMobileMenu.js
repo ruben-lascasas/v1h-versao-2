@@ -20,7 +20,6 @@ import {
 } from '../../../../components';
 
 import { useLocale } from '../../../../context/localeContext';
-import { listingHighlightsEnabled } from '../../../../config/configFeatures';
 
 import css from './TopbarMobileMenu.module.css';
 
@@ -219,14 +218,6 @@ const TopbarMobileMenu = props => {
     </li>
   ) : null;
 
-  const destacarAnuncioLinkMaybe = showCreateListingsLink && listingHighlightsEnabled ? (
-    <li className={classNames(css.navigationLink, currentPageClass('DestacaAnuncioPage'))}>
-      <NamedLink name="DestacaAnuncioPage">
-        <FormattedMessage id="TopbarMobileMenu.destacarAnuncioLink" />
-      </NamedLink>
-    </li>
-  ) : null;
-
   return (
     <div className={css.root}>
       <div className={css.content}>
@@ -247,26 +238,20 @@ const TopbarMobileMenu = props => {
             </NamedLink>
           </li>
           {meuPerfilLinkMaybe}
-          <li className={classNames(css.navigationLink, currentPageClass('ProfileSettingsPage'))}>
-            <NamedLink name="ProfileSettingsPage">
-              <FormattedMessage id="TopbarMobileMenu.profileSettingsLink" />
-            </NamedLink>
-          </li>
           <li className={classNames(css.navigationLink, currentPageClass('AccountSettingsPage'))}>
             <NamedLink name="AccountSettingsPage">
               <FormattedMessage id="TopbarMobileMenu.accountSettingsLink" />
             </NamedLink>
           </li>
-          <li className={classNames(css.navigationLink, currentPageClass('HistoricoReservasPage'))}>
-            <NamedLink name="HistoricoReservasPage">
-              <FormattedMessage id="TopbarMobileMenu.historicoReservasLink" />
-            </NamedLink>
-          </li>
-          {destacarAnuncioLinkMaybe}
           {manageListingsLinkMaybe}
           <li className={classNames(css.navigationLink, currentPageClass('FavoritesPage'))}>
             <NamedLink name="FavoritesPage">
               <FormattedMessage id="TopbarMobileMenu.yourFavoritesLink" />
+            </NamedLink>
+          </li>
+          <li className={classNames(css.navigationLink, currentPageClass('HistoricoReservasPage'))}>
+            <NamedLink name="HistoricoReservasPage">
+              <FormattedMessage id="TopbarMobileMenu.historicoReservasLink" />
             </NamedLink>
           </li>
           <li className={classNames(css.navigationLink, currentPageClass('SavedSearchesPage'))}>

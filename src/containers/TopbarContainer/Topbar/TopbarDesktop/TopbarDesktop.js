@@ -23,7 +23,6 @@ import { updateLastOnline } from '../../../../ducks/follow.duck';
 import { checkNewListingsFromFollowed } from '../../../../ducks/notifications.duck';
 import { fetchCurrentUserNotifications } from '../../../../ducks/user.duck';
 
-import { listingHighlightsEnabled } from '../../../../config/configFeatures';
 import logoBlack from '../../../../assets/images/V1H-LOGO-BLACK.png';
 import css from './TopbarDesktop.module.css';
 
@@ -194,32 +193,12 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout, showManageListingsLin
             </NamedLink>
           </MenuItem>
         ) : null}
-        <MenuItem key="ProfileSettingsPage">
-          <NamedLink className={classNames(css.menuLink, currentPageClass('ProfileSettingsPage'))} name="ProfileSettingsPage">
-              <span className={css.menuItemBorder} />
-              <FormattedMessage id="TopbarDesktop.profileSettingsLink" />
-          </NamedLink>
-        </MenuItem>
         <MenuItem key="AccountSettingsPage">
           <NamedLink className={classNames(css.menuLink, currentPageClass('AccountSettingsPage'))} name="AccountSettingsPage">
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.accountSettingsLink" />
           </NamedLink>
         </MenuItem>
-        <MenuItem key="HistoricoReservasPage">
-          <NamedLink className={classNames(css.menuLink, currentPageClass('HistoricoReservasPage'))} name="HistoricoReservasPage">
-            <span className={css.menuItemBorder} />
-            <FormattedMessage id="TopbarDesktop.historicoReservasLink" />
-          </NamedLink>
-        </MenuItem>
-        {showManageListingsLink && listingHighlightsEnabled ? (
-          <MenuItem key="DestacaAnuncioPage">
-            <NamedLink className={classNames(css.menuLink, currentPageClass('DestacaAnuncioPage'))} name="DestacaAnuncioPage">
-              <span className={css.menuItemBorder} />
-              <FormattedMessage id="TopbarDesktop.destacarAnuncioLink" />
-            </NamedLink>
-          </MenuItem>
-        ) : null}
         {showManageListingsLink ? (
           <MenuItem key="ManageListingsPage2">
             <NamedLink className={classNames(css.menuLink, currentPageClass('ManageListingsPage'))} name="ManageListingsPage">
@@ -232,6 +211,12 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout, showManageListingsLin
           <NamedLink className={classNames(css.menuLink, currentPageClass('FavoritesPage'))} name="FavoritesPage">
             <span className={css.menuItemBorder} />
             <FormattedMessage id="TopbarDesktop.yourFavoritesLink" />
+          </NamedLink>
+        </MenuItem>
+        <MenuItem key="HistoricoReservasPage">
+          <NamedLink className={classNames(css.menuLink, currentPageClass('HistoricoReservasPage'))} name="HistoricoReservasPage">
+            <span className={css.menuItemBorder} />
+            <FormattedMessage id="TopbarDesktop.historicoReservasLink" />
           </NamedLink>
         </MenuItem>
         <MenuItem key="SavedSearchesPage">

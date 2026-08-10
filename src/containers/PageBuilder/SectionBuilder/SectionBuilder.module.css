@@ -226,3 +226,34 @@
 .darkTheme pre {
   background-color: var(--colorGrey700);
 }
+
+/* Linha fina sob o título de "Espaços Disponíveis", para acompanhar a do
+   "Explore no mapa".
+
+   Presa ao id da secção de propósito. O `.title` acima é partilhado por todas
+   as secções vindas da Console — pôr a linha nele dava-a a carrosséis, colunas,
+   artigos e tudo o resto, incluindo secções que ninguém pediu para mudar.
+
+   A largura não pode vir da caixa do título: o cabeçalho é uma grelha com
+   justify-content:center, por isso a coluna encolhe ao texto e a linha ficava
+   nos 310px em vez dos 480px da do mapa. Daí ter largura própria e ser centrada
+   por transformação, sem depender do título.
+
+   Em modo escuro fica com o tan da marca, que é a convenção já usada nas
+   outras linhas (ver landingDark.css). */
+:global(#espacos-disponiveis) .title::after {
+  content: '';
+  display: block;
+  width: 480px;
+  max-width: 88vw;
+  margin-top: 12px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top: 1.5px solid #2E2E2E;
+}
+
+:global(body[data-landing-dark]) :global(#espacos-disponiveis) .title::after,
+:global(body[data-dark-mode]) :global(#espacos-disponiveis) .title::after {
+  border-top-color: #BAA38A;
+}
