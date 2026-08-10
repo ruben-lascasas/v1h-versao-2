@@ -13,11 +13,18 @@
   margin-bottom: 14px;
 }
 
+/* A fonte de display da marca, a mesma dos títulos do Sobre Nós e do Como
+   Funciona. Estava a herdar a Century Gothic do corpo, que é bem mais leve do
+   que o título da maqueta. */
+/* A classe vem no próprio heading, não num pai: com ".titleField h2" o seletor
+   nunca correspondia, e nem a fonte nem o tamanho aqui definidos aplicavam. */
+.titleField,
 .titleField h1,
 .titleField h2,
 .titleField h3 {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-size: 2.6rem;
-  font-weight: 800;
+  font-weight: 400;
   color: #3F3131;
   line-height: 1.1;
   margin: 0;
@@ -78,8 +85,10 @@
 /* Badges */
 .badges {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  /* Os três em linha, como na maqueta. Somavam 523px numa coluna de 499 e
+     quebravam para duas linhas. Abaixo dos 1024px voltam a poder quebrar. */
+  flex-wrap: nowrap;
+  gap: 10px;
   margin-top: auto;
   padding-top: 32px;
 }
@@ -87,12 +96,14 @@
 .badge {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 11px;
   background: #3F3131;
   color: #fff;
-  padding: 14px 22px;
+  padding: 14px 18px;
   border-radius: 13px;
-  min-width: 158px;
+  min-width: 0;
+  flex: 1 1 0;
+  white-space: nowrap;
 }
 
 .badgeIcon {
@@ -112,7 +123,8 @@
 .right {
   flex: 1 1 48%;
   position: relative;
-  min-height: 420px;
+  /* Altura suficiente para as três caberem sem saírem da moldura. */
+  min-height: 500px;
   overflow: visible;
 }
 
@@ -150,37 +162,37 @@
   p2 – bottom-left
   p3 – bottom-right
 */
+/* A p1 estava em top:-175px e saía 148px acima da moldura, indo sobrepor-se à
+   secção do mapa. Na maqueta as três estão dentro do quadro. */
 .p1 {
-  top: -175px;
-  right: 30px;
+  top: 0;
+  right: 20px;
   transform: rotate(6deg);
   z-index: 4;
 }
 
 .p2 {
-  top: 100px;
+  top: 155px;
   left: 0;
   transform: rotate(-10deg);
   z-index: 2;
 }
 
+/* Na maqueta esta inclina para a direita; estava a inclinar para a esquerda. */
 .p3 {
-  top: 120px;
-  right: -30px;
-  transform: rotate(-3deg);
+  top: 175px;
+  right: 0;
+  transform: rotate(8deg);
   z-index: 3;
 }
 
 /* ── Responsive ─────────────────────────── */
 @media (max-width: 1024px) {
-  .titleBarRow {
-    padding-left: 40px;
-  }
-
   .inner {
     padding: 40px 40px 56px 40px;
   }
 
+  .titleField,
   .titleField h1,
   .titleField h2,
   .titleField h3 {
@@ -192,28 +204,32 @@
     height: 175px;
   }
 
-  .p1 { top: -130px; right: 10px; }
-  .p2 { top: 60px; left: 0; }
-  .p3 { top: 90px; right: 0; }
+  .right {
+    min-height: 380px;
+  }
+
+  .p1 { top: 0; right: 10px; }
+  .p2 { top: 110px; left: 0; }
+  .p3 { top: 130px; right: 0; }
+
+  /* Abaixo daqui a coluna não chega para os três em linha. */
+  .badges {
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    flex: 0 1 auto;
+  }
 }
 
 @media (max-width: 767px) {
-  .titleBarRow {
-    padding-left: 0;
-    justify-content: center;
-  }
-
   .titleWrapper {
     padding-left: 20px;
     padding-right: 20px;
     text-align: center;
   }
 
-  .topBar,
-  .topBarLeft {
-    display: none;
-  }
-
+  .titleField,
   .titleField h1,
   .titleField h2,
   .titleField h3 {
