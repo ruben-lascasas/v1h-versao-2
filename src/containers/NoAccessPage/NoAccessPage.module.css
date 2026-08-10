@@ -71,3 +71,24 @@
 .modalSpacer {
   height: 80px;
 }
+
+/* Saída para quem não pode publicar: mudar de tipo de conta, ou ver os
+   documentos. Fica acima do CTA configurado na Console, que pode não existir. */
+.wayOutLink {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 12px 26px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #2E2E2E;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.wayOutLink:hover {
+  background-color: #F3E9DF;
+  color: #2E2E2E;
+  text-decoration: none;
+}

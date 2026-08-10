@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import { useConfiguration } from '../../context/configurationContext';
 import { useRouteConfiguration } from '../../context/routeConfigurationContext';
@@ -14,6 +14,7 @@ import {
 } from '../../util/urlHelpers';
 import { generateLinkProps } from '../../util/routes';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
+import { selectVerification } from '../../ducks/verification.duck';
 
 import {
   Heading,
@@ -100,6 +101,33 @@ export const NoAccessPageComponent = props => {
   const missingAccessRight = pathParams?.missingAccessRight;
   const isUserPendingApprovalPage = missingAccessRight === NO_ACCESS_PAGE_USER_PENDING_APPROVAL;
   const isPostingRightsPage = missingAccessRight === NO_ACCESS_PAGE_POST_LISTINGS;
+
+  /**
+   * Saída para quem chega aqui por não poder publicar.
+   *
+   * Sem isto a página é um beco: dizia para pedir permissões à equipa, o que só
+   * é verdade em parte. Um anunciante está à espera dos documentos e o caminho
+   * é a página de verificação; qualquer outro tipo — um visitante, tipicamente
+   * — só precisa de mudar o tipo de conta, e isso faz-se sozinho.
+   *
+   * O discriminador é o `required` do estado de verificação, que o servidor já
+   * calcula e a app já busca para o aviso do topo. Não se repete aqui nenhuma
+   * regra sobre que tipos podem publicar.
+   */
+  const PostListingsWayOut = () => {
+    const verification = useSelector(selectVerification);
+    if (!currentUser?.id) return null;
+
+    return verification?.required ? (
+      <NamedLink name="VerificationPage" className={css.wayOutLink}>
+        {intl.formatMessage({ id: 'NoAccessPage.postListings.ctaVerify' })}
+      </NamedLink>
+    ) : (
+      <NamedLink name="ManageAccountPage" className={css.wayOutLink}>
+        {intl.formatMessage({ id: 'NoAccessPage.postListings.ctaChangeType' })}
+      </NamedLink>
+    );
+  };
   const isInitiateTransactionsPage = missingAccessRight === NO_ACCESS_PAGE_INITIATE_TRANSACTIONS;
   const isViewingRightsPage = missingAccessRight === NO_ACCESS_PAGE_VIEW_LISTINGS;
 
@@ -178,6 +206,7 @@ export const NoAccessPageComponent = props => {
             <p className={css.modalMessage}>
               {intl.formatMessage({ id: pageData.content }, { marketplaceName })}
             </p>
+            {isPostingRightsPage ? <PostListingsWayOut /> : null}
             <CTAButtonMaybe
               data={pageData.ctaData}
               routeConfiguration={routeConfiguration}

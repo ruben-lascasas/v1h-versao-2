@@ -27,8 +27,7 @@ const {
   verificationUserTypes,
   readDocs,
   syncPermissions,
-  ensurePostingAllowed,
-  EXEMPT_MARKER,
+  syncPostingPermission,
 } = require('../api-util/verification');
 
 const USER_TYPES_ASSET = '/users/user-types.json';
@@ -143,11 +142,14 @@ const change = async (req, res) => {
       return res.json({ userType, changed: true, verificationStatus: status });
     }
 
-    const granted = await ensurePostingAllowed(userId, userType, null);
-    if (granted) {
+    // Mudar de tipo tem de mudar a permissão nos dois sentidos: quem passa a
+    // visitante deixa de poder publicar, e não é só quem passa a prestador que
+    // ganha o direito.
+    const marker = await syncPostingPermission(userId, userType, null);
+    if (marker) {
       await integrationSdk.users.updateProfile({
         id: userId,
-        privateData: { verification: { ...verification, appliedStatus: EXEMPT_MARKER } },
+        privateData: { verification: { ...verification, appliedStatus: marker } },
       });
     }
     // The public flag would otherwise keep claiming a status this type no

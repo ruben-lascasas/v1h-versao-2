@@ -215,34 +215,53 @@ const syncPermissions = async (userId, docs, appliedStatus = null) => {
 };
 
 /**
- * Grant postListings to a user type that publishes without verifying.
+ * Marcador escrito para um tipo que não pode publicar, para a negação não ser
+ * reescrita a cada carregamento de página.
+ */
+const DENIED_MARKER = 'sem-publicacao';
+
+/**
+ * O tipo de conta pode publicar anúncios?
  *
- * Idempotent via the marker in privateData, so this costs one API call per
- * account ever, not one per page load.
+ * Os tipos que verificam (anunciante) não passam por aqui: quem lhes decide a
+ * permissão é o fluxo de verificação, conforme o estado dos documentos.
+ */
+const mayPostListings = userType => {
+  const allowed = postingAllowedUserTypes();
+  return allowed.includes('*')
+    ? !verificationUserTypes().includes(userType)
+    : allowed.includes(userType);
+};
+
+/**
+ * Põe a permissão de publicar de acordo com o tipo de conta.
+ *
+ * Antes isto só concedia. Um visitante nunca via a sua permissão escrita, e
+ * como a Sharetribe dá "allow" por omissão, passava na verificação do
+ * EditListingPage e abria o formulário de criar anúncio — que é precisamente o
+ * que não devia. Agora nega também.
+ *
+ * Idempotente pelo marcador em privateData: custa uma chamada à API por conta,
+ * não uma por carregamento de página.
  *
  * @param {string} userId
  * @param {string} userType
- * @param {string} [appliedStatus] marker last written for this user
- * @returns {Promise<boolean>} true when a grant was written
+ * @param {string} [appliedStatus] marcador escrito da última vez
+ * @returns {Promise<string|null>} o marcador novo, ou null se nada mudou
  */
-const ensurePostingAllowed = async (userId, userType, appliedStatus = null) => {
-  if (appliedStatus === EXEMPT_MARKER) return false;
-
-  const allowed = postingAllowedUserTypes();
-  // "*" means every type that isn't required to verify. Chosen deliberately:
-  // with "Restrict posting rights" on, anything not granted here starts denied
-  // for new accounts, and being denied with no way out is a worse failure than
-  // being allowed something the UI never offers.
-  const isAllowed = allowed.includes('*')
-    ? !verificationUserTypes().includes(userType)
-    : allowed.includes(userType);
-  if (!isAllowed) return false;
+const syncPostingPermission = async (userId, userType, appliedStatus = null) => {
+  const allowed = mayPostListings(userType);
+  const marker = allowed ? EXEMPT_MARKER : DENIED_MARKER;
+  if (appliedStatus === marker) return null;
 
   const sdk = getIntegrationSdk();
   if (!sdk) throw new Error('integration-sdk-not-configured');
 
-  await sdk.users.updatePermissions({ id: userId, postListings: 'permission/allow' });
-  return true;
+  await sdk.users.updatePermissions({
+    id: userId,
+    postListings: allowed ? 'permission/allow' : 'permission/deny',
+  });
+  return marker;
 };
 
 /**
@@ -277,8 +296,10 @@ module.exports = {
   ANUNCIANTE_USER_TYPE,
   verificationUserTypes,
   postingAllowedUserTypes,
-  ensurePostingAllowed,
+  syncPostingPermission,
   EXEMPT_MARKER,
+  DENIED_MARKER,
+  mayPostListings,
   STATUS,
   ACCOUNT_STATUS,
   REQUIRED_DOCS,

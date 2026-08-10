@@ -24,8 +24,7 @@ const {
   MAX_BYTES,
   UPLOAD_LIMITS,
   isAnunciante,
-  ensurePostingAllowed,
-  EXEMPT_MARKER,
+  syncPostingPermission,
   readDocs,
   syncPermissions,
   buildObjectKey,
@@ -71,18 +70,20 @@ const getStatus = async (req, res) => {
     if (!user) return res.status(401).json({ error: 'not-authenticated' });
 
     if (!isAnunciante(user)) {
-      // Nothing to submit — but with Console's "Restrict posting rights" on,
-      // a type like prestador_de_servicos starts out denied and has no
-      // documents that could ever unblock it. Grant the permission once.
+      // Nada para submeter — mas a permissão de publicar tem de acompanhar o
+      // tipo de conta nos dois sentidos. Com o "Restrict posting rights"
+      // ligado, um prestador de serviços começaria negado sem documentos que o
+      // pudessem desbloquear; e um visitante, que fica em "allow" por omissão,
+      // conseguia abrir o formulário de criar anúncio.
       const userType = user.attributes.profile?.publicData?.userType;
       const verification = await loadVerification(user.id.uuid);
-      const granted = await ensurePostingAllowed(
+      const marker = await syncPostingPermission(
         user.id.uuid,
         userType,
         verification.appliedStatus
       );
-      if (granted) {
-        await persist(user.id.uuid, { ...verification, appliedStatus: EXEMPT_MARKER });
+      if (marker) {
+        await persist(user.id.uuid, { ...verification, appliedStatus: marker });
       }
       return res.json({ required: false, docs: [], status: null, limits: UPLOAD_LIMITS });
     }
