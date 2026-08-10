@@ -35,12 +35,29 @@
   align-items: stretch;
   gap: 32px;
   padding: 40px 64px 48px 64px;
-  max-width: 1400px;
+  /* Quem limita a largura é a .frame; aqui só se preenche o que ela dá. */
+  max-width: 100%;
   margin: 0 auto;
   position: relative;
   /* Acima dos cantos, que são moldura e ficam no z-index 0. */
   z-index: 1;
   overflow: visible;
+}
+
+/* ── Moldura ──────────────────────────────
+   A mesma largura de conteúdo que as restantes secções da página. Vem da
+   variável do tema e não de um número escrito à mão, para acompanhar se o tema
+   mudar. Antes daqui a secção usava 1400px e a moldura ia às bordas do ecrã,
+   o que a deixava visivelmente mais larga do que a "Espaços Disponíveis".
+
+   O width:100% além do max-width não é redundante: isto pode cair dentro de um
+   contentor em grelha, onde uma margem automática ganha ao stretch e encolhe a
+   caixa ao conteúdo. */
+.frame {
+  position: relative;
+  width: 100%;
+  max-width: var(--contentMaxWidthPages, 1120px);
+  margin: 0 auto;
 }
 
 /* ── Left side ────────────────────────────── */

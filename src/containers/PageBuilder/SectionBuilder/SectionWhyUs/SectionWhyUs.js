@@ -92,12 +92,14 @@ const SectionWhyUs = props => {
       className={className}
       appearance={appearance}
     >
-      {/* Os quatro cantos que emolduram a secção. Substituem as barras
-          horizontais que atravessavam o topo e o fundo. */}
-      <CornerTopLeft className={`${css.corner} ${css.cornerTopLeft}`} />
-      <CornerTopRight className={`${css.corner} ${css.cornerTopRight}`} />
-      <CornerBottomLeft className={`${css.corner} ${css.cornerBottomLeft}`} />
-      <CornerBottomRight className={`${css.corner} ${css.cornerBottomRight}`} />
+      {/* A moldura existe para os cantos terem contra que se posicionar. Sem
+          ela encostavam às bordas da secção, que é toda a largura do ecrã, e a
+          secção ficava mais larga que as restantes da página. */}
+      <div className={css.frame}>
+        <CornerTopLeft className={`${css.corner} ${css.cornerTopLeft}`} />
+        <CornerTopRight className={`${css.corner} ${css.cornerTopRight}`} />
+        <CornerBottomLeft className={`${css.corner} ${css.cornerBottomLeft}`} />
+        <CornerBottomRight className={`${css.corner} ${css.cornerBottomRight}`} />
 
       {/* Main content */}
       <div className={css.inner}>
@@ -136,7 +138,7 @@ const SectionWhyUs = props => {
               : [0, 1, 2].map(i => renderEmptyPolaroid(i))}
         </div>
       </div>
-
+      </div>
     </SectionContainer>
   );
 };
