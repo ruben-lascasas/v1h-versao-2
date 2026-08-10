@@ -48,9 +48,14 @@ const verificationUserTypes = () => {
  * this flow never touches. A prestador de serviços would be blocked forever,
  * with no documents to submit that could unblock them.
  *
- * Types listed here are granted the permission once, on their first status
- * read. Anything in neither list (a visitante, say) is left denied, which is
- * the correct outcome for an account that is not meant to publish at all.
+ * Os tipos aqui listados recebem a permissão; os que não estiverem na lista
+ * passam a negados. Um visitante fica sem poder publicar, que é o correcto para
+ * uma conta que não é para anunciar nada.
+ *
+ * CUIDADO com o valor "*": quer dizer "todos os tipos que não têm de
+ * verificar", o que inclui o visitante e deixa qualquer conta publicar. Esteve
+ * assim por engano e foi exactamente como um visitante conseguiu abrir o
+ * formulário de criar anúncio. Use a lista explícita.
  *
  * POSTING_ALLOWED_USER_TYPES=prestador_de_servicos
  */
