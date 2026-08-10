@@ -152,30 +152,15 @@ const BookingCalendar = ({ upcomingBookings }) => {
 };
 
 /**
- * Métricas que o plano Pro acrescenta. O servidor decide quem as recebe — aqui
- * só se desenha o que vier, ou o convite a assinar quando não vier nada.
+ * Métricas detalhadas do anfitrião.
+ *
+ * Estiveram atrás de um plano pago. Com as subscrições fora, são de todos —
+ * basta o servidor as enviar. Não há aqui nenhum convite a assinar: o que
+ * existia apontava para uma página de planos que deixou de existir, e o link
+ * para uma rota inexistente rebentava o painel inteiro.
  */
-const DetailedStats = ({ detailed, hasDetailed, loading }) => {
-  if (loading) return null;
-
-  if (!hasDetailed) {
-    return (
-      <div className={css.upsell}>
-        <div>
-          <p className={css.upsellTitle}>Estatísticas detalhadas</p>
-          <p className={css.upsellText}>
-            Ticket médio, taxa de cancelamento, receita por espaço e comparação com o mês
-            anterior. Disponível no plano Pro.
-          </p>
-        </div>
-        <NamedLink name="SubscriptionsPage" className={css.upsellLink}>
-          Ver planos
-        </NamedLink>
-      </div>
-    );
-  }
-
-  if (!detailed) return null;
+const DetailedStats = ({ detailed, loading }) => {
+  if (loading || !detailed) return null;
 
   const change = detailed.revenueChangePercent;
   const changeClass = change > 0 ? css.changeUp : change < 0 ? css.changeDown : css.changeFlat;
@@ -275,11 +260,7 @@ const HostDashboard = ({ listings, activeCount, currentUser }) => {
 
       <RevenueChart data={stats?.monthlyData} />
 
-      <DetailedStats
-        detailed={stats?.detailed}
-        hasDetailed={Boolean(stats?.hasDetailedStats)}
-        loading={loading}
-      />
+      <DetailedStats detailed={stats?.detailed} loading={loading} />
 
       <BookingCalendar upcomingBookings={stats?.upcomingBookings} />
 
