@@ -293,7 +293,11 @@
 }
 
 .profileMenuContent {
-  min-width: 160px;
+  /* 190px e não 160: com 160 sobravam 128px de texto e "Pesquisas guardadas"
+     (144px) e "Histórico de reservas" (139px) quebravam em duas linhas. Medido
+     nas fontes todas da pilha; a Century Gothic é a mais larga, portanto é ela
+     que manda. O ajuste exacto seria 176px — os restantes são folga. */
+  min-width: 190px;
   padding-top: 12px;
   border-radius: 8px;
   overflow: hidden;
@@ -317,7 +321,7 @@
   position: relative;
   display: block;
   width: 100%;
-  min-width: 160px;
+  min-width: 190px;
   padding: 10px 16px 10px 12px;
   font-size: 14px;
   color: #2E2E2E;
