@@ -103,10 +103,18 @@ const extractMessages = response => {
   }
 };
 
-// ── Helper: find existing inquiry tx with target user ────
+// ── Helper: find existing conversation with target user ──
+//
+// Procura em todos os processos, e não só em default-inquiry. Uma consulta
+// enviada a partir da página do anúncio é criada no processo do próprio anúncio
+// — default-booking, tipicamente — com a transição "inquire". Ao filtrar por
+// default-inquiry, esta página não encontrava essas conversas e mostrava
+// "Início da conversa" a quem já tinha trocado mensagens.
+//
+// As mensagens são as mesmas em qualquer dos casos: vivem na transação. O que
+// muda é o processo em que a transação foi criada, o que aqui não interessa.
 const findExistingTx = async (sdk, otherUserId) => {
   const commonParams = {
-    processNames: ['default-inquiry'],
     include: ['provider', 'customer'],
     'fields.transaction': ['processName', 'lastTransition', 'lastTransitionedAt'],
     'fields.user': ['profile.displayName'],
