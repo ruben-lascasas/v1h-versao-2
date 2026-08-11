@@ -121,15 +121,20 @@
   flex-direction: column;
   justify-content: space-between;
 
+  /* A caixa ficava presa aos 1056px (1128 com os paddings): num monitor de
+     1900px o conteúdo — conversa de 538px mais cartão de 409px — ocupava pouco
+     mais de metade do ecrã, com margens enormes dos dois lados.
+
+     O aumento tem de estar aqui e não no XLarge: esse breakpoint só começa nos
+     1921px, portanto nunca chegava a aplicar-se na maioria dos monitores. */
   @media (--viewportLarge) {
     flex-direction: row;
-    max-width: calc(var(--contentMaxWidth) + 72px);
+    max-width: 1320px;
     margin: 0 auto 57px auto;
     padding: 0 36px;
   }
 
   @media (--viewportXLarge) {
-    max-width: var(--contentMaxWidth);
     padding: 0;
   }
 }
@@ -139,8 +144,12 @@
 
   @media (--viewportLarge) {
     flex-basis: 538px;
-    flex-grow: 0;
+    /* Cresce com o espaço disponível em vez de ficar presa aos 538px, mas com
+       tecto: uma linha de texto muito comprida é tão má de ler quanto uma
+       coluna estreita. */
+    flex-grow: 1;
     flex-shrink: 1;
+    max-width: 720px;
     margin-right: 56px;
     margin-bottom: 0;
   }
