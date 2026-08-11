@@ -935,3 +935,13 @@
     font-size: 10px;
   }
 }
+
+/* Ponte do estado vazio para o separador das mensagens. */
+.noResultsLink {
+  color: #6A5748;
+  text-decoration: underline;
+}
+
+.noResultsLink:hover {
+  color: #3F3131;
+}

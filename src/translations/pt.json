@@ -598,6 +598,7 @@
   "InboxPage.noMessagesFound": "Não tens mensagens diretas.",
   "InboxPage.bookingsTabTitle": "As minhas reservas",
   "InboxPage.noOrdersFound": "Ainda não fez nenhuma reserva.",
+  "InboxPage.noResultsSeeMessages": "As conversas com anfitriões estão em Outras Mensagens.",
   "InboxPage.noSalesFound": "Ainda ninguém fez uma reserva.",
   "InboxPage.noBookingsFound": "Ainda não tem reservas confirmadas.",
   "InboxPage.fetchFailed": "Não foi possível carregar as mensagens. Por favor tente novamente.",

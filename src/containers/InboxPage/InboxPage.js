@@ -799,6 +799,24 @@ export const InboxPageComponent = props => {
                     : 'InboxPage.noSalesFound'
                 }
               />
+              {/* As conversas directas são transações de inquérito, e estas
+                  ficam de fora das listas de cliente e de vendedor — o filtro
+                  em InboxPage.duck.js exclui default-inquiry de propósito. Como
+                  o link do menu nunca traz ninguém ao separador das mensagens,
+                  quem manda uma mensagem e vem aqui vê a lista vazia e conclui
+                  que se perdeu. Aponta-se o caminho. */}
+              {!isMessages ? (
+                <>
+                  {' '}
+                  <NamedLink
+                    name="InboxPage"
+                    params={{ tab: 'messages' }}
+                    className={css.noResultsLink}
+                  >
+                    <FormattedMessage id="InboxPage.noResultsSeeMessages" />
+                  </NamedLink>
+                </>
+              ) : null}
             </p>
           ) : null}
         </div>

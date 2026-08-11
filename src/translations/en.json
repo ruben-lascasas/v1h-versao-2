@@ -608,6 +608,7 @@
   "InboxPage.default-purchase.reviewed.status": "Completed",
   "InboxPage.fetchFailed": "Couldn't load all messages. Please try again.",
   "InboxPage.noOrdersFound": "You haven't made any orders yet.",
+  "InboxPage.noResultsSeeMessages": "Conversations with hosts are under Other Messages.",
   "InboxPage.noSalesFound": "Nobody has ordered anything from you yet.",
   "InboxPage.bookingsTabTitle": "My bookings",
   "InboxPage.noBookingsFound": "You don't have any confirmed bookings yet.",
