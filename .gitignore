@@ -12,6 +12,9 @@ build
 # misc
 .DS_Store
 .env
+# Qualquer variante (.env.local, cópias de segurança) — nunca versionar segredos
+.env.*
+!.env-template
 npm-debug.log
 yarn-error.log
 
