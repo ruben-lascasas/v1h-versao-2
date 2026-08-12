@@ -1,5 +1,13 @@
 const { Resend } = require('resend');
 
+// O logótipo dos emails tem de ser um URL absoluto. Deriva do domínio
+// configurado em vez de estar escrito à mão: com o domínio novo, o valor fixo
+// devolvia uma imagem partida.
+const LOGO_URL = `${(process.env.REACT_APP_MARKETPLACE_ROOT_URL || '').replace(
+  /\/$/,
+  ''
+)}/static/media/V1H-LOGO-WHITE.png`;
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
@@ -37,7 +45,7 @@ module.exports = async (req, res) => {
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #2E2E2E;">
             <div style="background: #2E2E2E; padding: 32px 24px; text-align: center;">
-              <img src="https://venue1hub.com/static/media/V1H-LOGO-WHITE.png" alt="Venue1Hub" style="height: 48px;" />
+              <img src="${LOGO_URL}" alt="Venue1Hub" style="height: 48px;" />
             </div>
             <div style="padding: 40px 24px;">
               <h2 style="color: #2E2E2E; margin: 0 0 16px;">Obrigado por subscrever!</h2>
