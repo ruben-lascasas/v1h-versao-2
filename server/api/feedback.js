@@ -1,5 +1,5 @@
 const { Resend } = require('resend');
-const { mailFrom } = require('../api-util/emailSender');
+const { mailFrom, adminEmail } = require('../api-util/emailSender');
 
 /**
  * POST /api/feedback
@@ -7,7 +7,7 @@ const { mailFrom } = require('../api-util/emailSender');
  * Required env var:
  *   RESEND_API_KEY     — get it at resend.com
  * Optional:
- *   REPORTS_TO_EMAIL   (defaults to admin@v1h.net)
+ *   REPORTS_TO_EMAIL   opcional; sem ele usa CONTACT_RECIPIENT
  */
 module.exports = async (req, res) => {
   const {
@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const recipient = process.env.REPORTS_TO_EMAIL || 'admin@venue1hub.com';
+  const recipient = process.env.REPORTS_TO_EMAIL || adminEmail();
 
   if (!apiKey) {
     console.log('[Feedback] New feedback (RESEND_API_KEY not configured):');

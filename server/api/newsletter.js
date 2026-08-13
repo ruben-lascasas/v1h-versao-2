@@ -1,5 +1,5 @@
 const { Resend } = require('resend');
-const { mailFrom, isEnglish, t } = require('../api-util/emailSender');
+const { mailFrom, isEnglish, t, adminEmail: adminAddress } = require('../api-util/emailSender');
 
 // O logótipo dos emails tem de ser um URL absoluto. Deriva do domínio
 // configurado em vez de estar escrito à mão: com o domínio novo, o valor fixo
@@ -17,7 +17,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * Required env var:
  *   RESEND_API_KEY
  * Optional:
- *   CONTACT_RECIPIENT  (defaults to admin@v1h.net)
+ *   CONTACT_RECIPIENT  destinatário das notificações internas
  */
 module.exports = async (req, res) => {
   const { email, locale } = req.body || {};
@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const adminEmail = process.env.CONTACT_RECIPIENT || 'admin@v1h.net';
+  const adminEmail = adminAddress();
   const en = isEnglish(locale);
 
   if (!apiKey) {

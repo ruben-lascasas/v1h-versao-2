@@ -1,5 +1,5 @@
 const { Resend } = require('resend');
-const { mailFrom } = require('../api-util/emailSender');
+const { mailFrom, adminEmail } = require('../api-util/emailSender');
 const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
 
 /**
@@ -17,7 +17,7 @@ const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
  *   SHARETRIBE_INTEGRATION_CLIENT_ID        — operator credentials
  *   SHARETRIBE_INTEGRATION_CLIENT_SECRET
  * Optional:
- *   REPORTS_TO_EMAIL  (defaults to admin@venue1hub.com)
+ *   REPORTS_TO_EMAIL  opcional; sem ele usa CONTACT_RECIPIENT
  */
 
 const LIMITS = {
@@ -134,7 +134,7 @@ module.exports = async (req, res) => {
 
   // ─── 4. Send the report email to admin ─────────────────────────────────
   const apiKey = process.env.RESEND_API_KEY;
-  const recipient = process.env.REPORTS_TO_EMAIL || 'admin@venue1hub.com';
+  const recipient = process.env.REPORTS_TO_EMAIL || adminEmail();
 
   if (!apiKey) {
     console.log('[ReportListing] New report (RESEND_API_KEY not configured):');

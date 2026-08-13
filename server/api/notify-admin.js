@@ -1,5 +1,5 @@
 const { Resend } = require('resend');
-const { mailFrom } = require('../api-util/emailSender');
+const { mailFrom, adminEmail } = require('../api-util/emailSender');
 const { buildToken: buildDestaqueToken } = require('./approve-destaque');
 const { buildToken: buildListingToken } = require('./approve-listing');
 const { getIntegrationSdk } = require('../api-util/sdk');
@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const recipient = process.env.ADMIN_NOTIFY_RECIPIENT || 'admin@venue1hub.com';
+  const recipient = process.env.ADMIN_NOTIFY_RECIPIENT || adminEmail();
   const publicRoot = (process.env.REACT_APP_MARKETPLACE_ROOT_URL || '').replace(/\/$/, '');
   const consoleBase = (process.env.SHARETRIBE_CONSOLE_BASE_URL || '').replace(/\/$/, '');
   const consoleUrl = consoleBase

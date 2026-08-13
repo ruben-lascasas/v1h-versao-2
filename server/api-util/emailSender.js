@@ -48,8 +48,22 @@ const mailFrom = etiqueta => {
   return `${visivel} <${endereco}>`;
 };
 
-/** Endereço do administrador que recebe as notificações internas. */
-const adminEmail = () => process.env.CONTACT_RECIPIENT || 'admin@v1h.net';
+/**
+ * Endereço que recebe as notificações internas.
+ *
+ * Havia quatro variáveis para isto (CONTACT_RECIPIENT, REPORTS_TO_EMAIL,
+ * ADMIN_NOTIFY_RECIPIENT, ADMIN_EMAILS) e cada ficheiro tinha o seu endereço de
+ * recurso escrito à mão — uns 'admin@v1h.net', outros 'admin@venue1hub.com',
+ * nenhum deles uma caixa a sério. Quem configurasse uma das variáveis ficava a
+ * pensar que estava tudo encaminhado, e as denúncias continuavam a cair num
+ * endereço morto.
+ *
+ * Agora CONTACT_RECIPIENT é a base: as variáveis específicas continuam a valer
+ * quando existem, e sem elas tudo converge para aqui. ADMIN_EMAILS é outra
+ * coisa — é quem tem acesso ao painel de verificações — e mantém-se à parte.
+ */
+const adminEmail = () =>
+  process.env.CONTACT_RECIPIENT || process.env.ADMIN_EMAILS?.split(',')[0]?.trim() || '';
 
 /**
  * A língua guardada no perfil, normalizada para uma decisão booleana.
