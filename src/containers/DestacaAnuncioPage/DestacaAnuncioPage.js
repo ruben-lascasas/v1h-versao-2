@@ -21,6 +21,10 @@ import {
   LISTING_PAGE_PARAM_TYPE_EDIT,
 } from '../../util/urlHelpers';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
+import {
+  queryOwnListings,
+  RESULT_PAGE_SIZE,
+} from '../ManageListingsPage/ManageListingsPage.duck';
 import { showCreateListingLinkForUser } from '../../util/userHelpers';
 import {
   selectListingRating,
@@ -809,7 +813,19 @@ export const DestacaAnuncioPageComponent = props => {
   const config = useConfiguration();
   const intl = useIntl();
   const location = useLocation();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const { locale } = useLocale();
+  const isEN = locale === 'en';
   const [selectedListing, setSelectedListing] = useState(null);
+
+  // Regresso do Stripe: 'sucesso' | 'cancelado' | null.
+  //
+  // Sem isto, quem pagava voltava para a lista de anúncios como se nada
+  // tivesse acontecido — sem confirmação, sem recibo à vista, e com o anúncio
+  // ainda por destacar porque o webhook demora um instante a chegar. Ficava a
+  // pensar que os 9,99 € se tinham perdido.
+  const [regresso, setRegresso] = useState(null);
 
   // Auto-select listing if listingId query param is present
   useEffect(() => {
@@ -821,6 +837,30 @@ export const DestacaAnuncioPageComponent = props => {
       if (match) setSelectedListing(match);
     }
   }, [listings, location.search]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const estado = params.get('destaque');
+    if (estado !== 'sucesso' && estado !== 'cancelado') return;
+
+    setRegresso(estado);
+
+    // Tira o parâmetro do URL para um refresh não voltar a anunciar o mesmo
+    // pagamento.
+    params.delete('destaque');
+    const query = params.toString();
+    history.replace({ pathname: location.pathname, search: query ? `?${query}` : '' });
+
+    if (estado !== 'sucesso') return;
+
+    // Quem activa o destaque é o webhook, que corre fora deste pedido. Recarrega
+    // os anúncios umas vezes para o estado novo aparecer sozinho, em vez de
+    // obrigar a pessoa a fazer refresh à espera.
+    const temporizadores = [1500, 5000, 12000].map(ms =>
+      setTimeout(() => dispatch(queryOwnListings({ page: 1, perPage: RESULT_PAGE_SIZE })), ms)
+    );
+    return () => temporizadores.forEach(clearTimeout);
+  }, [location.search, location.pathname, history, dispatch]);
 
   const showManageListingsLink = showCreateListingLinkForUser(config, currentUser);
   const listingsAreLoaded = !queryInProgress && !!pagination;
@@ -891,6 +931,18 @@ export const DestacaAnuncioPageComponent = props => {
         }
         footer={<FooterContainer />}
       >
+        {regresso === 'cancelado' ? (
+          <div className={css.messagePanel}>
+            <H3 as="h2" className={css.heading}>
+              {isEN ? 'Payment cancelled' : 'Pagamento cancelado'}
+            </H3>
+            <p>
+              {isEN
+                ? 'Nothing was charged. You can pick a listing below and try again whenever you like.'
+                : 'Não foi cobrado nada. Pode escolher um anúncio abaixo e tentar de novo quando quiser.'}
+            </p>
+          </div>
+        ) : null}
         {queryInProgress ? loadingEl : null}
         {queryListingsError ? errorEl : null}
         {!queryInProgress && !queryListingsError
@@ -907,6 +959,42 @@ export const DestacaAnuncioPageComponent = props => {
             )
           : null}
       </LayoutSingleColumn>
+
+      {/* Confirmação de pagamento, ao voltar do Stripe. */}
+      {regresso === 'sucesso' ? (
+        <div className={css.popupOverlay} onClick={() => setRegresso(null)}>
+          <div className={css.popupCard} onClick={e => e.stopPropagation()}>
+            <div className={css.popupIconWrapper}>
+              <span className={css.popupIcon}>✓</span>
+            </div>
+            <h3 className={css.popupTitle}>
+              {isEN ? 'Payment confirmed!' : 'Pagamento confirmado!'}
+            </h3>
+            <p className={css.popupMessage}>
+              {isEN
+                ? 'Your listing will appear in the featured section on the home page in a moment. We have emailed you the details.'
+                : 'O seu anúncio vai aparecer na secção de destaques da página principal dentro de instantes. Enviámos-lhe os detalhes por email.'}
+            </p>
+            <button
+              className={css.popupButton}
+              onClick={() => {
+                setRegresso(null);
+                history.push({ pathname: '/' });
+                setTimeout(() => smoothScrollToElement(HIGHLIGHTED_SECTION_ID, 2400), 400);
+              }}
+            >
+              {isEN ? 'View my listing' : 'Ver o meu anúncio'}
+            </button>
+            <button
+              className={css.popupClose}
+              onClick={() => setRegresso(null)}
+              aria-label={isEN ? 'Close' : 'Fechar'}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      ) : null}
     </Page>
   );
 };
