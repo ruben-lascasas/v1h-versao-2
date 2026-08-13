@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NamedLink } from '../../../components';
 import { listingHighlightsEnabled } from '../../../config/configFeatures';
+import { fetchListingRating, selectListingRating } from '../../../ducks/ratings.duck';
 import css from './HostDashboard.module.css';
 
 const MONTH_NAMES_PT = [
@@ -206,6 +208,7 @@ const DetailedStats = ({ detailed, loading }) => {
 };
 
 const HostDashboard = ({ listings, activeCount, currentUser }) => {
+  const dispatch = useDispatch();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -216,12 +219,26 @@ const HostDashboard = ({ listings, activeCount, currentUser }) => {
       .catch(() => setLoading(false));
   }, []);
 
-  const ratings = (listings || [])
-    .map(l => l.attributes?.publicData?.averageRating)
-    .filter(r => r != null && r > 0);
-  const avgRating = ratings.length > 0
-    ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
-    : null;
+  // As classificações vinham de `publicData.averageRating`, um campo que nada
+  // no projecto escreve — a "Avaliação média" mostrava sempre um travessão,
+  // mesmo a quem tinha avaliações. O resto da aplicação lê-as do estado
+  // (ratings.duck), alimentado a partir das reviews da API; é essa a fonte.
+  const listingIds = (listings || []).map(l => l?.id?.uuid).filter(Boolean);
+  const ratingsPorAnuncio = useSelector(state =>
+    listingIds.map(id => selectListingRating(state, id))
+  );
+
+  useEffect(() => {
+    listingIds.forEach((id, i) => {
+      if (ratingsPorAnuncio[i] === undefined) dispatch(fetchListingRating(id));
+    });
+  }, [listingIds.join(',')]);
+
+  const ratings = ratingsPorAnuncio.filter(r => r != null && r > 0);
+  const avgRating =
+    ratings.length > 0
+      ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
+      : null;
 
   const firstName = currentUser?.attributes?.profile?.firstName || '';
 

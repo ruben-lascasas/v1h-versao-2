@@ -182,38 +182,61 @@ const ShowFinishDraftOverlayMaybe = props => {
   ) : null;
 };
 
+/**
+ * Um anúncio fechado pode estar fechado por três razões muito diferentes, e
+ * todas apareciam aqui com a mesma frase genérica:
+ *
+ *   - à espera de aprovação (fechado por nós ao publicar)
+ *   - recusado pela revisão
+ *   - fechado pelo próprio anfitrião
+ *
+ * Pior do que a frase: o botão "Reabrir" estava presente nos três casos. Como
+ * ele chama `ownListings.open`, o anfitrião podia reabrir um anúncio que estava
+ * à espera de aprovação — a revisão era contornável com um clique. Nesses dois
+ * primeiros casos o botão desaparece; o anúncio só reabre por decisão de quem
+ * revê, ou depois de o anfitrião o corrigir.
+ */
 const ShowClosedOverlayMaybe = props => {
   const {
     isClosed,
     title,
+    publicData,
     actionsInProgressListingId,
     currentListingId,
     onOpenListing,
     intl,
   } = props;
 
-  return isClosed ? (
-    <Overlay
-      message={intl.formatMessage(
-        { id: 'ManageListingCard.closedListing' },
-        { listingTitle: title }
+  if (!isClosed) return null;
+
+  const emAnalise = publicData?.listingPending === true;
+  const recusado = publicData?.listingRejected === true;
+
+  const messageId = emAnalise
+    ? 'ManageListingCard.pendingReview'
+    : recusado
+    ? 'ManageListingCard.rejectedListing'
+    : 'ManageListingCard.closedListing';
+
+  return (
+    <Overlay message={intl.formatMessage({ id: messageId }, { listingTitle: title })}>
+      {emAnalise || recusado ? null : (
+        <PrimaryButtonInline
+          className={css.openListingButton}
+          disabled={!!actionsInProgressListingId}
+          onClick={event => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (!actionsInProgressListingId) {
+              onOpenListing(currentListingId);
+            }
+          }}
+        >
+          <FormattedMessage id="ManageListingCard.openListing" />
+        </PrimaryButtonInline>
       )}
-    >
-      <PrimaryButtonInline
-        className={css.openListingButton}
-        disabled={!!actionsInProgressListingId}
-        onClick={event => {
-          event.preventDefault();
-          event.stopPropagation();
-          if (!actionsInProgressListingId) {
-            onOpenListing(currentListingId);
-          }
-        }}
-      >
-        <FormattedMessage id="ManageListingCard.openListing" />
-      </PrimaryButtonInline>
     </Overlay>
-  ) : null;
+  );
 };
 
 const ShowPendingApprovalOverlayMaybe = props => {
@@ -654,6 +677,7 @@ export const ManageListingCard = props => {
           <ShowClosedOverlayMaybe
             isClosed={isClosed}
             title={title}
+            publicData={publicData}
             actionsInProgressListingId={actionsInProgressListingId}
             currentListingId={currentListing.id}
             onOpenListing={onOpenListing}
