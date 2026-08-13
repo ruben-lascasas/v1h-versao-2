@@ -274,6 +274,7 @@
   "EditListingAvailabilityPanel.exceptionAvailable": "Available",
   "EditListingAvailabilityPanel.exceptionNotAvailable": "Not available",
   "EditListingAvailabilityPanel.setAvailabilityPlan": "Set default schedule",
+  "EditListingAvailabilityPanel.planRequiredHint": "Set the weekly schedule first to continue.",
   "EditListingAvailabilityPanel.showListingFailed": "Fetching listing data failed.",
   "EditListingAvailabilityPanel.title": "Edit the availability of {listingTitle}",
   "EditListingAvailabilityPlanForm.addAnother": "+ Add another",

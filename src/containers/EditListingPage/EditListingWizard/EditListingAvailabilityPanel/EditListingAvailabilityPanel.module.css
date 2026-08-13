@@ -150,3 +150,17 @@
 .error {
   color: var(--colorFail);
 }
+
+/* Acção principal do passo quando ainda não há horário: tem de competir com o
+   botão SEGUINTE, que é grande e escuro. Como link de texto passava despercebida. */
+.setPlanButton {
+  margin-top: 18px;
+  max-width: 320px;
+}
+
+/* Explica o botão SEGUINTE desactivado, para não ser um beco sem saída. */
+.nextTabHint {
+  margin: 10px 0 0 0;
+  font-size: 14px;
+  color: var(--colorGrey500, #6B6B6B);
+}

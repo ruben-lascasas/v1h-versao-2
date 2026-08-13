@@ -49,6 +49,7 @@
   "DestacaAnuncioPage.statePending": "Aguarda aprovação",
   "DestacaAnuncioPage.statePublished": "Publicado",
   "EditListingAvailabilityPanel.setAvailabilityPlan": "Definir horário padrão",
+  "EditListingAvailabilityPanel.planRequiredHint": "Defina primeiro o horário semanal para poder avançar.",
   "EditListingAvailabilityPanel.showListingFailed": "Erro ao obter os dados do anúncio.",
   "EditListingAvailabilityPanel.title": "Editar a disponibilidade de {listingTitle}",
   "EditListingAvailabilityPlanForm.addAnother": "+ Adicionar outro",

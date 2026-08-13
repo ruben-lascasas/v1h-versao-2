@@ -286,24 +286,35 @@ const EditListingAvailabilityPanel = props => {
         <FormattedMessage id={panelHeadingProps.id} values={{ ...panelHeadingProps.values }} />
       </H3>
 
+      {/* Sem horário definido, isto é a acção principal do passo e tem de
+          parecer um botão. Era um link de texto, ao lado de um SEGUINTE grande
+          e escuro: o olho ia para o SEGUINTE, e quem não reparasse no link
+          avançava sem horário nenhum — publicando um anúncio que ninguém podia
+          reservar. Depois de definido volta a ser discreto, porque aí é só
+          para editar. */}
       <div className={css.planInfo}>
         {!hasAvailabilityPlan ? (
-          <p>
-            <FormattedMessage id="EditListingAvailabilityPanel.availabilityPlanInfo" />
-          </p>
-        ) : null}
-
-        <InlineTextButton
-          id={EDIT_AVAILABILITY_PLAN_BUTTON}
-          className={css.editPlanButton}
-          onClick={() => setIsEditPlanModalOpen(true)}
-        >
-          {hasAvailabilityPlan ? (
+          <>
+            <p>
+              <FormattedMessage id="EditListingAvailabilityPanel.availabilityPlanInfo" />
+            </p>
+            <Button
+              id={EDIT_AVAILABILITY_PLAN_BUTTON}
+              className={css.setPlanButton}
+              onClick={() => setIsEditPlanModalOpen(true)}
+            >
+              <FormattedMessage id="EditListingAvailabilityPanel.setAvailabilityPlan" />
+            </Button>
+          </>
+        ) : (
+          <InlineTextButton
+            id={EDIT_AVAILABILITY_PLAN_BUTTON}
+            className={css.editPlanButton}
+            onClick={() => setIsEditPlanModalOpen(true)}
+          >
             <FormattedMessage id="EditListingAvailabilityPanel.editAvailabilityPlan" />
-          ) : (
-            <FormattedMessage id="EditListingAvailabilityPanel.setAvailabilityPlan" />
-          )}
-        </InlineTextButton>
+          </InlineTextButton>
+        )}
       </div>
 
       {hasAvailabilityPlan ? (
@@ -347,14 +358,25 @@ const EditListingAvailabilityPanel = props => {
         </p>
       ) : null}
 
+      {/* Estava sempre activo. Sem horário definido não há um único momento
+          reservável, portanto avançar daqui publicava um anúncio que ninguém
+          conseguia reservar — e sem nada a explicar porquê. A dica em baixo
+          existe para o botão desactivado não ser mais um beco sem saída. */}
       {!isPublished ? (
-        <Button
-          className={css.goToNextTabButton}
-          onClick={onNextTab}
-          disabled={false}
-        >
-          {submitButtonText}
-        </Button>
+        <>
+          <Button
+            className={css.goToNextTabButton}
+            onClick={onNextTab}
+            disabled={!hasAvailabilityPlan}
+          >
+            {submitButtonText}
+          </Button>
+          {!hasAvailabilityPlan ? (
+            <p className={css.nextTabHint}>
+              <FormattedMessage id="EditListingAvailabilityPanel.planRequiredHint" />
+            </p>
+          ) : null}
+        </>
       ) : null}
 
       {onManageDisableScrolling && isEditPlanModalOpen ? (
