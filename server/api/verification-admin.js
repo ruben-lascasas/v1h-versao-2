@@ -18,6 +18,7 @@ const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
 const r2 = require('../api-util/r2');
 const emails = require('../api-util/verificationEmails');
 const { isEnglish } = require('../api-util/emailSender');
+const { collectVerificationRows } = require('../api-util/verificationList');
 const {
   STATUS,
   DOC_KEYS,
@@ -30,7 +31,6 @@ const {
 } = require('../api-util/verification');
 
 const DOC_URL_TTL_SECONDS = 300;
-const MAX_USERS = 500;
 
 const adminEmails = () =>
   (process.env.ADMIN_EMAILS || '')
@@ -73,44 +73,7 @@ const list = async (req, res) => {
   if (!sdk) return res.status(500).json({ error: 'integration-sdk-not-configured' });
 
   try {
-    const collected = [];
-    let page = 1;
-    // Filtering by metadata would need a search schema configured in Console,
-    // so page through and filter here instead. Capped so a growing user base
-    // can never turn this into an unbounded scan.
-    for (; page <= Math.ceil(MAX_USERS / 100); page++) {
-      const response = await sdk.users.query({ page, perPage: 100 });
-      const batch = response?.data?.data || [];
-      collected.push(...batch);
-      const totalPages = response?.data?.meta?.totalPages || 1;
-      if (page >= totalPages || batch.length === 0) break;
-    }
-
-    const rows = collected
-      .filter(u => verificationUserTypes().includes(u?.attributes?.profile?.publicData?.userType))
-      .map(u => {
-        const profile = u.attributes.profile || {};
-        const verification = profile.privateData?.verification || {};
-        const docs = readDocs(verification);
-        const submitted = Object.values(docs).filter(d => d.status !== STATUS.MISSING);
-        const lastUpload = submitted
-          .map(d => d.uploadedAt)
-          .filter(Boolean)
-          .sort()
-          .pop();
-        return {
-          userId: u.id.uuid,
-          displayName: profile.displayName || null,
-          email: u.attributes.email || null,
-          status: profile.metadata?.verificationStatus || null,
-          submittedCount: submitted.length,
-          lastUploadAt: lastUpload || null,
-          docs: publicShape(docs),
-        };
-      })
-      .filter(row => row.submittedCount > 0)
-      .sort((a, b) => String(b.lastUploadAt || '').localeCompare(String(a.lastUploadAt || '')));
-
+    const rows = await collectVerificationRows(sdk);
     return res.json({ users: rows });
   } catch (e) {
     console.error('[verification-admin] list failed:', e?.message || e);
@@ -230,4 +193,21 @@ const decision = async (req, res) => {
   }
 };
 
-module.exports = { list, docUrl, decision };
+
+/**
+ * GET /api/verification-admin/me
+ *
+ * Diz ao cliente se quem está autenticado é administrador, para o menu poder
+ * mostrar a entrada do painel só a quem lá pode entrar. Não devolve a lista de
+ * administradores nem nada além do sim/não — quem não é admin fica a saber
+ * apenas isso.
+ *
+ * Isto é conveniência de interface, não segurança: os endpoints que interessam
+ * verificam o mesmo por sua conta.
+ */
+const me = async (req, res) => {
+  const admin = await requireAdmin(req, res);
+  return res.json({ isAdmin: Boolean(admin) });
+};
+
+module.exports = { list, docUrl, decision, me };

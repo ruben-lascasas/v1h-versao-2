@@ -371,6 +371,11 @@ const server = app.listen(PORT, () => {
   } catch (e) {
     console.error('[expireFeatured] failed to start:', e?.message || e);
   }
+  try {
+    require('./jobs/verificationDigestJob').start();
+  } catch (e) {
+    console.error('[verification-digest] failed to start:', e?.message || e);
+  }
 });
 
 // Graceful shutdown:

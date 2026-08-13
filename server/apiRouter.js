@@ -109,6 +109,7 @@ router.post('/change-user-type', changeUserType.change);
 router.post('/destaque/checkout', destaqueBilling.checkout);
 
 // Painel do operador. Protegido por ADMIN_EMAILS, não por URL secreto.
+router.get('/verification-admin/me', verificationAdmin.me);
 router.get('/verification-admin/list', verificationAdmin.list);
 router.get('/verification-admin/doc', verificationAdmin.docUrl);
 router.post('/verification-admin/decision', verificationAdmin.decision);

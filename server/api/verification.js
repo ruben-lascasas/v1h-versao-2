@@ -190,13 +190,11 @@ const upload = async (req, res) => {
         en: isEnglish(profile),
       })
       .catch(() => {});
-    emails
-      .adminNewSubmission({
-        displayName: profile.displayName,
-        email: user.attributes.email,
-        docLabel: def.label,
-      })
-      .catch(() => {});
+
+    // O administrador já não é avisado documento a documento. Uma pessoa com
+    // quatro documentos gerava quatro emails, todos a dizer o mesmo: "vai ao
+    // painel". Passou a haver um resumo diário — server/jobs/verificationDigestJob.js
+    // — que só sai quando há mesmo algo por decidir.
 
     return res.json({ status, docs: publicShape(docs) });
   } catch (e) {

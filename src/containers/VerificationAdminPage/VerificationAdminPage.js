@@ -56,6 +56,49 @@ const formatDate = iso => {
   }
 };
 
+/** Quantos documentos desta pessoa esperam decisão. */
+const porRever = u => (u.docs || []).filter(d => d.status === 'pendente').length;
+
+/**
+ * Aplica os filtros da barra a uma lista de pessoas.
+ *
+ * Separado do componente para poder ser testado sem montar a página, e porque
+ * a regra de "o que conta como pendente" é a mesma que decide o aviso diário.
+ */
+export const filtrarUtilizadores = (users, { estado, de, ate, procura }) => {
+  const termo = (procura || '').trim().toLowerCase();
+  const desde = de ? new Date(`${de}T00:00:00`).getTime() : null;
+  // O fim do dia, não o início: escolher 20/08 em "até" tem de incluir o
+  // próprio dia 20, senão quem submeteu nessa manhã desaparece da lista.
+  const ateAoFim = ate ? new Date(`${ate}T23:59:59.999`).getTime() : null;
+
+  return (users || []).filter(u => {
+    if (estado === 'por_rever' && porRever(u) === 0) return false;
+    if (estado !== 'todos' && estado !== 'por_rever' && u.status !== estado) return false;
+
+    if (desde || ateAoFim) {
+      const t = u.lastUploadAt ? new Date(u.lastUploadAt).getTime() : null;
+      if (t == null || Number.isNaN(t)) return false;
+      if (desde && t < desde) return false;
+      if (ateAoFim && t > ateAoFim) return false;
+    }
+
+    if (termo) {
+      const alvo = `${u.displayName || ''} ${u.email || ''}`.toLowerCase();
+      if (!alvo.includes(termo)) return false;
+    }
+    return true;
+  });
+};
+
+const ESTADOS = [
+  { key: 'por_rever', label: 'Por rever' },
+  { key: 'pendente', label: 'Em análise' },
+  { key: 'aprovado', label: 'Verificados' },
+  { key: 'recusado', label: 'Com correções' },
+  { key: 'todos', label: 'Todos' },
+];
+
 const DocCard = ({ userId, doc, onDecided }) => {
   const [busy, setBusy] = useState(false);
   const [showReason, setShowReason] = useState(false);
@@ -218,6 +261,17 @@ const VerificationAdminPage = props => {
 
   const { loading, users, error } = state;
 
+  // Abre no que precisa de trabalho. Uma lista de toda a gente, aprovados
+  // incluídos, obriga a procurar o que interessa em cada visita.
+  const [estado, setEstado] = useState('por_rever');
+  const [de, setDe] = useState('');
+  const [ate, setAte] = useState('');
+  const [procura, setProcura] = useState('');
+
+  const visiveis = filtrarUtilizadores(users, { estado, de, ate, procura });
+  const totalPorRever = users.reduce((n, u) => n + porRever(u), 0);
+  const temFiltroDeData = Boolean(de || ate || procura);
+
   return (
     <Page title="Verificações | Venue1Hub" scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn
@@ -230,6 +284,70 @@ const VerificationAdminPage = props => {
             Verificações de anunciantes
           </H2>
 
+          {!loading && !error && users.length > 0 ? (
+            <>
+              <p className={css.resumo}>
+                {totalPorRever === 0
+                  ? 'Nada por rever de momento.'
+                  : `${totalPorRever} documento${totalPorRever === 1 ? '' : 's'} à espera de decisão.`}
+              </p>
+
+              <div className={css.filtros}>
+                <div className={css.filtroEstados} role="group" aria-label="Filtrar por estado">
+                  {ESTADOS.map(e => (
+                    <button
+                      key={e.key}
+                      type="button"
+                      className={classNames(css.filtroChip, {
+                        [css.filtroChipAtivo]: estado === e.key,
+                      })}
+                      onClick={() => setEstado(e.key)}
+                      aria-pressed={estado === e.key}
+                    >
+                      {e.label}
+                      {e.key === 'por_rever' && totalPorRever > 0 ? (
+                        <span className={css.filtroContagem}>{totalPorRever}</span>
+                      ) : null}
+                    </button>
+                  ))}
+                </div>
+
+                <div className={css.filtroCampos}>
+                  <label className={css.filtroCampo}>
+                    <span>De</span>
+                    <input type="date" value={de} max={ate || undefined} onChange={e => setDe(e.target.value)} />
+                  </label>
+                  <label className={css.filtroCampo}>
+                    <span>Até</span>
+                    <input type="date" value={ate} min={de || undefined} onChange={e => setAte(e.target.value)} />
+                  </label>
+                  <label className={classNames(css.filtroCampo, css.filtroProcura)}>
+                    <span>Procurar</span>
+                    <input
+                      type="search"
+                      value={procura}
+                      placeholder="nome ou email"
+                      onChange={e => setProcura(e.target.value)}
+                    />
+                  </label>
+                  {temFiltroDeData ? (
+                    <button
+                      type="button"
+                      className={css.filtroLimpar}
+                      onClick={() => {
+                        setDe('');
+                        setAte('');
+                        setProcura('');
+                      }}
+                    >
+                      Limpar
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            </>
+          ) : null}
+
           {error === 'forbidden' ? (
             <p className={css.notice}>
               Esta página é restrita. Inicie sessão com uma conta autorizada.
@@ -240,13 +358,36 @@ const VerificationAdminPage = props => {
             <p className={css.notice}>A carregar…</p>
           ) : users.length === 0 ? (
             <p className={css.notice}>Não há documentos submetidos de momento.</p>
+          ) : visiveis.length === 0 ? (
+            <p className={css.notice}>
+              Nenhuma pessoa corresponde a estes filtros.{' '}
+              <button
+                type="button"
+                className={css.filtroLimpar}
+                onClick={() => {
+                  setEstado('todos');
+                  setDe('');
+                  setAte('');
+                  setProcura('');
+                }}
+              >
+                Ver todos
+              </button>
+            </p>
           ) : (
             <ul className={css.userList}>
-              {users.map(u => (
+              {visiveis.map(u => (
                 <li key={u.userId} className={css.userItem}>
                   <div className={css.userHead}>
                     <div>
-                      <p className={css.userName}>{u.displayName || '(sem nome)'}</p>
+                      <p className={css.userName}>
+                        {u.displayName || '(sem nome)'}
+                        {porRever(u) > 0 ? (
+                          <span className={css.userPendente}>
+                            {porRever(u)} por rever
+                          </span>
+                        ) : null}
+                      </p>
                       <p className={css.userMeta}>
                         {u.email} · {ACCOUNT_LABEL[u.status] || u.status || '—'}
                         {u.lastUploadAt ? ` · último envio ${formatDate(u.lastUploadAt)}` : ''}

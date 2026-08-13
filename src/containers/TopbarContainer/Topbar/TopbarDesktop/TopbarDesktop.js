@@ -22,6 +22,7 @@ import { useDarkMode } from '../../../../context/darkModeContext';
 import { updateLastOnline } from '../../../../ducks/follow.duck';
 import { checkNewListingsFromFollowed } from '../../../../ducks/notifications.duck';
 import { fetchCurrentUserNotifications } from '../../../../ducks/user.duck';
+import { useIsAdmin } from '../../../../util/useIsAdmin';
 
 import logoBlack from '../../../../assets/images/V1H-LOGO-BLACK.png';
 import css from './TopbarDesktop.module.css';
@@ -157,6 +158,9 @@ const InboxLink = ({ notificationCount, inboxTab, currentPage }) => {
 };
 
 const ProfileMenu = ({ currentPage, currentUser, onLogout, showManageListingsLink, intl }) => {
+  // Entrada do painel de verificacoes, so para quem o servidor reconhece como
+  // administrador. Poupa-lhe ter de decorar o URL /verificacoes.
+  const isAdmin = useIsAdmin(Boolean(currentUser?.id?.uuid));
   const location = useLocation();
   const isOwnProfilePage =
     currentPage === 'ProfilePage' &&
@@ -237,6 +241,17 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout, showManageListingsLin
             <FormattedMessage id="TopbarDesktop.helpLink" />
           </NamedLink>
         </MenuItem>
+        {isAdmin ? (
+          <MenuItem key="VerificacoesPage">
+            <NamedLink
+              className={classNames(css.menuLink, currentPageClass('VerificationAdminPage'))}
+              name="VerificationAdminPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.verificacoesLink" />
+            </NamedLink>
+          </MenuItem>
+        ) : null}
         <MenuItem key="logout">
           <InlineTextButton rootClassName={css.logoutButton} onClick={onLogout}>
             <span className={css.menuItemBorder} />

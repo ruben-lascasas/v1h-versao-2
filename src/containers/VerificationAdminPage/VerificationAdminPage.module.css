@@ -208,3 +208,153 @@
   color: #B4432A;
   margin: 8px 0 0 0;
 }
+
+/* ── Barra de filtros ──────────────────────────────────────────────
+   O painel abre no que precisa de trabalho ("Por rever"). Sem isto,
+   cada visita começava por procurar os pendentes no meio de toda a
+   gente, aprovados incluídos. */
+
+.resumo {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin: 0 0 16px 0;
+}
+
+.filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 0 24px 0;
+  padding: 16px;
+  background: #F9F6F2;
+  border: 1px solid #E4D9CB;
+  border-radius: 8px;
+}
+
+.filtroEstados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filtroChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid #E4D9CB;
+  border-radius: 999px;
+  background: #ffffff;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #6B6B6B;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.filtroChip:hover {
+  border-color: #2E2E2E;
+  color: #2E2E2E;
+}
+
+.filtroChipAtivo,
+.filtroChipAtivo:hover {
+  background: #2E2E2E;
+  border-color: #2E2E2E;
+  color: #ffffff;
+}
+
+.filtroContagem {
+  display: inline-block;
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: #C98C7A;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.filtroChipAtivo .filtroContagem {
+  background: #ffffff;
+  color: #2E2E2E;
+}
+
+.filtroCampos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.filtroCampo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #6B6B6B;
+}
+
+.filtroCampo input {
+  padding: 7px 10px;
+  border: 1px solid #E4D9CB;
+  border-radius: 6px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  color: #2E2E2E;
+}
+
+.filtroCampo input:focus {
+  outline: none;
+  border-color: #2E2E2E;
+}
+
+/* A procura fica com espaço para um email inteiro, ao contrário das datas. */
+.filtroProcura {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.filtroProcura input {
+  width: 100%;
+}
+
+.filtroLimpar {
+  padding: 7px 12px;
+  border: none;
+  background: none;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #6B6B6B;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.filtroLimpar:hover {
+  color: #2E2E2E;
+}
+
+/* Marca quem tem trabalho à espera, para se ver na lista sem abrir nada. */
+.userPendente {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #C98C7A;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+@media (max-width: 550px) {
+  .filtroCampos {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
