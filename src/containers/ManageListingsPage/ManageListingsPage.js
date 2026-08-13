@@ -43,31 +43,11 @@ import css from './ManageListingsPage.module.css';
 import DiscardDraftModal from './DiscardDraftModal/DiscardDraftModal';
 import HostDashboard from './HostDashboard/HostDashboard';
 
-const Heading = props => {
-  const { listingsAreLoaded, pagination } = props;
-  const hasResults = listingsAreLoaded && pagination.totalItems > 0;
-  const hasNoResults = listingsAreLoaded && pagination.totalItems === 0;
-
-  return hasResults ? (
-    <H3 as="h1" className={css.heading}>
-      <FormattedMessage
-        id="ManageListingsPage.youHaveListings"
-        values={{ count: pagination.totalItems }}
-      />
-    </H3>
-  ) : hasNoResults ? (
-    <div className={css.noResultsContainer}>
-      <H3 as="h1" className={css.headingNoListings}>
-        <FormattedMessage id="ManageListingsPage.noResults" />
-      </H3>
-      <p className={css.createListingParagraph}>
-        <NamedLink className={css.createListingLink} name="NewListingPage">
-          <FormattedMessage id="ManageListingsPage.createListing" />
-        </NamedLink>
-      </p>
-    </div>
-  ) : null;
-};
+// Havia aqui um componente `Heading` que já ninguém renderizava e que contava
+// pelo `pagination.totalItems`, sem descontar os anúncios escondidos — o mesmo
+// erro que esta página tinha à vista. Foi removido em vez de corrigido: manter
+// uma segunda contagem, sem uso, era só esperar que alguém a voltasse a ligar.
+// A contagem que vale é a `visibleTotal`, no corpo da página.
 
 const PaginationLinksMaybe = props => {
   const { listingsAreLoaded, pagination, page } = props;
@@ -194,6 +174,21 @@ export const ManageListingsPageComponent = props => {
   const hasPaginationInfo = !!pagination && pagination.totalItems != null;
   const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
 
+  // A Sharetribe não apaga anúncios — um anúncio apagado aqui é fechado e
+  // acrescentado a uma lista de escondidos (ver util/deletedListings.js). A
+  // grelha respeitava essa lista, mas a contagem vinha do `totalItems` da API,
+  // que não a conhece: quem apagasse o único anúncio ficava a ler "Tem 1
+  // anúncio" por cima de uma grelha vazia, e sem o convite para criar o
+  // primeiro, porque esse só aparecia com totalItems a zero.
+  //
+  // Os escondidos continuam todos a existir do lado da API (fechados, nunca
+  // apagados), por isso descontá-los do total dá o número que a pessoa vê.
+  const deletedSet = new Set(getDeletedListingIds(userIdForDeleted));
+  const visibleListings = listings.filter(l => !deletedSet.has(l.id.uuid));
+  const visibleTotal = hasPaginationInfo
+    ? Math.max(0, pagination.totalItems - deletedSet.size)
+    : null;
+
   const loadingResults = (
     <div className={css.messagePanel}>
       <H3 as="h2" className={css.heading}>
@@ -236,8 +231,8 @@ export const ManageListingsPageComponent = props => {
       >
         <div className={css.listingPanel}>
           <HostDashboard
-            listings={listings}
-            activeCount={listingsAreLoaded ? pagination?.totalItems : null}
+            listings={visibleListings}
+            activeCount={listingsAreLoaded ? visibleTotal : null}
             currentUser={currentUser}
           />
           <div className={css.headingWrapper}>
@@ -245,17 +240,17 @@ export const ManageListingsPageComponent = props => {
               <FormattedMessage id="ManageListingsPage.title" />
             </H2>
             <p className={css.count}>
-              {listingsAreLoaded && pagination?.totalItems != null
+              {listingsAreLoaded && visibleTotal != null && visibleTotal > 0
                 ? <FormattedMessage
                     id="ManageListingsPage.youHaveListings"
-                    values={{ count: pagination.totalItems }}
+                    values={{ count: visibleTotal }}
                   />
                 : null}
             </p>
           </div>
           {queryInProgress ? loadingResults : null}
           {queryListingsError ? queryError : null}
-          {listingsAreLoaded && pagination?.totalItems === 0 ? (
+          {listingsAreLoaded && visibleTotal === 0 ? (
             <div className={css.noResults}>
               <H3 as="h2" className={css.headingNoListings}>
                 <FormattedMessage id="ManageListingsPage.noResults" />
@@ -270,9 +265,7 @@ export const ManageListingsPageComponent = props => {
 
           <div className={css.listingCards}>
             {(() => {
-              const deletedSet = new Set(getDeletedListingIds(userIdForDeleted));
-              return listings
-                .filter(l => !deletedSet.has(l.id.uuid))
+              return visibleListings
                 .map(l => (
                   <ManageListingCard
                     className={css.listingCard}
