@@ -642,3 +642,35 @@ export const saveUserLocale = locale => (dispatch, getState, sdk) => {
     .updateProfile({ publicData: { locale } })
     .catch(e => console.warn('[locale] não foi possível guardar no perfil:', e?.message || e));
 };
+
+/**
+ * Guarda os dados de faturação no perfil do utilizador.
+ *
+ * O NIF é obrigatório no checkout e ficava apenas na `protectedData` da
+ * transação — nunca no utilizador. Quem reservasse três vezes escrevia-o três
+ * vezes, e não havia onde o consultar ou corrigir fora de uma reserva.
+ *
+ * Fica em `protectedData` e não em `publicData`: é um identificador fiscal, não
+ * é para ser lido por terceiros.
+ *
+ * Best-effort, como o locale: falhar a memorizar o NIF não pode fazer descarrilar
+ * um pagamento que já está em curso.
+ */
+export const saveBillingDetails = ({ taxId, companyName }) => (dispatch, getState, sdk) => {
+  const currentUser = getState()?.user?.currentUser;
+  if (!currentUser?.id || !taxId) return Promise.resolve();
+
+  const guardados = currentUser.attributes?.profile?.protectedData || {};
+  const mesmoNif = guardados.billingTaxId === taxId;
+  const mesmaEmpresa = (guardados.billingCompanyName || '') === (companyName || '');
+  if (mesmoNif && mesmaEmpresa) return Promise.resolve();
+
+  return sdk.currentUser
+    .updateProfile({
+      protectedData: {
+        billingTaxId: taxId,
+        ...(companyName ? { billingCompanyName: companyName } : {}),
+      },
+    })
+    .catch(e => console.warn('[faturação] não foi possível guardar no perfil:', e?.message || e));
+};

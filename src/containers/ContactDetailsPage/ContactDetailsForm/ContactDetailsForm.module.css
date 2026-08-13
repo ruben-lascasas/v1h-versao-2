@@ -287,3 +287,11 @@
   color: var(--colorFail);
   font-size: 13px;
 }
+
+/* Dados de faturação. Separados do bloco de email/telefone porque não passam
+   pela confirmação por password — o NIF não é um dado de acesso à conta. */
+.billingSection {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--colorGrey100, #e7e7e7);
+}

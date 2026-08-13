@@ -42,6 +42,7 @@ import { getErrorMessages } from './ErrorMessages';
 
 import StripePaymentForm from './StripePaymentForm/StripePaymentForm';
 import DetailsSideCard from './DetailsSideCard';
+import { saveBillingDetails } from '../../ducks/user.duck';
 import MobileListingImage from './MobileListingImage';
 import MobileOrderBreakdown from './MobileOrderBreakdown';
 
@@ -322,6 +323,16 @@ const handleSubmit = (values, process, props, stripe, submitting, setSubmitting)
       ? { billingCompanyName: rawCompanyName.trim() }
       : {}),
   };
+
+  // Memoriza-os no perfil para a próxima reserva já vir preenchida. A
+  // transação continua a levar a sua própria cópia: é o que a fatura tem de
+  // reflectir, e não pode mudar se a pessoa alterar o NIF mais tarde.
+  dispatch(
+    saveBillingDetails({
+      taxId: normalisedTaxId,
+      companyName: rawCompanyName ? rawCompanyName.trim() : '',
+    })
+  );
 
   const transactionFieldsProtectedData = {
     ...pickTransactionFieldsData(formValues, 'protected', true, transactionFieldConfigs),
@@ -628,9 +639,16 @@ export const CheckoutPageWithPayment = props => {
   // If your marketplace works mostly in one country you can use initial values to select country automatically
   // e.g. {country: 'FI'}
 
+  // O NIF é obrigatório e era pedido de novo em cada reserva: ficava guardado
+  // apenas na transação, nunca no utilizador. Quem reservasse três vezes
+  // escrevia-o três vezes.
+  const dadosFaturacao = currentUser?.attributes?.profile?.protectedData || {};
+
   const initialValuesForStripePayment = {
     name: userName,
     recipientName: userName,
+    taxId: dadosFaturacao.billingTaxId || '',
+    companyName: dadosFaturacao.billingCompanyName || '',
     // Default the "Guardar dados do cartão" checkbox to OFF — users were
     // annoyed by having to uncheck it every time.
     saveAfterOnetimePayment: [],

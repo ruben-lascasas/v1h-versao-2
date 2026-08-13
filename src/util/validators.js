@@ -141,6 +141,19 @@ export const taxId = (requiredMsg, invalidPtMsg, invalidGenericMsg) => (value, a
   return /^[A-Z0-9]{5,20}$/.test(trimmed) ? VALID : invalidGenericMsg;
 };
 
+/**
+ * O mesmo NIF, mas facultativo.
+ *
+ * Na página de conta o campo é opcional — quem nunca reservou não tem de o dar
+ * já. Um campo vazio passa; um campo preenchido tem de ser um NIF válido, para
+ * o erro aparecer aqui e não a meio de um pagamento.
+ */
+export const taxIdOptional = invalidMsg => value => {
+  if (!value || !String(value).trim()) return VALID;
+  const trimmed = String(value).trim().toUpperCase().replace(/\s+/g, '');
+  return isValidPortugueseNif(trimmed) ? VALID : invalidMsg;
+};
+
 export const autocompletePlaceSelected = message => value => {
   const selectedPlaceIsValid =
     value &&

@@ -496,6 +496,42 @@ class ContactDetailsFormComponent extends Component {
                 <PhoneNumberMaybe formId={formId} userTypeConfig={userTypeConfig} intl={intl} />
               </div>
 
+              {/* Dados de faturação.
+                  O NIF é obrigatório no checkout e ficava só na transação: era
+                  pedido outra vez em cada reserva, e não havia onde o corrigir
+                  sem estar a reservar. Guardado aqui, o checkout já vem
+                  preenchido. Não é obrigatório nesta página — quem nunca
+                  reservou não tem de o dar já. */}
+              <div className={css.billingSection}>
+                <H4 as="h3" className={css.confirmChangesTitle}>
+                  <FormattedMessage id="ContactDetailsForm.billingTitle" />
+                </H4>
+                <p className={css.confirmChangesInfo}>
+                  <FormattedMessage id="ContactDetailsForm.billingInfo" />
+                </p>
+                <FieldTextInput
+                  className={css.phone}
+                  type="text"
+                  name="taxId"
+                  id={formId ? `${formId}.taxId` : 'taxId'}
+                  label={intl.formatMessage({ id: 'ContactDetailsForm.taxIdLabel' })}
+                  placeholder={intl.formatMessage({ id: 'ContactDetailsForm.taxIdPlaceholder' })}
+                  validate={validators.taxIdOptional(
+                    intl.formatMessage({ id: 'StripePaymentForm.taxIdInvalidPt' })
+                  )}
+                />
+                <FieldTextInput
+                  className={css.phone}
+                  type="text"
+                  name="companyName"
+                  id={formId ? `${formId}.companyName` : 'companyName'}
+                  label={intl.formatMessage({ id: 'ContactDetailsForm.companyNameLabel' })}
+                  placeholder={intl.formatMessage({
+                    id: 'ContactDetailsForm.companyNamePlaceholder',
+                  })}
+                />
+              </div>
+
               <div className={confirmClasses} aria-hidden={!emailChanged}>
                 <H4 as="h3" className={css.confirmChangesTitle}>
                   <FormattedMessage id="ContactDetailsForm.confirmChangesTitle" />

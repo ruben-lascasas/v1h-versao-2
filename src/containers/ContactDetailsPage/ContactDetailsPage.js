@@ -9,7 +9,7 @@ import { propTypes } from '../../util/types';
 import { ensureCurrentUser, userHasPassword } from '../../util/data';
 import { showCreateListingLinkForUser, showPaymentDetailsForUser } from '../../util/userHelpers';
 
-import { sendVerificationEmail } from '../../ducks/user.duck';
+import { sendVerificationEmail, saveBillingDetails } from '../../ducks/user.duck';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 
 import { H2, Page, LayoutSideNavigation } from '../../components';
@@ -60,6 +60,7 @@ export const ContactDetailsPageComponent = props => {
     onResendVerificationEmail,
     onSubmitContactDetails,
     onResetPassword,
+    onSaveBilling,
     resetPasswordInProgress = false,
     resetPasswordError,
   } = props;
@@ -79,13 +80,28 @@ export const ContactDetailsPageComponent = props => {
 
   const handleSubmit = values => {
     const phoneNumber = values.phoneNumber ? values.phoneNumber : null;
+
+    // Os dados de faturação seguem o seu próprio caminho, de propósito: o fluxo
+    // de email/telefone exige a password quando o email muda e faz merges do
+    // utilizador. Enfiar o NIF lá dentro era arriscar esse fluxo por um campo
+    // que não precisa dele.
+    onSaveBilling({
+      taxId: values.taxId ? String(values.taxId).trim().toUpperCase().replace(/\s+/g, '') : '',
+      companyName: values.companyName ? values.companyName.trim() : '',
+    });
+
     return onSubmitContactDetails({ ...values, phoneNumber, currentEmail, currentPhoneNumber });
   };
 
   const contactInfoForm = user.id ? (
     <ContactDetailsForm
       className={css.form}
-      initialValues={{ email: currentEmail, ...phoneNumberMaybe }}
+      initialValues={{
+        email: currentEmail,
+        ...phoneNumberMaybe,
+        taxId: protectedData.billingTaxId || '',
+        companyName: protectedData.billingCompanyName || '',
+      }}
       saveEmailError={saveEmailError}
       savePhoneNumberError={savePhoneNumberError}
       currentUser={currentUser}
@@ -172,6 +188,7 @@ const mapDispatchToProps = dispatch => ({
   onResendVerificationEmail: () => dispatch(sendVerificationEmail()),
   onSubmitContactDetails: values => dispatch(saveContactDetails(values)),
   onResetPassword: values => dispatch(resetPassword(values)),
+  onSaveBilling: values => dispatch(saveBillingDetails(values)),
 });
 
 const ContactDetailsPage = compose(
