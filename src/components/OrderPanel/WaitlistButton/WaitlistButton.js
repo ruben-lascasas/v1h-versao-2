@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocale } from '../../../context/localeContext';
 import css from './WaitlistButton.module.css';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,6 +16,7 @@ const WaitlistButton = ({ listingId, listingTitle, values }) => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const [errorMsg, setErrorMsg] = useState('');
+  const { locale } = useLocale();
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -43,6 +45,9 @@ const WaitlistButton = ({ listingId, listingTitle, values }) => {
           listingUrl: window.location.href,
           startDate,
           endDate,
+          // O email de confirmação é enviado na língua em que a pessoa está a ver
+          // o site — pode nem ter conta, por isso não há perfil onde consultar.
+          locale,
         }),
       });
 

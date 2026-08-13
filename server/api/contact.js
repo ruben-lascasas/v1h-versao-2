@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const { mailFrom } = require('../api-util/emailSender');
 
 /**
  * POST /api/contact
@@ -31,7 +32,7 @@ module.exports = async (req, res) => {
     const resend = new Resend(apiKey);
 
     await resend.emails.send({
-      from: 'Venue1Hub Contacto <onboarding@resend.dev>',
+      from: mailFrom('Contacto'),
       reply_to: email,
       to: [recipient],
       subject: `[Venue1Hub - Contacto] ${subject}`,

@@ -16,6 +16,7 @@
 const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
 const r2 = require('../api-util/r2');
 const emails = require('../api-util/verificationEmails');
+const { isEnglish } = require('../api-util/emailSender');
 const { REQUIRED_DOCS } = require('../api-util/verification');
 const {
   STATUS,
@@ -186,6 +187,7 @@ const upload = async (req, res) => {
         displayName: profile.displayName,
         docLabel: def.label,
         docLabelEN: def.labelEN,
+        en: isEnglish(profile),
       })
       .catch(() => {});
     emails

@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const { mailFrom, isEnglish, t } = require('../api-util/emailSender');
 
 // O logótipo dos emails tem de ser um URL absoluto. Deriva do domínio
 // configurado em vez de estar escrito à mão: com o domínio novo, o valor fixo
@@ -27,10 +28,10 @@ const saveToFile = entry => {
   }
 };
 
-const formatDate = iso => {
+const formatDate = (iso, en) => {
   if (!iso) return '—';
   const d = new Date(iso);
-  return d.toLocaleString('pt-PT', {
+  return d.toLocaleString(en ? 'en-GB' : 'pt-PT', {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
     timeZone: 'Europe/Lisbon',
@@ -45,7 +46,8 @@ const formatDate = iso => {
  * Body: { email, listingId, listingTitle, listingUrl, startDate, endDate }
  */
 module.exports = async (req, res) => {
-  const { email, listingId, listingTitle, listingUrl, startDate, endDate } = req.body || {};
+  const { email, listingId, listingTitle, listingUrl, startDate, endDate, locale } =
+    req.body || {};
 
   if (!email || !EMAIL_REGEX.test(email)) {
     return res.status(400).json({ error: 'Email inválido.' });
@@ -56,9 +58,16 @@ module.exports = async (req, res) => {
 
   const apiKey = process.env.RESEND_API_KEY;
   const adminEmail = process.env.CONTACT_RECIPIENT || 'admin@v1h.net';
-  const startStr = formatDate(startDate);
-  const endStr = formatDate(endDate);
-  const dateInfo = startDate ? `${startStr} → ${endStr}` : 'Datas não especificadas';
+  const en = isEnglish(locale);
+
+  // Duas versões das datas: a do utilizador segue a língua dele, a do
+  // administrador fica sempre em português para o painel ser consistente.
+  const dateInfo = startDate
+    ? `${formatDate(startDate, en)} → ${formatDate(endDate, en)}`
+    : t(en, 'Datas não especificadas', 'No dates specified');
+  const dateInfoAdmin = startDate
+    ? `${formatDate(startDate, false)} → ${formatDate(endDate, false)}`
+    : 'Datas não especificadas';
 
   saveToFile({ email, listingId, listingTitle, listingUrl: listingUrl || null, startDate: startDate || null, endDate: endDate || null, at: new Date().toISOString() });
 
@@ -73,38 +82,55 @@ module.exports = async (req, res) => {
     await Promise.all([
       // Confirmation to the person who joined the waitlist
       resend.emails.send({
-        from: 'Venue1Hub <onboarding@resend.dev>',
+        from: mailFrom(),
         to: [email],
-        subject: `Lista de espera — ${listingTitle}`,
+        subject: t(en, `Lista de espera — ${listingTitle}`, `Waiting list — ${listingTitle}`),
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #2E2E2E;">
             <div style="background: #2E2E2E; padding: 32px 24px; text-align: center;">
               <img src="${LOGO_URL}" alt="Venue1Hub" style="height: 48px;" />
             </div>
             <div style="padding: 40px 24px;">
-              <h2 style="color: #2E2E2E; margin: 0 0 8px;">Entrou na lista de espera!</h2>
+              <h2 style="color: #2E2E2E; margin: 0 0 8px;">
+                ${t(en, 'Entrou na lista de espera!', "You're on the waiting list!")}
+              </h2>
               <p style="color: #555; line-height: 1.7; margin: 0 0 24px;">
-                Ficou registado(a) na lista de espera para o anúncio
-                <strong>${listingTitle}</strong>${startDate ? ` para o período <strong>${dateInfo}</strong>` : ''}.
+                ${t(
+                  en,
+                  `Ficou registado(a) na lista de espera para o anúncio <strong>${listingTitle}</strong>${
+                    startDate ? ` para o período <strong>${dateInfo}</strong>` : ''
+                  }.`,
+                  `You've been added to the waiting list for <strong>${listingTitle}</strong>${
+                    startDate ? ` for <strong>${dateInfo}</strong>` : ''
+                  }.`
+                )}
               </p>
               <p style="color: #555; line-height: 1.7; margin: 0 0 24px;">
-                Assim que uma vaga ficar disponível, entraremos em contacto imediatamente.
+                ${t(
+                  en,
+                  'Assim que uma vaga ficar disponível, entraremos em contacto imediatamente.',
+                  "As soon as a slot opens up, we'll get in touch right away."
+                )}
               </p>
               ${listingUrl ? `
               <div style="text-align: center; margin: 32px 0;">
                 <a href="${listingUrl}" style="background: #BAA38A; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 14px; letter-spacing: 0.05em;">
-                  VER ANÚNCIO
+                  ${t(en, 'VER ANÚNCIO', 'VIEW LISTING')}
                 </a>
               </div>` : ''}
               <p style="color: #888; font-size: 13px; margin: 0;">
-                Se já não precisar da vaga, não precisa de fazer nada — o seu registo expira automaticamente.
-                Para qualquer dúvida contacte-nos em
+                ${t(
+                  en,
+                  'Se já não precisar da vaga, não precisa de fazer nada — o seu registo expira automaticamente. Para qualquer dúvida contacte-nos em',
+                  "If you no longer need the slot there's nothing to do — your entry expires automatically. Any questions, contact us at"
+                )}
                 <a href="mailto:${adminEmail}" style="color: #BAA38A;">${adminEmail}</a>.
               </p>
             </div>
             <div style="background: #f5f0eb; padding: 16px 24px; text-align: center;">
               <p style="margin: 0; font-size: 12px; color: #999;">
-                © ${new Date().getFullYear()} Venue1Hub. Todos os direitos reservados.
+                © ${new Date().getFullYear()} Venue1Hub.
+                ${t(en, 'Todos os direitos reservados.', 'All rights reserved.')}
               </p>
             </div>
           </div>
@@ -113,7 +139,7 @@ module.exports = async (req, res) => {
 
       // Notification to admin with all details
       resend.emails.send({
-        from: 'Venue1Hub Waitlist <onboarding@resend.dev>',
+        from: mailFrom('Waitlist'),
         to: [adminEmail],
         subject: `[Waitlist] ${email} → "${listingTitle}"`,
         html: `
@@ -136,7 +162,7 @@ module.exports = async (req, res) => {
               </tr>
               <tr>
                 <td style="padding: 8px 12px; background: #f5f0eb; font-weight: 700;">Período</td>
-                <td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${dateInfo}</td>
+                <td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${dateInfoAdmin}</td>
               </tr>
               ${listingUrl ? `
               <tr>

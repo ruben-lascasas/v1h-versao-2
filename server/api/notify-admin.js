@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const { mailFrom } = require('../api-util/emailSender');
 const { buildToken: buildDestaqueToken } = require('./approve-destaque');
 const { buildToken: buildListingToken } = require('./approve-listing');
 const { getIntegrationSdk } = require('../api-util/sdk');
@@ -104,7 +105,7 @@ module.exports = async (req, res) => {
     console.log(`[notify-admin] sending ${type} → ${recipient} (listing ${listingId})`);
 
     await resend.emails.send({
-      from: 'Venue1Hub Admin <onboarding@resend.dev>',
+      from: mailFrom('Admin'),
       to: [recipient],
       subject,
       html: `

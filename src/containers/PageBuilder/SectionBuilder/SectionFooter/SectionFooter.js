@@ -36,7 +36,9 @@ const NewsletterForm = ({ isEN }) => {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        // Quem subscreve pode nem ter conta, por isso a língua da confirmação
+        // vem do que a pessoa está a ver, não de um perfil.
+        body: JSON.stringify({ email, locale: isEN ? 'en' : 'pt' }),
       });
       if (res.ok) {
         setStatus('success');

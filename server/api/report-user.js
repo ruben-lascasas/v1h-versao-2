@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const { mailFrom } = require('../api-util/emailSender');
 const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
 
 /**
@@ -167,7 +168,7 @@ module.exports = async (req, res) => {
       : [];
 
     await resend.emails.send({
-      from: 'Venue1Hub Denúncias <onboarding@resend.dev>',
+      from: mailFrom('Denúncias'),
       reply_to: reporterEmail,
       to: [recipient],
       subject: `[Venue1Hub - Denúncia Utilizador] ${safeName} — ${safeReason}`,
@@ -239,7 +240,7 @@ module.exports = async (req, res) => {
 
     try {
       await resend.emails.send({
-        from: 'Venue1Hub <onboarding@resend.dev>',
+        from: mailFrom(),
         reply_to: recipient,
         to: [reporterEmail],
         subject: reporterSubject,

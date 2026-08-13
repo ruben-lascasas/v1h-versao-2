@@ -30,6 +30,7 @@
 
 const cron = require('node-cron');
 const { Resend } = require('resend');
+const { mailFrom, isEnglish, t } = require('../api-util/emailSender');
 const { getIntegrationSdk } = require('../api-util/sdk');
 
 const PER_PAGE = 100;
@@ -101,67 +102,99 @@ const pushAlert = async (sdk, user, alert) => {
   }
 };
 
-const buildExpiredEmail = ({ firstName, listingTitle }) => {
-  const safeName = firstName || 'olá';
-  const safeTitle = String(listingTitle || 'o teu anúncio').replace(/</g, '&lt;');
+const buildExpiredEmail = ({ firstName, listingTitle, en }) => {
+  const safeName = firstName || t(en, 'olá', 'there');
+  const safeTitle = String(listingTitle || t(en, 'o teu anúncio', 'your listing')).replace(/</g, '&lt;');
   const renewUrl = `${ROOT_URL.replace(/\/$/, '')}/destacar-anuncio`;
-  const subject = `O destaque de "${safeTitle}" terminou — Venue1Hub`;
+  const subject = t(
+    en,
+    `O destaque de "${safeTitle}" terminou — Venue1Hub`,
+    `The feature on "${safeTitle}" has ended — Venue1Hub`
+  );
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#2E2E2E;line-height:1.6;">
       <h2 style="color:#5C3317;border-bottom:2px solid #BAA38A;padding-bottom:12px;margin-bottom:24px;">
-        O teu destaque chegou ao fim
+        ${t(en, 'O teu destaque chegou ao fim', 'Your feature has ended')}
       </h2>
-      <p style="margin:0 0 16px;">Olá ${safeName},</p>
+      <p style="margin:0 0 16px;">${t(en, `Olá ${safeName},`, `Hi ${safeName},`)}</p>
       <p style="margin:0 0 16px;">
-        O destaque do anúncio <strong>${safeTitle}</strong> terminou hoje, ao fim dos 30 dias habituais. A partir de agora deixa de aparecer na secção de destaques da página principal, mas continua publicado e disponível para reservas normalmente.
+        ${t(
+          en,
+          `O destaque do anúncio <strong>${safeTitle}</strong> terminou hoje, ao fim dos 30 dias habituais. A partir de agora deixa de aparecer na secção de destaques da página principal, mas continua publicado e disponível para reservas normalmente.`,
+          `The feature on <strong>${safeTitle}</strong> ended today, after the usual 30 days. It no longer appears in the featured section on the home page, but it stays published and open for bookings as normal.`
+        )}
       </p>
       <p style="margin:0 0 16px;">
-        Os destaques ajudam a aumentar a visibilidade do anúncio junto de quem está à procura. Se quiseres voltar a destacar este anúncio, podes fazê-lo a qualquer altura:
+        ${t(
+          en,
+          'Os destaques ajudam a aumentar a visibilidade do anúncio junto de quem está à procura. Se quiseres voltar a destacar este anúncio, podes fazê-lo a qualquer altura:',
+          'Featuring puts your listing in front of more people who are searching. You can feature it again whenever you like:'
+        )}
       </p>
       <p style="margin:24px 0;">
         <a href="${renewUrl}"
            style="color:#ffffff;background:#5C3317;padding:12px 28px;border-radius:6px;
                   text-decoration:none;font-weight:700;letter-spacing:.06em;
                   text-transform:uppercase;font-size:13px;display:inline-block;">
-          Voltar a destacar
+          ${t(en, 'Voltar a destacar', 'Feature again')}
         </a>
       </p>
       <p style="margin:32px 0 0;font-size:12px;color:#999;">
-        Recebes este email porque tens um anúncio publicado no Venue1Hub.
+        ${t(
+          en,
+          'Recebes este email porque tens um anúncio publicado no Venue1Hub.',
+          "You're receiving this because you have a listing published on Venue1Hub."
+        )}
       </p>
     </div>
   `;
   return { subject, html };
 };
 
-const buildExpiringSoonEmail = ({ firstName, listingTitle, daysLeft }) => {
-  const safeName = firstName || 'olá';
-  const safeTitle = String(listingTitle || 'o teu anúncio').replace(/</g, '&lt;');
+const buildExpiringSoonEmail = ({ firstName, listingTitle, daysLeft, en }) => {
+  const safeName = firstName || t(en, 'olá', 'there');
+  const safeTitle = String(listingTitle || t(en, 'o teu anúncio', 'your listing')).replace(/</g, '&lt;');
   const renewUrl = `${ROOT_URL.replace(/\/$/, '')}/destacar-anuncio`;
-  const dayWord = daysLeft === 1 ? 'dia' : 'dias';
-  const subject = `O destaque de "${safeTitle}" termina em ${daysLeft} ${dayWord} — Venue1Hub`;
+  const dayWord = t(en, daysLeft === 1 ? 'dia' : 'dias', daysLeft === 1 ? 'day' : 'days');
+  const subject = t(
+    en,
+    `O destaque de "${safeTitle}" termina em ${daysLeft} ${dayWord} — Venue1Hub`,
+    `The feature on "${safeTitle}" ends in ${daysLeft} ${dayWord} — Venue1Hub`
+  );
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#2E2E2E;line-height:1.6;">
       <h2 style="color:#5C3317;border-bottom:2px solid #BAA38A;padding-bottom:12px;margin-bottom:24px;">
-        O teu destaque está quase a terminar
+        ${t(en, 'O teu destaque está quase a terminar', 'Your feature is about to end')}
       </h2>
-      <p style="margin:0 0 16px;">Olá ${safeName},</p>
+      <p style="margin:0 0 16px;">${t(en, `Olá ${safeName},`, `Hi ${safeName},`)}</p>
       <p style="margin:0 0 16px;">
-        Faltam apenas <strong>${daysLeft} ${dayWord}</strong> para o destaque do anúncio <strong>${safeTitle}</strong> terminar. Depois deixará de aparecer na secção de destaques da página principal.
+        ${t(
+          en,
+          `Faltam apenas <strong>${daysLeft} ${dayWord}</strong> para o destaque do anúncio <strong>${safeTitle}</strong> terminar. Depois deixará de aparecer na secção de destaques da página principal.`,
+          `The feature on <strong>${safeTitle}</strong> ends in <strong>${daysLeft} ${dayWord}</strong>. After that it stops appearing in the featured section on the home page.`
+        )}
       </p>
       <p style="margin:0 0 16px;">
-        Se quiseres garantir que continua visível para mais utilizadores, podes renová-lo agora — leva menos de um minuto:
+        ${t(
+          en,
+          'Se quiseres garantir que continua visível para mais utilizadores, podes renová-lo agora — leva menos de um minuto:',
+          'To keep it in front of more people you can renew it now — it takes less than a minute:'
+        )}
       </p>
       <p style="margin:24px 0;">
         <a href="${renewUrl}"
            style="color:#ffffff;background:#5C3317;padding:12px 28px;border-radius:6px;
                   text-decoration:none;font-weight:700;letter-spacing:.06em;
                   text-transform:uppercase;font-size:13px;display:inline-block;">
-          Renovar destaque
+          ${t(en, 'Renovar destaque', 'Renew feature')}
         </a>
       </p>
       <p style="margin:32px 0 0;font-size:12px;color:#999;">
-        Recebes este email porque tens um anúncio em destaque no Venue1Hub.
+        ${t(
+          en,
+          'Recebes este email porque tens um anúncio em destaque no Venue1Hub.',
+          "You're receiving this because you have a featured listing on Venue1Hub."
+        )}
       </p>
     </div>
   `;
@@ -172,7 +205,7 @@ const sendEmail = async ({ resend, to, subject, html, tag }) => {
   if (!resend || !to) return false;
   try {
     await resend.emails.send({
-      from: 'Venue1Hub <onboarding@resend.dev>',
+      from: mailFrom(),
       to: [to],
       subject,
       html,
@@ -270,6 +303,7 @@ const runOnce = async ({ dryRun = false } = {}) => {
           firstName,
           listingTitle: title,
           listingId: id,
+          en: isEnglish(user),
         });
         await sendEmail({ resend, to: email, subject, html, tag: 'expired' });
       }
@@ -320,6 +354,7 @@ const runOnce = async ({ dryRun = false } = {}) => {
           firstName,
           listingTitle: title,
           daysLeft,
+          en: isEnglish(user),
         });
         await sendEmail({ resend, to: email, subject, html, tag: 'expiring-soon' });
       }

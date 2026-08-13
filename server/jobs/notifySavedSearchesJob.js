@@ -7,6 +7,7 @@
 
 const cron = require('node-cron');
 const { Resend } = require('resend');
+const { mailFrom } = require('../api-util/emailSender');
 const { getIntegrationSdk } = require('../api-util/sdk');
 
 const PER_PAGE = 100;
@@ -144,7 +145,7 @@ const runOnce = async () => {
       const { subject, html } = buildEmail(user, entry, others, locale);
       try {
         await resend.emails.send({
-          from: 'Venue1Hub <onboarding@resend.dev>',
+          from: mailFrom(),
           to: [email],
           subject,
           html,

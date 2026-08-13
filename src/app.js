@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { saveUserLocale } from './ducks/user.duck';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, StaticRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -259,6 +260,11 @@ export const ClientApp = props => {
   });
 
   const setLocale = newLocale => {
+    // Espelha a escolha no perfil, para o servidor poder enviar os emails na
+    // língua certa — o localStorage não é visível do lado dele.
+    try {
+      store.dispatch(saveUserLocale(newLocale));
+    } catch (e) {}
     try {
       if (typeof window !== 'undefined' && hasConsent('preferences')) {
         localStorage.setItem('v1h_locale', newLocale);

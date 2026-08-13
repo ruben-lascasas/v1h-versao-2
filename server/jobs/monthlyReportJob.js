@@ -20,11 +20,12 @@
 
 const cron = require('node-cron');
 const { Resend } = require('resend');
+const { mailFrom } = require('../api-util/emailSender');
 const { getIntegrationSdk } = require('../api-util/sdk');
 const { buildReport, renderEmail } = require('../api-util/monthlyReport');
 
 const PER_PAGE = 100;
-const FROM = 'Venue1Hub <onboarding@resend.dev>';
+const FROM = mailFrom();
 
 /** Todos os utilizadores. Quem não tiver actividade no mês é saltado adiante. */
 const fetchHosts = async sdk => {

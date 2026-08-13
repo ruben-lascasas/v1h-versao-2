@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const { mailFrom } = require('../api-util/emailSender');
 const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
 
 /**
@@ -69,7 +70,7 @@ const sendFollowEmail = async ({ targetUser, fanName, fanUserId }) => {
   const { subject, html } = buildEmail(profile, fanName, fanUserId, locale);
   try {
     await resend.emails.send({
-      from: 'Venue1Hub <onboarding@resend.dev>',
+      from: mailFrom(),
       to: [email],
       subject,
       html,

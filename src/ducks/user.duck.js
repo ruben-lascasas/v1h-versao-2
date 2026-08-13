@@ -338,7 +338,21 @@ const fetchCurrentUserPayloadCreator = (options, thunkAPI) => {
 
       // set current user id to the logger
       log.setUserId(currentUser.id.uuid);
-      
+
+      // A língua escolhida vive no localStorage, que o servidor não vê. Espelha
+      // no perfil quem já tinha sessão iniciada antes disto existir — sem isto,
+      // só quem trocasse de língua de novo é que passaria a receber emails na
+      // língua certa.
+      try {
+        const doBrowser = localStorage.getItem('v1h_locale');
+        const noPerfil = currentUser.attributes?.profile?.publicData?.locale;
+        if (doBrowser && doBrowser !== noPerfil) {
+          dispatch(saveUserLocale(doBrowser));
+        }
+      } catch (e) {
+        /* localStorage indisponível — a preferência fica para a próxima */
+      }
+
       // Initialize favorites and recently viewed for the current user
       // Load server favorites and merge with any local favorites
       const serverFavorites =
@@ -601,4 +615,30 @@ export const hasCurrentUserErrors = state => {
     user.currentUserHasOrdersError,
   ];
   return errors.some(e => e && !isRateLimitError(e));
+};
+
+/**
+ * Guarda a língua escolhida no perfil do utilizador.
+ *
+ * Sem isto, `publicData.locale` nunca era escrito por ninguém — e cinco emails
+ * do servidor lêem-no com `|| 'pt'`. Resultado: as traduções inglesas desses
+ * emails existiam mas nunca chegavam a ser usadas, porque o servidor concluía
+ * sempre que o destinatário era português.
+ *
+ * A escolha vive no localStorage do browser, que o servidor não vê. Isto passa
+ * a espelhá-la no perfil.
+ *
+ * Best-effort de propósito: falhar a gravar a preferência de língua não é razão
+ * para estragar o que o utilizador estava a fazer.
+ */
+export const saveUserLocale = locale => (dispatch, getState, sdk) => {
+  const currentUser = getState()?.user?.currentUser;
+  if (!currentUser?.id || !locale) return Promise.resolve();
+
+  const guardada = currentUser.attributes?.profile?.publicData?.locale;
+  if (guardada === locale) return Promise.resolve();
+
+  return sdk.currentUser
+    .updateProfile({ publicData: { locale } })
+    .catch(e => console.warn('[locale] não foi possível guardar no perfil:', e?.message || e));
 };

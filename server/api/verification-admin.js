@@ -17,6 +17,7 @@
 const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
 const r2 = require('../api-util/r2');
 const emails = require('../api-util/verificationEmails');
+const { isEnglish } = require('../api-util/emailSender');
 const {
   STATUS,
   DOC_KEYS,
@@ -204,6 +205,7 @@ const decision = async (req, res) => {
     const def = REQUIRED_DOCS.find(d => d.key === docKey);
     const to = response?.data?.data?.attributes?.email;
     const displayName = profile.displayName;
+    const en = isEnglish(profile);
     if (verdict === 'reject') {
       emails
         .documentRejected({
@@ -212,12 +214,13 @@ const decision = async (req, res) => {
           docLabel: def.label,
           docLabelEN: def.labelEN,
           reason: trimmedReason,
+          en,
         })
         .catch(() => {});
     } else if (status === ACCOUNT_STATUS.APPROVED) {
       // Only when the last outstanding document lands — one email per account,
       // not one per document.
-      emails.accountApproved({ to, displayName }).catch(() => {});
+      emails.accountApproved({ to, displayName, en }).catch(() => {});
     }
 
     return res.json({ status, docs: publicShape(docs) });
