@@ -1,5 +1,6 @@
 const { Resend } = require('resend');
 const { mailFrom, adminEmail } = require('../api-util/emailSender');
+const { listingPendingReview } = require('../api-util/listingEmails');
 const { buildToken: buildDestaqueToken } = require('./approve-destaque');
 const { buildToken: buildListingToken } = require('./approve-listing');
 const { getIntegrationSdk } = require('../api-util/sdk');
@@ -56,6 +57,12 @@ module.exports = async (req, res) => {
         await sdk.listings.close({ id: listingId });
         await sdk.listings.update({ id: listingId, publicData: { listingPending: true } });
         console.log(`[notify-admin] listing closed + marked pending → ${listingId}`);
+
+        // Avisa quem publicou. Sem isto, o anúncio era fechado e a pessoa via-o
+        // desaparecer sem explicação nenhuma — nem email, nem aviso no site.
+        listingPendingReview({ sdk, listingId, listingTitle }).catch(e =>
+          console.error('[notify-admin] aviso ao anfitrião falhou:', e?.message || e)
+        );
       } catch (e) {
         console.error(`[notify-admin] failed to close listing ${listingId}:`, e?.message || e);
       }

@@ -376,6 +376,16 @@ const server = app.listen(PORT, () => {
   } catch (e) {
     console.error('[verification-digest] failed to start:', e?.message || e);
   }
+  try {
+    // Estava agendado apenas em apiServer.js, que o próprio ficheiro descreve
+    // como servidor só de desenvolvimento. Em produção corre este ficheiro, e
+    // por isso a retenção nunca era aplicada: os documentos de identidade
+    // ficavam em R2 indefinidamente, que é exactamente o que o job existe para
+    // impedir.
+    require('./jobs/purgeVerificationDocsJob').start();
+  } catch (e) {
+    console.error('[purgeVerificationDocs] failed to start:', e?.message || e);
+  }
 });
 
 // Graceful shutdown:
