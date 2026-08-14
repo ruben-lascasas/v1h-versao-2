@@ -56,19 +56,39 @@ const ShowListingsError = props => {
 
 // Field component that uses file-input to allow user to select images.
 export const FieldAddImage = props => {
-  const { formApi, onImageUploadHandler, aspectWidth = 1, aspectHeight = 1, ...rest } = props;
+  const {
+    formApi,
+    onImageUploadHandler,
+    aspectWidth = 1,
+    aspectHeight = 1,
+    remainingSlots,
+    ...rest
+  } = props;
   return (
     <Field form={null} {...rest}>
       {fieldprops => {
         const { accept, input, label, disabled: fieldDisabled } = fieldprops;
         const { name, type } = input;
         const onChange = e => {
-          const file = e.target.files[0];
-          formApi.change(`addImage`, file);
+          // O campo só lia `files[0]`: escolher dez fotografias carregava uma.
+          // Quem tem um espaço para anunciar tem uma pasta de fotografias, e
+          // repetir o processo dez vezes é o tipo de atrito que faz desistir a
+          // meio de um anúncio.
+          const escolhidos = Array.from(e.target.files || []);
+          if (escolhidos.length === 0) return;
+
+          const cabem =
+            typeof remainingSlots === 'number' ? escolhidos.slice(0, remainingSlots) : escolhidos;
+
+          formApi.change(`addImage`, cabem[0]);
           formApi.blur(`addImage`);
-          onImageUploadHandler(file);
+          onImageUploadHandler(cabem);
+
+          // Sem isto, escolher o mesmo ficheiro outra vez não dispara `change`
+          // e a pessoa fica a pensar que a aplicação a ignorou.
+          e.target.value = '';
         };
-        const inputProps = { accept, id: name, name, onChange, type };
+        const inputProps = { accept, id: name, name, onChange, type, multiple: true };
         return (
           <div className={css.addImageWrapper}>
             <AspectRatioWrapper width={aspectWidth} height={aspectHeight}>
@@ -251,18 +271,34 @@ export const EditListingPhotosForm = props => {
   const [state, setState] = useState({ imageUploadRequested: false });
   const [submittedImages, setSubmittedImages] = useState([]);
 
-  const onImageUploadHandler = file => {
+  /**
+   * Aceita um ficheiro ou vários.
+   *
+   * Os envios são feitos um de cada vez, de propósito: disparar quinze pedidos
+   * em paralelo faz o servidor recusar alguns, e o que a pessoa vê é metade das
+   * fotografias a desaparecer sem explicação. Em série é mais lento e chegam
+   * todas.
+   *
+   * Se uma falhar, as seguintes continuam — perder as restantes por causa de um
+   * ficheiro corrompido obrigaria a recomeçar tudo.
+   */
+  const onImageUploadHandler = async fileOrFiles => {
     const { listingImageConfig, onImageUpload } = props;
-    if (file) {
-      setState({ imageUploadRequested: true });
+    const ficheiros = Array.isArray(fileOrFiles) ? fileOrFiles.filter(Boolean) : [fileOrFiles].filter(Boolean);
+    if (ficheiros.length === 0) return;
 
-      onImageUpload({ id: `${file.name}_${Date.now()}`, file }, listingImageConfig)
-        .then(() => {
-          setState({ imageUploadRequested: false });
-        })
-        .catch(() => {
-          setState({ imageUploadRequested: false });
-        });
+    setState({ imageUploadRequested: true });
+    try {
+      for (const file of ficheiros) {
+        try {
+          await onImageUpload({ id: `${file.name}_${Date.now()}`, file }, listingImageConfig);
+        } catch (e) {
+          // O erro já é mostrado por ImageUploadError; aqui só garantimos que
+          // as restantes seguem.
+        }
+      }
+    } finally {
+      setState({ imageUploadRequested: false });
     }
   };
   const intl = useIntl();
@@ -369,6 +405,7 @@ export const EditListingPhotosForm = props => {
                   disabled={state.imageUploadRequested}
                   formApi={form}
                   onImageUploadHandler={onImageUploadHandler}
+                  remainingSlots={MAX_PHOTOS - images.length}
                   aspectWidth={aspectWidth}
                   aspectHeight={aspectHeight}
                 />
