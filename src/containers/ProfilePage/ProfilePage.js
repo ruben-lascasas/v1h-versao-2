@@ -61,7 +61,6 @@ import {
   CustomExtendedDataSection,
 } from '../../components';
 import IconEdit from '../../components/IconEdit/IconEdit';
-import 'flag-icons/css/flag-icons.min.css';
 import { LANGUAGES } from '../../components/LanguagesField/LanguagesField';
 import { SOCIAL_PLATFORMS, normaliseSocialUrl } from '../../components/SocialLinksField/SocialLinksField';
 import { formatResponseTime } from '../../util/responseTime';

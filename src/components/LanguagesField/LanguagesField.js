@@ -1,6 +1,5 @@
 import React from 'react';
 import { Field } from 'react-final-form';
-import 'flag-icons/css/flag-icons.min.css';
 import { useLocale } from '../../context/localeContext';
 import css from './LanguagesField.module.css';
 

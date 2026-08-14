@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 import { useLocale } from '../../context/localeContext';
-import { Page, LayoutSingleColumn } from '../../components';
+import { Page, LayoutSingleColumn, NamedLink } from '../../components';
 import TopbarContainer from '../TopbarContainer/TopbarContainer';
 import FooterContainer from '../FooterContainer/FooterContainer';
 
@@ -191,9 +191,12 @@ const AboutPage = props => {
                 'Ready to find the perfect venue?'
               )}
             </p>
-            <a href="/" className={css.ctaButton}>
+            {/* Levava à página inicial, que é de onde a pessoa veio. Quem
+                carrega em "começar a explorar" a seguir a "pronto para
+                encontrar o espaço perfeito?" quer ver espaços. */}
+            <NamedLink name="SearchPage" className={css.ctaButton}>
               {t(isEN, 'Comece a explorar', 'Start exploring')}
-            </a>
+            </NamedLink>
           </div>
 
         </div>

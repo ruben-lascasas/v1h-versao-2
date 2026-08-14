@@ -1,6 +1,13 @@
 @import '../assets/sanitize.css';
 @import './customMediaQueries.css';
 
+/* Bandeiras dos prefixos telefónicos e dos idiomas.
+   Ficheiro nosso, gerado por scripts/gerarBandeiras.js, com o SVG embutido.
+   Não se importa o CSS do pacote flag-icons: o build do servidor externaliza o
+   CSS vindo do node_modules e o Node tenta executá-lo como JavaScript, o que
+   rebentava com "Unexpected token '.'" — era esse o erro 500 da /contact. */
+@import './flagIcons.css';
+
 /* ================ Custom Fonts ================ */
 
 @font-face {

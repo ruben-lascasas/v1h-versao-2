@@ -1,5 +1,4 @@
 import React, { Component, useState, useRef, useEffect } from 'react';
-import 'flag-icons/css/flag-icons.min.css';
 import { compose } from 'redux';
 import isEqual from 'lodash/isEqual';
 import classNames from 'classnames';

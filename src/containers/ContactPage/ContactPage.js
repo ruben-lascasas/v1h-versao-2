@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import 'flag-icons/css/flag-icons.min.css';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
