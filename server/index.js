@@ -386,6 +386,11 @@ const server = app.listen(PORT, () => {
   } catch (e) {
     console.error('[purgeVerificationDocs] failed to start:', e?.message || e);
   }
+  try {
+    require('./jobs/commissionInvoiceJob').start();
+  } catch (e) {
+    console.error('[comissões] failed to start:', e?.message || e);
+  }
 });
 
 // Graceful shutdown:

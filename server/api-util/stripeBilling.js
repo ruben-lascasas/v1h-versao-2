@@ -17,6 +17,22 @@ const Stripe = require('stripe');
 const SECRET = () => process.env.STRIPE_SECRET_KEY;
 const WEBHOOK_SECRET = () => process.env.STRIPE_WEBHOOK_SECRET;
 
+/**
+ * Menção de isenção nas facturas.
+ *
+ * A empresa é estónia e não liquida IVA — para empresas e para particulares,
+ * por indicação da contabilidade. Uma factura a zero sem explicação levanta
+ * dúvidas a quem a recebe e ao contabilista dele, por isso o motivo vai escrito.
+ *
+ * Alterável por ambiente para não obrigar a um deploy se a redacção mudar.
+ */
+const RODAPE_ISENCAO =
+  process.env.INVOICE_VAT_NOTE ||
+  'IVA — isento / VAT exempt. Venue1Hub OÜ, Estónia.';
+
+const DESCRICAO_DESTAQUE =
+  process.env.INVOICE_DESTAQUE_DESCRIPTION || 'Destaque de anúncio — Venue1Hub';
+
 let cached = null;
 let cachedKey = null;
 
@@ -110,7 +126,24 @@ const createCheckoutSession = async ({
     locale: locale === 'en' ? 'en' : 'pt',
     // A morada de faturação é precisa para o IVA e para o Stripe emitir recibo.
     billing_address_collection: 'required',
+    // A empresa é estónia e está isenta de IVA, por decisão da contabilidade,
+    // tanto para empresas como para particulares. Sem cálculo automático, o
+    // Stripe não acrescenta imposto nenhum — que é o pretendido.
     automatic_tax: { enabled: false },
+    // Fatura automática do Stripe. Até aqui saía apenas um recibo de cartão,
+    // que não é documento de faturação. A Estónia não exige software
+    // certificado, por isso o Stripe pode emitir o documento: numera-o, gera o
+    // PDF e envia-o, sem trabalho recorrente do nosso lado.
+    invoice_creation: {
+      enabled: true,
+      invoice_data: {
+        description: DESCRICAO_DESTAQUE,
+        footer: RODAPE_ISENCAO,
+        metadata,
+      },
+    },
+    // O NIF do comprador, quando o der, fica na fatura.
+    tax_id_collection: { enabled: true },
     metadata,
   });
 };
