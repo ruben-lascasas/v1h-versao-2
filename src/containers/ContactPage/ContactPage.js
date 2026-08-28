@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 import { apiBaseUrl } from '../../util/api';
+import { SUPPORT_EMAIL } from '../../config/contactInfo';
 import { useLocale } from '../../context/localeContext';
 import { Page, LayoutSingleColumn } from '../../components';
 import TopbarContainer from '../TopbarContainer/TopbarContainer';
@@ -86,7 +87,7 @@ const InfoCards = ({ isEN, mobile }) => (
       </div>
       <div>
         <div className={css.infoLabel}>Email</div>
-        <span className={css.infoValue}>admin@v1h.net</span>
+        <span className={css.infoValue}>{SUPPORT_EMAIL}</span>
       </div>
     </div>
 

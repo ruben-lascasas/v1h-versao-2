@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { useLocale } from '../../context/localeContext';
+import { SUPPORT_EMAIL } from '../../config/contactInfo';
 
 import css from './FAQContent.module.css';
 
@@ -298,7 +299,7 @@ const FAQ_PT = [
         q: 'Como contacto o suporte?',
         a: (
           <>
-            <p>Pode contactar-nos pela página de <a href="/contact">Contacto</a> ou directamente para <strong>admin@v1h.net</strong>. Respondemos normalmente em 1-2 dias úteis.</p>
+            <p>Pode contactar-nos pela página de <a href="/contact">Contacto</a> ou directamente para <strong>{SUPPORT_EMAIL}</strong>. Respondemos normalmente em 1-2 dias úteis.</p>
           </>
         ),
       },
@@ -600,7 +601,7 @@ const FAQ_EN = [
         q: 'How do I contact support?',
         a: (
           <>
-            <p>You can reach us via the <a href="/contact">Contact</a> page or directly at <strong>admin@v1h.net</strong>. We typically respond within 1-2 business days.</p>
+            <p>You can reach us via the <a href="/contact">Contact</a> page or directly at <strong>{SUPPORT_EMAIL}</strong>. We typically respond within 1-2 business days.</p>
           </>
         ),
       },
@@ -668,12 +669,12 @@ const FAQContent = () => {
         <h3>{isEN ? 'Still have questions?' : 'Ainda tem dúvidas?'}</h3>
         {isEN ? (
           <p>
-            Reach our support team at <strong>admin@v1h.net</strong> or via the{' '}
+            Reach our support team at <strong>{SUPPORT_EMAIL}</strong> or via the{' '}
             <a href="/contact" className={css.noWrap}>Contact page</a>.
           </p>
         ) : (
           <p>
-            Contacte o nosso suporte em <strong>admin@v1h.net</strong> ou através da página de{' '}
+            Contacte o nosso suporte em <strong>{SUPPORT_EMAIL}</strong> ou através da página de{' '}
             <a href="/contact" className={css.noWrap}>Contacto</a>.
           </p>
         )}
