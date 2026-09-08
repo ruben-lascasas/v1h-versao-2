@@ -17,6 +17,7 @@ const { getSdk, getIntegrationSdk } = require('../api-util/sdk');
 const r2 = require('../api-util/r2');
 const emails = require('../api-util/verificationEmails');
 const { isEnglish } = require('../api-util/emailSender');
+const { ensureCommissionModel } = require('../api-util/hostCommission');
 const { REQUIRED_DOCS } = require('../api-util/verification');
 const {
   STATUS,
@@ -63,12 +64,38 @@ const persist = async (userId, verification) => {
 };
 
 /**
+ * Grava o modelo de comissão da conta, se ainda não estiver gravado.
+ *
+ * A data de registo só vem pela Integration API — o utilizador que o
+ * `currentUser.show()` devolve não a traz de forma garantida —, por isso é
+ * preciso ir buscá-lo outra vez aqui.
+ */
+const marcarCondicaoComercial = async userId => {
+  const sdk = getIntegrationSdk();
+  if (!sdk) return null;
+  const response = await sdk.users.show({ id: userId });
+  return ensureCommissionModel(sdk, response?.data?.data);
+};
+
+/**
  * GET /api/verification
  */
 const getStatus = async (req, res) => {
   try {
     const user = await loadCaller(req, res);
     if (!user) return res.status(401).json({ error: 'not-authenticated' });
+
+    // A condição de fundador é gravada na primeira vez que a conta aparece por
+    // aqui. Este endpoint corre em todas as páginas para quem tem sessão
+    // iniciada (o banner de verificação vive no topo do site), por isso a marca
+    // fica posta logo no primeiro carregamento após o registo — antes de haver
+    // hipótese de uma reserva ser calculada com a comissão errada.
+    //
+    // Best-effort: falhar a marcar não pode impedir alguém de ver o estado dos
+    // seus documentos. A passagem seguinte volta a tentar.
+    marcarCondicaoComercial(user.id.uuid).catch(e =>
+      console.error('[comissão] não foi possível marcar:', e?.message || e)
+    );
 
     if (!isAnunciante(user)) {
       // Nada para submeter — mas a permissão de publicar tem de acompanhar o

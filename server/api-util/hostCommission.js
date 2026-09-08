@@ -22,6 +22,11 @@
 const MODELS = {
   // Percentagens do §8.2. `customer` é 5% em todos os modelos.
   standard: { provider: 10, customer: 5 },
+  // Condição de fundador: metade da comissão, para quem se registou até à data
+  // limite da campanha de lançamento. É vitalícia — foi o que se prometeu — e
+  // por isso fica gravada na conta em vez de ser recalculada a cada reserva.
+  // Se um dia a data limite mudar, quem já a tem não a perde.
+  fundador: { provider: 5, customer: 5 },
   premium: { provider: 12, customer: 5 },
   // Enterprise é negociado caso a caso, entre 8% e 12%. Sem valor negociado
   // fica no topo do intervalo — o anfitrião nunca beneficia de um desconto que
@@ -106,6 +111,87 @@ const hostMetadataFrom = apiResponse => {
   return author?.attributes?.profile?.metadata || {};
 };
 
+/**
+ * Data limite da condição de fundador, como instante ISO.
+ *
+ * Sem a variável definida não há campanha nenhuma: ninguém é marcado como
+ * fundador e toda a gente fica no valor da Console. Preferimos isso a assumir
+ * uma data — dar 5% por engano é dinheiro que não se recupera.
+ *
+ * FOUNDER_COMMISSION_UNTIL, ex.: 2026-12-31T23:59:59Z
+ */
+const limiteFundador = () => {
+  const raw = process.env.FOUNDER_COMMISSION_UNTIL;
+  if (!raw) return null;
+  const t = Date.parse(raw);
+  if (Number.isNaN(t)) {
+    console.error(`[comissão] FOUNDER_COMMISSION_UNTIL inválido: ${raw}`);
+    return null;
+  }
+  return t;
+};
+
+/** Tipos de conta que ganham comissão e por isso entram na campanha. */
+const tiposComComissao = () =>
+  (process.env.FOUNDER_COMMISSION_USER_TYPES || 'anunciante,prestador_de_servicos')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
+/**
+ * Que modelo esta conta deve ter, olhando para a data de registo.
+ *
+ * @returns {'fundador'|'standard'|null} null quando a conta não ganha comissão
+ *   ou quando não há campanha configurada.
+ */
+const modeloParaConta = user => {
+  const limite = limiteFundador();
+  if (limite == null) return null;
+
+  const perfil = user?.attributes?.profile || {};
+  if (!tiposComComissao().includes(perfil.publicData?.userType)) return null;
+
+  const criadoEm = Date.parse(user?.attributes?.createdAt);
+  if (Number.isNaN(criadoEm)) return null;
+
+  return criadoEm <= limite ? 'fundador' : 'standard';
+};
+
+/**
+ * Grava o modelo de comissão na conta, se ainda não tiver um.
+ *
+ * Porque é que se grava em vez de se calcular a cada reserva: a condição de
+ * fundador é uma promessa vitalícia. Recalculá-la a partir da data limite
+ * significava que mexer nessa data mudava retroactivamente o que já tinha sido
+ * prometido a quem se registou. Gravado, o compromisso fica preso à conta.
+ *
+ * Nunca sobrepõe um modelo existente. Um anfitrião com condições negociadas
+ * (premium, enterprise) mantém-nas; e um fundador não é despromovido no dia
+ * seguinte ao fim da campanha.
+ *
+ * Vive em `metadata` e não em `publicData` porque só a Integration API lá
+ * escreve — ninguém baixa a sua própria comissão editando o perfil.
+ *
+ * @returns {Promise<string|null>} o modelo gravado, ou null se nada mudou
+ */
+const ensureCommissionModel = async (sdk, user) => {
+  const uid = user?.id?.uuid;
+  if (!sdk || !uid) return null;
+
+  const metadata = user?.attributes?.profile?.metadata || {};
+  if (metadata.commissionModel) return null;
+
+  const modelo = modeloParaConta(user);
+  if (!modelo) return null;
+
+  await sdk.users.updateProfile({
+    id: uid,
+    metadata: { commissionModel: modelo, commissionModelSetAt: new Date().toISOString() },
+  });
+  console.log(`[comissão] ${uid} marcado como ${modelo}`);
+  return modelo;
+};
+
 module.exports = {
   MODELS,
   ENTERPRISE_MIN,
@@ -113,4 +199,7 @@ module.exports = {
   commissionModelFor,
   resolveCommission,
   hostMetadataFrom,
+  limiteFundador,
+  modeloParaConta,
+  ensureCommissionModel,
 };
