@@ -66,8 +66,46 @@ const UPLOAD_ERROR_TEXT = {
       `Formato não aceite. Use ${formatList(limits, isEN)}.`,
       `Unsupported format. Use ${formatList(limits, isEN)}.`
     ),
-  'already-approved': (isEN) =>
+  'already-approved': isEN =>
     t(isEN, 'Este documento já foi aprovado.', 'This document has already been approved.'),
+  'not-authenticated': isEN =>
+    t(
+      isEN,
+      'A sessão expirou. Inicie sessão outra vez e repita o envio.',
+      'Your session expired. Sign in again and try once more.'
+    ),
+  'not-allowed': isEN =>
+    t(
+      isEN,
+      'Esta conta não submete documentos de verificação.',
+      'This account does not submit verification documents.'
+    ),
+  'invalid-doc': isEN =>
+    t(
+      isEN,
+      'Documento desconhecido. Recarregue a página e tente de novo.',
+      'Unknown document. Reload the page and try again.'
+    ),
+  'missing-file': isEN =>
+    t(
+      isEN,
+      'O ficheiro está vazio ou não foi lido. Escolha-o outra vez.',
+      'The file is empty or could not be read. Please pick it again.'
+    ),
+  // Falhas nossas, não do utilizador. Dizer-lhe para tentar outro ficheiro
+  // seria mandá-lo perder tempo com uma coisa que não depende dele.
+  'storage-not-configured': isEN =>
+    t(
+      isEN,
+      'Problema no nosso lado a guardar o ficheiro. Já fomos avisados — tente daqui a pouco.',
+      'Something went wrong on our side while storing the file. We have been notified — please try again shortly.'
+    ),
+  'upload-failed': isEN =>
+    t(
+      isEN,
+      'Não foi possível enviar. Verifique a ligação e tente novamente.',
+      'Upload failed. Check your connection and try again.'
+    ),
 };
 
 const DocRow = ({ doc, isEN, uploading, limits, onPick }) => {

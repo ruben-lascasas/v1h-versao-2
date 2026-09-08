@@ -110,13 +110,23 @@ app.use(
 if (cspEnabled) {
   app.use(generateCSPNonce);
 
-  // When a CSP directive is violated, the browser posts a JSON body
-  // to the defined report URL and we need to parse this body.
-  app.use(
-    bodyParser.json({
-      type: ['json', 'application/csp-report'],
-    })
-  );
+  // Nota: este parser está montado apenas na rota dos relatórios de CSP, e não
+  // em toda a aplicação.
+  //
+  // Estava global, e sem `limit` — o que significa o valor por omissão do
+  // body-parser, 100 KB. Como corre antes do router da API, apanhava TODOS os
+  // pedidos JSON da aplicação e recusava com 413 tudo o que passasse dos 100 KB,
+  // muito antes de o `limit: '30mb'` do apiRouter ter voz.
+  //
+  // Na prática, nenhum anunciante conseguia submeter documentos: uma fotografia
+  // de um cartão de cidadão passa facilmente os 100 KB. O erro chegava ao
+  // browser como HTML do Express, não como o nosso JSON, por isso o ecrã só
+  // sabia dizer "não foi possível enviar".
+  //
+  // O limite pequeno é adequado *aqui*: um relatório de violação de CSP são
+  // alguns kilobytes, e um endpoint público sem limite é um convite.
+  //
+  // A montagem é feita junto da rota, mais abaixo.
 
   // CSP can be turned on in report or block mode. In report mode, the
   // browser checks the policy and calls the report URL when the
@@ -333,8 +343,14 @@ if (cspEnabled) {
     return report && report[key] ? report[key] : key;
   };
 
-  // Handler for CSP violation reports.
-  app.post(cspReportUrl, (req, res) => {
+  // Handler for CSP violation reports. O parser do corpo vive aqui, e só aqui:
+  // ver a nota mais acima sobre o 413 que ele causava em toda a aplicação.
+  const cspReportParser = bodyParser.json({
+    type: ['json', 'application/csp-report'],
+    limit: '64kb',
+  });
+
+  app.post(cspReportUrl, cspReportParser, (req, res) => {
     const effectiveDirective = reportValue(req, 'effective-directive');
     const blockedUri = reportValue(req, 'blocked-uri');
     const msg = `CSP: ${effectiveDirective} doesn't allow ${blockedUri}`;

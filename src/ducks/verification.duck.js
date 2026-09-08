@@ -100,6 +100,12 @@ export const fetchVerificationStatus = () => async dispatch => {
 // The server enforces this too; checking here just avoids a pointless upload.
 const MAX_BYTES = 8 * 1024 * 1024;
 
+// Espelha ACCEPTED_MIME de server/api-util/verification.js. Duplicado de
+// propósito: o cliente não importa do servidor, e o servidor volta a validar de
+// qualquer forma — se as listas divergirem, o pior que acontece é o servidor
+// recusar um formato que o cliente deixou passar.
+const ACCEPTED_MIME = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+
 const readAsBase64 = file =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -120,8 +126,20 @@ const readAsBase64 = file =>
  */
 export const uploadVerificationDoc = (docKey, file) => async dispatch => {
   if (!file) return null;
+  if (file.size === 0) {
+    dispatch(uploadFailed('missing-file'));
+    return null;
+  }
   if (file.size > MAX_BYTES) {
     dispatch(uploadFailed('too-large'));
+    return null;
+  }
+  // O formato era validado só no servidor: a pessoa esperava pelo envio de um
+  // ficheiro inteiro para lhe dizerem que o tipo não servia. Aqui a resposta é
+  // imediata. O servidor continua a validar — isto é conveniência, não
+  // segurança.
+  if (file.type && !ACCEPTED_MIME.includes(file.type)) {
+    dispatch(uploadFailed('invalid-type'));
     return null;
   }
 
@@ -136,7 +154,13 @@ export const uploadVerificationDoc = (docKey, file) => async dispatch => {
     });
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
-      dispatch(uploadFailed(payload.error || 'upload-failed'));
+      // Nem todos os erros vêm do nosso código com JSON. Um 413 é devolvido
+      // pelo Express em HTML, e o `catch` acima deixava-o cair num
+      // "upload-failed" genérico — a pessoa via "não foi possível enviar" sem
+      // saber que o problema era o tamanho. O código HTTP diz o que a resposta
+      // não disse.
+      const porCodigo = { 413: 'too-large', 401: 'not-authenticated', 403: 'not-allowed' };
+      dispatch(uploadFailed(payload.error || porCodigo[response.status] || 'upload-failed'));
       return null;
     }
     dispatch(uploadSucceeded(payload));
