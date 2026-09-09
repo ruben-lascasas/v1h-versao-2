@@ -122,12 +122,24 @@ const registarComissao = async ({ sdk, transaction, provider, listing, dryRun = 
   }
 
   const perfil = provider.attributes.profile || {};
+  const guardado = perfil.privateData?.stripeCustomerId || null;
   const customerId = await billing.ensureCustomer({
     userId: provider.id.uuid,
     email,
     name: perfil.displayName || perfil.firstName || null,
-    existingCustomerId: perfil.privateData?.stripeCustomerId || null,
+    existingCustomerId: guardado,
   });
+
+  // O id tem de ficar guardado, senão `ensureCustomer` cria um cliente novo de
+  // cada vez. Um anfitrião com cinco reservas no mês acabava com cinco clientes
+  // no Stripe, cada um com uma linha pendente — e o fecho mensal emitia cinco
+  // facturas em vez de uma, que é exactamente o que este desenho evita.
+  if (customerId !== guardado) {
+    await sdk.users.updateProfile({
+      id: provider.id.uuid,
+      privateData: { stripeCustomerId: customerId },
+    });
+  }
 
   const stripe = billing.client();
   await stripe.invoiceItems.create(
@@ -188,9 +200,29 @@ const fecharFacturaDe = async ({ customerId, dryRun = false }) => {
   // Já recebido: a comissão foi retida no pagamento do hóspede.
   const paga = await stripe.invoices.pay(finalizada.id, { paid_out_of_band: true });
 
+  // O envio tem de ser pedido.
+  //
+  // Com `auto_advance: false` o Stripe não faz nada por iniciativa própria — e
+  // `auto_advance: true` não serve aqui, porque poria o Stripe a tentar cobrar
+  // uma factura que já está paga. O resultado era uma factura correcta, criada,
+  // finalizada e paga, que ficava no painel sem nunca chegar ao anfitrião.
+  //
+  // Enviada depois de marcada como paga, de propósito: assim o documento que
+  // ele recebe diz "paga", em vez de lhe pedir um pagamento que já foi feito.
+  let enviada = false;
+  try {
+    await stripe.invoices.sendInvoice(paga.id);
+    enviada = true;
+  } catch (e) {
+    // A factura existe e está paga; falhar o envio não pode desfazer isso nem
+    // travar as restantes. Fica registado para se poder reenviar do painel.
+    console.error(`[comissões] factura ${paga.number || paga.id} não foi enviada:`, e?.message || e);
+  }
+
   return {
     estado: 'fechada',
-    detalhe: `${paga.number || paga.id} — ${(total / 100).toFixed(2)}`,
+    detalhe: `${paga.number || paga.id} — ${(total / 100).toFixed(2)}${enviada ? '' : ' (POR ENVIAR)'}`,
+    enviada,
     url: paga.hosted_invoice_url || null,
   };
 };

@@ -83,15 +83,23 @@ describe('descricaoLinha', () => {
 describe('registarComissao', () => {
   let criadas;
   let metadataEscrita;
+  let perfilEscrito;
   let sdk;
 
   beforeEach(() => {
     criadas = [];
     metadataEscrita = [];
+    perfilEscrito = [];
     sdk = {
       transactions: {
         updateMetadata: async p => {
           metadataEscrita.push(p);
+          return {};
+        },
+      },
+      users: {
+        updateProfile: async p => {
+          perfilEscrito.push(p);
           return {};
         },
       },
@@ -125,6 +133,26 @@ describe('registarComissao', () => {
     expect(criadas[0].params.metadata.sharetribeTransactionId).toBe('tx-1');
     // A marca é o que impede a segunda facturação na passagem seguinte.
     expect(metadataEscrita[0].metadata[MARCA]).toBeTruthy();
+  });
+
+  it('guarda o id do cliente Stripe, para não criar um por reserva', async () => {
+    // Sem isto, cinco reservas num mês davam cinco clientes no Stripe e cinco
+    // facturas — em vez da factura mensal única que este desenho promete.
+    await registarComissao({ sdk, transaction: transacao(), provider: anfitriao, listing: anuncio });
+    expect(perfilEscrito).toHaveLength(1);
+    expect(perfilEscrito[0].privateData.stripeCustomerId).toBe('cus_teste');
+  });
+
+  it('não regrava o id quando já é o mesmo', async () => {
+    const comId = {
+      ...anfitriao,
+      attributes: {
+        ...anfitriao.attributes,
+        profile: { ...anfitriao.attributes.profile, privateData: { stripeCustomerId: 'cus_teste' } },
+      },
+    };
+    await registarComissao({ sdk, transaction: transacao(), provider: comId, listing: anuncio });
+    expect(perfilEscrito).toHaveLength(0);
   });
 
   it('leva uma idempotency key ligada à reserva', async () => {
@@ -198,6 +226,10 @@ describe('fecharFacturaDe', () => {
           accoes.push(['pay', p]);
           return { id, number: 'V1H-0001' };
         },
+        sendInvoice: async id => {
+          accoes.push(['send', id]);
+          return { id };
+        },
       },
     });
   });
@@ -206,10 +238,42 @@ describe('fecharFacturaDe', () => {
     const r = await fecharFacturaDe({ customerId: 'cus_1' });
 
     expect(r.estado).toBe('fechada');
-    expect(accoes.map(a => a[0])).toEqual(['create', 'finalize', 'pay']);
+    expect(accoes.map(a => a[0])).toEqual(['create', 'finalize', 'pay', 'send']);
     // Sem isto, o Stripe tentava cobrar ao anfitrião uma comissão que já
     // tinha sido descontada.
     expect(accoes[2][1]).toEqual({ paid_out_of_band: true });
+  });
+
+  it('envia a factura — sem isto ficava no painel sem chegar a ninguém', async () => {
+    // Com `auto_advance: false` o Stripe não envia nada por iniciativa
+    // própria. O envio tem de ser pedido, e é pedido depois de marcada como
+    // paga para o documento dizer "paga" em vez de pedir um pagamento.
+    const r = await fecharFacturaDe({ customerId: 'cus_1' });
+    expect(r.enviada).toBe(true);
+    expect(accoes[accoes.length - 1][0]).toBe('send');
+  });
+
+  it('uma falha no envio não desfaz a factura', async () => {
+    const accoesLocais = [];
+    billing.__setClient({
+      invoiceItems: { list: async () => ({ data: [{ amount: 1000 }] }) },
+      invoices: {
+        create: async () => ({ id: 'in_1' }),
+        finalizeInvoice: async id => ({ id }),
+        pay: async id => ({ id, number: 'V1H-0002' }),
+        sendInvoice: async () => {
+          accoesLocais.push('tentou');
+          throw new Error('correio indisponível');
+        },
+      },
+    });
+
+    const r = await fecharFacturaDe({ customerId: 'cus_1' });
+    // A factura existe e está paga; o que falhou foi só a entrega.
+    expect(r.estado).toBe('fechada');
+    expect(r.enviada).toBe(false);
+    expect(r.detalhe).toContain('POR ENVIAR');
+    expect(accoesLocais).toEqual(['tentou']);
   });
 
   it('não calcula imposto e escreve o motivo da isenção', async () => {
