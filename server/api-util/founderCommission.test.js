@@ -4,6 +4,7 @@ const {
   modeloParaConta,
   ensureCommissionModel,
   limiteFundador,
+  vagasFundador,
 } = require('./hostCommission');
 
 const LIMITE = '2026-12-31T23:59:59Z';
@@ -85,6 +86,9 @@ describe('condição de fundador', () => {
     let gravado;
     const sdk = {
       users: {
+        // Sem fundadores marcados: há vagas de sobra, e estes testes são sobre
+        // a gravação, não sobre o limite.
+        query: async () => ({ data: { data: [], meta: { totalPages: 1 } } }),
         updateProfile: async p => {
           gravado = p;
           return {};
@@ -120,6 +124,77 @@ describe('condição de fundador', () => {
       });
       expect(await ensureCommissionModel(sdk, u)).toBeNull();
       expect(gravado).toBeNull();
+    });
+  });
+
+  describe('limite de vagas', () => {
+    let gravado;
+    const sdkCom = fundadores => ({
+      users: {
+        // A varredura devolve `fundadores` contas já marcadas.
+        query: async () => ({
+          data: {
+            data: Array.from({ length: fundadores }, () => ({
+              attributes: { profile: { metadata: { commissionModel: 'fundador' } } },
+            })),
+            meta: { totalPages: 1 },
+          },
+        }),
+        updateProfile: async p => {
+          gravado = p;
+          return {};
+        },
+      },
+    });
+
+    beforeEach(() => {
+      gravado = null;
+      process.env.FOUNDER_COMMISSION_MAX = '100';
+    });
+    afterAll(() => delete process.env.FOUNDER_COMMISSION_MAX);
+
+    it('a vaga 100 ainda é fundador', async () => {
+      const r = await ensureCommissionModel(sdkCom(99), conta('2026-09-08T10:00:00Z'));
+      expect(r).toBe('fundador');
+    });
+
+    it('a 101 já não é — passa a standard mesmo dentro do prazo', async () => {
+      // A campanha acaba no que vier primeiro: prazo ou vagas.
+      const r = await ensureCommissionModel(sdkCom(100), conta('2026-09-08T10:00:00Z'));
+      expect(r).toBe('standard');
+      expect(gravado.metadata.commissionModel).toBe('standard');
+    });
+
+    it('quem chega fora do prazo não consome vaga nenhuma', async () => {
+      // Já era standard pela data; as vagas nem são consultadas.
+      const r = await ensureCommissionModel(sdkCom(0), conta('2027-03-01T10:00:00Z'));
+      expect(r).toBe('standard');
+    });
+
+    it('a contagem pode ser passada de fora, para processar em série', async () => {
+      // O script de marcação percorre centenas de contas: varrer os
+      // utilizadores todos a cada uma seria absurdo.
+      const sdkQueExplode = {
+        users: {
+          query: async () => {
+            throw new Error('não devia ter sido chamado');
+          },
+          updateProfile: async p => {
+            gravado = p;
+            return {};
+          },
+        },
+      };
+      const r = await ensureCommissionModel(sdkQueExplode, conta('2026-09-08T10:00:00Z'), {
+        jaMarcados: 100,
+      });
+      expect(r).toBe('standard');
+    });
+
+    it('o limite é configurável', async () => {
+      process.env.FOUNDER_COMMISSION_MAX = '3';
+      expect(await ensureCommissionModel(sdkCom(2), conta('2026-09-08T10:00:00Z'))).toBe('fundador');
+      expect(await ensureCommissionModel(sdkCom(3), conta('2026-09-08T10:00:00Z'))).toBe('standard');
     });
   });
 

@@ -139,7 +139,45 @@ const tiposComComissao = () =>
     .filter(Boolean);
 
 /**
+ * Número máximo de contas com condição de fundador.
+ *
+ * A campanha acaba no que vier primeiro: a data limite ou as vagas esgotadas.
+ * FOUNDER_COMMISSION_MAX, por omissão 100.
+ */
+const vagasFundador = () => {
+  const raw = parseInt(process.env.FOUNDER_COMMISSION_MAX, 10);
+  return Number.isNaN(raw) ? 100 : raw;
+};
+
+/**
+ * Quantas contas já têm a condição de fundador.
+ *
+ * Conta-se por varredura em vez de se guardar um contador: um contador à parte
+ * dessincroniza-se do que está gravado nas contas — e nesse caso o número em que
+ * confiamos deixa de corresponder a quem tem mesmo o desconto. A varredura é
+ * lenta mas nunca mente.
+ *
+ * Só é feita para contas ainda por marcar, o que na prática é uma vez por
+ * utilizador.
+ */
+const contarFundadores = async sdk => {
+  let total = 0;
+  for (let page = 1; page <= 20; page++) {
+    const res = await sdk.users.query({ page, perPage: 100 });
+    const batch = res?.data?.data || [];
+    total += batch.filter(u => u.attributes?.profile?.metadata?.commissionModel === 'fundador')
+      .length;
+    const totalPages = res?.data?.meta?.totalPages || 1;
+    if (page >= totalPages || batch.length === 0) break;
+  }
+  return total;
+};
+
+/**
  * Que modelo esta conta deve ter, olhando para a data de registo.
+ *
+ * Não decide sobre as vagas — isso depende do estado das outras contas e é
+ * resolvido em `ensureCommissionModel`, o mais perto possível da escrita.
  *
  * @returns {'fundador'|'standard'|null} null quando a conta não ganha comissão
  *   ou quando não há campanha configurada.
@@ -174,15 +212,32 @@ const modeloParaConta = user => {
  *
  * @returns {Promise<string|null>} o modelo gravado, ou null se nada mudou
  */
-const ensureCommissionModel = async (sdk, user) => {
+const ensureCommissionModel = async (sdk, user, opcoes = {}) => {
   const uid = user?.id?.uuid;
   if (!sdk || !uid) return null;
 
   const metadata = user?.attributes?.profile?.metadata || {};
   if (metadata.commissionModel) return null;
 
-  const modelo = modeloParaConta(user);
+  let modelo = modeloParaConta(user);
   if (!modelo) return null;
+
+  // As vagas são contadas aqui, e não em `modeloParaConta`, para a contagem ser
+  // o mais recente possível antes da escrita. Quem chega com as vagas
+  // esgotadas fica em standard, mesmo tendo-se registado dentro do prazo — foi
+  // o que se anunciou: acaba no que vier primeiro.
+  //
+  // Quem chama em série (o script de marcação) passa a contagem que já tem, em
+  // vez de mandar varrer os utilizadores a cada conta.
+  if (modelo === 'fundador') {
+    const vagas = vagasFundador();
+    const ocupadas =
+      typeof opcoes.jaMarcados === 'number' ? opcoes.jaMarcados : await contarFundadores(sdk);
+    if (ocupadas >= vagas) {
+      console.log(`[comissão] vagas de fundador esgotadas (${ocupadas}/${vagas}) — ${uid} fica standard`);
+      modelo = 'standard';
+    }
+  }
 
   await sdk.users.updateProfile({
     id: uid,
@@ -200,6 +255,8 @@ module.exports = {
   resolveCommission,
   hostMetadataFrom,
   limiteFundador,
+  vagasFundador,
+  contarFundadores,
   modeloParaConta,
   ensureCommissionModel,
 };

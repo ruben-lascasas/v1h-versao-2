@@ -21,6 +21,8 @@ const {
   ensureCommissionModel,
   modeloParaConta,
   limiteFundador,
+  vagasFundador,
+  contarFundadores,
   MODELS,
 } = require('../server/api-util/hostCommission');
 
@@ -52,13 +54,29 @@ const aplicar = process.argv.includes('--aplicar');
     if (page >= totalPages || batch.length === 0) break;
   }
 
+  // Do mais antigo para o mais recente: com vagas limitadas, quem chegou
+  // primeiro fica com elas. Processar por outra ordem daria a condição a quem
+  // se registou depois, só por acaso da paginação.
+  //
+  // Comparado como instante, não como texto: o SDK devolve `createdAt` já como
+  // Date, e "Mon Aug 24" ordenado alfabeticamente vem antes de "Thu Aug 13".
+  const instante = u => new Date(u.attributes.createdAt).getTime() || 0;
+  todos.sort((a, b) => instante(a) - instante(b));
+
+  const vagas = vagasFundador();
+  let ocupadas = await contarFundadores(sdk);
+  console.log(`vagas de fundador: ${ocupadas} de ${vagas} ocupadas`);
+  console.log();
+
   const contagem = {};
   for (const u of todos) {
     const perfil = u.attributes.profile || {};
     const jaTem = perfil.metadata?.commissionModel;
-    const proposto = modeloParaConta(u);
+    let proposto = modeloParaConta(u);
     const tipo = perfil.publicData?.userType || '(sem tipo)';
     const criado = String(u.attributes.createdAt).slice(0, 10);
+
+    if (proposto === 'fundador' && ocupadas >= vagas) proposto = 'standard';
 
     let resultado;
     if (jaTem) {
@@ -66,9 +84,13 @@ const aplicar = process.argv.includes('--aplicar');
     } else if (!proposto) {
       resultado = 'não ganha comissão';
     } else if (aplicar) {
-      await ensureCommissionModel(sdk, u);
-      resultado = `GRAVADO ${proposto}`;
+      // A contagem é passada adiante para não varrer os utilizadores todos a
+      // cada conta — em série, quem manda é este contador.
+      const gravado = await ensureCommissionModel(sdk, u, { jaMarcados: ocupadas });
+      if (gravado === 'fundador') ocupadas += 1;
+      resultado = `GRAVADO ${gravado}`;
     } else {
+      if (proposto === 'fundador') ocupadas += 1;
       resultado = `seria ${proposto}`;
     }
 
@@ -77,6 +99,9 @@ const aplicar = process.argv.includes('--aplicar');
       `  ${(u.attributes.email || '?').padEnd(34)} ${tipo.padEnd(22)} registo ${criado}  ->  ${resultado}`
     );
   }
+
+  console.log();
+  console.log(`vagas no fim: ${ocupadas} de ${vagas}`);
 
   console.log();
   console.log('resumo:', JSON.stringify(contagem));
