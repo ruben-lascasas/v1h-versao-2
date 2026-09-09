@@ -14,4 +14,4 @@
  */
 
 /** Suporte técnico e comunicação de problemas. */
-export const SUPPORT_EMAIL = 'it@venue1hub.com';
+export const SUPPORT_EMAIL = 'mail@venue1hub.com';

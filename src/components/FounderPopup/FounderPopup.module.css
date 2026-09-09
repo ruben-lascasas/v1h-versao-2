@@ -1,0 +1,285 @@
+/* Popup da condição de fundador.
+   Segue a identidade do site: 'Britannic Bold' nos títulos, 'Century Gothic'
+   no texto, e a paleta quente da marca (#2E2E2E, #BAA38A, #5C3317, #F5F0EB). */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(46, 46, 46, 0.6);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 24px 16px;
+  animation: aparecer 0.25s ease;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cartao {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 460px;
+  /* Nunca mais alto do que o ecrã, e com scroll próprio se o conteúdo crescer.
+     Num telemóvel deitado o cartão inteiro não cabe. */
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 44px 36px 32px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: subir 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes subir {
+  from { transform: translateY(16px) scale(0.97); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Fita dourada no topo, a assinar o cartão sem pesar. */
+.cartao::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(90deg, #BAA38A 0%, #D8C4AC 50%, #BAA38A 100%);
+}
+
+.fechar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #9a938a;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.fechar:hover {
+  background: #F5F0EB;
+  color: #2E2E2E;
+}
+
+.etiqueta {
+  margin: 0 0 14px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #BAA38A;
+}
+
+.titulo {
+  margin: 0 0 16px;
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-size: 30px;
+  line-height: 1.15;
+  color: #2E2E2E;
+  letter-spacing: 0.01em;
+}
+
+.texto {
+  margin: 0 0 24px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #555;
+}
+
+.texto strong {
+  color: #2E2E2E;
+  font-weight: 700;
+}
+
+/* Comparação 5% / 10%. O contraste é o argumento — mostrar é melhor do que
+   explicar. */
+.comparacao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 0 0 20px;
+  padding: 18px 12px;
+  background: #F9F6F2;
+  border: 1px solid #EDE4D8;
+  border-radius: 12px;
+}
+
+.coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 78px;
+}
+
+.separador {
+  width: 1px;
+  align-self: stretch;
+  background: #E4D9CB;
+}
+
+.percentagemFundador,
+.percentagemNormal {
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.percentagemFundador {
+  color: #5C3317;
+}
+
+/* A taxa normal aparece riscada e apagada: lê-se de relance o que se poupa. */
+.percentagemNormal {
+  color: #B3AAA0;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.legenda {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8a8178;
+}
+
+.notaVagas {
+  margin: 0 0 26px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #8a8178;
+}
+
+.botao {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px 24px;
+  background: #2E2E2E;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.botao:hover {
+  background: #5C3317;
+  color: #ffffff;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.recusar {
+  display: block;
+  width: 100%;
+  margin: 12px 0 0;
+  padding: 8px;
+  border: none;
+  background: none;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #9a938a;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.recusar:hover {
+  color: #2E2E2E;
+  text-decoration: underline;
+}
+
+/* ── Telemóvel ─────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .overlay {
+    padding: 16px 12px;
+    /* Alinhado ao fundo: num telemóvel o polegar chega mais facilmente aos
+       botões, e o cartão deixa de ficar preso ao centro em ecrãs baixos. */
+    align-items: flex-end;
+  }
+
+  .cartao {
+    padding: 36px 22px 24px;
+    border-radius: 14px;
+    max-height: calc(100vh - 32px);
+  }
+
+  .titulo {
+    font-size: 25px;
+  }
+
+  .texto {
+    font-size: 14px;
+  }
+
+  .comparacao {
+    gap: 16px;
+    padding: 14px 8px;
+  }
+
+  .percentagemFundador,
+  .percentagemNormal {
+    font-size: 26px;
+  }
+}
+
+/* Ecrãs muito baixos (telemóvel deitado): o cartão encolhe em vez de cortar. */
+@media (max-height: 560px) {
+  .cartao {
+    padding: 28px 24px 20px;
+  }
+
+  .titulo {
+    font-size: 23px;
+    margin-bottom: 10px;
+  }
+
+  .comparacao {
+    margin-bottom: 14px;
+    padding: 12px 8px;
+  }
+
+  .texto,
+  .notaVagas {
+    margin-bottom: 14px;
+  }
+}
+
+/* Quem pediu menos animação não leva nenhuma. */
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .cartao {
+    animation: none;
+  }
+
+  .botao:hover {
+    transform: none;
+  }
+}

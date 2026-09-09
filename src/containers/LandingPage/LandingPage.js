@@ -10,6 +10,7 @@ import { propTypes } from '../../util/types';
 
 import FallbackPage from './FallbackPage';
 import FeedbackPromptModal from '../../components/FeedbackPromptModal/FeedbackPromptModal';
+import FounderPopup from '../../components/FounderPopup/FounderPopup';
 import { ASSET_NAME } from './LandingPage.duck';
 import { fetchFeaturedListings } from '../../ducks/featuredListings.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
@@ -97,7 +98,7 @@ const PageBuilder = loadable(() =>
 );
 
 export const LandingPageComponent = props => {
-  const { pageAssetsData, inProgress, error } = props;
+  const { pageAssetsData, inProgress, error, isAuthenticated } = props;
   const featuredListingsProps = getFeaturedListingsProps(camelize(ASSET_NAME), props);
   const { locale } = useLocale();
   // Body attributes are now managed globally in app.js — no longer needed here.
@@ -221,6 +222,9 @@ export const LandingPageComponent = props => {
         featuredListings={featuredListingsProps}
       />
       <FeedbackPromptModal />
+      {/* So aqui: e um anuncio de campanha, nao um aviso de sistema. Noutras
+          paginas apanharia quem ja esta a meio de uma reserva. */}
+      <FounderPopup isAuthenticated={isAuthenticated} />
     </>
   );
 };
@@ -237,7 +241,16 @@ const mapStateToProps = state => {
 
   const getListingEntitiesById = listingIds => getListingsById(state, listingIds);
 
-  return { pageAssetsData, featuredListingData, getListingEntitiesById, inProgress, error };
+  const { isAuthenticated } = state.auth || {};
+
+  return {
+    pageAssetsData,
+    featuredListingData,
+    getListingEntitiesById,
+    inProgress,
+    error,
+    isAuthenticated,
+  };
 };
 
 const mapDispatchToProps = dispatch => ({
