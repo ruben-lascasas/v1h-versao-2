@@ -189,6 +189,28 @@ app.use(
 );
 app.use(cookieParser());
 
+/**
+ * GET /healthz — sinal de vida, barato de propósito.
+ *
+ * Existe para quem quiser manter o serviço acordado ou vigiar se está de pé.
+ * Pingar a raiz servia para o mesmo, mas cada visita à raiz é uma renderização
+ * completa no servidor mais as chamadas à API da Sharetribe que a página
+ * precisa. A cada 5 minutos são umas 8.600 dessas por mês, gastas a não mostrar
+ * nada a ninguém.
+ *
+ * Aqui não há render nem chamadas a lado nenhum: responde e acaba. Fica montado
+ * antes de tudo o resto para não passar por middleware que não lhe serve, e
+ * responde a HEAD além de GET, que é o que a maioria dos vigilantes usa.
+ */
+app.get('/healthz', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.status(200).json({ ok: true, uptime: Math.round(process.uptime()) });
+});
+app.head('/healthz', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.status(200).end();
+});
+
 // We don't serve favicon.ico from root. PNG images are used instead for icons through link elements.
 app.get('/favicon.ico', (req, res) => {
   res.status(404).send('favicon.ico not found.');
