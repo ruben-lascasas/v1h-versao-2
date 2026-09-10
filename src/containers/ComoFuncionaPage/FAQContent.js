@@ -185,7 +185,7 @@ const FAQ_PT = [
         q: 'Quais são as taxas/comissões?',
         a: (
           <>
-            <p>A Venue1Hub cobra uma comissão sobre cada reserva concretizada: <strong>12,5% ao anfitrião</strong> e <strong>5% ao hóspede</strong>. Os anfitriões com condição de fundador pagam apenas 5%, para sempre. Os dois valores são apresentados no detalhe do preço antes de a reserva ser confirmada.</p>
+            <p>Quem reserva <strong>não paga taxa nenhuma</strong>: o preço do anúncio é o preço final. A comissão é cobrada a quem recebe o pagamento — <strong>12,5% ao anfitrião ou prestador de serviços</strong>, descontados automaticamente antes da transferência. Quem se registou como fundador paga apenas 5%, para sempre. O valor aparece no detalhe do preço do anfitrião antes de a reserva ser confirmada.</p>
           </>
         ),
       },
@@ -487,7 +487,7 @@ const FAQ_EN = [
         q: 'What are the fees?',
         a: (
           <>
-            <p>Venue1Hub charges a commission on each successful booking: <strong>12.5% from the host</strong> and <strong>5% from the guest</strong>. Hosts with founder status pay only 5%, for life. Both amounts are shown in the price breakdown before the booking is confirmed.</p>
+            <p>Guests pay <strong>no fee at all</strong>: the listing price is the final price. The commission is charged to whoever receives the payment — <strong>12.5% from the host or service provider</strong>, deducted automatically before the payout. Hosts with founder status pay only 5%, for life. The amount is shown in the host's price breakdown before the booking is confirmed.</p>
           </>
         ),
       },

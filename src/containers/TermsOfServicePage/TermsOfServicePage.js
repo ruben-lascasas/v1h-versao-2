@@ -100,7 +100,7 @@ const TermsOfServiceContentPT = () => (
 
     <div className={css.section}>
       <h2 className={css.sectionTitle}>7. Comissões, Pagamentos e Faturação</h2>
-      <p className={css.text}>A Venue1Hub cobra uma comissão sobre cada reserva confirmada através da Plataforma, podendo esta ser repartida entre o Anfitrião e o Hóspede. O valor da comissão aplicável é apresentado de forma transparente antes da confirmação de cada reserva.</p>
+      <p className={css.text}>A Venue1Hub cobra uma comissão sobre cada reserva confirmada através da Plataforma. Essa comissão é suportada integralmente pelo Anfitrião ou Prestador de Serviços, sendo deduzida ao valor a transferir; o Hóspede não paga qualquer taxa adicional ao preço anunciado. O valor da comissão aplicável é apresentado de forma transparente antes da confirmação de cada reserva.</p>
       <p className={css.text}>Os pagamentos são processados de forma segura através do Stripe, parceiro certificado de processamento de pagamentos. A Venue1Hub emitirá fatura relativa às suas comissões e serviços premium, em conformidade com a legislação fiscal portuguesa e as obrigações de IVA aplicáveis.</p>
       <p className={css.text}>Estão igualmente disponíveis subscrições premium para Anfitriões, com funcionalidades de destaque de listagem, acesso a análises avançadas e integrações de calendário externo.</p>
     </div>
@@ -298,7 +298,7 @@ const TermsOfServiceContentEN = () => (
 
     <div className={css.section}>
       <h2 className={css.sectionTitle}>7. Commissions, Payments and Invoicing</h2>
-      <p className={css.text}>Venue1Hub charges a commission on each booking confirmed through the Platform, which may be split between the Host and the Guest. The applicable commission amount is presented transparently before the confirmation of each booking.</p>
+      <p className={css.text}>Venue1Hub charges a commission on each booking confirmed through the Platform. This commission is borne entirely by the Host or Service Provider and is deducted from the amount paid out; the Guest pays no fee on top of the advertised price. The applicable commission amount is presented transparently before the confirmation of each booking.</p>
       <p className={css.text}>Payments are processed securely through Stripe, a certified payment processing partner. Venue1Hub will issue invoices for its commissions and premium services, in accordance with Portuguese tax legislation and applicable VAT obligations.</p>
       <p className={css.text}>Premium subscriptions are also available for Hosts, with listing highlight features, access to advanced analytics and external calendar integrations.</p>
     </div>

@@ -6,7 +6,8 @@ const {
   limiteFundador,
   vagasFundador,
 } = require('./hostCommission');
-const { calculateTotalPriceFromPercentage } = require('./lineItemHelpers');
+const { calculateTotalPriceFromPercentage, constructValidLineItems } = require('./lineItemHelpers');
+const { transactionLineItems } = require('./lineItems');
 const { types } = require('sharetribe-flex-sdk');
 const { Money } = types;
 
@@ -44,9 +45,11 @@ describe('condição de fundador', () => {
       expect(MODELS.fundador.provider).toBeLessThan(MODELS.standard.provider / 2);
     });
 
-    it('a comissão do cliente não muda com a campanha', () => {
-      // A promoção é sobre o que se cobra ao anfitrião. O hóspede paga o mesmo.
-      expect(MODELS.fundador.customer).toBe(MODELS.standard.customer);
+    it('nenhum dos modelos cobra nada ao hóspede', () => {
+      // A comissão sai toda do lado de quem recebe. O hóspede paga o preço do
+      // anúncio, seja o anfitrião fundador ou não.
+      expect(MODELS.fundador.customer).toBe(0);
+      expect(MODELS.standard.customer).toBe(0);
     });
   });
 
@@ -113,12 +116,12 @@ describe('condição de fundador', () => {
       expect(gravado.metadata.commissionModelSetAt).toBeTruthy();
     });
 
-    it('não sobrepõe condições já negociadas', async () => {
-      // Um anfitrião com acordo próprio não pode ser reposto para standard por
-      // uma passagem automática.
+    it('não volta a escrever por cima do que já está gravado', async () => {
+      // A marcação é feita uma vez e nunca mais. Sem isto, uma alteração à data
+      // limite podia mexer no que já tinha sido prometido a alguém.
       const u = conta('2027-06-01T10:00:00Z', {
         publicData: { userType: 'anunciante' },
-        metadata: { commissionModel: 'enterprise' },
+        metadata: { commissionModel: 'fundador' },
       });
       expect(await ensureCommissionModel(sdk, u)).toBeNull();
       expect(gravado).toBeNull();
@@ -211,10 +214,10 @@ describe('condição de fundador', () => {
       customerCommission: { percentage: 5, minimum_amount: 0 },
     };
 
-    it('fundador: 5% ao anfitrião, 5% ao cliente', () => {
+    it('fundador: 5% ao anfitrião, nada ao hóspede', () => {
       const r = resolveCommission(consola, { commissionModel: 'fundador' });
       expect(r.providerCommission.percentage).toBe(5);
-      expect(r.customerCommission.percentage).toBe(5);
+      expect(r.customerCommission.percentage).toBe(0);
       expect(r.appliedModel).toBe('fundador');
     });
 
@@ -223,20 +226,25 @@ describe('condição de fundador', () => {
       expect(r.providerCommission.percentage).toBe(12.5);
     });
 
-    it('sem modelo gravado usa o valor da Console', () => {
+    // Mesmo com a Console noutro valor. Quem ainda não foi marcado paga a taxa
+    // cheia; a condição de fundador é a única que precisa de estar gravada.
+    it('sem modelo gravado paga o standard, não o valor da Console', () => {
       const r = resolveCommission(consola, {});
-      expect(r.providerCommission.percentage).toBe(10);
-      expect(r.appliedModel).toBeNull();
+      expect(consola.providerCommission.percentage).toBe(10);
+      expect(r.providerCommission.percentage).toBe(12.5);
+      expect(r.appliedModel).toBe('standard');
     });
 
-    it('o mínimo da Console é preservado seja qual for o modelo', () => {
+    // Do lado do anfitrião o mínimo faz sentido e mantém-se. Do lado do
+    // hóspede não, porque ele não paga taxa nenhuma.
+    it('o mínimo da Console é preservado do lado do anfitrião', () => {
       const comMinimo = {
         providerCommission: { percentage: 10, minimum_amount: 250 },
         customerCommission: { percentage: 5, minimum_amount: 100 },
       };
       const r = resolveCommission(comMinimo, { commissionModel: 'fundador' });
       expect(r.providerCommission.minimum_amount).toBe(250);
-      expect(r.customerCommission.minimum_amount).toBe(100);
+      expect(r.customerCommission).toEqual({ percentage: 0 });
     });
   });
 
@@ -264,6 +272,63 @@ describe('condição de fundador', () => {
       for (let cents = 1; cents <= 2000; cents++) {
         expect(Number.isInteger(comissao(cents, 12.5))).toBe(true);
       }
+    });
+  });
+
+  // Os testes acima olham para as percentagens. Este passa uma reserva pelo
+  // mesmo caminho que o endpoint usa — `resolveCommission` seguido de
+  // `transactionLineItems` — e conta o dinheiro no fim. É o que apanha uma
+  // regressão que as percentagens sozinhas não mostrariam.
+  describe('uma reserva inteira, do princípio ao fim', () => {
+    // Os valores que a Console devolve hoje, verificados na API a 2026-09-10.
+    const consolaReal = {
+      providerCommission: { percentage: 10, minimum_amount: 0 },
+      customerCommission: { percentage: 5, minimum_amount: 0 },
+    };
+
+    const anuncioDe100 = {
+      attributes: {
+        price: new Money(10000, 'EUR'),
+        publicData: { unitType: 'day' },
+      },
+    };
+    const umDia = {
+      bookingStart: new Date('2026-10-01T00:00:00Z'),
+      bookingEnd: new Date('2026-10-02T00:00:00Z'),
+    };
+
+    const contas = metadata => {
+      const { providerCommission, customerCommission } = resolveCommission(consolaReal, metadata);
+      const linhas = transactionLineItems(
+        anuncioDe100,
+        umDia,
+        providerCommission,
+        customerCommission
+      );
+      const validas = constructValidLineItems(linhas);
+      const total = c => validas.find(l => l.code === `line-item/${c}`)?.lineTotal?.amount ?? null;
+      return { base: total('day'), anfitriao: total('provider-commission'), hospede: total('customer-commission') };
+    };
+
+    it('standard: hóspede paga 100,00 e o anfitrião fica com 87,50', () => {
+      const { base, anfitriao, hospede } = contas({ commissionModel: 'standard' });
+      expect(base).toBe(10000);
+      expect(anfitriao).toBe(-1250); // negativo: é o que se retira ao anfitrião
+      expect(hospede).toBeNull(); // a linha nem chega a existir
+    });
+
+    it('fundador: hóspede paga 100,00 e o anfitrião fica com 95,00', () => {
+      const { anfitriao, hospede } = contas({ commissionModel: 'fundador' });
+      expect(anfitriao).toBe(-500);
+      expect(hospede).toBeNull();
+    });
+
+    // A Console continua a dizer 5% ao hóspede. Se algum dia isto falhar, é
+    // porque esse valor voltou a chegar ao checkout.
+    it('a linha de taxa ao hóspede não é criada em nenhum dos casos', () => {
+      expect(consolaReal.customerCommission.percentage).toBe(5);
+      expect(contas({}).hospede).toBeNull();
+      expect(contas({ commissionModel: 'fundador' }).hospede).toBeNull();
     });
   });
 });
