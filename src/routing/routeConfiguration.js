@@ -56,8 +56,28 @@ const CareersPage = loadable(() => import(/* webpackChunkName: "CareersPage" */ 
 const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ '../containers/VerificationPage/VerificationPage'));
 const VerificationAdminPage = loadable(() => import(/* webpackChunkName: "VerificationAdminPage" */ '../containers/VerificationAdminPage/VerificationAdminPage'));
 
-// Styleguide helps you to review current components and develop new ones
-const StyleguidePage = loadable(() => import(/* webpackChunkName: "StyleguidePage" */ '../containers/StyleguidePage/StyleguidePage'));
+// Styleguide helps you to review current components and develop new ones.
+//
+// FORA DA COMPILAÇÃO DE PRODUÇÃO, de propósito. Duas razões:
+//
+// 1. É uma ferramenta de programação. Estava a ser servida publicamente em
+//    venue1hub.eu/styleguide, com todos os componentes e exemplos internos à
+//    vista de quem lá fosse parar.
+//
+// 2. Partia o build estrito. A página importa `src/examples`, que arrasta todos
+//    os `*.example.js` e com eles os CSS de meia aplicação, por uma ordem
+//    diferente da que as próprias páginas usam. O mini-css-extract-plugin não
+//    consegue conciliar as duas ordens e emite "Conflicting order" — que com
+//    CI=true é erro, e deixava `yarn build` sempre vermelho.
+//
+// A condição está escrita assim, e não à volta das rotas, porque é preciso que
+// o `import()` fique dentro do ramo morto: o webpack substitui NODE_ENV na
+// compilação, descarta o ramo, e o chunk deixa de existir. Envolver só as rotas
+// não chegava — o chunk continuava a ser gerado.
+const StyleguidePage =
+  process.env.NODE_ENV === 'production'
+    ? null
+    : loadable(() => import(/* webpackChunkName: "StyleguidePage" */ '../containers/StyleguidePage/StyleguidePage'));
 
 export const ACCOUNT_SETTINGS_PAGES = [
   'ContactDetailsPage',
@@ -493,37 +513,43 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       name: 'ComoFuncionaPage',
       component: ComoFuncionaPage,
     },
-    {
-      path: '/styleguide',
-      name: 'Styleguide',
-      ...authForPrivateMarketplace,
-      component: StyleguidePage,
-    },
-    {
-      path: '/styleguide/g/:group',
-      name: 'StyleguideGroup',
-      ...authForPrivateMarketplace,
-      component: StyleguidePage,
-    },
-    {
-      path: '/styleguide/c/:component',
-      name: 'StyleguideComponent',
-      ...authForPrivateMarketplace,
-      component: StyleguidePage,
-    },
-    {
-      path: '/styleguide/c/:component/:example',
-      name: 'StyleguideComponentExample',
-      ...authForPrivateMarketplace,
-      component: StyleguidePage,
-    },
-    {
-      path: '/styleguide/c/:component/:example/raw',
-      name: 'StyleguideComponentExampleRaw',
-      ...authForPrivateMarketplace,
-      component: StyleguidePage,
-      extraProps: { raw: true },
-    },
+    // Sem StyleguidePage em produção não há rotas para o styleguide. Ver a nota
+    // no topo do ficheiro.
+    ...(StyleguidePage
+      ? [
+          {
+            path: '/styleguide',
+            name: 'Styleguide',
+            ...authForPrivateMarketplace,
+            component: StyleguidePage,
+          },
+          {
+            path: '/styleguide/g/:group',
+            name: 'StyleguideGroup',
+            ...authForPrivateMarketplace,
+            component: StyleguidePage,
+          },
+          {
+            path: '/styleguide/c/:component',
+            name: 'StyleguideComponent',
+            ...authForPrivateMarketplace,
+            component: StyleguidePage,
+          },
+          {
+            path: '/styleguide/c/:component/:example',
+            name: 'StyleguideComponentExample',
+            ...authForPrivateMarketplace,
+            component: StyleguidePage,
+          },
+          {
+            path: '/styleguide/c/:component/:example/raw',
+            name: 'StyleguideComponentExampleRaw',
+            ...authForPrivateMarketplace,
+            component: StyleguidePage,
+            extraProps: { raw: true },
+          },
+        ]
+      : []),
     {
       path: '/no-:missingAccessRight',
       name: 'NoAccessPage',

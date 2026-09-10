@@ -10,8 +10,12 @@ const { calculateTotalPriceFromPercentage, constructValidLineItems } = require('
 const { transactionLineItems } = require('./lineItems');
 const { types } = require('sharetribe-flex-sdk');
 const { Money } = types;
+// A mesma fonte que o servidor e o site leem. Os testes não repetem os
+// valores — se alguém mudar a data ou a taxa no JSON, isto acompanha.
+const campanha = require('../../src/config/founderCampaign.json');
 
-const LIMITE = '2026-12-31T23:59:59Z';
+const LIMITE = campanha.deadline;
+const umSegundoDepois = new Date(Date.parse(LIMITE) + 1000).toISOString();
 
 const conta = (createdAt, over = {}) => ({
   id: { uuid: 'u-1' },
@@ -26,13 +30,56 @@ const conta = (createdAt, over = {}) => ({
 });
 
 describe('condição de fundador', () => {
-  const antes = process.env.FOUNDER_COMMISSION_UNTIL;
-  beforeEach(() => {
-    process.env.FOUNDER_COMMISSION_UNTIL = LIMITE;
-  });
-  afterAll(() => {
-    if (antes === undefined) delete process.env.FOUNDER_COMMISSION_UNTIL;
-    else process.env.FOUNDER_COMMISSION_UNTIL = antes;
+
+  // A razão de existir do JSON: o que o site promete e o que o servidor cobra
+  // são lidos do mesmo sítio. Estes testes falham no dia em que voltarem a ser
+  // dois sítios.
+  describe('uma fonte só', () => {
+    it('as percentagens do servidor vêm do ficheiro da campanha', () => {
+      expect(MODELS.fundador.provider).toBe(campanha.founderRate);
+      expect(MODELS.standard.provider).toBe(campanha.standardRate);
+    });
+
+    it('a data limite vem do ficheiro da campanha', () => {
+      expect(limiteFundador()).toBe(Date.parse(campanha.deadline));
+    });
+
+    it('as vagas vêm do ficheiro da campanha', () => {
+      expect(vagasFundador()).toBe(campanha.slots);
+    });
+
+    // Se um dia se acrescentar um tipo de conta que receba dinheiro, é no JSON
+    // que entra — e passa a ganhar condição de fundador sem tocar em código.
+    it('os tipos de conta que entram na campanha vêm do ficheiro', () => {
+      expect(campanha.userTypes).toContain('anunciante');
+      expect(campanha.userTypes).toContain('prestador_de_servicos');
+      expect(campanha.userTypes).not.toContain('visitante');
+    });
+
+    // A variável antiga ficou no Render a apontar para 31 de dezembro enquanto
+    // o site prometia 15 de outubro. Deixou de mandar — e este teste é o que
+    // garante que não volta a mandar.
+    it('FOUNDER_COMMISSION_UNTIL já não decide nada', () => {
+      const antes = process.env.FOUNDER_COMMISSION_UNTIL;
+      process.env.FOUNDER_COMMISSION_UNTIL = '2030-01-01T00:00:00Z';
+      try {
+        expect(limiteFundador()).toBe(Date.parse(campanha.deadline));
+      } finally {
+        if (antes === undefined) delete process.env.FOUNDER_COMMISSION_UNTIL;
+        else process.env.FOUNDER_COMMISSION_UNTIL = antes;
+      }
+    });
+
+    it('FOUNDER_COMMISSION_MAX também não', () => {
+      const antes = process.env.FOUNDER_COMMISSION_MAX;
+      process.env.FOUNDER_COMMISSION_MAX = '9999';
+      try {
+        expect(vagasFundador()).toBe(campanha.slots);
+      } finally {
+        if (antes === undefined) delete process.env.FOUNDER_COMMISSION_MAX;
+        else process.env.FOUNDER_COMMISSION_MAX = antes;
+      }
+    });
   });
 
   describe('percentagens', () => {
@@ -63,7 +110,7 @@ describe('condição de fundador', () => {
     });
 
     it('um segundo depois já não entra', () => {
-      expect(modeloParaConta(conta('2027-01-01T00:00:01Z'))).toBe('standard');
+      expect(modeloParaConta(conta(umSegundoDepois))).toBe('standard');
     });
 
     it('prestadores de serviços também entram — também pagam comissão', () => {
@@ -78,17 +125,11 @@ describe('condição de fundador', () => {
       expect(modeloParaConta(u)).toBeNull();
     });
 
-    it('sem data limite configurada não há campanha', () => {
-      // Preferimos não marcar ninguém a assumir uma data: dar 5% por engano é
-      // dinheiro que não se recupera.
-      delete process.env.FOUNDER_COMMISSION_UNTIL;
-      expect(limiteFundador()).toBeNull();
-      expect(modeloParaConta(conta('2026-09-08T10:00:00Z'))).toBeNull();
-    });
-
-    it('uma data limite inválida também não marca ninguém', () => {
-      process.env.FOUNDER_COMMISSION_UNTIL = 'dezembro';
-      expect(limiteFundador()).toBeNull();
+    it('uma conta sem data de registo válida não é marcada', () => {
+      // Preferimos não marcar ninguém a adivinhar: dar 5% por engano é dinheiro
+      // que não se recupera.
+      expect(modeloParaConta(conta('não é uma data'))).toBeNull();
+      expect(modeloParaConta(conta(undefined))).toBeNull();
     });
   });
 
@@ -159,25 +200,26 @@ describe('condição de fundador', () => {
 
     beforeEach(() => {
       gravado = null;
-      process.env.FOUNDER_COMMISSION_MAX = '100';
     });
-    afterAll(() => delete process.env.FOUNDER_COMMISSION_MAX);
 
-    it('a vaga 100 ainda é fundador', async () => {
-      const r = await ensureCommissionModel(sdkCom(99), conta('2026-09-08T10:00:00Z'));
+    it('a última vaga ainda é fundador', async () => {
+      const r = await ensureCommissionModel(
+        sdkCom(campanha.slots - 1),
+        conta('2026-09-08T10:00:00Z')
+      );
       expect(r).toBe('fundador');
     });
 
-    it('a 101 já não é — passa a standard mesmo dentro do prazo', async () => {
+    it('a seguinte já não é — passa a standard mesmo dentro do prazo', async () => {
       // A campanha acaba no que vier primeiro: prazo ou vagas.
-      const r = await ensureCommissionModel(sdkCom(100), conta('2026-09-08T10:00:00Z'));
+      const r = await ensureCommissionModel(sdkCom(campanha.slots), conta('2026-09-08T10:00:00Z'));
       expect(r).toBe('standard');
       expect(gravado.metadata.commissionModel).toBe('standard');
     });
 
     it('quem chega fora do prazo não consome vaga nenhuma', async () => {
       // Já era standard pela data; as vagas nem são consultadas.
-      const r = await ensureCommissionModel(sdkCom(0), conta('2027-03-01T10:00:00Z'));
+      const r = await ensureCommissionModel(sdkCom(0), conta(umSegundoDepois));
       expect(r).toBe('standard');
     });
 
@@ -196,15 +238,9 @@ describe('condição de fundador', () => {
         },
       };
       const r = await ensureCommissionModel(sdkQueExplode, conta('2026-09-08T10:00:00Z'), {
-        jaMarcados: 100,
+        jaMarcados: campanha.slots,
       });
       expect(r).toBe('standard');
-    });
-
-    it('o limite é configurável', async () => {
-      process.env.FOUNDER_COMMISSION_MAX = '3';
-      expect(await ensureCommissionModel(sdkCom(2), conta('2026-09-08T10:00:00Z'))).toBe('fundador');
-      expect(await ensureCommissionModel(sdkCom(3), conta('2026-09-08T10:00:00Z'))).toBe('standard');
     });
   });
 

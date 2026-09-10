@@ -1,27 +1,30 @@
 /**
  * Campanha de fundador — o que o site mostra ao público.
  *
- * ATENÇÃO: esta data tem de ser a mesma que está em FOUNDER_COMMISSION_UNTIL no
- * servidor. É essa variável que decide de facto quem fica com 5%; esta só
- * decide o que o popup anuncia.
+ * Os valores vivem em `founderCampaign.json`, ao lado deste ficheiro, e são os
+ * mesmos que o servidor lê para decidir quem fica com 5%. Um ficheiro só, lido
+ * pelos dois lados.
  *
- * Se divergirem, uma das duas coisas acontece, e ambas são más: ou o site
- * promete uma condição que o servidor já não dá, ou continua a dar-se 5% a quem
- * se registou depois de a campanha ter sido anunciada como terminada.
- *
- * Não dá para ler a variável do servidor a partir daqui — as variáveis do
- * cliente têm de começar por REACT_APP_ e ser fixadas na compilação, e não vale
- * a pena expor a configuração comercial no pacote que vai para o browser.
+ * Já esteve dividido entre este ficheiro e a variável de ambiente
+ * FOUNDER_COMMISSION_UNTIL, e divergiu: o site anunciava 15 de outubro
+ * enquanto o servidor dava a condição a quem se registasse até 31 de dezembro.
+ * Duas fontes para a mesma promessa comercial é uma discrepância à espera de
+ * acontecer — e uma que só se descobre quando alguém reclama.
  */
 
+import campanha from './founderCampaign.json';
+
 /** Fim da campanha, hora de Lisboa. */
-export const FOUNDER_DEADLINE = new Date('2026-10-15T23:59:59+01:00');
+export const FOUNDER_DEADLINE = new Date(campanha.deadline);
 
 /** Percentagem de comissão de quem entra na campanha. */
-export const FOUNDER_RATE = 5;
+export const FOUNDER_RATE = campanha.founderRate;
 
 /** Percentagem de quem chegar depois. */
-export const STANDARD_RATE = 12.5;
+export const STANDARD_RATE = campanha.standardRate;
+
+/** Vagas anunciadas. */
+export const FOUNDER_SLOTS = campanha.slots;
 
 /**
  * A percentagem como se escreve em português: 12,5 e não 12.5.
@@ -33,9 +36,6 @@ export const STANDARD_RATE = 12.5;
  * resultado nos dois lados.
  */
 export const taxaEscrita = taxa => String(taxa).replace('.', ',');
-
-/** Vagas anunciadas. */
-export const FOUNDER_SLOTS = 100;
 
 /**
  * A campanha ainda está a decorrer?

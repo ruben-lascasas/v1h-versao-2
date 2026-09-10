@@ -31,7 +31,7 @@ const aplicar = process.argv.includes('--aplicar');
 (async () => {
   const limite = limiteFundador();
   if (limite == null) {
-    console.error('FOUNDER_COMMISSION_UNTIL não está definido — nada a fazer.');
+    console.error('A data limite em src/config/founderCampaign.json não é válida — nada a fazer.');
     console.error('Sem data limite não se marca ninguém: dar 5% por engano é dinheiro perdido.');
     process.exit(1);
   }

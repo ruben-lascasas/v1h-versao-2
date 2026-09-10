@@ -1,0 +1,13 @@
+{
+  "_comentario": "Condicao de fundador. UNICA fonte de verdade: o servidor e o site leem daqui. Nao duplicar estes valores em variaveis de ambiente nem no codigo.",
+  "_deadline": "Fim da campanha, hora de Lisboa. Quem se registar ate este instante fica com a taxa de fundador, para sempre.",
+  "deadline": "2026-10-15T23:59:59+01:00",
+  "_founderRate": "Percentagem cobrada ao anfitriao fundador.",
+  "founderRate": 5,
+  "_standardRate": "Percentagem cobrada a quem chegar depois, ou depois de esgotadas as vagas.",
+  "standardRate": 12.5,
+  "_slots": "Numero maximo de contas com condicao de fundador. A campanha acaba no que vier primeiro: a data ou as vagas.",
+  "slots": 100,
+  "_userTypes": "Tipos de conta que ganham comissao e por isso entram na campanha. Um visitante nao paga nada e fica de fora.",
+  "userTypes": ["anunciante", "prestador_de_servicos"]
+}

@@ -27,6 +27,11 @@
  * um mínimo continua a ser um mínimo seja qual for o modelo.
  */
 
+// O mesmo ficheiro que o site lê para anunciar a campanha. As percentagens, a
+// data limite e as vagas saem todas daqui — uma fonte só, para o que se
+// promete e o que se cobra não poderem divergir.
+const campanha = require('../../src/config/founderCampaign.json');
+
 // O hóspede não paga taxa nenhuma. O preço que vê no anúncio é o preço que
 // paga; a comissão sai toda do lado de quem recebe. Foi assim decidido em
 // 2026-09-10 — até aí cobravam-se 5% ao hóspede.
@@ -39,12 +44,12 @@ const MODELS = {
   // lançamento. É vitalícia — foi o que se prometeu — e por isso fica gravada na
   // conta em vez de ser recalculada a cada reserva. Se um dia a data limite
   // mudar, quem já a tem não a perde.
-  fundador: { provider: 5, customer: 0 },
+  fundador: { provider: campanha.founderRate, customer: 0 },
   // Standard subiu de 10% para 12,5% em 2026-09-10. Não é retroactivo no
-  // sentido que interessa: quem tem `standard` gravado passa a pagar 12,5% na
-  // reserva seguinte, porque só o *nome* do modelo fica preso à conta e a
-  // percentagem é lida daqui a cada cálculo.
-  standard: { provider: 12.5, customer: 0 },
+  // sentido que interessa: quem tem `standard` gravado passa a pagar a taxa
+  // nova na reserva seguinte, porque só o *nome* do modelo fica preso à conta e
+  // a percentagem é lida daqui a cada cálculo.
+  standard: { provider: campanha.standardRate, customer: 0 },
 };
 
 /** O modelo de quem ainda não tem nenhum gravado. */
@@ -120,41 +125,75 @@ const hostMetadataFrom = apiResponse => {
 };
 
 /**
- * Data limite da condição de fundador, como instante ISO.
+ * Data limite da condição de fundador, como instante.
  *
- * Sem a variável definida não há campanha nenhuma: ninguém é marcado como
- * fundador e toda a gente paga o standard. Preferimos isso a assumir uma data —
- * dar 5% por engano é dinheiro que não se recupera.
+ * Vem do mesmo ficheiro que o popup usa para anunciar a campanha. Já veio de
+ * FOUNDER_COMMISSION_UNTIL, e o resultado foi o previsível: a variável ficou
+ * a apontar para 31 de dezembro enquanto o site prometia 15 de outubro. Uma
+ * promessa comercial não pode ter duas fontes.
  *
- * FOUNDER_COMMISSION_UNTIL, ex.: 2026-12-31T23:59:59Z
+ * A variável de ambiente continua a ser lida — mas só para avisar que já não
+ * serve. Apagá-la em silêncio deixaria alguém a pensar que ainda manda.
  */
 const limiteFundador = () => {
-  const raw = process.env.FOUNDER_COMMISSION_UNTIL;
-  if (!raw) return null;
-  const t = Date.parse(raw);
+  const legado = process.env.FOUNDER_COMMISSION_UNTIL;
+  const t = Date.parse(campanha.deadline);
+
   if (Number.isNaN(t)) {
-    console.error(`[comissão] FOUNDER_COMMISSION_UNTIL inválido: ${raw}`);
+    console.error(`[comissão] deadline inválida em founderCampaign.json: ${campanha.deadline}`);
     return null;
+  }
+  if (legado && Date.parse(legado) !== t) {
+    console.warn(
+      `[comissão] FOUNDER_COMMISSION_UNTIL=${legado} é ignorado — a data vem de ` +
+        `src/config/founderCampaign.json (${campanha.deadline}). Pode apagar a variável.`
+    );
   }
   return t;
 };
 
-/** Tipos de conta que ganham comissão e por isso entram na campanha. */
-const tiposComComissao = () =>
-  (process.env.FOUNDER_COMMISSION_USER_TYPES || 'anunciante,prestador_de_servicos')
-    .split(',')
-    .map(s => s.trim())
-    .filter(Boolean);
+/**
+ * Tipos de conta que ganham comissão e por isso entram na campanha.
+ *
+ * Também do ficheiro da campanha, pela mesma razão das outras: uma variável de
+ * ambiente mal escrita aqui deixava calado um tipo de conta inteiro — os
+ * prestadores de serviços ficavam sem condição de fundador e ninguém dava por
+ * isso até alguém reclamar da factura.
+ */
+const tiposComComissao = () => {
+  // Se a chave desaparecer do JSON, isto não pode rebentar: `modeloParaConta`
+  // corre dentro do endpoint que toda a gente com sessão iniciada chama. Uma
+  // lista vazia não marca ninguém, e não marcar ninguém deixa toda a gente no
+  // standard — o lado seguro para errar.
+  if (!Array.isArray(campanha.userTypes)) {
+    console.error('[comissão] userTypes em falta ou inválido em founderCampaign.json');
+    return [];
+  }
+  return campanha.userTypes;
+};
 
 /**
  * Número máximo de contas com condição de fundador.
  *
  * A campanha acaba no que vier primeiro: a data limite ou as vagas esgotadas.
- * FOUNDER_COMMISSION_MAX, por omissão 100.
+ * O número vem do mesmo ficheiro que o popup anuncia — se o site diz "os
+ * primeiros 100", são 100.
  */
 const vagasFundador = () => {
-  const raw = parseInt(process.env.FOUNDER_COMMISSION_MAX, 10);
-  return Number.isNaN(raw) ? 100 : raw;
+  const legado = process.env.FOUNDER_COMMISSION_MAX;
+  const vagas = parseInt(campanha.slots, 10);
+
+  if (Number.isNaN(vagas)) {
+    console.error(`[comissão] slots inválido em founderCampaign.json: ${campanha.slots}`);
+    return 0;
+  }
+  if (legado && parseInt(legado, 10) !== vagas) {
+    console.warn(
+      `[comissão] FOUNDER_COMMISSION_MAX=${legado} é ignorado — as vagas vêm de ` +
+        `src/config/founderCampaign.json (${vagas}). Pode apagar a variável.`
+    );
+  }
+  return vagas;
 };
 
 /**
