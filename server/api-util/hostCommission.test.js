@@ -13,9 +13,9 @@ const CONSOLE = {
 };
 
 describe('modelos de comissão', () => {
-  it('Standard aplica 10% ao anfitrião e 5% ao cliente', () => {
+  it('Standard aplica 12,5% ao anfitrião e 5% ao cliente', () => {
     const m = commissionModelFor({ commissionModel: 'standard' });
-    expect(m).toEqual({ key: 'standard', provider: 10, customer: 5 });
+    expect(m).toEqual({ key: 'standard', provider: 12.5, customer: 5 });
   });
 
   it('Premium aplica 12% ao anfitrião e 5% ao cliente', () => {
@@ -80,7 +80,7 @@ describe('Enterprise negociado', () => {
       commissionModel: 'standard',
       commissionProviderPercentage: 3,
     });
-    expect(m.provider).toBe(10);
+    expect(m.provider).toBe(12.5);
   });
 });
 
@@ -105,12 +105,12 @@ describe('resolveCommission', () => {
       { providerCommission: { percentage: 15, minimum_amount: 500 }, customerCommission: {} },
       { commissionModel: 'standard' }
     );
-    expect(r.providerCommission).toEqual({ percentage: 10, minimum_amount: 500 });
+    expect(r.providerCommission).toEqual({ percentage: 12.5, minimum_amount: 500 });
   });
 
   it('funciona quando a Console não devolve comissão nenhuma', () => {
     const r = resolveCommission({}, { commissionModel: 'standard' });
-    expect(r.providerCommission).toEqual({ percentage: 10 });
+    expect(r.providerCommission).toEqual({ percentage: 12.5 });
     expect(r.customerCommission).toEqual({ percentage: 5 });
   });
 
@@ -143,19 +143,30 @@ describe('hostMetadataFrom', () => {
   });
 });
 
-describe('exemplo do plano de negócios (§8.2)', () => {
-  // Reserva de 100 €: cliente paga 105, anfitrião recebe 90, plataforma 15.
+describe('o dinheiro numa reserva de 100 €', () => {
   const pct = (base, p) => (base * p) / 100;
 
-  it('Standard: 15 € de receita sobre 100 €', () => {
+  // Standard passou a 12,5% em 2026-09-10: cliente paga 105, anfitrião recebe
+  // 87,50, plataforma fica com 17,50.
+  it('Standard: 17,50 € de receita sobre 100 €', () => {
     const { providerCommission, customerCommission } = resolveCommission(CONSOLE, {
       commissionModel: 'standard',
     });
     const provider = pct(100, providerCommission.percentage);
     const customer = pct(100, customerCommission.percentage);
     expect(customer).toBe(5); // cliente paga 105
-    expect(100 - provider).toBe(90); // anfitrião recebe 90
-    expect(provider + customer).toBe(15); // receita Venue1Hub
+    expect(100 - provider).toBe(87.5); // anfitrião recebe 87,50
+    expect(provider + customer).toBe(17.5); // receita Venue1Hub
+  });
+
+  // O que o popup promete a quem se registar dentro do prazo.
+  it('Fundador: 10 € de receita sobre 100 €', () => {
+    const { providerCommission, customerCommission } = resolveCommission(CONSOLE, {
+      commissionModel: 'fundador',
+    });
+    const provider = pct(100, providerCommission.percentage);
+    expect(100 - provider).toBe(95); // anfitrião recebe 95
+    expect(provider + pct(100, customerCommission.percentage)).toBe(10);
   });
 
   it('Premium: 17 € de receita sobre 100 €', () => {

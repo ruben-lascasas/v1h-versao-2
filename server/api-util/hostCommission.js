@@ -20,13 +20,23 @@
  */
 
 const MODELS = {
-  // Percentagens do §8.2. `customer` é 5% em todos os modelos.
-  standard: { provider: 10, customer: 5 },
+  // `customer` é 5% em todos os modelos.
+  //
+  // Standard subiu de 10% para 12,5% em 2026-09-10. Não é retroactivo: quem já
+  // tem `commissionModel: 'standard'` gravado passa a pagar 12,5% na reserva
+  // seguinte, porque a percentagem é lida daqui a cada cálculo e só o *nome* do
+  // modelo é que fica preso à conta. A condição de fundador é a única que se
+  // prometeu vitalícia, e essa não muda.
+  standard: { provider: 12.5, customer: 5 },
   // Condição de fundador: metade da comissão, para quem se registou até à data
   // limite da campanha de lançamento. É vitalícia — foi o que se prometeu — e
   // por isso fica gravada na conta em vez de ser recalculada a cada reserva.
   // Se um dia a data limite mudar, quem já a tem não a perde.
   fundador: { provider: 5, customer: 5 },
+  // ATENÇÃO: com o Standard a 12,5%, o Premium ficou mais barato do que o
+  // modelo base — o que inverte o sentido dos dois nomes. Nenhuma conta usa
+  // Premium hoje, por isso não se mexeu; se um dia se atribuir, é preciso
+  // decidir antes qual deve ser a percentagem.
   premium: { provider: 12, customer: 5 },
   // Enterprise é negociado caso a caso, entre 8% e 12%. Sem valor negociado
   // fica no topo do intervalo — o anfitrião nunca beneficia de um desconto que

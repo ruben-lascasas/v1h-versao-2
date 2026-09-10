@@ -6,6 +6,9 @@ const {
   limiteFundador,
   vagasFundador,
 } = require('./hostCommission');
+const { calculateTotalPriceFromPercentage } = require('./lineItemHelpers');
+const { types } = require('sharetribe-flex-sdk');
+const { Money } = types;
 
 const LIMITE = '2026-12-31T23:59:59Z';
 
@@ -32,9 +35,13 @@ describe('condição de fundador', () => {
   });
 
   describe('percentagens', () => {
-    it('fundador paga metade do standard', () => {
+    // O popup anuncia "menos de metade". Se um dia estas duas percentagens se
+    // aproximarem, é este teste que avisa antes de o site ficar a prometer
+    // aquilo que já não dá.
+    it('fundador paga menos de metade do standard', () => {
       expect(MODELS.fundador.provider).toBe(5);
-      expect(MODELS.standard.provider).toBe(10);
+      expect(MODELS.standard.provider).toBe(12.5);
+      expect(MODELS.fundador.provider).toBeLessThan(MODELS.standard.provider / 2);
     });
 
     it('a comissão do cliente não muda com a campanha', () => {
@@ -211,9 +218,9 @@ describe('condição de fundador', () => {
       expect(r.appliedModel).toBe('fundador');
     });
 
-    it('standard: 10% ao anfitrião', () => {
+    it('standard: 12,5% ao anfitrião', () => {
       const r = resolveCommission(consola, { commissionModel: 'standard' });
-      expect(r.providerCommission.percentage).toBe(10);
+      expect(r.providerCommission.percentage).toBe(12.5);
     });
 
     it('sem modelo gravado usa o valor da Console', () => {
@@ -230,6 +237,33 @@ describe('condição de fundador', () => {
       const r = resolveCommission(comMinimo, { commissionModel: 'fundador' });
       expect(r.providerCommission.minimum_amount).toBe(250);
       expect(r.customerCommission.minimum_amount).toBe(100);
+    });
+  });
+
+  // Uma taxa com casa decimal produz meios cêntimos, e meio cêntimo não existe
+  // em nenhum processador de pagamentos. Estes casos fixam o que acontece nessa
+  // fronteira, para a mudança de 10% para 12,5% não trazer um cêntimo perdido
+  // sem ninguém dar por isso.
+  describe('12,5% em cêntimos', () => {
+    const comissao = (cents, taxa) =>
+      calculateTotalPriceFromPercentage(new Money(cents, 'EUR'), taxa).amount;
+
+    it('valores redondos dão contas exactas', () => {
+      expect(comissao(10000, 12.5)).toBe(1250); // 100,00 € → 12,50 €
+      expect(comissao(8000, 12.5)).toBe(1000); // 80,00 € → 10,00 €
+    });
+
+    it('o meio cêntimo arredonda para cima, não desaparece', () => {
+      // 12,04 € × 12,5% = 1,505 €. Sem arredondamento explícito ficava 1,50 € e
+      // a plataforma perdia o meio cêntimo em cada reserva destas.
+      expect(comissao(1204, 12.5)).toBe(151);
+      expect(comissao(1212, 12.5)).toBe(152); // 1,515 → 1,52
+    });
+
+    it('o resultado é sempre inteiro — não há meios cêntimos a sair daqui', () => {
+      for (let cents = 1; cents <= 2000; cents++) {
+        expect(Number.isInteger(comissao(cents, 12.5))).toBe(true);
+      }
     });
   });
 });

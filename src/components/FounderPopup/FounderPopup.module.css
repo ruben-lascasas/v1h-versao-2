@@ -108,7 +108,7 @@
   font-weight: 700;
 }
 
-/* Comparação 5% / 10%. O contraste é o argumento — mostrar é melhor do que
+/* Comparação 5% / 12,5%. O contraste é o argumento — mostrar é melhor do que
    explicar. */
 .comparacao {
   display: flex;
@@ -122,8 +122,11 @@
   border-radius: 12px;
 }
 
+/* Colunas de largura igual: "12,5%" é mais largo do que "5%", e sem isto o
+   separador deixava de ficar ao meio. */
 .coluna {
   display: flex;
+  flex: 1 1 0;
   flex-direction: column;
   align-items: center;
   gap: 2px;
@@ -141,6 +144,8 @@
   font-family: 'Britannic Bold', 'Impact', sans-serif;
   font-size: 30px;
   line-height: 1.1;
+  /* "12,5%" nunca parte a meio, nem no ecrã mais estreito. */
+  white-space: nowrap;
 }
 
 .percentagemFundador {

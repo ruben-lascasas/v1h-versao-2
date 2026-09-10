@@ -21,7 +21,18 @@ export const FOUNDER_DEADLINE = new Date('2026-10-15T23:59:59+01:00');
 export const FOUNDER_RATE = 5;
 
 /** Percentagem de quem chegar depois. */
-export const STANDARD_RATE = 10;
+export const STANDARD_RATE = 12.5;
+
+/**
+ * A percentagem como se escreve em português: 12,5 e não 12.5.
+ *
+ * Feito à mão em vez de `toLocaleString('pt-PT')` de propósito. O servidor
+ * pré-renderiza esta página, e se o Node e o browser formatarem o número de
+ * maneira diferente — coisa que depende do ICU instalado — o React acusa
+ * divergência na hidratação. Uma troca de ponto por vírgula dá sempre o mesmo
+ * resultado nos dois lados.
+ */
+export const taxaEscrita = taxa => String(taxa).replace('.', ',');
 
 /** Vagas anunciadas. */
 export const FOUNDER_SLOTS = 100;

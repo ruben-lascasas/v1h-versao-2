@@ -7,6 +7,7 @@ import {
   FOUNDER_SLOTS,
   isFounderCampaignOpen,
   founderDeadlineLabel,
+  taxaEscrita,
 } from '../../config/founderCampaign';
 import css from './FounderPopup.module.css';
 
@@ -112,27 +113,30 @@ const FounderPopup = ({ isAuthenticated }) => {
 
         <p className={css.etiqueta}>Programa Fundador</p>
 
+        {/* "Metade" deixou de ser verdade quando o standard passou a 12,5%:
+            5% é menos de metade de 12,5%. A promessa até melhorou, mas o texto
+            tem de acompanhar o número. */}
         <h2 id="fundador-titulo" className={css.titulo}>
-          Metade da comissão,
+          Menos de metade
           <br />
-          para sempre
+          da comissão
         </h2>
 
         <p className={css.texto}>
           Estamos a começar, e queremos começar bem acompanhados. Quem registar a sua conta de
           anunciante até <strong>{founderDeadlineLabel()}</strong> paga-nos{' '}
-          <strong>apenas {FOUNDER_RATE}%</strong> de comissão em cada reserva — para sempre, em vez
-          dos {STANDARD_RATE}% habituais.
+          <strong>apenas {taxaEscrita(FOUNDER_RATE)}%</strong> de comissão em cada reserva — para
+          sempre, em vez dos {taxaEscrita(STANDARD_RATE)}% habituais.
         </p>
 
         <div className={css.comparacao} aria-hidden="true">
           <div className={css.coluna}>
-            <span className={css.percentagemFundador}>{FOUNDER_RATE}%</span>
+            <span className={css.percentagemFundador}>{taxaEscrita(FOUNDER_RATE)}%</span>
             <span className={css.legenda}>Fundador</span>
           </div>
           <div className={css.separador} />
           <div className={css.coluna}>
-            <span className={css.percentagemNormal}>{STANDARD_RATE}%</span>
+            <span className={css.percentagemNormal}>{taxaEscrita(STANDARD_RATE)}%</span>
             <span className={css.legenda}>Depois</span>
           </div>
         </div>
