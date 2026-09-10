@@ -124,10 +124,47 @@ const SectionLandingMap = props => {
     dispatch(fetchMapListings());
   }, [dispatch]);
 
+  /**
+   * A biblioteca da Mapbox chega quando chega.
+   *
+   * O `mapbox-gl.js` é carregado com `async defer` a partir do CDN da Mapbox,
+   * por isso não há garantia nenhuma de que já esteja disponível quando este
+   * componente monta. Antes verificava-se `window.mapboxgl` uma única vez: se
+   * ainda não tivesse chegado, o efeito desistia e nunca mais tentava — e a
+   * secção ficava uma caixa vazia, sem erro, sem spinner, sem explicação. Numa
+   * rede móvel é o que acontecia quase sempre.
+   *
+   * Agora espera-se por ela. O intervalo pára assim que a encontra, ao fim de
+   * `TENTATIVAS_MAX` (~10s), ou quando o componente sai — nunca fica a correr.
+   */
+  const [libPronta, setLibPronta] = useState(
+    typeof window !== 'undefined' && !!window.mapboxgl?.accessToken
+  );
+
+  useEffect(() => {
+    if (libPronta || typeof window === 'undefined') return undefined;
+
+    let tentativas = 0;
+    const TENTATIVAS_MAX = 100;
+    const id = setInterval(() => {
+      if (window.mapboxgl?.accessToken) {
+        clearInterval(id);
+        setLibPronta(true);
+      } else if (++tentativas >= TENTATIVAS_MAX) {
+        clearInterval(id);
+        // Dez segundos sem a biblioteca é bloqueio ou falha de rede. Fica
+        // registado para não se andar a adivinhar porque é que a caixa está
+        // vazia — que foi exactamente o que aconteceu antes.
+        console.warn('[mapa] mapbox-gl.js não carregou — a secção do mapa fica vazia');
+      }
+    }, 100);
+
+    return () => clearInterval(id);
+  }, [libPronta]);
+
   // Inicializa o mapa Mapbox
   useEffect(() => {
-    if (!mounted || !mapContainerRef.current || mapRef.current) return;
-    if (typeof window === 'undefined' || !window.mapboxgl || !window.mapboxgl.accessToken) return;
+    if (!mounted || !libPronta || !mapContainerRef.current || mapRef.current) return;
 
     const map = new window.mapboxgl.Map({
       container: mapContainerRef.current,
@@ -151,7 +188,7 @@ const SectionLandingMap = props => {
       map.remove();
       mapRef.current = null;
     };
-  }, [mounted]);
+  }, [mounted, libPronta]);
 
   // Adiciona marcadores quando os anúncios chegam
   useEffect(() => {
@@ -252,7 +289,10 @@ const SectionLandingMap = props => {
     } else {
       map.once('load', addMarkers);
     }
-  }, [listings, mounted]);
+    // `libPronta` entra aqui porque é o que faz o mapa nascer. Sem isso, os
+    // anúncios que chegassem antes da biblioteca nunca ganhavam marcador: este
+    // efeito corria com `mapRef.current` ainda a null e não voltava a correr.
+  }, [listings, mounted, libPronta]);
 
   if (!mounted) return null;
 

@@ -100,7 +100,9 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 10px;
+  /* Era 10px; os links passaram a ter padding próprio para alargar o alvo de
+     toque, por isso o espaçamento visual mantém-se com menos gap. */
+  gap: 2px;
 }
 
 .linkList li a,
@@ -111,7 +113,13 @@
   transition: color 0.2s ease;
   background: none;
   border: none;
-  padding: 0;
+  /* Alvo de toque.
+     A letra tem 15px, o que dava 17-18px de altura clicável — abaixo do
+     mínimo de 24px das WCAG e uma fonte garantida de toques falhados num
+     telemóvel. O `display:block` e o padding levam-no aos ~29px sem mexer no
+     aspecto: o `gap` da lista absorve o espaço extra. */
+  display: block;
+  padding: 5px 0;
   cursor: pointer;
   font-family: inherit;
   font-weight: inherit;

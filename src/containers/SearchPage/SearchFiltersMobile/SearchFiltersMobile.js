@@ -104,7 +104,10 @@ class SearchFiltersMobileComponent extends Component {
       <div className={classes}>
         <div className={css.searchResultSummary}>
           {listingsAreLoaded && resultsCount > 0 ? resultsFound : null}
-          {listingsAreLoaded && resultsCount === 0 ? noResults : null}
+          {/* Só se dá a notícia uma vez. O bloco `noResultsInfo`, mais abaixo,
+              já diz "Sem resultados." e ainda sugere publicar um anúncio —
+              repetir a frase aqui em cima fazia a página parecer avariada. */}
+          {listingsAreLoaded && resultsCount === 0 && !noResultsInfo ? noResults : null}
           {searchInProgress ? loadingResults : null}
         </div>
         <div className={css.buttons}>

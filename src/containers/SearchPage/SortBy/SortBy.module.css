@@ -17,8 +17,10 @@
      of different lengths. Wide enough to fit "Mais próximos de mim" / "Best
      rated" without clipping. */
   width: 180px;
-  height: 35px;
-  min-height: 35px;
+  /* A par do botão "Filtros", que está mesmo ao lado: os dois têm de ter o
+     mesmo alvo de toque, e 35px era pouco para um polegar. */
+  height: 44px;
+  min-height: 44px;
   white-space: nowrap;
   overflow: hidden;
 

@@ -1317,6 +1317,8 @@
   "SignupForm.firstNameLabel": "Nome",
   "SignupForm.firstNamePlaceholder": "Nome",
   "SignupForm.firstNameRequired": "Introduza o seu nome.",
+  "SignupForm.founderBadge": "Condição de fundador",
+  "SignupForm.founderNote": "Ao registar-se até {data}, fica com apenas {fundador}% de comissão por reserva — para sempre, em vez dos {standard}% habituais.",
   "SignupForm.hasAccount": "Já tem conta?",
   "SignupForm.hidePassword": "Esconder password",
   "SignupForm.lastNameLabel": "Apelido",

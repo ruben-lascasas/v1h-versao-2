@@ -26,6 +26,12 @@ export const STANDARD_RATE = campanha.standardRate;
 /** Vagas anunciadas. */
 export const FOUNDER_SLOTS = campanha.slots;
 
+/** Tipos de conta que ganham a condição — os que recebem dinheiro. */
+export const FOUNDER_USER_TYPES = campanha.userTypes;
+
+/** Este tipo de conta ganha comissão, e portanto entra na campanha? */
+export const ganhaComissao = userType => FOUNDER_USER_TYPES.includes(userType);
+
 /**
  * A percentagem como se escreve em português: 12,5 e não 12.5.
  *
@@ -46,6 +52,26 @@ export const taxaEscrita = taxa => String(taxa).replace('.', ',');
  */
 export const isFounderCampaignOpen = (agora = new Date()) => agora <= FOUNDER_DEADLINE;
 
-/** "15 de outubro" — para escrever na frase sem repetir a data à mão. */
-export const founderDeadlineLabel = () =>
-  FOUNDER_DEADLINE.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' });
+const MESES_PT = [
+  'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+  'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro',
+];
+const MESES_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/**
+ * "15 de outubro" / "15 October" — para escrever na frase sem repetir a data.
+ *
+ * Os meses estão escritos à mão, e não vêm de `toLocaleDateString`, pela mesma
+ * razão que a percentagem leva vírgula à mão: esta frase aparece no HTML
+ * pré-renderizado do registo, e o nome do mês que o Node produz depende do ICU
+ * que estiver instalado. Se não for igual ao do browser, o React acusa
+ * divergência na hidratação. Doze palavras numa lista não têm esse problema.
+ */
+export const founderDeadlineLabel = (locale = 'pt') => {
+  const dia = FOUNDER_DEADLINE.getDate();
+  const mes = FOUNDER_DEADLINE.getMonth();
+  return locale === 'en' ? `${dia} ${MESES_EN[mes]}` : `${dia} de ${MESES_PT[mes]}`;
+};

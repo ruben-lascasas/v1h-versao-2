@@ -20,7 +20,10 @@
 .root select {
   padding: 12px 16px;
   line-height: 20px;
-  font-size: 15px;
+  /* 16px e não 15px: abaixo disto o Safari do iOS dá zoom ao tocar no campo.
+     Há uma rede de segurança global em marketplaceDefaults.css, mas o valor
+     certo fica aqui para quem vier ler este ficheiro não o baixar outra vez. */
+  font-size: 16px;
 
   @media (--viewportMedium) {
     padding: 14px 18px;
@@ -333,4 +336,38 @@
   @media (--viewportMedium) {
     padding: 8px 0;
   }
+}
+
+/* ── Condição de fundador ──────────────────────────────────────────────
+   Discreta de propósito: é uma confirmação de que a promessa do popup se
+   mantém, não outro anúncio. Quem já decidiu registar-se não precisa que
+   lhe voltem a vender. */
+.founderNote {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* O título do passo traz 16px por cima; isto respira sem colar. */
+  margin: 14px 0 2px;
+  padding: 12px 14px;
+  background: #F9F6F2;
+  border: 1px solid #EDE4D8;
+  border-left: 3px solid #BAA38A;
+  border-radius: 8px;
+}
+
+.founderBadge {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #BAA38A;
+}
+
+.founderText {
+  margin: 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #5C4A3A;
 }

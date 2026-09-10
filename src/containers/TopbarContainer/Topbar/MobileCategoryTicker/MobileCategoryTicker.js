@@ -57,15 +57,45 @@ const MobileCategoryTicker = () => {
     const track = trackRef.current;
     if (!track || rawCategories.length === 0) return;
 
+    // Quem pediu menos animação não leva nenhuma.
+    //
+    // Este carrossel andava sozinho, sempre, para toda a gente. Para quem tem
+    // sensibilidade a movimento isso não é um detalhe de gosto — é uma barra a
+    // mexer no topo do ecrã que não se consegue parar. As categorias
+    // continuam todas lá, e continuam a poder ser arrastadas à mão; só deixa
+    // de haver movimento por iniciativa própria.
+    const menosMovimento =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const measure = () => {
       halfWidthRef.current = track.scrollWidth / 2;
     };
     measure();
     window.addEventListener('resize', measure);
 
+    if (menosMovimento) {
+      return () => window.removeEventListener('resize', measure);
+    }
+
+    // Só anda enquanto estiver à vista.
+    //
+    // O ciclo de animação corria 60 vezes por segundo enquanto a página
+    // estivesse aberta, mesmo com o carrossel a metros de distância do que se
+    // está a ler. Num telemóvel isso é bateria gasta a mexer em píxeis que
+    // ninguém vê. O `requestAnimationFrame` já pára quando o separador vai
+    // para trás; o que faltava era parar quando se faz scroll para baixo.
+    let visivel = true;
+    const observador =
+      typeof IntersectionObserver !== 'undefined'
+        ? new IntersectionObserver(([e]) => { visivel = e.isIntersecting; }, { threshold: 0 })
+        : null;
+    if (observador) observador.observe(track);
+
     const tick = () => {
       const half = halfWidthRef.current;
-      if (!isDragging.current) {
+      if (!isDragging.current && visivel) {
         if (Math.abs(momentumRef.current) > 0.05) {
           posRef.current += momentumRef.current;
           momentumRef.current *= 0.94;
@@ -85,6 +115,7 @@ const MobileCategoryTicker = () => {
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener('resize', measure);
+      if (observador) observador.disconnect();
     };
   }, [rawCategories.length]);
 

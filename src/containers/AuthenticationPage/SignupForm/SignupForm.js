@@ -21,6 +21,14 @@ import UserFieldDisplayName from '../UserFieldDisplayName';
 import UserFieldPhoneNumber from '../UserFieldPhoneNumber';
 import ProfessionField, { SEGMENT_FORM_NAME, findProfessionConfig } from '../ProfessionField';
 import CityAutocompleteField from '../CityAutocompleteField';
+import {
+  FOUNDER_RATE,
+  STANDARD_RATE,
+  isFounderCampaignOpen,
+  founderDeadlineLabel,
+  taxaEscrita,
+  ganhaComissao,
+} from '../../../config/founderCampaign';
 
 import css from './SignupForm.module.css';
 
@@ -318,6 +326,30 @@ const SignupFormComponent = props => {
             />
           </div>
           <h3 className={css.stepTitle}>{intl.formatMessage({ id: stepTitleKey })}</h3>
+
+          {/* A condição de fundador, dita onde ela se ganha.
+              Quem toca em "Quero ser fundador" no popup aterrava aqui e não
+              via mais nenhuma referência — nem uma — ao que lhe tinha sido
+              prometido. Aparece a partir do passo 2, porque até escolher o
+              tipo de conta ainda não se sabe se ele ganha comissão, e some-se
+              sozinha no fim da campanha. */}
+          {isFounderCampaignOpen() && ganhaComissao(userType) && step > 1 ? (
+            <div className={css.founderNote}>
+              <span className={css.founderBadge}>
+                {intl.formatMessage({ id: 'SignupForm.founderBadge' })}
+              </span>
+              <p className={css.founderText}>
+                {intl.formatMessage(
+                  { id: 'SignupForm.founderNote' },
+                  {
+                    data: founderDeadlineLabel(intl.locale?.startsWith('en') ? 'en' : 'pt'),
+                    fundador: taxaEscrita(FOUNDER_RATE),
+                    standard: taxaEscrita(STANDARD_RATE),
+                  }
+                )}
+              </p>
+            </div>
+          ) : null}
 
           {/* ── Passo 1 — Tipo de conta ─────────────────────────────────── */}
           <div className={step === 1 ? css.step : css.stepHidden}>

@@ -4,8 +4,11 @@
 .labelSelected {
   display: inline-block;
   width: auto;
-  height: 35px;
-  min-height: 35px;
+  /* 44px é o alvo de toque mínimo confortável para um polegar. Estava em 35px,
+     e estes são os dois botões — "Filtros" e a ordenação — que se usam mais na
+     pesquisa em telemóvel. Acima dos 768px, onde há rato, volta ao natural. */
+  height: 44px;
+  min-height: 44px;
 
   padding: 0 18px;
   margin: 0 9px 0 0;

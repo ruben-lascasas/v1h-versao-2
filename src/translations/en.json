@@ -1317,6 +1317,8 @@
   "SignupForm.firstNameLabel": "First name",
   "SignupForm.firstNamePlaceholder": "First name",
   "SignupForm.firstNameRequired": "Please enter your first name.",
+  "SignupForm.founderBadge": "Founder status",
+  "SignupForm.founderNote": "Sign up by {data} and you pay just {fundador}% commission per booking — for life, instead of the usual {standard}%.",
   "SignupForm.hasAccount": "Already have an account?",
   "SignupForm.hidePassword": "Hide password",
   "SignupForm.lastNameLabel": "Last name",

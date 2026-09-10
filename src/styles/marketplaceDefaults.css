@@ -1646,3 +1646,28 @@ textarea {
     margin-top: 32px;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Campos de formulário no telemóvel: nunca abaixo de 16px
+
+   O Safari do iOS dá zoom automático quando se toca num campo com letra
+   menor do que 16px. O ecrã salta, o utilizador tem de fechar com os dedos
+   para voltar a ver o formulário, e isso acontecia em todos os campos do
+   registo — que é exatamente para onde o popup de fundador manda as pessoas.
+
+   Não há outra forma de o evitar em CSS. A alternativa que se vê por aí é
+   `maximum-scale=1` na meta viewport, e essa tira a quem precisa a
+   possibilidade de ampliar a página inteira. Não se faz.
+
+   O `!important` é deliberado e é a exceção que justifica a regra: isto não
+   é uma preferência de desenho, é uma restrição do dispositivo, e tem de
+   ganhar aos estilos de cada componente. Acima dos 768px, onde não existe o
+   problema, cada componente volta a mandar no seu tamanho.
+   ───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

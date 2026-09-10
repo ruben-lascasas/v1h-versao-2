@@ -34,21 +34,39 @@
   box-sizing: border-box;
 }
 
+/* O gap desapareceu de propósito: cada ponto passou a ter 24px de alvo com um
+   círculo de 12px lá dentro, e são esses 6px de padding de cada lado que fazem
+   o espaçamento visual. */
 .dots {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 0;
   margin-top: 16px;
 }
 
+/* O botão é o alvo, o ::before é o que se vê.
+   Os pontos tinham 12px — metade do mínimo das WCAG. Aumentar o círculo
+   estragava o desenho, por isso cresceu só a área que recebe o toque. */
 .dot {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.dot::before {
+  content: '';
   width: 12px;
   height: 12px;
+  box-sizing: border-box;
   border-radius: 50%;
   border: 2px solid rgba(46, 46, 46, 0.85);
   background-color: transparent;
-  cursor: pointer;
-  padding: 0;
   transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 
   :global(body[data-dark-mode]) & {
@@ -59,13 +77,13 @@
 /* Only apply hover on devices with a real hovering pointer (mouse). On touch
    devices the hover state would stick after a tap. */
 @media (hover: hover) {
-  .dot:hover {
+  .dot:hover::before {
     background-color: #7C6350;
     border-color: #7C6350;
   }
 }
 
-.dotActive {
+.dotActive::before {
   background-color: #BAA38A;
   border-color: rgba(46, 46, 46, 0.85);
   transform: scale(1.2);
@@ -346,10 +364,14 @@
 .geoBtnPortugal {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
   background: #ffffff;
   border: 1.5px solid #BAA38A;
-  border-radius: 20px;
+  border-radius: 22px;
+  /* 40px → 44px: são os dois botões no meio do cartão de pesquisa. */
+  min-height: 44px;
+  box-sizing: border-box;
   padding: 7px 14px;
   font-size: 13px;
   font-weight: 600;
@@ -375,10 +397,14 @@
 .geoBtn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
   background: #ffffff;
   border: 1.5px solid #BAA38A;
-  border-radius: 20px;
+  border-radius: 22px;
+  /* 40px → 44px, como o botão irmão `.geoBtnPortugal`. */
+  min-height: 44px;
+  box-sizing: border-box;
   padding: 7px 14px;
   font-size: 13px;
   font-weight: 600;
@@ -475,9 +501,11 @@
 }
 
 .sectionOptional {
-  font-size: 10px;
+  /* Branco sobre fotografia é o pior contraste da página; a 10px e com 75% de
+     opacidade era o texto mais difícil de ler do site inteiro. */
+  font-size: 11px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.88);
   text-transform: none;
   letter-spacing: 0;
 }
@@ -531,8 +559,14 @@
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  padding: 6px 14px;
-  border-radius: 20px;
+  /* Estas pastilhas tinham 38px de altura. São o primeiro gesto que alguém faz
+     na página inicial, num cartão sobre uma fotografia — falhar o toque aqui é
+     a pior primeira impressão possível. 10px de padding levam-nas aos 44px sem
+     mudar o desenho. */
+  padding: 10px 14px;
+  min-height: 44px;
+  box-sizing: border-box;
+  border-radius: 22px;
   border: 1.5px solid rgba(255, 255, 255, 0.35);
   background: rgba(60, 60, 60, 0.62);
   font-size: 13px;

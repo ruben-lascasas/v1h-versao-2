@@ -45,7 +45,12 @@ const UserFieldPhoneNumber = props => {
   return (
     <FieldPhoneNumberInput
       className={classNames(className, { [rootClassName]: !!rootClassName })}
-      type="text"
+      type="tel"
+      // Sem isto o telemóvel abre o teclado de letras para escrever um número.
+      // `inputMode` é o que escolhe o teclado; `autoComplete` deixa o telefone
+      // preencher o número que já lá tem guardado.
+      inputMode="tel"
+      autoComplete="tel"
       id={formId ? `${formId}.phoneNumber` : 'phoneNumber'}
       name="phoneNumber"
       label={intl.formatMessage({

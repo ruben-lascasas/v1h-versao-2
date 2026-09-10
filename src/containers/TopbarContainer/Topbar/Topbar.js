@@ -442,6 +442,12 @@ const TopbarComponent = props => {
             rootClassName={classNames(css.accountMenu, { [css.accountMenuNotLogged]: !isAuthenticated && resolvedCurrentPage === 'LandingPage' })}
             onClick={() => redirectToURLWithModalState(history, location, 'mobilemenu')}
             title={intl.formatMessage({ id: 'Topbar.accountIcon' })}
+            // O botão só tem ícone, e o ícone está aria-hidden. Sem isto, um leitor
+            // de ecrã anuncia "botão" e mais nada — e no telemóvel este é um dos
+            // dois únicos controlos de navegação que existem. O `title` sozinho não
+            // chega: é a fonte mais fraca do nome acessível e há leitores que a
+            // ignoram.
+            aria-label={intl.formatMessage({ id: 'Topbar.accountIcon' })}
           >
             {isAuthenticated && currentUser ? (
               <Avatar
@@ -473,6 +479,7 @@ const TopbarComponent = props => {
             rootClassName={css.menu}
             onClick={() => redirectToURLWithModalState(history, location, 'mobilenav')}
             title={intl.formatMessage({ id: 'Topbar.menuIcon' })}
+            aria-label={intl.formatMessage({ id: 'Topbar.menuIcon' })}
           >
             <MenuIcon
               className={css.menuIcon}
