@@ -12,6 +12,7 @@ import { metaTagProps } from '../../util/seo';
 import { canonicalRoutePath } from '../../util/routes';
 import { propTypes } from '../../util/types';
 import { apiBaseUrl } from '../../util/api';
+import { socialProfileUrls } from '../../config/socialLinks';
 
 import css from './Page.module.css';
 
@@ -197,10 +198,23 @@ class PageComponent extends Component {
       config
     );
 
-    const facebookPage = config.siteFacebookPage;
-    const twitterPage = twitterPageURL(config.siteTwitterHandle);
-    const instagramPage = config.siteInstagramPage;
-    const sameOrganizationAs = [facebookPage, twitterPage, instagramPage].filter(v => v != null);
+    // `sameAs` é como o Google percebe que estas contas e este site são da
+    // mesma organização — é o que faz aparecer os perfis no painel de
+    // conhecimento e o que liga a reputação das redes ao domínio.
+    //
+    // O template só contemplava Facebook, Twitter e Instagram, e as três
+    // estavam por preencher. Passa a sair de src/config/socialLinks.js, com
+    // todas as redes, sem deixar de respeitar o que vier da configuração da
+    // Console (`siteFacebookPage` e afins) — daí o Set, que remove repetidos
+    // se as duas fontes apontarem para o mesmo sítio.
+    const daConfiguracao = [
+      config.siteFacebookPage,
+      twitterPageURL(config.siteTwitterHandle),
+      config.siteInstagramPage,
+    ];
+    const sameOrganizationAs = [
+      ...new Set([...socialProfileUrls(), ...daConfiguracao].filter(v => v != null)),
+    ];
 
     // Schema for search engines (helps them to understand what this page is about)
     // http://schema.org

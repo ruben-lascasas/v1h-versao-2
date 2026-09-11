@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NamedLink } from '../../../../components';
 import { useLocale } from '../../../../context/localeContext';
 import PwaInstallButton from '../../../../components/PwaInstallButton/PwaInstallButton';
+import { SOCIAL_PROFILES } from '../../../../config/socialLinks';
 import css from './SectionFooter.module.css';
 
 import logoWhite from '../../../../assets/images/V1H-LOGO-WHITE.png';
@@ -16,13 +17,22 @@ import iconTktkHover from '../../../../assets/images/tiktok1.png';
 import iconYT from '../../../../assets/images/VH1-ICON_YT (WHITE).png';
 import iconYTHover from '../../../../assets/images/yt1.png';
 
-const SOCIAL_LINKS = [
-  { icon: iconFB,   iconHover: iconFBHover,   alt: 'Facebook',  href: 'https://facebook.com/venue1hub' },
-  { icon: iconInst, iconHover: iconInstHover, alt: 'Instagram', href: 'https://instagram.com/venue1hub' },
-  { icon: iconLkin, iconHover: iconLkinHover, alt: 'LinkedIn',  href: 'https://linkedin.com/company/venue1hub' },
-  { icon: iconTktk, iconHover: iconTktkHover, alt: 'TikTok',   href: 'https://tiktok.com/@venue1hub' },
-  { icon: iconYT,   iconHover: iconYTHover,   alt: 'YouTube',  href: 'https://youtube.com/@venue1hub' },
-];
+// Os endereços vivem em src/config/socialLinks.js; aqui só se lhes dá cara.
+// Uma rede declarada lá sem ícone conta para o SEO mas não aparece no rodapé,
+// o que evita um espaço vazio na fila de ícones enquanto a arte não existe.
+const ICONES = {
+  fb: { icon: iconFB, iconHover: iconFBHover },
+  inst: { icon: iconInst, iconHover: iconInstHover },
+  lkin: { icon: iconLkin, iconHover: iconLkinHover },
+  tktk: { icon: iconTktk, iconHover: iconTktkHover },
+  yt: { icon: iconYT, iconHover: iconYTHover },
+};
+
+const SOCIAL_LINKS = SOCIAL_PROFILES.filter(p => ICONES[p.icone]).map(p => ({
+  ...ICONES[p.icone],
+  alt: p.nome,
+  href: p.url,
+}));
 
 const NewsletterForm = ({ isEN }) => {
   const [email, setEmail] = useState('');
