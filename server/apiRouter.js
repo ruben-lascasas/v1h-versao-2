@@ -155,6 +155,10 @@ router.get('/resolution/:id', resolution.ver);
 router.post('/resolution/:id/abrir', resolution.abrirCaso);
 router.post('/resolution/:id/prova', resolution.prova);
 router.post('/resolution/:id/responder', resolution.responderCaso);
+// A decisão da Venue1Hub. Só administradores — a competência vem dos Termos,
+// não de ser parte na reserva.
+router.post('/resolution/:id/decidir', resolution.decidirCaso);
+router.post('/resolution/:id/executar', resolution.executarDecisao);
 
 // Create user with identity provider (e.g. Facebook or Google)
 // This endpoint is called to create a new user after user has confirmed

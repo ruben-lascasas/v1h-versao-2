@@ -480,12 +480,24 @@ export const HistoricoReservasPageComponent = props => {
         ) : (
           <div className={css.list}>
             {sortedFiltered.map(tx => (
-              <TransactionCard
-                key={tx.id.uuid}
-                tx={tx}
-                intl={intl}
-                isCustomer={isTxCustomer(tx, currentUserId)}
-              />
+              /* O cartão é todo ele uma ligação para a reserva, e não se pode
+                 meter uma ligação dentro de outra. O contrato fica por fora,
+                 numa linha própria — foi o que sobrou do desenho depois de
+                 bater nesta restrição do HTML. */
+              <div key={tx.id.uuid} className={css.bookingGroup}>
+                <TransactionCard
+                  tx={tx}
+                  intl={intl}
+                  isCustomer={isTxCustomer(tx, currentUserId)}
+                />
+                <NamedLink
+                  name="BookingContractPage"
+                  params={{ id: tx.id.uuid }}
+                  className={css.contratoLink}
+                >
+                  {intl.locale?.startsWith('en') ? 'Booking contract' : 'Contrato da reserva'}
+                </NamedLink>
+              </div>
             ))}
           </div>
         )}

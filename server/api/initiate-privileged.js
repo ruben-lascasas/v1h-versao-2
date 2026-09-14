@@ -1,5 +1,6 @@
 const sharetribeSdk = require('sharetribe-flex-sdk');
 const { transactionLineItems } = require('../api-util/lineItems');
+const { prenderVersoesSemFalhar } = require('../api-util/congelarContrato');
 const { isIntentionToMakeOffer } = require('../api-util/negotiation');
 const {
   getSdk,
@@ -126,6 +127,13 @@ module.exports = (req, res) => {
       const { status, statusText, data } = apiResponse;
       // Block additional slots' dates after a successful (non-speculative)
       // multi-booking initiate.
+      if (!isSpeculative) {
+        // Uma reserva acabou de nascer: prende-se agora as versões dos
+      // documentos em vigor. Antes isto só acontecia quando alguém abria o
+      // contrato, e nessa altura as versões já podiam ser outras.
+        prenderVersoesSemFalhar(data);
+      }
+
       if (!isSpeculative) {
         const protectedData = bodyParams?.params?.protectedData || {};
         const multipleBookings = protectedData.multipleBookings;

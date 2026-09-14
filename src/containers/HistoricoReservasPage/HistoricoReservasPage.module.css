@@ -588,3 +588,34 @@
     box-shadow: var(--boxShadowLight);
   }
 }
+
+/* ── Contrato da reserva ─────────────────────────────────────────────── */
+
+/* O cartão da reserva é inteiro uma ligação; o contrato tem de ficar por fora,
+   senão era uma ligação dentro de outra. */
+.bookingGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.contratoLink {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  /* 44px de alvo de toque, como o resto do site. */
+  min-height: 44px;
+  padding: 0 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #8a8178;
+  text-decoration: none;
+
+  &:hover {
+    color: #5C3317;
+    text-decoration: underline;
+  }
+}
+
+:global(body[data-dark-mode]) .contratoLink {
+  color: #a9a29a;
+}

@@ -43,6 +43,8 @@ export const ResolutionPageComponent = props => {
   const [estado, setEstado] = useState({ fase: 'a-carregar' });
   const [form, setForm] = useState({ tipo: '', descricao: '', valor: '' });
   const [resposta, setResposta] = useState('');
+  const [decisao, setDecisao] = useState({ sentido: '', fundamentacao: '', valor: '' });
+  const [notaExecucao, setNotaExecucao] = useState('');
   const [aGravar, setAGravar] = useState(false);
   const [erro, setErro] = useState(null);
 
@@ -100,7 +102,52 @@ export const ResolutionPageComponent = props => {
     }
   };
 
+  /** Decisão da Venue1Hub. Só aparece a administradores. */
+  const decidir = async e => {
+    e.preventDefault();
+    setAGravar(true);
+    setErro(null);
+    try {
+      const r = await fetch(`/api/resolution/${id}/decidir`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          sentido: decisao.sentido,
+          fundamentacao: decisao.fundamentacao,
+          valorCents: decisao.valor ? Math.round(parseFloat(decisao.valor) * 100) : null,
+        }),
+      });
+      const corpo = await r.json().catch(() => ({}));
+      if (r.ok) carregar();
+      else setErro(corpo.error || 'nao-foi-possivel');
+    } finally {
+      setAGravar(false);
+    }
+  };
+
+  /** "Decidido" e "pago" são estados diferentes. Isto marca o segundo. */
+  const marcarExecutada = async e => {
+    e.preventDefault();
+    setAGravar(true);
+    setErro(null);
+    try {
+      const r = await fetch(`/api/resolution/${id}/executar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ nota: notaExecucao }),
+      });
+      const corpo = await r.json().catch(() => ({}));
+      if (r.ok) carregar();
+      else setErro(corpo.error || 'nao-foi-possivel');
+    } finally {
+      setAGravar(false);
+    }
+  };
+
   const caso = estado.caso;
+  const souAdmin = estado.papel === 'venue1hub';
   const podeResponder = caso && !caso.resposta && caso.respondePor === estado.papel;
 
   return (
@@ -134,8 +181,8 @@ export const ResolutionPageComponent = props => {
             <>
               <p className={css.intro}>
                 {isEN
-                  ? 'Describe what happened. The other party is notified and has seven days to respond. Venue1Hub steps in when the Terms give it that role.'
-                  : 'Descreva o que aconteceu. A outra parte é notificada e tem sete dias para responder. A Venue1Hub intervém quando os Termos lhe derem essa competência.'}
+                  ? 'Describe what happened. The other party is notified by email and has seven days to respond. Venue1Hub steps in when the Terms give it that role.'
+                  : 'Descreva o que aconteceu. A outra parte é notificada por email e tem sete dias para responder. A Venue1Hub intervém quando os Termos lhe derem essa competência.'}
               </p>
 
               {/* Dito antes de se abrir o caso, e não depois. */}
@@ -261,6 +308,78 @@ export const ResolutionPageComponent = props => {
                 </p>
               )}
 
+              {/* Só para a Venue1Hub. Sem esta secção, os endpoints de decisão
+                  existiam e não havia forma de lá chegar sem linha de
+                  comandos — um dossier que só acumula reclamações não é um
+                  centro de resolução. */}
+              {souAdmin && !caso.decisao ? (
+                <>
+                  <h2 className={css.seccao}>{isEN ? 'Decide' : 'Decidir'}</h2>
+                  <p className={css.avisoDinheiro}>
+                    {isEN
+                      ? 'Recording a decision does not move money. Use the field below to note the Stripe reference once you have actually refunded.'
+                      : 'Registar a decisão não movimenta dinheiro. Depois de devolver mesmo o valor na Stripe, registe aqui a referência.'}
+                  </p>
+                  <form onSubmit={decidir} className={css.form}>
+                    <label className={css.label}>
+                      {isEN ? 'Outcome' : 'Sentido da decisão'}
+                      <select
+                        className={css.campo}
+                        value={decisao.sentido}
+                        onChange={e => setDecisao({ ...decisao, sentido: e.target.value })}
+                        required
+                      >
+                        <option value="">{isEN ? 'Choose…' : 'Escolher…'}</option>
+                        <option value="a-favor-de-quem-abriu">
+                          {isEN ? 'In favour of the claimant' : 'A favor de quem abriu'}
+                        </option>
+                        <option value="a-favor-da-outra-parte">
+                          {isEN ? 'In favour of the other party' : 'A favor da outra parte'}
+                        </option>
+                        <option value="solucao-intermedia">
+                          {isEN ? 'Middle ground' : 'Solução intermédia'}
+                        </option>
+                        <option value="sem-decisao">
+                          {isEN ? 'No decision' : 'Sem decisão'}
+                        </option>
+                      </select>
+                    </label>
+                    <label className={css.label}>
+                      {isEN ? 'Reasons' : 'Fundamentação'}
+                      <textarea
+                        className={css.campo}
+                        rows={5}
+                        minLength={20}
+                        required
+                        value={decisao.fundamentacao}
+                        onChange={e => setDecisao({ ...decisao, fundamentacao: e.target.value })}
+                        placeholder={
+                          isEN
+                            ? 'Both parties receive this text. Explain what decided it.'
+                            : 'As duas partes recebem este texto. Explique o que decidiu o caso.'
+                        }
+                      />
+                    </label>
+                    <label className={css.label}>
+                      {isEN ? 'Amount, if any' : 'Valor, se houver'}
+                      <input
+                        className={css.campo}
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        inputMode="decimal"
+                        value={decisao.valor}
+                        onChange={e => setDecisao({ ...decisao, valor: e.target.value })}
+                      />
+                    </label>
+                    {erro ? <p className={css.erro}>{erro}</p> : null}
+                    <button type="submit" className={css.botao} disabled={aGravar}>
+                      {isEN ? 'Record decision' : 'Registar decisão'}
+                    </button>
+                  </form>
+                </>
+              ) : null}
+
               {caso.decisao ? (
                 <>
                   <h2 className={css.seccao}>{isEN ? 'Decision' : 'Decisão'}</h2>
@@ -279,6 +398,24 @@ export const ResolutionPageComponent = props => {
                       ? 'Decided, but not yet carried out. Any amount is processed separately.'
                       : 'Decidido, mas ainda não executado. Qualquer valor é processado à parte.'}
                   </p>
+
+                  {souAdmin && !caso.decisao.executada ? (
+                    <form onSubmit={marcarExecutada} className={css.form}>
+                      <label className={css.label}>
+                        {isEN ? 'Stripe reference' : 'Referência na Stripe'}
+                        <input
+                          className={css.campo}
+                          type="text"
+                          value={notaExecucao}
+                          onChange={e => setNotaExecucao(e.target.value)}
+                          placeholder="re_..."
+                        />
+                      </label>
+                      <button type="submit" className={css.botao} disabled={aGravar}>
+                        {isEN ? 'Mark as carried out' : 'Marcar como executada'}
+                      </button>
+                    </form>
+                  ) : null}
                 </>
               ) : null}
             </div>

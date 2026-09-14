@@ -1,5 +1,6 @@
 const sharetribeSdk = require('sharetribe-flex-sdk');
 const { transactionLineItems } = require('../api-util/lineItems');
+const { prenderVersoesSemFalhar } = require('../api-util/congelarContrato');
 const {
   addOfferToMetadata,
   getAmountFromPreviousOffer,
@@ -219,6 +220,12 @@ module.exports = (req, res) => {
       // After a successful (non-speculative) multi-booking transition,
       // create availability exceptions for the extra slots so the listing
       // calendar properly reflects the bookings.
+      if (!isSpeculative) {
+        // Mesma razão que em initiate-privileged: prender as versões o mais
+      // cedo possível. É idempotente, por isso quem chegar primeiro manda.
+        prenderVersoesSemFalhar(data);
+      }
+
       if (!isSpeculative) {
         const protectedData = bodyParams?.params?.protectedData || {};
         const multipleBookings = protectedData.multipleBookings;
