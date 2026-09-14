@@ -34,6 +34,29 @@ const dataCurta = iso => {
 
 const euros = cents => (typeof cents === 'number' ? `${(cents / 100).toFixed(2)} €` : null);
 
+/**
+ * O estado do caso, escrito para uma pessoa ler.
+ *
+ * A página mostrava a chave interna tal e qual — "em_analise", com o
+ * sublinhado à vista. Quem abre um caso de danos no espaço não devia ter de
+ * decifrar nomes de campos.
+ */
+const ROTULO_ESTADO = {
+  aberto: ['Aberto, à espera de resposta', 'Open, awaiting reply'],
+  respondido: ['Respondido', 'Replied'],
+  em_analise: ['Em análise pela Venue1Hub', 'Under review by Venue1Hub'],
+  decidido: ['Decidido', 'Decided'],
+  fechado: ['Fechado', 'Closed'],
+};
+
+const rotuloEstado = (estado, isEN) => {
+  const r = ROTULO_ESTADO[estado];
+  return r ? r[isEN ? 1 : 0] : estado;
+};
+
+const prazoPassou = caso =>
+  !!caso && !caso.resposta && Date.parse(caso.prazoResposta) < Date.now();
+
 export const ResolutionPageComponent = props => {
   const { scrollingDisabled, params } = props;
   const { locale } = useLocale();
@@ -253,7 +276,7 @@ export const ResolutionPageComponent = props => {
             <div className={css.dossier}>
               <p className={css.estado}>
                 {isEN ? 'Case opened on' : 'Caso aberto em'} {dataCurta(caso.abertoEm)} ·{' '}
-                {isEN ? 'status' : 'estado'}: {caso.estado}
+                {isEN ? 'status' : 'estado'}: {rotuloEstado(caso.estado, isEN)}
               </p>
 
               <h2 className={css.seccao}>{isEN ? 'The claim' : 'A reclamação'}</h2>
@@ -282,6 +305,17 @@ export const ResolutionPageComponent = props => {
               ) : null}
 
               <h2 className={css.seccao}>{isEN ? 'Right of reply' : 'Direito de resposta'}</h2>
+              {!caso.resposta && caso.prazoResposta ? (
+                <p className={css.prazo}>
+                  {prazoPassou(caso)
+                    ? isEN
+                      ? `The deadline (${dataCurta(caso.prazoResposta)}) has passed with no reply. The case is with Venue1Hub; evidence can still be added until a decision is made.`
+                      : `O prazo (${dataCurta(caso.prazoResposta)}) terminou sem resposta. O caso está com a Venue1Hub; até haver decisão ainda se pode juntar prova.`
+                    : isEN
+                    ? `Deadline to reply: ${dataCurta(caso.prazoResposta)}.`
+                    : `Prazo para responder: ${dataCurta(caso.prazoResposta)}.`}
+                </p>
+              ) : null}
               {caso.resposta ? (
                 <p className={css.texto}>{caso.resposta.texto}</p>
               ) : podeResponder ? (

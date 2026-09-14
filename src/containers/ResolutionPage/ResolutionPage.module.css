@@ -160,6 +160,16 @@
   color: #8a8178;
 }
 
+/* O prazo de resposta. Deixou de ser só uma frase: passado o prazo, o caso
+   sobe mesmo para análise — e a página tem de dizer em que pé está. */
+.prazo {
+  margin: 0 0 14px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6b645c;
+}
+
 .seccao {
   margin: 26px 0 10px;
   font-family: 'Britannic Bold', 'Impact', sans-serif;

@@ -429,6 +429,13 @@ const server = app.listen(PORT, () => {
   } catch (e) {
     console.error('[comissões] failed to start:', e?.message || e);
   }
+  try {
+    // O prazo de resposta do Centro de Resolução. Sem isto, o prazo de sete
+    // dias era só uma frase na página e no email: passava, e nada acontecia.
+    require('./jobs/resolutionDeadlineJob').start();
+  } catch (e) {
+    console.error('[resolução-prazo] failed to start:', e?.message || e);
+  }
 });
 
 // Graceful shutdown:

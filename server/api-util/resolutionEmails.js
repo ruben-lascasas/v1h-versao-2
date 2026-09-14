@@ -68,7 +68,9 @@ const enviar = async ({ para, assunto, html }) => {
   try {
     const resend = new Resend(apiKey);
     await resend.emails.send({
-      from: mailFrom('Venue1Hub'),
+      // mailFrom acrescenta a etiqueta ao nome já configurado: 'Venue1Hub' aqui
+      // dava "Venue1Hub Venue1Hub <...>" no remetente.
+      from: mailFrom('Resolução'),
       to: para,
       subject: assunto,
       html,
@@ -191,4 +193,53 @@ const avisarDecisao = async (sdk, { destinatarioId, txId, caso }) => {
   });
 };
 
-module.exports = { avisarCasoAberto, avisarResposta, avisarDecisao };
+/**
+ * Avisa as duas partes de que o prazo de resposta passou em vazio.
+ *
+ * O email tem de dizer duas coisas com clareza: que o caso subiu para análise
+ * da Venue1Hub, e que não foi decidido nada. Não responder pesa nos factos —
+ * não é uma condenação automática, e um email que sugerisse o contrário
+ * assustaria quem apenas não chegou a tempo.
+ */
+const avisarPrazoExpirado = async (sdk, { destinatarioId, txId, caso }) => {
+  const d = await carregarDestinatario(sdk, destinatarioId);
+  if (!d) return false;
+
+  const url = `${ROOT()}/reserva/${txId}/resolucao`;
+  const ola = d.nome ? `${t(d.en, 'Olá', 'Hi')} ${d.nome},` : `${t(d.en, 'Olá', 'Hi')},`;
+
+  const corpo = `
+    <p>${ola}</p>
+    <p>${t(
+      d.en,
+      'O prazo de resposta ao caso aberto no Centro de Resolução terminou sem resposta. O caso passou para análise da Venue1Hub.',
+      'The deadline to reply to the case in the Resolution Centre has passed with no reply. The case is now under review by Venue1Hub.'
+    )}</p>
+    <p><strong>${t(d.en, 'Motivo do caso', 'Reason for the case')}:</strong> ${rotuloTipo(
+    caso.tipo,
+    d.en
+  )}</p>
+    <p>${t(
+      d.en,
+      'Ainda pode juntar prova e apresentar a sua versão dos factos: enquanto não houver decisão, tudo o que estiver no dossier é ponderado.',
+      'You can still add evidence and give your account of what happened: until a decision is made, everything in the file is taken into account.'
+    )}</p>
+    <p style="font-size:13px;color:#6b645c">${t(
+      d.en,
+      'Nada foi decidido e nenhum valor foi movimentado. A falta de resposta é um facto a ponderar, não uma decisão.',
+      'Nothing has been decided and no money has moved. The absence of a reply is a fact to weigh, not a decision.'
+    )}</p>`;
+
+  return enviar({
+    para: d.email,
+    assunto: t(d.en, 'O prazo de resposta terminou', 'The reply deadline has passed'),
+    html: moldura(
+      t(d.en, 'Caso em análise pela Venue1Hub', 'Case under review by Venue1Hub'),
+      corpo,
+      t(d.en, 'Ver o caso', 'View the case'),
+      url
+    ),
+  });
+};
+
+module.exports = { avisarCasoAberto, avisarResposta, avisarDecisao, avisarPrazoExpirado };
