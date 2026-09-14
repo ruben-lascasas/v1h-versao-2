@@ -13,6 +13,7 @@ const {
   publicShape,
   verificationUserTypes,
 } = require('./verification');
+const { estaCompleta, emFaltaParaPublicar } = require('./hostDeclaration');
 
 // Teto deliberado: a filtragem por metadata exigiria um search schema na
 // Console, por isso pagina-se e filtra-se aqui. Sem limite, uma base de
@@ -63,6 +64,14 @@ const collectVerificationRows = async sdk => {
         pendingCount: Object.values(docs).filter(d => d.status === STATUS.SUBMITTED).length,
         lastUploadAt: lastUpload || null,
         docs: publicShape(docs),
+        // O Legal Gate, visto do lado de quem decide.
+        //
+        // Sem isto, aprovavam-se os documentos de alguém, a pessoa continuava
+        // sem conseguir publicar, e não havia forma de perceber porquê a não
+        // ser ir à base de dados. O portão tem duas metades e o painel tem de
+        // mostrar as duas.
+        declaracaoCompleta: estaCompleta(u),
+        documentosPorAceitar: emFaltaParaPublicar(u).documentos.map(d => d.slug),
       };
     })
     .filter(row => row.submittedCount > 0)

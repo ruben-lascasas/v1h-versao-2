@@ -358,3 +358,30 @@
     align-items: stretch;
   }
 }
+
+/* ── Legal Gate no painel ────────────────────────────────────────────── */
+
+/* Aprovar documentos deixou de chegar para alguém poder publicar. Estas duas
+   linhas dizem a quem decide se a outra metade do portão está feita — sem
+   elas, aprovava-se tudo e a pessoa continuava bloqueada sem explicação. */
+.juridicoOk,
+.juridicoFalta {
+  margin: 10px 0 14px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.juridicoOk {
+  background: #EEF6EE;
+  border: 1px solid #CFE4CF;
+  color: #2E7D32;
+}
+
+.juridicoFalta {
+  background: #FBF3E8;
+  border: 1px solid #E8D5B8;
+  border-left: 3px solid #C9982F;
+  color: #6B5320;
+}

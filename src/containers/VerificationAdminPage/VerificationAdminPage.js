@@ -394,6 +394,27 @@ const VerificationAdminPage = props => {
                       </p>
                     </div>
                   </div>
+                  {/* A outra metade do portão.
+                      Aprovar os documentos deixou de chegar para alguém poder
+                      publicar: falta a Declaração de Conformidade e a aceitação
+                      dos termos na versão em vigor. Sem isto no painel,
+                      aprovava-se tudo, a pessoa continuava bloqueada, e não
+                      havia como perceber porquê. */}
+                  {u.declaracaoCompleta && (u.documentosPorAceitar || []).length === 0 ? (
+                    <p className={css.juridicoOk}>
+                      Declaração entregue e termos aceites.
+                    </p>
+                  ) : (
+                    <p className={css.juridicoFalta}>
+                      {!u.declaracaoCompleta ? 'Declaração de Conformidade por entregar.' : null}
+                      {!u.declaracaoCompleta && (u.documentosPorAceitar || []).length > 0 ? ' ' : null}
+                      {(u.documentosPorAceitar || []).length > 0
+                        ? `Termos por aceitar: ${u.documentosPorAceitar.join(', ')}.`
+                        : null}
+                      {' '}Mesmo com os documentos aprovados, não consegue publicar até resolver isto em /verificacao.
+                    </p>
+                  )}
+
                   <div className={css.docGrid}>
                     {u.docs.map(doc => (
                       <DocCard
