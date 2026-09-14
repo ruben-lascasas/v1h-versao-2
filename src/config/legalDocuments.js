@@ -182,7 +182,7 @@ export const LEGAL_DOCUMENTS = [
     "slug": "avaliacoes-e-reviews",
     "categoria": "conteudos",
     "titulo": "POLÍTICA DE AVALIAÇÕES E REVIEWS",
-    "curto": "Avaliações e Reviews",
+    "curto": "Avaliações",
     "versao": "1.0",
     "entradaEmVigor": "14-09-2026",
     "modelo": false
@@ -212,7 +212,7 @@ export const LEGAL_DOCUMENTS = [
     "slug": "notice-and-action",
     "categoria": "conteudos",
     "titulo": "PROCEDIMENTO NOTICE & ACTION / CONTEÚDO ILEGAL",
-    "curto": "Notice & Action",
+    "curto": "Denúncia de Conteúdo Ilegal",
     "versao": "1.0",
     "entradaEmVigor": "14-09-2026",
     "modelo": false
@@ -322,7 +322,7 @@ export const LEGAL_DOCUMENTS = [
     "slug": "anti-circumvention",
     "categoria": "seguranca",
     "titulo": "POLÍTICA ANTI-CIRCUMVENTION",
-    "curto": "Anti-Circumvention",
+    "curto": "Contratação Fora da Plataforma",
     "versao": "1.0",
     "entradaEmVigor": "14-09-2026",
     "modelo": false
@@ -332,7 +332,7 @@ export const LEGAL_DOCUMENTS = [
     "slug": "trust-and-safety",
     "categoria": "seguranca",
     "titulo": "TRUST & SAFETY POLICY",
-    "curto": "Trust & Safety",
+    "curto": "Confiança e Segurança",
     "versao": "1.0",
     "entradaEmVigor": "14-09-2026",
     "modelo": false
@@ -362,7 +362,7 @@ export const LEGAL_DOCUMENTS = [
     "slug": "promocoes-e-referral",
     "categoria": "pagamentos",
     "titulo": "TERMOS DE PROMOÇÕES E REFERRAL",
-    "curto": "Promoções e Referral",
+    "curto": "Promoções e Recomendações",
     "versao": "1.0",
     "entradaEmVigor": "14-09-2026",
     "modelo": false

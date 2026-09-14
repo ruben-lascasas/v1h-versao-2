@@ -32,23 +32,21 @@ const ICONES = {
 /**
  * Os documentos que ficam à vista no rodapé.
  *
- * São os que o guia interno manda deixar acessíveis de qualquer página. Os
- * restantes 27 vivem no Centro Jurídico, que tem o seu próprio link logo
- * abaixo — a alternativa era uma lista de 38 no fundo de cada página.
+ * Seis, e não treze.
+ *
+ * O guia interno sugeria treze, mas no ecrã isso dava uma coluna com 706px
+ * contra 222 e 178 das outras — quatro vezes mais alta, e a puxar o rodapé todo
+ * para baixo. Uma lista que ninguém lê não informa mais do que uma que se lê.
+ *
+ * Ficam os que as pessoas procuram mesmo, e "Todos os documentos" leva aos 38.
+ * Era para isso que o Centro Jurídico existia.
  */
 const RODAPE_LEGAL = [
   { slug: 'termos-de-servico', pt: 'Termos de serviço', en: 'Terms of service' },
-  { slug: 'termos-do-cliente', pt: 'Termos do cliente', en: 'Guest terms' },
-  { slug: 'termos-do-anfitriao', pt: 'Termos do anfitrião', en: 'Host terms' },
-  { slug: 'termos-de-pagamento', pt: 'Termos de pagamento', en: 'Payment terms' },
-  { slug: 'taxas-e-comissoes', pt: 'Taxas e comissões', en: 'Fees' },
-  { slug: 'cancelamento-e-reembolso', pt: 'Cancelamentos e reembolsos', en: 'Cancellations & refunds' },
-  { slug: 'resolucao-de-conflitos', pt: 'Resolução de conflitos', en: 'Dispute resolution' },
-  { slug: 'trust-and-safety', pt: 'Trust & Safety', en: 'Trust & Safety' },
-  { slug: 'politica-de-conteudos', pt: 'Conteúdos e comunidade', en: 'Content & community' },
-  { slug: 'propriedade-intelectual', pt: 'Propriedade intelectual', en: 'Intellectual property' },
   { slug: 'politica-de-privacidade', pt: 'Política de privacidade', en: 'Privacy policy' },
   { slug: 'politica-de-cookies', pt: 'Política de cookies', en: 'Cookie policy' },
+  { slug: 'cancelamento-e-reembolso', pt: 'Cancelamentos e reembolsos', en: 'Cancellations & refunds' },
+  { slug: 'taxas-e-comissoes', pt: 'Taxas e comissões', en: 'Fees' },
   { slug: 'aviso-legal', pt: 'Aviso legal', en: 'Legal notice' },
 ];
 
