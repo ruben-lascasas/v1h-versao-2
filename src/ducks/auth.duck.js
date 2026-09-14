@@ -132,6 +132,25 @@ const signupThunk = createAsyncThunk(
             body: JSON.stringify({ profissao }),
           }).catch(() => {});
         }
+        // Prova de aceitação dos documentos jurídicos.
+        //
+        // A pessoa marcou a caixa dos Termos para chegar aqui; é este o
+        // momento em que isso fica registado, com a versão que estava em vigor.
+        // O servidor é que decide quais os documentos aplicáveis ao tipo de
+        // conta e escreve em metadata, onde o próprio utilizador não mexe.
+        //
+        // Ao contrário da chamada acima, esta não é fire-and-forget silenciosa:
+        // se falhar, fica registado no log. Não se inventa a aceitação mais
+        // tarde — um registo fabricado é pior do que não ter registo.
+        if (typeof fetch !== 'undefined') {
+          fetch('/api/legal-acceptance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ documentos: 'todos', contexto: 'registo' }),
+          }).catch(e => log.error(e, 'legal-acceptance-failed', { email: params.email }));
+        }
+
         // Mark a flag so the LandingPage shows a one-time welcome pop-up the
         // first time the user lands on the home page after signup. Cleared
         // by the modal itself.

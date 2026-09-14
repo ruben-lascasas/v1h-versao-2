@@ -442,3 +442,41 @@
     height: 36px;
   }
 }
+
+/* ── Identificação do operador ───────────────────────────────────────── */
+
+/* Até agora o site não identificava em lado nenhum a entidade que o opera —
+   e isso é exigência legal, não preferência de desenho. Fica discreto, acima
+   do copyright, como é hábito. */
+.operador {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(245, 240, 235, 0.14);
+}
+
+.operadorTexto {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: rgba(245, 240, 235, 0.62);
+}
+
+.operadorLink {
+  /* Como no Centro Jurídico: padding para o alvo chegar aos 24px. */
+  display: inline-block;
+  padding: 4px 0;
+  color: rgba(245, 240, 235, 0.62);
+  text-decoration: underline;
+
+  &:hover {
+    color: #BAA38A;
+    text-decoration: underline;
+  }
+}
+
+/* O link para o Centro Jurídico destaca-se dos documentos que tem por cima:
+   é a porta para os restantes 27, não mais um documento da lista. */
+.legalCentreLink {
+  font-weight: 700;
+  color: #BAA38A !important;
+}

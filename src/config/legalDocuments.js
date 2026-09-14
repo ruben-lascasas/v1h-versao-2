@@ -1,0 +1,392 @@
+/**
+ * Catálogo dos documentos jurídicos.
+ *
+ * GERADO AUTOMATICAMENTE por scripts/converterJuridicos.js — não editar à mão.
+ * Só metadados: o texto de cada documento vive no seu próprio módulo e só é
+ * descarregado quando alguém o abre.
+ */
+
+export const LEGAL_DOCUMENTS = [
+  {
+    "numero": 1,
+    "slug": "termos-de-servico",
+    "categoria": "plataforma",
+    "titulo": "TERMOS DE SERVIÇO VENUE1HUB",
+    "curto": "Termos de Serviço",
+    "versao": "1.0",
+    "entradaEmVigor": "04-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 2,
+    "slug": "termos-do-cliente",
+    "categoria": "reservar",
+    "titulo": "TERMOS DO CLIENTE / GUEST TERMS",
+    "curto": "Termos do Cliente",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 3,
+    "slug": "termos-do-anfitriao",
+    "categoria": "espacos",
+    "titulo": "TERMOS DO ANFITRIÃO / HOST TERMS",
+    "curto": "Termos do Anfitrião",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 4,
+    "slug": "contrato-de-reserva",
+    "categoria": "reservar",
+    "titulo": "CONTRATO DE RESERVA HOST–CLIENTE",
+    "curto": "Contrato de Reserva",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": true
+  },
+  {
+    "numero": 5,
+    "slug": "termos-de-pagamento",
+    "categoria": "pagamentos",
+    "titulo": "TERMOS DE PAGAMENTO",
+    "curto": "Termos de Pagamento",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 6,
+    "slug": "taxas-e-comissoes",
+    "categoria": "pagamentos",
+    "titulo": "POLÍTICA DE TAXAS E COMISSÕES",
+    "curto": "Taxas e Comissões",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 7,
+    "slug": "cancelamento-e-reembolso",
+    "categoria": "reservar",
+    "titulo": "POLÍTICA DE CANCELAMENTO E REEMBOLSO",
+    "curto": "Cancelamento e Reembolso",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 8,
+    "slug": "danos-e-caucoes",
+    "categoria": "reclamacoes",
+    "titulo": "POLÍTICA DE DANOS, CAUÇÕES E RECLAMAÇÕES",
+    "curto": "Danos, Cauções e Reclamações",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 9,
+    "slug": "resolucao-de-conflitos",
+    "categoria": "reclamacoes",
+    "titulo": "POLÍTICA DE RESOLUÇÃO DE CONFLITOS",
+    "curto": "Resolução de Conflitos",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 10,
+    "slug": "politica-de-privacidade",
+    "categoria": "privacidade",
+    "titulo": "POLÍTICA DE PRIVACIDADE",
+    "curto": "Política de Privacidade",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 11,
+    "slug": "politica-de-cookies",
+    "categoria": "privacidade",
+    "titulo": "POLÍTICA DE COOKIES",
+    "curto": "Política de Cookies",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 12,
+    "slug": "consentimento-de-cookies",
+    "categoria": "privacidade",
+    "titulo": "CONSENTIMENTO / CMP DE COOKIES",
+    "curto": "Consentimento de Cookies",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 13,
+    "slug": "aviso-legal",
+    "categoria": "plataforma",
+    "titulo": "AVISO LEGAL / IDENTIFICAÇÃO DO OPERADOR",
+    "curto": "Aviso Legal",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 14,
+    "slug": "anfitrioes-profissionais",
+    "categoria": "espacos",
+    "titulo": "TERMOS PARA BUSINESS HOSTS / ANFITRIÕES PROFISSIONAIS",
+    "curto": "Anfitriões Profissionais",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 15,
+    "slug": "conformidade-do-anfitriao",
+    "categoria": "espacos",
+    "titulo": "DECLARAÇÃO DE CONFORMIDADE DO HOST",
+    "curto": "Conformidade do Anfitrião",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 16,
+    "slug": "politica-de-anuncios",
+    "categoria": "conteudos",
+    "titulo": "POLÍTICA DE ANÚNCIOS / LISTINGS",
+    "curto": "Política de Anúncios",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 17,
+    "slug": "politica-de-conteudos",
+    "categoria": "conteudos",
+    "titulo": "POLÍTICA DE CONTEÚDOS",
+    "curto": "Política de Conteúdos",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 18,
+    "slug": "avaliacoes-e-reviews",
+    "categoria": "conteudos",
+    "titulo": "POLÍTICA DE AVALIAÇÕES E REVIEWS",
+    "curto": "Avaliações e Reviews",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 19,
+    "slug": "utilizacao-aceitavel",
+    "categoria": "seguranca",
+    "titulo": "POLÍTICA DE UTILIZAÇÃO ACEITÁVEL / ATIVIDADES PROIBIDAS",
+    "curto": "Utilização Aceitável",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 20,
+    "slug": "propriedade-intelectual",
+    "categoria": "conteudos",
+    "titulo": "POLÍTICA DE PROPRIEDADE INTELECTUAL",
+    "curto": "Propriedade Intelectual",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 21,
+    "slug": "notice-and-action",
+    "categoria": "conteudos",
+    "titulo": "PROCEDIMENTO NOTICE & ACTION / CONTEÚDO ILEGAL",
+    "curto": "Notice & Action",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 22,
+    "slug": "suspensao-de-contas",
+    "categoria": "seguranca",
+    "titulo": "POLÍTICA DE SUSPENSÃO E ENCERRAMENTO DE CONTAS",
+    "curto": "Suspensão de Contas",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 23,
+    "slug": "verificacao-de-identidade",
+    "categoria": "seguranca",
+    "titulo": "POLÍTICA DE VERIFICAÇÃO DE IDENTIDADE",
+    "curto": "Verificação de Identidade",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 24,
+    "slug": "informacao-fiscal",
+    "categoria": "fiscalidade",
+    "titulo": "INFORMAÇÃO FISCAL PARA HOSTS",
+    "curto": "Informação Fiscal para Anfitriões",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 25,
+    "slug": "aviso-dac7",
+    "categoria": "fiscalidade",
+    "titulo": "AVISO DAC7",
+    "curto": "Aviso DAC7",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 26,
+    "slug": "politica-de-faturacao",
+    "categoria": "fiscalidade",
+    "titulo": "POLÍTICA DE FATURAÇÃO",
+    "curto": "Política de Faturação",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 27,
+    "slug": "termos-de-subscricao",
+    "categoria": "pagamentos",
+    "titulo": "TERMOS DE SUBSCRIÇÃO",
+    "curto": "Termos de Subscrição",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 28,
+    "slug": "servicos-complementares",
+    "categoria": "reservar",
+    "titulo": "TERMOS DOS SERVIÇOS COMPLEMENTARES",
+    "curto": "Serviços Complementares",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 29,
+    "slug": "prestadores-e-parceiros",
+    "categoria": "espacos",
+    "titulo": "TERMOS DE PRESTADORES / PARCEIROS",
+    "curto": "Prestadores e Parceiros",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 30,
+    "slug": "informacao-de-seguro",
+    "categoria": "reservar",
+    "titulo": "TERMOS / INFORMAÇÃO DE SEGURO",
+    "curto": "Informação de Seguro",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 31,
+    "slug": "circunstancias-extraordinarias",
+    "categoria": "reservar",
+    "titulo": "POLÍTICA DE CIRCUNSTÂNCIAS EXTRAORDINÁRIAS / FORÇA MAIOR",
+    "curto": "Circunstâncias Extraordinárias",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 32,
+    "slug": "anti-circumvention",
+    "categoria": "seguranca",
+    "titulo": "POLÍTICA ANTI-CIRCUMVENTION",
+    "curto": "Anti-Circumvention",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 33,
+    "slug": "trust-and-safety",
+    "categoria": "seguranca",
+    "titulo": "TRUST & SAFETY POLICY",
+    "curto": "Trust & Safety",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 34,
+    "slug": "acessibilidade",
+    "categoria": "plataforma",
+    "titulo": "DECLARAÇÃO / POLÍTICA DE ACESSIBILIDADE",
+    "curto": "Acessibilidade",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 35,
+    "slug": "transparencia-de-ranking",
+    "categoria": "plataforma",
+    "titulo": "TRANSPARÊNCIA DE RANKING E RECOMENDAÇÕES",
+    "curto": "Transparência de Ranking",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 36,
+    "slug": "promocoes-e-referral",
+    "categoria": "pagamentos",
+    "titulo": "TERMOS DE PROMOÇÕES E REFERRAL",
+    "curto": "Promoções e Referral",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 37,
+    "slug": "publicidade-e-destaques",
+    "categoria": "pagamentos",
+    "titulo": "TERMOS DE PUBLICIDADE / SPONSORED LISTINGS",
+    "curto": "Publicidade e Destaques",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  },
+  {
+    "numero": 38,
+    "slug": "creditos-e-vouchers",
+    "categoria": "pagamentos",
+    "titulo": "TERMOS DE CRÉDITOS, VOUCHERS E GIFT CARDS",
+    "curto": "Créditos e Vouchers",
+    "versao": "1.0",
+    "entradaEmVigor": "14-09-2026",
+    "modelo": false
+  }
+];
+
+export const documentoPorSlug = slug => LEGAL_DOCUMENTS.find(d => d.slug === slug) || null;

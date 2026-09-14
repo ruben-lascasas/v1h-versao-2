@@ -55,6 +55,8 @@ const ComoFuncionaPage = loadable(() => import(/* webpackChunkName: "ComoFuncion
 const CareersPage = loadable(() => import(/* webpackChunkName: "CareersPage" */ '../containers/CareersPage/CareersPage'));
 const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ '../containers/VerificationPage/VerificationPage'));
 const VerificationAdminPage = loadable(() => import(/* webpackChunkName: "VerificationAdminPage" */ '../containers/VerificationAdminPage/VerificationAdminPage'));
+const LegalPage = loadable(() => import(/* webpackChunkName: "LegalPage" */ '../containers/LegalPage/LegalPage'));
+const LegalCentrePage = loadable(() => import(/* webpackChunkName: "LegalCentrePage" */ '../containers/LegalCentrePage/LegalCentrePage'));
 
 // Styleguide helps you to review current components and develop new ones.
 //
@@ -479,6 +481,19 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       auth: true,
       authPage: 'LoginPage',
       component: ManageAccountPage,
+    },
+    // Centro Jurídico. O `/legal/:slug` serve os 38 documentos com um único
+    // componente; os slugs válidos estão em src/config/legalDocuments.js e um
+    // slug desconhecido devolve 404 em vez de uma página vazia.
+    {
+      path: '/legal',
+      name: 'LegalCentrePage',
+      component: LegalCentrePage,
+    },
+    {
+      path: '/legal/:slug',
+      name: 'LegalPage',
+      component: LegalPage,
     },
     {
       path: '/terms-of-service',

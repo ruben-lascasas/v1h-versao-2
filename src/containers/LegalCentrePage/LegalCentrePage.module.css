@@ -1,0 +1,258 @@
+@import '../../styles/customMediaQueries.css';
+
+.content {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+
+  @media (--viewportMedium) {
+    padding: 52px 32px 96px;
+  }
+}
+
+.cabecalho {
+  margin-bottom: 40px;
+}
+
+.etiqueta {
+  margin: 0 0 10px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #BAA38A;
+}
+
+.titulo {
+  margin: 0 0 14px;
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-size: 29px;
+  line-height: 1.15;
+  color: #2E2E2E;
+
+  @media (--viewportMedium) {
+    font-size: 42px;
+  }
+}
+
+.intro {
+  margin: 0;
+  max-width: 620px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #555;
+}
+
+/* ── Categorias ──────────────────────────────────────────────────────── */
+
+.categoria {
+  margin-bottom: 40px;
+}
+
+.categoriaTitulo {
+  margin: 0 0 4px;
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-size: 19px;
+  color: #2E2E2E;
+
+  @media (--viewportMedium) {
+    font-size: 22px;
+  }
+}
+
+.categoriaDesc {
+  margin: 0 0 16px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #8a8178;
+}
+
+.grelha {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+
+  @media (--viewportSmall) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  height: 100%;
+  box-sizing: border-box;
+  /* Bem acima dos 44px: são cartões, e o alvo confortável aqui é o cartão
+     inteiro, não só o texto. */
+  min-height: 64px;
+  padding: 13px 15px;
+  background: #ffffff;
+  border: 1px solid #EDE4D8;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    border-color: #BAA38A;
+    background: #F9F6F2;
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+}
+
+.cartaoTitulo {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #2E2E2E;
+}
+
+.cartaoMeta {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  color: #9a938a;
+}
+
+/* ── Operador ────────────────────────────────────────────────────────── */
+
+.operador {
+  margin-top: 48px;
+  padding-top: 26px;
+  border-top: 1px solid #EDE4D8;
+}
+
+.operadorTitulo {
+  margin: 0 0 8px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #BAA38A;
+}
+
+.operadorTexto {
+  margin: 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #6b645c;
+}
+
+.link {
+  /* inline-block com padding para o alvo de toque chegar aos 24px das WCAG:
+     um endereço de email tem 14px de altura de linha e é clicável. */
+  display: inline-block;
+  padding: 4px 0;
+  color: #5C3317;
+  text-decoration: underline;
+
+  &:hover {
+    color: #BAA38A;
+  }
+}
+
+/* ── Modo escuro ─────────────────────────────────────────────────────── */
+
+:global(body[data-dark-mode]) {
+  & .titulo,
+  & .categoriaTitulo,
+  & .cartaoTitulo {
+    color: #f0ece6;
+  }
+
+  & .intro {
+    color: #c9c3bb;
+  }
+
+  & .cartao {
+    background: #242424;
+    border-color: #3a3a3a;
+  }
+
+  & .cartao:hover {
+    background: #2c2c2c;
+    border-color: #BAA38A;
+  }
+
+  & .operador {
+    border-top-color: #3a3a3a;
+  }
+}
+
+/* ── O que esta conta aceitou ────────────────────────────────────────── */
+
+.aceitacoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #EDE4D8;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.aceitacao {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 15px;
+  border-bottom: 1px solid #F4EDE3;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.aceitacaoNome {
+  /* 44px de alvo de toque, como o resto do site. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2E2E2E;
+  text-decoration: none;
+
+  &:hover {
+    color: #5C3317;
+    text-decoration: underline;
+  }
+}
+
+.aceitacaoMeta {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #8a8178;
+}
+
+.aceitacaoAviso {
+  color: #B3671B;
+}
+
+:global(body[data-dark-mode]) {
+  & .aceitacoes {
+    border-color: #3a3a3a;
+  }
+
+  & .aceitacao {
+    border-bottom-color: #333;
+  }
+
+  & .aceitacaoNome {
+    color: #f0ece6;
+  }
+}

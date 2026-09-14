@@ -1,0 +1,14 @@
+{
+  "_comentario": "Identificacao da entidade que opera a Venue1Hub. UNICA fonte: lida pelo rodape do site, pelo Centro Juridico e pelo rodape das facturas. Valores do documento n.13, Aviso Legal / Identificacao do Operador.",
+  "_nome": "35 dos 38 documentos juridicos dizem EdgeHub OU; os n.36, 37 e 38 diziam Venue1Hub OU, com o mesmo numero de registo e a mesma sede. Uniformizado para EdgeHub OU por decisao do Ruben a 2026-09-14.",
+  "nome": "EdgeHub OÜ",
+  "marca": "Venue1Hub®",
+  "registo": "17515912",
+  "forma": "OÜ — osaühing (private limited company)",
+  "morada": "Ahtri tn 12, Kesklinna linnaosa, Tallinn 15551, Harju maakond, Estónia",
+  "pais": "Estónia",
+  "email": "mail@venue1hub.com",
+  "emailTecnico": "admin@venue1hub.com",
+  "_vat": "Ainda nao existe. O Aviso Legal preve que so seja indicado quando esse numero existir e deva ser publicamente indicado.",
+  "vat": null
+}

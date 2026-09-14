@@ -50,8 +50,14 @@ const TRANSICOES_CONCLUIDAS = [
 const CODIGO_COMISSAO = 'line-item/provider-commission';
 const MARCA = 'commissionInvoicedAt';
 
+// A entidade sai da mesma fonte que o rodapé do site e o Centro Jurídico usam.
+// Dizia "Venue1Hub OÜ" — que não é o nome registado. Isto sai impresso em
+// facturas a sério, por isso não é um detalhe cosmético.
+const OPERADOR = require('../../src/config/legalEntity.json');
+
 const notaIsencao = () =>
-  process.env.INVOICE_VAT_NOTE || 'IVA — isento / VAT exempt. Venue1Hub OÜ, Estónia.';
+  process.env.INVOICE_VAT_NOTE ||
+  `IVA — isento / VAT exempt. ${OPERADOR.nome}, ${OPERADOR.registo}, ${OPERADOR.pais}.`;
 
 /**
  * Valor da comissão de uma transacção, em cêntimos e sempre positivo.

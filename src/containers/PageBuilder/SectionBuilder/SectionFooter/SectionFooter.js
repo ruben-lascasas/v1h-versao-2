@@ -3,6 +3,7 @@ import { NamedLink } from '../../../../components';
 import { useLocale } from '../../../../context/localeContext';
 import PwaInstallButton from '../../../../components/PwaInstallButton/PwaInstallButton';
 import { SOCIAL_PROFILES } from '../../../../config/socialLinks';
+import { OPERADOR } from '../../../../config/legalEntity';
 import css from './SectionFooter.module.css';
 
 import logoWhite from '../../../../assets/images/V1H-LOGO-WHITE.png';
@@ -27,6 +28,29 @@ const ICONES = {
   tktk: { icon: iconTktk, iconHover: iconTktkHover },
   yt: { icon: iconYT, iconHover: iconYTHover },
 };
+
+/**
+ * Os documentos que ficam à vista no rodapé.
+ *
+ * São os que o guia interno manda deixar acessíveis de qualquer página. Os
+ * restantes 27 vivem no Centro Jurídico, que tem o seu próprio link logo
+ * abaixo — a alternativa era uma lista de 38 no fundo de cada página.
+ */
+const RODAPE_LEGAL = [
+  { slug: 'termos-de-servico', pt: 'Termos de serviço', en: 'Terms of service' },
+  { slug: 'termos-do-cliente', pt: 'Termos do cliente', en: 'Guest terms' },
+  { slug: 'termos-do-anfitriao', pt: 'Termos do anfitrião', en: 'Host terms' },
+  { slug: 'termos-de-pagamento', pt: 'Termos de pagamento', en: 'Payment terms' },
+  { slug: 'taxas-e-comissoes', pt: 'Taxas e comissões', en: 'Fees' },
+  { slug: 'cancelamento-e-reembolso', pt: 'Cancelamentos e reembolsos', en: 'Cancellations & refunds' },
+  { slug: 'resolucao-de-conflitos', pt: 'Resolução de conflitos', en: 'Dispute resolution' },
+  { slug: 'trust-and-safety', pt: 'Trust & Safety', en: 'Trust & Safety' },
+  { slug: 'politica-de-conteudos', pt: 'Conteúdos e comunidade', en: 'Content & community' },
+  { slug: 'propriedade-intelectual', pt: 'Propriedade intelectual', en: 'Intellectual property' },
+  { slug: 'politica-de-privacidade', pt: 'Política de privacidade', en: 'Privacy policy' },
+  { slug: 'politica-de-cookies', pt: 'Política de cookies', en: 'Cookie policy' },
+  { slug: 'aviso-legal', pt: 'Aviso legal', en: 'Legal notice' },
+];
 
 const SOCIAL_LINKS = SOCIAL_PROFILES.filter(p => ICONES[p.icone]).map(p => ({
   ...ICONES[p.icone],
@@ -140,11 +164,20 @@ const SectionFooter = () => {
               </ul>
             </div>
             <div className={css.column}>
-              <h4 className={css.columnTitle}>{isEN ? 'Support' : 'Suporte'}</h4>
+              <h4 className={css.columnTitle}>{isEN ? 'Legal' : 'Jurídico'}</h4>
+              {/* O guia interno é explícito: não pôr dezenas de links soltos no
+                  rodapé. Ficam os essenciais, e o Centro Jurídico leva aos 38. */}
               <ul className={css.linkList}>
-                <li><NamedLink name="TermsOfServicePage">{isEN ? 'Terms of service' : 'Termos de serviço'}</NamedLink></li>
-                <li><NamedLink name="PrivacyPolicyPage">{isEN ? 'Privacy policy' : 'Política de privacidade'}</NamedLink></li>
-                <li><NamedLink name="CookiePolicyPage">{isEN ? 'Cookie policy' : 'Política de cookies'}</NamedLink></li>
+                {RODAPE_LEGAL.map(({ slug, pt, en }) => (
+                  <li key={slug}>
+                    <NamedLink name="LegalPage" params={{ slug }}>{isEN ? en : pt}</NamedLink>
+                  </li>
+                ))}
+                <li>
+                  <NamedLink name="LegalCentrePage" className={css.legalCentreLink}>
+                    {isEN ? 'All legal documents' : 'Todos os documentos'}
+                  </NamedLink>
+                </li>
                 <li>
                   <button
                     type="button"
@@ -178,6 +211,22 @@ const SectionFooter = () => {
         </div>
 
         <div className={css.divider} />
+
+        {/* Identificação da entidade operadora. Exigida por lei e pelo guia
+            interno, e até aqui não existia em lado nenhum do site. Sai de
+            src/config/legalEntity.js, a mesma fonte que o Centro Jurídico e o
+            rodapé das faturas usam. */}
+        <div className={css.operador}>
+          <p className={css.operadorTexto}>
+            <strong>{OPERADOR.nome}</strong> · {isEN ? 'Registry code' : 'Número de registo'}{' '}
+            {OPERADOR.registo} · {OPERADOR.morada}
+            <br />
+            {isEN ? 'Operator of the' : 'Entidade operadora da'} {OPERADOR.marca} ·{' '}
+            <a href={`mailto:${OPERADOR.email}`} className={css.operadorLink}>
+              {OPERADOR.email}
+            </a>
+          </p>
+        </div>
 
         <div className={css.bottom}>
           <p className={css.copyright}>
