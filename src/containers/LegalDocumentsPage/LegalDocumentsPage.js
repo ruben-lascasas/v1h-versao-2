@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 import { useLocale } from '../../context/localeContext';
+import { useIntl } from '../../util/reactIntl';
 import { documentoPorSlug } from '../../config/legalDocuments';
 
 import { useConfiguration } from '../../context/configurationContext';
@@ -65,6 +66,7 @@ const legivel = (chave, isEN) => {
 export const LegalDocumentsPageComponent = props => {
   const { scrollingDisabled, currentUser } = props;
   const { locale } = useLocale();
+  const intl = useIntl();
   const config = useConfiguration();
   const isEN = locale === 'en';
 
@@ -119,6 +121,10 @@ export const LegalDocumentsPageComponent = props => {
         useAccountSettingsNav
         accountSettingsNavProps={accountSettingsNavProps}
         footer={<FooterContainer />}
+        // Obrigatório: o LayoutSideNavigation faz `intl.formatMessage` para o
+        // rótulo do menu lateral. Sem isto, rebenta e a página fica em branco —
+        // foi exactamente o que aconteceu em produção.
+        intl={intl}
       >
         <div className={css.content}>
           <H3 as="h1" className={css.titulo}>
