@@ -22,6 +22,7 @@
  */
 
 const { getIntegrationSdk } = require('./sdk');
+const { podePublicar } = require('./hostDeclaration');
 
 const ANUNCIANTE_USER_TYPE = 'anunciante';
 
@@ -201,10 +202,29 @@ const accountStatusFrom = docs => {
  * @param {string} [appliedStatus] status last synced for this user
  * @returns {Promise<{status: string, changed: boolean}>}
  */
-const syncPermissions = async (userId, docs, appliedStatus = null) => {
+const syncPermissions = async (userId, docs, appliedStatus = null, user = null) => {
   const status = accountStatusFrom(docs);
-  if (appliedStatus === status) {
-    return { status, changed: false };
+
+  // O Legal Gate.
+  //
+  // Ter os documentos de identificação aprovados deixou de chegar para
+  // publicar: é também preciso ter feito a Declaração de Conformidade e ter
+  // aceite, na versão em vigor, os documentos que se aplicam a esta conta.
+  //
+  // É isto que sustenta a posição de intermediário. A Venue1Hub não visita os
+  // espaços; o que a protege é ter pedido e guardado a declaração de quem os
+  // publica. Ver server/api-util/hostDeclaration.js.
+  //
+  // `user` é opcional para não partir quem já chamava esta função com três
+  // argumentos — sem ele, o portão comporta-se como antes.
+  const juridicoOk = user ? podePublicar(user) : true;
+  const permitir = status === ACCOUNT_STATUS.APPROVED && juridicoOk;
+
+  // A marca inclui a parte jurídica, senão uma declaração acabada de fazer não
+  // desbloqueava nada: o estado dos documentos não tinha mudado e saía-se aqui.
+  const marca = `${status}:${juridicoOk ? 'juridico-ok' : 'juridico-em-falta'}`;
+  if (appliedStatus === marca) {
+    return { status, changed: false, permitir };
   }
 
   const sdk = getIntegrationSdk();
@@ -213,10 +233,10 @@ const syncPermissions = async (userId, docs, appliedStatus = null) => {
   await sdk.users.updateProfile({ id: userId, metadata: { verificationStatus: status } });
   await sdk.users.updatePermissions({
     id: userId,
-    postListings: status === ACCOUNT_STATUS.APPROVED ? 'permission/allow' : 'permission/deny',
+    postListings: permitir ? 'permission/allow' : 'permission/deny',
   });
 
-  return { status, changed: true };
+  return { status, changed: true, permitir, marca };
 };
 
 /**
@@ -316,6 +336,7 @@ module.exports = {
   readDocs,
   accountStatusFrom,
   syncPermissions,
+  podePublicar,
   buildObjectKey,
   publicShape,
 };

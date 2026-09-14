@@ -9,6 +9,9 @@ import { createSlice } from '@reduxjs/toolkit';
  */
 
 const initialState = {
+  juridico: null,
+  declaracao: null,
+  campos: [],
   fetched: false,
   loading: false,
   required: false,
@@ -35,6 +38,11 @@ const slice = createSlice({
       state.status = action.payload.status || null;
       state.docs = action.payload.docs || [];
       state.limits = action.payload.limits || state.limits;
+      // O Legal Gate: o que falta do lado jurídico, a declaração já feita, e os
+      // campos a pedir. Vem no mesmo pedido para a página não ter de fazer dois.
+      state.juridico = action.payload.juridico || null;
+      state.declaracao = action.payload.declaracao || null;
+      state.campos = action.payload.campos || [];
     },
     statusFailed: state => {
       state.loading = false;

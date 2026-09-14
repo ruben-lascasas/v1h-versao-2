@@ -101,3 +101,41 @@
     padding-top: 0px;
   }
 }
+
+/* ── Contrato e Centro de Resolução ──────────────────────────────────── */
+
+.ligacoesJuridicas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 640px;
+  margin: 24px auto 0;
+  padding: 0 24px 32px;
+}
+
+.ligacaoJuridica {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  background: #F9F6F2;
+  border: 1px solid #EDE4D8;
+  border-radius: 8px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #5C3317;
+  text-decoration: none;
+
+  &:hover {
+    background: #F2EBE2;
+    border-color: #BAA38A;
+    text-decoration: none;
+  }
+}
+
+:global(body[data-dark-mode]) .ligacaoJuridica {
+  background: #242424;
+  border-color: #3a3a3a;
+  color: #D8C4AC;
+}

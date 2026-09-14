@@ -1,0 +1,217 @@
+@import '../../styles/customMediaQueries.css';
+
+.content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+
+  @media (--viewportMedium) {
+    padding: 44px 32px 96px;
+  }
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  color: #8a8178;
+  text-decoration: none;
+
+  &:hover {
+    color: #5C3317;
+    text-decoration: none;
+  }
+}
+
+.titulo {
+  margin: 6px 0 14px;
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-size: 26px;
+  line-height: 1.2;
+  color: #2E2E2E;
+
+  @media (--viewportMedium) {
+    font-size: 34px;
+  }
+}
+
+.intro,
+.texto {
+  margin: 0 0 14px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #555;
+}
+
+/* O aviso mais importante desta página: ninguém deve sair daqui a pensar que o
+   dinheiro volta sozinho. Por isso tem cor própria e não se confunde com o
+   texto corrido. */
+.avisoDinheiro {
+  margin: 0 0 22px;
+  padding: 12px 14px;
+  background: #FBF3E8;
+  border: 1px solid #E8D5B8;
+  border-left: 3px solid #C9982F;
+  border-radius: 8px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6B5320;
+}
+
+.aviso {
+  padding: 40px 0;
+  text-align: center;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  color: #8a8178;
+}
+
+.erro {
+  margin: 0 0 12px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #B3261E;
+}
+
+/* ── Formulário ──────────────────────────────────────────────────────── */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+/* 16px é o mínimo: abaixo disso o Safari do iOS dá zoom ao tocar no campo.
+   Ver a nota em src/styles/marketplaceDefaults.css. */
+.campo {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 11px 14px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #2E2E2E;
+  background: #ffffff;
+  border: 1px solid #D4C4B0;
+  border-radius: 8px;
+
+  &:focus {
+    outline: none;
+    border-color: #BAA38A;
+  }
+}
+
+.botao {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 22px;
+  background: #2E2E2E;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: #5C3317;
+  }
+
+  &:disabled {
+    background: #C4BDB4;
+    cursor: not-allowed;
+  }
+}
+
+/* ── Dossier ─────────────────────────────────────────────────────────── */
+
+.dossier {
+  margin-top: 8px;
+}
+
+.estado {
+  margin: 0 0 22px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #8a8178;
+}
+
+.seccao {
+  margin: 26px 0 10px;
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-size: 17px;
+  color: #2E2E2E;
+}
+
+.provas {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.provaMeta {
+  color: #9a938a;
+  font-size: 12px;
+}
+
+.link {
+  display: inline-block;
+  padding: 4px 0;
+  color: #5C3317;
+  text-decoration: underline;
+
+  &:hover {
+    color: #BAA38A;
+  }
+}
+
+:global(body[data-dark-mode]) {
+  & .titulo,
+  & .seccao,
+  & .label {
+    color: #f0ece6;
+  }
+
+  & .intro,
+  & .texto {
+    color: #c9c3bb;
+  }
+
+  & .campo {
+    background: #242424;
+    border-color: #3a3a3a;
+    color: #f0ece6;
+  }
+
+  & .avisoDinheiro {
+    background: #2a2418;
+    border-color: #4a3f28;
+    color: #d8c9a8;
+  }
+}

@@ -45,6 +45,8 @@ const approveDestaque = require('./api/approve-destaque');
 const approveListing = require('./api/approve-listing');
 const profileMetadata = require('./api/profile-metadata');
 const legalAcceptance = require('./api/legal-acceptance');
+const bookingContract = require('./api/booking-contract');
+const resolution = require('./api/resolution');
 
 const { authenticateFacebook, authenticateFacebookCallback } = require('./api/auth/facebook');
 const { authenticateGoogle, authenticateGoogleCallback } = require('./api/auth/google');
@@ -102,6 +104,7 @@ router.post('/notify-admin', notifyAdmin);
 // Verificação de anunciantes: o próprio utilizador consulta e submete.
 router.get('/verification', verification.getStatus);
 router.post('/verification/upload', verification.upload);
+router.post('/verification/declaracao', verification.declaracao);
 
 // Mudanca de tipo de conta apos o registo.
 router.get('/user-types', changeUserType.list);
@@ -143,6 +146,15 @@ router.post('/profile-metadata', profileMetadata);
 // versão e quando. Ver server/api-util/legalAcceptance.js.
 router.get('/legal-acceptance', legalAcceptance.estado);
 router.post('/legal-acceptance', legalAcceptance.gravar);
+
+// O contrato de cada reserva, preenchido com os dados reais. Só as duas partes.
+router.get('/booking-contract/:id', bookingContract.contrato);
+
+// Centro de Resolução: o dossier de uma reclamação sobre uma reserva.
+router.get('/resolution/:id', resolution.ver);
+router.post('/resolution/:id/abrir', resolution.abrirCaso);
+router.post('/resolution/:id/prova', resolution.prova);
+router.post('/resolution/:id/responder', resolution.responderCaso);
 
 // Create user with identity provider (e.g. Facebook or Google)
 // This endpoint is called to create a new user after user has confirmed

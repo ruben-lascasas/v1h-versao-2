@@ -1131,6 +1131,29 @@ export const TransactionPageComponent = props => {
         <div className={css.root}>
           {isCustomerRole ? <CartPendingQueueBanner /> : null}
           {panel}
+
+          {/* O contrato desta reserva e o Centro de Resolução.
+              Os Termos dizem que o contrato se celebra entre as duas partes;
+              isto é onde elas o conseguem ver. Ambas as páginas confirmam no
+              servidor que quem pede é parte da reserva. */}
+          {transaction?.id?.uuid ? (
+            <div className={css.ligacoesJuridicas}>
+              <NamedLink
+                name="BookingContractPage"
+                params={{ id: transaction.id.uuid }}
+                className={css.ligacaoJuridica}
+              >
+                {intl.locale?.startsWith('en') ? 'Booking contract' : 'Contrato da reserva'}
+              </NamedLink>
+              <NamedLink
+                name="ResolutionPage"
+                params={{ id: transaction.id.uuid }}
+                className={css.ligacaoJuridica}
+              >
+                {intl.locale?.startsWith('en') ? 'Report a problem' : 'Comunicar um problema'}
+              </NamedLink>
+            </div>
+          ) : null}
         </div>
         <ReviewModal
           id="ReviewOrderModal"

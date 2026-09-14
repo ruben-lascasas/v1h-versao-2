@@ -14,6 +14,7 @@ import { Page, LayoutSingleColumn, H2 } from '../../components';
 import TopbarContainer from '../TopbarContainer/TopbarContainer';
 import FooterContainer from '../FooterContainer/FooterContainer';
 
+import DeclaracaoHost from './DeclaracaoHost';
 import css from './VerificationPage.module.css';
 
 /**
@@ -180,6 +181,9 @@ const VerificationPage = props => {
     limits: serverLimits,
     uploadingDocKey,
     uploadError,
+    juridico,
+    declaracao,
+    campos,
   } = useSelector(selectVerification);
 
   const limits = serverLimits || FALLBACK_LIMITS;
@@ -264,6 +268,17 @@ const VerificationPage = props => {
               ))}
               </ul>
             </>
+          ) : null}
+
+          {/* O Legal Gate. Os documentos de identificação são metade; a
+              declaração e a aceitação dos termos são a outra. */}
+          {required ? (
+            <DeclaracaoHost
+              isEN={isEN}
+              campos={campos}
+              declaracao={declaracao}
+              juridico={juridico}
+            />
           ) : null}
 
           {required && status !== 'aprovado' ? (

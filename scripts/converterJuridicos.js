@@ -468,6 +468,19 @@ const principal = () => {
 
     const saida = cabecalho(doc) + `\nexport default ${JSON.stringify(doc, null, 0)};\n`;
     fs.writeFileSync(path.join(destino, `${entrada.slug}.js`), saida, 'utf8');
+
+    // Os modelos saem também em JSON.
+    //
+    // O site é ESM e importa o .js; o servidor é CommonJS e precisa dos blocos
+    // do modelo para preencher o contrato de cada reserva. Só os modelos, para
+    // não duplicar 1,7 MB de texto que o servidor nunca vai ler.
+    if (entrada.modelo) {
+      fs.writeFileSync(
+        path.join(destino, `${entrada.slug}.json`),
+        JSON.stringify(doc, null, 0) + String.fromCharCode(10),
+        'utf8'
+      );
+    }
     resumo.push({ ...entrada, titulo: doc.titulo, versao, entradaEmVigor, blocos: blocos.length, kb: Math.round(saida.length / 1024) });
     console.log(`  ${String(entrada.n).padStart(2)}. ${entrada.slug.padEnd(32)} ${String(blocos.length).padStart(4)} blocos  ${String(Math.round(saida.length / 1024)).padStart(3)} KB`);
   }

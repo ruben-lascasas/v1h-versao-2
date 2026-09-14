@@ -18,6 +18,12 @@ const r2 = require('../api-util/r2');
 const emails = require('../api-util/verificationEmails');
 const { isEnglish } = require('../api-util/emailSender');
 const { ensureCommissionModel } = require('../api-util/hostCommission');
+const {
+  CAMPOS,
+  declaracaoDe,
+  emFaltaParaPublicar,
+  gravar: gravarDeclaracao,
+} = require('../api-util/hostDeclaration');
 const { REQUIRED_DOCS } = require('../api-util/verification');
 const {
   STATUS,
@@ -118,16 +124,35 @@ const getStatus = async (req, res) => {
 
     const verification = await loadVerification(user.id.uuid);
     const docs = readDocs(verification);
-    const { status, changed } = await syncPermissions(
+
+    // O Legal Gate precisa da conta vista pela Integration API: a declaração
+    // vive em privateData e as aceitações em metadata de operador, e nenhuma
+    // das duas vem no `currentUser.show()` que autenticou este pedido.
+    const isdk = getIntegrationSdk();
+    const completo = isdk ? (await isdk.users.show({ id: user.id.uuid }))?.data?.data : null;
+
+    const { status, changed, marca } = await syncPermissions(
       user.id.uuid,
       docs,
-      verification.appliedStatus
+      verification.appliedStatus,
+      completo
     );
     if (changed) {
-      await persist(user.id.uuid, { ...verification, appliedStatus: status });
+      await persist(user.id.uuid, { ...verification, appliedStatus: marca || status });
     }
 
-    return res.json({ required: true, status, docs: publicShape(docs), limits: UPLOAD_LIMITS });
+    return res.json({
+      required: true,
+      status,
+      docs: publicShape(docs),
+      limits: UPLOAD_LIMITS,
+      // O que falta do lado jurídico, para a página poder dizê-lo em vez de
+      // deixar alguém com os documentos aprovados sem perceber porque é que
+      // ainda não consegue publicar.
+      juridico: completo ? emFaltaParaPublicar(completo) : null,
+      declaracao: completo ? declaracaoDe(completo) : null,
+      campos: CAMPOS,
+    });
   } catch (e) {
     console.error('[verification] getStatus failed:', e?.message || e);
     return res.status(500).json({ error: 'status-failed' });
@@ -230,4 +255,46 @@ const upload = async (req, res) => {
   }
 };
 
-module.exports = { getStatus, upload };
+/**
+ * POST /api/verification/declaracao
+ *
+ * Grava a Declaração de Conformidade do Host e volta a avaliar o portão — para
+ * quem acabou de declarar poder publicar sem ter de recarregar nada.
+ */
+const declaracao = async (req, res) => {
+  try {
+    const user = await loadCaller(req, res);
+    if (!user) return res.status(401).json({ error: 'not-authenticated' });
+    if (!isAnunciante(user)) return res.status(403).json({ error: 'nao-aplicavel' });
+
+    const sdk = getIntegrationSdk();
+    if (!sdk) return res.status(500).json({ error: 'integration-sdk-not-configured' });
+
+    const antes = (await sdk.users.show({ id: user.id.uuid }))?.data?.data;
+    const resultado = await gravarDeclaracao(sdk, antes, req.body || {});
+    if (!resultado.gravada) {
+      return res.status(400).json({ error: 'declaracao-incompleta', problemas: resultado.problemas });
+    }
+
+    // Reavaliar o portão com a conta já atualizada: sem isto, quem acabou de
+    // declarar continuava bloqueado até à passagem seguinte.
+    const depois = (await sdk.users.show({ id: user.id.uuid }))?.data?.data;
+    const verification = await loadVerification(user.id.uuid);
+    const docs = readDocs(verification);
+    const { status, changed, marca, permitir } = await syncPermissions(
+      user.id.uuid,
+      docs,
+      verification.appliedStatus,
+      depois
+    );
+    if (changed) await persist(user.id.uuid, { ...verification, appliedStatus: marca || status });
+
+    console.log(`[legal-gate] ${user.id.uuid} declarou — pode publicar: ${permitir}`);
+    return res.json({ gravada: true, podePublicar: permitir, juridico: emFaltaParaPublicar(depois) });
+  } catch (e) {
+    console.error('[legal-gate] falha a gravar a declaração:', e?.message || e);
+    return res.status(500).json({ error: 'internal-error' });
+  }
+};
+
+module.exports = { getStatus, upload, declaracao };

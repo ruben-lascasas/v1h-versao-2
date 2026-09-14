@@ -176,3 +176,187 @@
   line-height: 1.7;
   margin: 28px 0 0 0;
 }
+
+/* ── Declaração de Conformidade (Legal Gate) ─────────────────────────── */
+
+.declaracao {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid #EDE4D8;
+}
+
+.declaracaoTitulo {
+  margin: 0 0 8px;
+  font-family: 'Britannic Bold', 'Impact', sans-serif;
+  font-size: 19px;
+  color: #2E2E2E;
+}
+
+.declaracaoIntro {
+  margin: 0 0 20px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b645c;
+}
+
+.declaracaoForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.campoLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+/* 16px é o mínimo: abaixo disso o Safari do iOS dá zoom ao tocar no campo. */
+.campo {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 11px 14px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #2E2E2E;
+  background: #ffffff;
+  border: 1px solid #D4C4B0;
+  border-radius: 8px;
+
+  &:focus {
+    outline: none;
+    border-color: #BAA38A;
+  }
+}
+
+/* A caixa e o texto formam um alvo só: numa declaração, tocar ao lado da caixa
+   e não acontecer nada é irritante e faz perder o fio. */
+.confirmacao {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  min-height: 44px;
+  padding: 4px 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #3a3a3a;
+  cursor: pointer;
+}
+
+.confirmacao input {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.porAceitar {
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  background: #FBF3E8;
+  border: 1px solid #E8D5B8;
+  border-left: 3px solid #C9982F;
+  border-radius: 8px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6B5320;
+}
+
+.porAceitar ul {
+  margin: 8px 0 12px;
+  padding-left: 20px;
+}
+
+.botaoPrimario {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 22px;
+  background: #2E2E2E;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #5C3317;
+  }
+
+  &:disabled {
+    background: #C4BDB4;
+    cursor: not-allowed;
+  }
+}
+
+.botaoSecundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  background: #ffffff;
+  color: #5C3317;
+  border: 1.5px solid #BAA38A;
+  border-radius: 6px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #F9F6F2;
+  }
+}
+
+.declaracaoErro {
+  margin: 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #B3261E;
+}
+
+.declaracaoFeita {
+  margin: 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #2E7D32;
+}
+
+:global(body[data-dark-mode]) {
+  & .declaracao {
+    border-top-color: #3a3a3a;
+  }
+
+  & .declaracaoTitulo,
+  & .campoLabel {
+    color: #f0ece6;
+  }
+
+  & .declaracaoIntro,
+  & .confirmacao {
+    color: #c9c3bb;
+  }
+
+  & .campo {
+    background: #242424;
+    border-color: #3a3a3a;
+    color: #f0ece6;
+  }
+}

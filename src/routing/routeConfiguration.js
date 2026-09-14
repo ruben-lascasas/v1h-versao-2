@@ -57,6 +57,8 @@ const VerificationPage = loadable(() => import(/* webpackChunkName: "Verificatio
 const VerificationAdminPage = loadable(() => import(/* webpackChunkName: "VerificationAdminPage" */ '../containers/VerificationAdminPage/VerificationAdminPage'));
 const LegalPage = loadable(() => import(/* webpackChunkName: "LegalPage" */ '../containers/LegalPage/LegalPage'));
 const LegalCentrePage = loadable(() => import(/* webpackChunkName: "LegalCentrePage" */ '../containers/LegalCentrePage/LegalCentrePage'));
+const BookingContractPage = loadable(() => import(/* webpackChunkName: "BookingContractPage" */ '../containers/BookingContractPage/BookingContractPage'));
+const ResolutionPage = loadable(() => import(/* webpackChunkName: "ResolutionPage" */ '../containers/ResolutionPage/ResolutionPage'));
 
 // Styleguide helps you to review current components and develop new ones.
 //
@@ -494,6 +496,23 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       path: '/legal/:slug',
       name: 'LegalPage',
       component: LegalPage,
+    },
+    // O contrato de cada reserva e o Centro de Resolução. Ambos verificam no
+    // servidor que quem pede é parte da reserva — a rota é pública, o conteúdo
+    // não.
+    {
+      path: '/reserva/:id/contrato',
+      name: 'BookingContractPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: BookingContractPage,
+    },
+    {
+      path: '/reserva/:id/resolucao',
+      name: 'ResolutionPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: ResolutionPage,
     },
     {
       path: '/terms-of-service',
