@@ -150,6 +150,16 @@ const LayoutWrapperAccountSettingsSideNav = props => {
     ...payoutDetailsMaybe,
     ...paymentMethodsMaybe,
     {
+      // O registo do que esta conta aceitou, e a declaração que fez. Estava só
+      // no Centro Jurídico e ninguém o encontrava — é aqui que se procura.
+      text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.legalDocumentsTabTitle" />,
+      selected: currentPage === 'LegalDocumentsPage',
+      id: 'LegalDocumentsPageTab',
+      linkProps: {
+        name: 'LegalDocumentsPage',
+      },
+    },
+    {
       text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.manageAccountTabTitle" />,
       selected: currentPage === 'ManageAccountPage',
       id: 'ManageAccountPageTab',

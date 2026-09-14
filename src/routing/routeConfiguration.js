@@ -59,6 +59,7 @@ const LegalPage = loadable(() => import(/* webpackChunkName: "LegalPage" */ '../
 const LegalCentrePage = loadable(() => import(/* webpackChunkName: "LegalCentrePage" */ '../containers/LegalCentrePage/LegalCentrePage'));
 const BookingContractPage = loadable(() => import(/* webpackChunkName: "BookingContractPage" */ '../containers/BookingContractPage/BookingContractPage'));
 const ResolutionPage = loadable(() => import(/* webpackChunkName: "ResolutionPage" */ '../containers/ResolutionPage/ResolutionPage'));
+const LegalDocumentsPage = loadable(() => import(/* webpackChunkName: "LegalDocumentsPage" */ '../containers/LegalDocumentsPage/LegalDocumentsPage'));
 
 // Styleguide helps you to review current components and develop new ones.
 //
@@ -88,6 +89,7 @@ export const ACCOUNT_SETTINGS_PAGES = [
   'PasswordChangePage',
   'StripePayoutPage',
   'PaymentMethodsPage',
+  'LegalDocumentsPage',
   'ManageAccountPage'
 ];
 
@@ -500,6 +502,16 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
     // O contrato de cada reserva e o Centro de Resolução. Ambos verificam no
     // servidor que quem pede é parte da reserva — a rota é pública, o conteúdo
     // não.
+    // "Os meus documentos" vive nas Definições de Conta, e não no Centro
+    // Jurídico, porque é onde as pessoas o procuram: são os documentos delas,
+    // não os do site.
+    {
+      path: '/conta/documentos',
+      name: 'LegalDocumentsPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: LegalDocumentsPage,
+    },
     {
       path: '/reserva/:id/contrato',
       name: 'BookingContractPage',

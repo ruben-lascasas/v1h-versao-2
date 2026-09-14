@@ -681,6 +681,7 @@
   "LandingPage.schemaTitle": "{marketplaceName}",
   "LayoutSideNavigation.screenreader.accountNavigation": "Account settings navigation",
   "LayoutWrapperAccountSettingsSideNav.contactDetailsTabTitle": "Contact details",
+  "LayoutWrapperAccountSettingsSideNav.legalDocumentsTabTitle": "My documents",
   "LayoutWrapperAccountSettingsSideNav.manageAccountTabTitle": "Manage account",
   "LayoutWrapperAccountSettingsSideNav.passwordTabTitle": "Password",
   "LayoutWrapperAccountSettingsSideNav.paymentMethodsTabTitle": "Payment methods",
