@@ -88,6 +88,25 @@ const ensureCustomer = async ({ userId, email, name, existingCustomerId }) => {
     }
   }
 
+  // Procurar antes de criar. O comentário de quem chama isto dizia que "o
+  // Stripe encontra-o pelo email" — não encontra: `customers.create` cria
+  // sempre um novo. Cinco cliques do mesmo anfitrião numa tarde deixaram cinco
+  // Customers com o mesmo email na conta, e o histórico de facturação dele
+  // ficou repartido por todos.
+  if (userId) {
+    try {
+      const encontrados = await stripe.customers.search({
+        query: `metadata['sharetribeUserId']:'${userId}'`,
+        limit: 1,
+      });
+      const existente = encontrados?.data?.[0];
+      if (existente && !existente.deleted) return existente.id;
+    } catch (e) {
+      // A procura é uma optimização, não uma condição: se falhar, cria-se.
+      console.error('[stripe] procura de customer falhou:', e?.message || e);
+    }
+  }
+
   const created = await stripe.customers.create({
     email,
     name: name || undefined,
@@ -144,6 +163,12 @@ const createCheckoutSession = async ({
     },
     // O NIF do comprador, quando o der, fica na fatura.
     tax_id_collection: { enabled: true },
+    // OBRIGATÓRIO quando se passa um `customer` já existente: sem isto o
+    // Stripe recusa a sessão inteira —
+    //   "Tax ID collection requires updating business name on the customer."
+    // O nome e a morada que a pessoa escrever no Checkout passam a ser
+    // gravados no Customer, que é o que torna a recolha do NIF legítima.
+    customer_update: { name: 'auto', address: 'auto' },
     metadata,
   });
 };
