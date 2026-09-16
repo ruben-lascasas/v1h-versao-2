@@ -30,6 +30,7 @@
 const cron = require('node-cron');
 const { getIntegrationSdk } = require('../api-util/sdk');
 const emails = require('../api-util/bookingEmails');
+const { pedirReciboDaReserva } = require('../api-util/stripeReceipts');
 
 const PER_PAGE = 100;
 const MAX_PAGINAS = 10;
@@ -45,14 +46,27 @@ const janelaHorasPorOmissao = () => {
  * A chave à esquerda é o que fica marcado na metadata; é ela que impede o
  * reenvio, por isso nunca deve mudar depois de estar em uso.
  */
+const recibo = d => pedirReciboDaReserva({ txId: d.txId, email: d.customer.email });
+
 const AVISOS = {
   'transition/confirm-payment': [
     ['anfitriao-nova-reserva', d => emails.novaReservaAoAnfitriao(d)],
     ['cliente-pedido', d => emails.pedidoAoCliente(d)],
     ['admin-nova-reserva', d => emails.alertaAoAdmin(d)],
+    // A cobrança da reserva é criada pela Sharetribe sem `receipt_email`, e sem
+    // esse campo o Stripe não envia recibo nenhum. Quem paga o destaque recebe
+    // recibo e factura; quem paga uma reserva não recebia nada.
+    ['stripe-recibo', recibo],
   ],
-  'transition/accept': [['cliente-confirmada', d => emails.confirmadaAoCliente(d)]],
-  'transition/operator-accept': [['cliente-confirmada', d => emails.confirmadaAoCliente(d)]],
+  // Também aqui, para as reservas que só vemos depois de aceites.
+  'transition/accept': [
+    ['cliente-confirmada', d => emails.confirmadaAoCliente(d)],
+    ['stripe-recibo', recibo],
+  ],
+  'transition/operator-accept': [
+    ['cliente-confirmada', d => emails.confirmadaAoCliente(d)],
+    ['stripe-recibo', recibo],
+  ],
   'transition/decline': [['cliente-recusada', d => emails.naoAvancouAoCliente(d, 'recusada')]],
   'transition/operator-decline': [
     ['cliente-recusada', d => emails.naoAvancouAoCliente(d, 'recusada')],

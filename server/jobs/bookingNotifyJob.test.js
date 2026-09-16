@@ -14,7 +14,10 @@ const mockEmails = {
   isEnglish: () => false,
 };
 
+const mockRecibo = jest.fn(async () => true);
+
 jest.mock('../api-util/sdk', () => ({ getIntegrationSdk: () => mockSdk }));
+jest.mock('../api-util/stripeReceipts', () => ({ pedirReciboDaReserva: mockRecibo }));
 jest.mock('../api-util/bookingEmails', () => mockEmails);
 
 const { runOnce, emFalta, reunir, marcar } = require('./bookingNotifyJob');
@@ -66,6 +69,7 @@ beforeEach(() => {
   mockSdk.transactions.query.mockReset();
   mockSdk.transactions.updateMetadata.mockClear().mockResolvedValue({});
   Object.values(mockEmails).forEach(f => f.mockClear && f.mockClear());
+  mockRecibo.mockClear().mockResolvedValue(true);
 });
 
 describe('o que falta avisar', () => {
@@ -74,6 +78,7 @@ describe('o que falta avisar', () => {
       'anfitriao-nova-reserva',
       'cliente-pedido',
       'admin-nova-reserva',
+      'stripe-recibo',
     ]);
   });
 
@@ -84,6 +89,7 @@ describe('o que falta avisar', () => {
     expect(emFalta(tx('transition/confirm-payment', jaFeito)).map(x => x[0])).toEqual([
       'cliente-pedido',
       'admin-nova-reserva',
+      'stripe-recibo',
     ]);
   });
 
@@ -150,7 +156,10 @@ describe('a passagem', () => {
     expect(mockEmails.alertaAoAdmin).toHaveBeenCalledTimes(1);
     expect(mockEmails.confirmadaAoCliente).not.toHaveBeenCalled();
     expect(r.enviados).toEqual([
-      { txId: 'tx-1', chaves: ['anfitriao-nova-reserva', 'cliente-pedido', 'admin-nova-reserva'] },
+      {
+        txId: 'tx-1',
+        chaves: ['anfitriao-nova-reserva', 'cliente-pedido', 'admin-nova-reserva', 'stripe-recibo'],
+      },
     ]);
   });
 
@@ -158,6 +167,19 @@ describe('a passagem', () => {
     mockSdk.transactions.query.mockResolvedValue(pagina([tx('transition/accept')]));
     await runOnce();
     expect(mockEmails.confirmadaAoCliente).toHaveBeenCalledTimes(1);
+  });
+
+  /**
+   * A cobrança da reserva é criada pela Sharetribe sem `receipt_email`, e sem
+   * esse campo o Stripe não envia recibo nenhum. Quem paga o destaque recebia
+   * recibo e factura; quem paga uma reserva não recebia nada.
+   */
+  it('pede ao Stripe o recibo para quem pagou', async () => {
+    mockSdk.transactions.query.mockResolvedValue(pagina([tx('transition/confirm-payment')]));
+
+    await runOnce();
+
+    expect(mockRecibo).toHaveBeenCalledWith({ txId: 'tx-1', email: 'cliente@exemplo.pt' });
   });
 
   it('a recusa diz ao cliente que não foi cobrado', async () => {
@@ -191,7 +213,11 @@ describe('a passagem', () => {
 
     const r = await runOnce();
 
-    expect(r.enviados[0].chaves).toEqual(['anfitriao-nova-reserva', 'admin-nova-reserva']);
+    expect(r.enviados[0].chaves).toEqual([
+      'anfitriao-nova-reserva',
+      'admin-nova-reserva',
+      'stripe-recibo',
+    ]);
     const escrito = mockSdk.transactions.updateMetadata.mock.calls[0][0].metadata.avisos;
     expect(escrito['cliente-pedido']).toBeUndefined();
     console.error.mockRestore();
@@ -213,6 +239,7 @@ describe('a passagem', () => {
         'anfitriao-nova-reserva': 'x',
         'cliente-pedido': 'x',
         'admin-nova-reserva': 'x',
+        'stripe-recibo': 'x',
       },
     };
     mockSdk.transactions.query.mockResolvedValue(
