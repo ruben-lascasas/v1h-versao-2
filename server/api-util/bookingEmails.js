@@ -42,7 +42,11 @@ const envolver = (en, titulo, blocos) => `<!DOCTYPE html>
     <h1 style="margin:0 0 16px;font-size:20px;color:#2E2E2E;">${escapeHtml(titulo)}</h1>
     ${blocos}
     <p style="margin:32px 0 0;font-size:12px;color:#9a938a;line-height:1.6;">
-      Venue1Hub · ${t(en, 'esta mensagem foi enviada automaticamente.', 'this message was sent automatically.')}
+      Venue1Hub · ${t(
+        en,
+        'esta mensagem foi enviada automaticamente.',
+        'this message was sent automatically.'
+      )}
     </p>
   </div>
 </body>
@@ -257,7 +261,10 @@ const confirmadaAoCliente = async d => {
  * isso vai escrito em todas as variantes, e não só implícito.
  */
 const MOTIVOS = {
-  recusada: ['O anfitrião não pôde aceitar esta reserva.', 'The host could not accept this booking.'],
+  recusada: [
+    'O anfitrião não pôde aceitar esta reserva.',
+    'The host could not accept this booking.',
+  ],
   expirou: [
     'O anfitrião não respondeu dentro do prazo, e o pedido expirou.',
     'The host did not reply in time, and the request expired.',

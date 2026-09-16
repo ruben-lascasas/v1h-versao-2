@@ -69,6 +69,7 @@ const contrato = async (req, res) => {
     const mapa = valores({
       transaction,
       listing,
+      booking: incluidos.find(r => r.type === 'booking') || null,
       host: acharUser(anfitriaoId),
       guest: acharUser(clienteId),
       ponteiro: ponteiro || ponteiroDe(transaction),
