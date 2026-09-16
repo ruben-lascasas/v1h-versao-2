@@ -430,6 +430,13 @@ const server = app.listen(PORT, () => {
     console.error('[comissões] failed to start:', e?.message || e);
   }
   try {
+    // Uma reserva acontecia em silêncio absoluto: nem o cliente, nem o
+    // anfitrião, nem o operador ficavam a saber dela.
+    require('./jobs/bookingNotifyJob').start();
+  } catch (e) {
+    console.error('[reserva-aviso] failed to start:', e?.message || e);
+  }
+  try {
     // O prazo de resposta do Centro de Resolução. Sem isto, o prazo de sete
     // dias era só uma frase na página e no email: passava, e nada acontecia.
     require('./jobs/resolutionDeadlineJob').start();
