@@ -473,6 +473,9 @@ export const ManageListingCard = props => {
   const isPendingApproval = state === LISTING_STATE_PENDING_APPROVAL;
   const isClosed = state === LISTING_STATE_CLOSED;
   const isDraft = state === LISTING_STATE_DRAFT;
+  // Destaque pago e activo. Fechar o anúncio termina-o, e o valor não volta
+  // nem fica em crédito — foi a regra decidida.
+  const isFeatured = publicData?.featured === 'true';
 
   const { listingType, transactionProcessAlias, cardStyle } = publicData || {};
   const isBookable = isBookingProcessAlias(transactionProcessAlias);
@@ -539,6 +542,9 @@ export const ManageListingCard = props => {
 
   const [isHovered, setIsHovered] = React.useState(false);
   const [isDeleteConfirming, setIsDeleteConfirming] = React.useState(false);
+  // Fechar um anúncio era imediato: um clique no X e estava fechado. Num
+  // anúncio com destaque pago, esse clique custa 9,99 € que não voltam.
+  const [isCloseConfirming, setIsCloseConfirming] = React.useState(false);
 
   return (
     <div
@@ -625,7 +631,7 @@ export const ManageListingCard = props => {
                     if (isDraft) {
                       onDiscardDraft(currentListing.id);
                     } else {
-                      onCloseListing(currentListing.id);
+                      setIsCloseConfirming(true);
                     }
                   }
                 }}
@@ -683,6 +689,43 @@ export const ManageListingCard = props => {
             onOpenListing={onOpenListing}
             intl={intl}
           />
+
+          {isCloseConfirming ? (
+            <Overlay
+              message={intl.formatMessage({
+                // O aviso do destaque só aparece a quem tem destaque: dizer a
+                // toda a gente que vai perder dinheiro assustava sem razão.
+                id: isFeatured
+                  ? 'ManageListingCard.closeListingConfirmMessageFeatured'
+                  : 'ManageListingCard.closeListingConfirmMessage',
+              })}
+            >
+              <div className={css.deleteConfirmActions}>
+                <PrimaryButtonInline
+                  className={css.deleteConfirmButton}
+                  disabled={!!actionsInProgressListingId}
+                  onClick={event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setIsCloseConfirming(false);
+                    onCloseListing(currentListing.id);
+                  }}
+                >
+                  <FormattedMessage id="ManageListingCard.closeListingConfirmButton" />
+                </PrimaryButtonInline>
+                <InlineTextButton
+                  rootClassName={css.deleteCancelLink}
+                  onClick={event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setIsCloseConfirming(false);
+                  }}
+                >
+                  <FormattedMessage id="ManageListingCard.closeListingCancelButton" />
+                </InlineTextButton>
+              </div>
+            </Overlay>
+          ) : null}
 
           {isDeleteConfirming ? (
             <Overlay

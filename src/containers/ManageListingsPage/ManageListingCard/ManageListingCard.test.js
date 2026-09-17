@@ -822,3 +822,97 @@ describe('ManageListingCard', () => {
     expect(tree.asFragment().firstChild).toMatchSnapshot();
   });
 });
+
+/**
+ * Fechar um anúncio era imediato: um clique no X, sem pergunta nenhuma.
+ *
+ * Num anúncio com destaque pago isso custa 9,99 € que não voltam — a regra é
+ * que quem encerra perde o destaque, sem devolução nem crédito. Um clique
+ * acidental não pode ter esse preço sem que ninguém tenha avisado.
+ */
+describe('confirmação antes de fechar um anúncio', () => {
+  const { userEvent } = testingLibrary;
+
+  const anuncio = (publicData = {}) =>
+    createOwnListing('listing-a-fechar', {
+      title: 'the listing',
+      price: new Money(1000, 'EUR'),
+      publicData: {
+        listingType: 'rent-bicycles-daily',
+        transactionProcessAlias: 'default-booking/release-1',
+        unitType: 'day',
+        ...publicData,
+      },
+    });
+
+  const montar = (publicData = {}) => {
+    const onCloseListing = jest.fn();
+    const tree = render(
+      <ManageListingCard
+        history={{ push: noop }}
+        listing={anuncio(publicData)}
+        intl={fakeIntl}
+        isMenuOpen={false}
+        onCloseListing={onCloseListing}
+        onOpenListing={noop}
+        onToggleMenu={noop}
+        hasClosingError={false}
+        hasOpeningError={false}
+        availabilityEnabled={true}
+      />
+    );
+    return { tree, onCloseListing };
+  };
+
+  it('o clique no fechar já não fecha nada: pergunta primeiro', async () => {
+    const { tree, onCloseListing } = montar();
+
+    await userEvent.click(tree.getByLabelText('ManageListingCard.closeListing'));
+
+    expect(onCloseListing).not.toHaveBeenCalled();
+    expect(tree.getByText('ManageListingCard.closeListingConfirmMessage')).toBeInTheDocument();
+  });
+
+  it('confirmar fecha', async () => {
+    const { tree, onCloseListing } = montar();
+
+    await userEvent.click(tree.getByLabelText('ManageListingCard.closeListing'));
+    await userEvent.click(tree.getByText('ManageListingCard.closeListingConfirmButton'));
+
+    expect(onCloseListing).toHaveBeenCalledTimes(1);
+  });
+
+  it('voltar atrás não fecha', async () => {
+    const { tree, onCloseListing } = montar();
+
+    await userEvent.click(tree.getByLabelText('ManageListingCard.closeListing'));
+    await userEvent.click(tree.getByText('ManageListingCard.closeListingCancelButton'));
+
+    expect(onCloseListing).not.toHaveBeenCalled();
+    expect(
+      tree.queryByText('ManageListingCard.closeListingConfirmMessage')
+    ).not.toBeInTheDocument();
+  });
+
+  // O aviso do dinheiro só aparece a quem tem destaque pago: dizer a toda a
+  // gente que vai perder dinheiro assustava sem razão.
+  it('um anúncio com destaque avisa que o destaque se perde', async () => {
+    const { tree } = montar({ featured: 'true' });
+
+    await userEvent.click(tree.getByLabelText('ManageListingCard.closeListing'));
+
+    expect(
+      tree.getByText('ManageListingCard.closeListingConfirmMessageFeatured')
+    ).toBeInTheDocument();
+  });
+
+  it('sem destaque, a pergunta não fala em dinheiro nenhum', async () => {
+    const { tree } = montar();
+
+    await userEvent.click(tree.getByLabelText('ManageListingCard.closeListing'));
+
+    expect(
+      tree.queryByText('ManageListingCard.closeListingConfirmMessageFeatured')
+    ).not.toBeInTheDocument();
+  });
+});
