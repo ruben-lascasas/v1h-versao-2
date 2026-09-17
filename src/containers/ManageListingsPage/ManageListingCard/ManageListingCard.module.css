@@ -181,6 +181,13 @@
   }
 }
 
+/* Fechar sem destaque pago: acção reversível, botão normal da casa. */
+.closeConfirmButton {
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 13px;
+}
+
 .deleteCancelLink {
   composes: a textSmall from global;
   margin-top: 4px;

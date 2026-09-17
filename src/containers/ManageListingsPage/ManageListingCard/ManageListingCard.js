@@ -702,7 +702,11 @@ export const ManageListingCard = props => {
             >
               <div className={css.deleteConfirmActions}>
                 <PrimaryButtonInline
-                  className={css.deleteConfirmButton}
+                  // Vermelho só quando há dinheiro a perder-se. Fechar um
+                  // anúncio é reversível; pintá-lo com o vermelho de "Confirmar
+                  // eliminação", que está ali ao lado, dizia que era a mesma
+                  // coisa — e gasta o alarme em quem não tem nada a perder.
+                  className={isFeatured ? css.deleteConfirmButton : css.closeConfirmButton}
                   disabled={!!actionsInProgressListingId}
                   onClick={event => {
                     event.preventDefault();
