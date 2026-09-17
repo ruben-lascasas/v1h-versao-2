@@ -96,6 +96,7 @@ import {
   priceForSchemaMaybe,
 } from './ListingPage.shared';
 import ActionBarMaybe from './ActionBarMaybe';
+import ClosedListingNotice from './ClosedListingNotice';
 import SectionReviews from './SectionReviews';
 import TranslateButton from '../../components/TranslateButton/TranslateButton';
 import SimilarListingsSection from '../../components/SimilarListingsSection/SimilarListingsSection';
@@ -622,7 +623,9 @@ export const ListingPageComponent = props => {
                 currentUser={currentUser}
               />
             ) : null}
-            {null}
+            {currentListing.attributes?.state === LISTING_STATE_CLOSED ? (
+              <ClosedListingNotice isOwnListing={isOwnListing} isEN={locale === 'en'} />
+            ) : null}
             {showListingImage && (
               <div className={css.galleryWrapper}>
                 <SectionGallery

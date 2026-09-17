@@ -67,6 +67,32 @@
 .cardBadgeNovo {
   color: #2E6FE5;
 }
+/* Um anúncio fechado não ostenta destaque nem novidade: diz o que é. */
+.cardBadgeFechado {
+  color: #6b645c;
+  border-color: #b9b2a8;
+}
+
+/*
+  O cartão de um anúncio fechado continua clicável — quem tem uma reserva ou um
+  contrato precisa de lá chegar — mas deixa de se parecer com uma oferta viva:
+  a imagem esmorece e o preço deixa de ser uma promessa.
+*/
+.cardFechado .aspectRatioWrapper {
+  filter: grayscale(0.85);
+  opacity: 0.55;
+}
+
+.cardFechado .title,
+.cardFechado .priceValue,
+.cardFechado .perUnit {
+  color: #8a8178;
+}
+
+.cardFechado:hover .aspectRatioWrapper {
+  transform: none;
+  box-shadow: none;
+}
 
 .aspectRatioWrapper {
   transition: var(--transitionStyleButton);

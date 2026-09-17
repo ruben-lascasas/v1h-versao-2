@@ -30,6 +30,7 @@ import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import reducer, { showListing, loadData, setInitialValues } from './ListingPage.duck';
 
 import ActionBarMaybe from './ActionBarMaybe';
+import ClosedListingNotice from './ClosedListingNotice';
 
 const { UUID } = sdkTypes;
 const { screen, waitFor, within } = testingLibrary;
@@ -789,5 +790,39 @@ describe('ActionBarMaybe', () => {
       />
     );
     expect(actionBar.asFragment().firstChild).toBeNull();
+  });
+});
+
+/**
+ * A barra fina do ActionBarMaybe só é renderizada, nesta disposição, para o
+ * dono do anúncio. Quem chega de fora a um anúncio encerrado não via nada
+ * disso: via a página inteira como se fosse uma oferta viva, e só o percebia
+ * pela linha cinzenta onde estava o botão de reservar.
+ */
+describe('ClosedListingNotice', () => {
+  it('diz a quem chega de fora que o espaço já não está disponível', () => {
+    render(<ClosedListingNotice isOwnListing={false} isEN={false} />);
+
+    expect(screen.getByText('Este espaço já não está disponível')).toBeInTheDocument();
+    expect(screen.getByText('Ver outros espaços')).toBeInTheDocument();
+  });
+
+  // A página continua a existir de propósito: há reservas, contratos e recibos
+  // que apontam para ela.
+  it('explica porque é que a página continua a existir', () => {
+    render(<ClosedListingNotice isOwnListing={false} isEN={false} />);
+    expect(screen.getByText(/reserva ou um contrato associados/)).toBeInTheDocument();
+  });
+
+  it('ao dono diz como reabrir, e não o manda procurar outro espaço', () => {
+    render(<ClosedListingNotice isOwnListing isEN={false} />);
+
+    expect(screen.getByText('Gerir os meus anúncios')).toBeInTheDocument();
+    expect(screen.queryByText('Ver outros espaços')).not.toBeInTheDocument();
+  });
+
+  it('fala inglês a quem tem o site em inglês', () => {
+    render(<ClosedListingNotice isOwnListing={false} isEN />);
+    expect(screen.getByText('This space is no longer available')).toBeInTheDocument();
   });
 });

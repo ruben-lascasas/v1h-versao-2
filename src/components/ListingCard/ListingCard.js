@@ -158,14 +158,23 @@ export const ListingCard = props => {
   // Mirrors the badge logic on ListingPageCarousel so users see the same
   // signal across grid and detail.
   const todayCount = viewCounts?.[id]?.todayCount || 0;
+  // Um anúncio fechado continua a aparecer nos Vistos Recentemente e nos
+  // Favoritos — é buscado por id, e a API devolve-o na mesma. Aparecia como
+  // qualquer outro, selo de destaque incluído, e só se percebia depois de
+  // clicar. O cartão tem de dizer antes do clique.
+  const isClosed = listing?.attributes?.state === 'closed';
   const isFeatured =
-    listingHighlightsEnabled && listing?.attributes?.publicData?.featured === 'true';
+    !isClosed &&
+    listingHighlightsEnabled &&
+    listing?.attributes?.publicData?.featured === 'true';
   const createdAt = listing?.attributes?.createdAt;
   const isNewListing =
     !!createdAt &&
     Date.now() - new Date(createdAt).getTime() < 7 * 24 * 60 * 60 * 1000;
   const isPopular = todayCount >= 5;
-  const cardBadge = isFeatured
+  const cardBadge = isClosed
+    ? { kind: 'fechado', label: isEN ? 'No longer available' : 'Já não disponível' }
+    : isFeatured
     ? { kind: 'featured', label: isEN ? 'Featured' : 'Em destaque' }
     : isPopular
       ? { kind: 'popular', label: isEN ? 'Popular' : 'Popular' }
@@ -209,7 +218,7 @@ export const ListingCard = props => {
 
   return (
     <NamedLink
-      className={classes}
+      className={classNames(classes, { [css.cardFechado]: isClosed })}
       name="ListingPage"
       params={{ id, slug }}
       ariaLabel={cardAriaLabel}
@@ -228,6 +237,7 @@ export const ListingCard = props => {
             [css.cardBadgeFeatured]: cardBadge.kind === 'featured',
             [css.cardBadgePopular]: cardBadge.kind === 'popular',
             [css.cardBadgeNovo]: cardBadge.kind === 'novo',
+            [css.cardBadgeFechado]: cardBadge.kind === 'fechado',
           })}
           aria-label={cardBadge.label}
         >
