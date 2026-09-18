@@ -249,10 +249,26 @@ const mergeBranding = (brandingConfig, defaultBranding) => {
   const validLogoSettings =
     logoSettingsRaw?.format === 'image' && [24, 36, 48].includes(logoSettingsRaw?.height);
 
-  const facebookImage =
-    getVariantURL(socialSharingImage, 'scaled1200') || defaultBranding.facebookImageURL;
-  const twitterImage =
-    getVariantURL(socialSharingImage, 'scaled600') || defaultBranding.twitterImageURL;
+  /**
+   * A imagem que aparece quando alguém partilha uma ligação do site.
+   *
+   * Era a da Console, e a da Console é a fotografia de fetos que vem por
+   * omissão com a Sharetribe — quem partilhava o venue1hub.eu no WhatsApp
+   * mostrava aos amigos um canteiro de plantas.
+   *
+   * Passa a mandar a nossa, que está no repositório e é a marca. Quando houver
+   * uma imagem escolhida na Console, basta trocar esta constante para false e
+   * o comando volta para lá — não há forma de distinguir nos dados uma imagem
+   * escolhida da que a Sharetribe deixou lá.
+   */
+  const IMAGEM_DE_PARTILHA_LOCAL = true;
+
+  const facebookImage = IMAGEM_DE_PARTILHA_LOCAL
+    ? defaultBranding.facebookImageURL
+    : getVariantURL(socialSharingImage, 'scaled1200') || defaultBranding.facebookImageURL;
+  const twitterImage = IMAGEM_DE_PARTILHA_LOCAL
+    ? defaultBranding.twitterImageURL
+    : getVariantURL(socialSharingImage, 'scaled600') || defaultBranding.twitterImageURL;
 
   return {
     marketplaceColor,

@@ -280,3 +280,20 @@ export const getValidInboxSort = sort => {
   // Background: API does not guarantee the order of responses if the primary sort property is missing.
   return sort === 'lastMessageAt' ? { sort: 'lastMessageAt,createdAt' } : { sort };
 };
+
+/**
+ * Endereço absoluto a partir de um caminho do próprio site.
+ *
+ * As imagens que vivem no repositório entram como "/static/media/....jpg", e
+ * quem lê as etiquetas de partilha — Facebook, WhatsApp, LinkedIn — não segue
+ * caminhos relativos: mostra a partilha sem imagem nenhuma. Um endereço que já
+ * traga domínio fica como está.
+ *
+ * @param {string} url
+ * @param {string} raiz endereço do site, com ou sem barra no fim
+ * @returns {string} o mesmo endereço, absoluto quando era um caminho
+ */
+export const toAbsoluteURL = (url, raiz) => {
+  const base = (raiz || '').replace(/\/$/, '');
+  return url && base && url.startsWith('/') ? `${base}${url}` : url;
+};

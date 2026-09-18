@@ -8,6 +8,7 @@ import {
   decodeLatLngBounds,
   stringify,
   parse,
+  toAbsoluteURL,
 } from './urlHelpers';
 
 const { LatLng, LatLngBounds } = sdkTypes;
@@ -168,5 +169,40 @@ describe('urlHelpers', () => {
         origin: '40,60',
       });
     });
+  });
+});
+
+/**
+ * A imagem de partilha do site vive no repositório e entra como
+ * "/static/media/...jpg". Quem lê as etiquetas de partilha não segue caminhos
+ * relativos: mostrava a partilha sem imagem nenhuma.
+ */
+describe('toAbsoluteURL', () => {
+  it('põe o domínio num caminho do próprio site', () => {
+    expect(toAbsoluteURL('/static/media/cartao.jpg', 'https://venue1hub.eu')).toBe(
+      'https://venue1hub.eu/static/media/cartao.jpg'
+    );
+  });
+
+  it('não duplica a barra quando a raiz já a tem', () => {
+    expect(toAbsoluteURL('/x.jpg', 'https://venue1hub.eu/')).toBe('https://venue1hub.eu/x.jpg');
+  });
+
+  // As imagens da Console já vêm com domínio.
+  it('deixa em paz um endereço que já é absoluto', () => {
+    const url = 'https://sharetribe-assets.imgix.net/abc.jpg';
+    expect(toAbsoluteURL(url, 'https://venue1hub.eu')).toBe(url);
+  });
+
+  // Sem raiz configurada, mais vale devolver o que havia do que inventar um
+  // endereço partido.
+  it('sem raiz, devolve o que recebeu', () => {
+    expect(toAbsoluteURL('/x.jpg', undefined)).toBe('/x.jpg');
+    expect(toAbsoluteURL('/x.jpg', '')).toBe('/x.jpg');
+  });
+
+  it('aguenta não receber endereço nenhum', () => {
+    expect(toAbsoluteURL(null, 'https://venue1hub.eu')).toBeNull();
+    expect(toAbsoluteURL(undefined, 'https://venue1hub.eu')).toBeUndefined();
   });
 });

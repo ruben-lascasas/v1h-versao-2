@@ -10,6 +10,7 @@ import { getCustomCSSPropertiesFromConfig } from '../../util/style';
 import { useIntl, intlShape } from '../../util/reactIntl';
 import { metaTagProps } from '../../util/seo';
 import { canonicalRoutePath } from '../../util/routes';
+import { toAbsoluteURL } from '../../util/urlHelpers';
 import { propTypes } from '../../util/types';
 import { apiBaseUrl } from '../../util/api';
 import { socialProfileUrls } from '../../config/socialLinks';
@@ -158,7 +159,14 @@ class PageComponent extends Component {
     } = socialSharing || {};
 
     // Images for social media sharing
-    const defaultFacebookImageURL = config.branding.facebookImage;
+    //
+    // O endereço tem de ser absoluto. As imagens do repositório entram como
+    // "/static/media/...jpg", e o Facebook, o WhatsApp e o LinkedIn não vão
+    // buscar caminhos relativos: mostram a partilha sem imagem nenhuma. As da
+    // Console já vêm com domínio e ficam como estão.
+    const absolutizar = url => toAbsoluteURL(url, config.marketplaceRootURL);
+
+    const defaultFacebookImageURL = absolutizar(config.branding.facebookImage);
     const openGraphFallbackImages = [
       {
         name: 'facebook',
@@ -167,7 +175,7 @@ class PageComponent extends Component {
         height: 630,
       },
     ];
-    const defaultTwitterImageURL = config.branding.twitterImage;
+    const defaultTwitterImageURL = absolutizar(config.branding.twitterImage);
     const twitterFallbackImages = [
       {
         name: 'twitter',
