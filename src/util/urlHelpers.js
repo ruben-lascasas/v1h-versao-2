@@ -297,3 +297,28 @@ export const toAbsoluteURL = (url, raiz) => {
   const base = (raiz || '').replace(/\/$/, '');
   return url && base && url.startsWith('/') ? `${base}${url}` : url;
 };
+
+/**
+ * As imagens de partilha que vieram com a demonstração da Sharetribe.
+ *
+ * O marketplace nasceu com conteúdo de exemplo, e nele duas imagens de
+ * partilha: uma fotografia de fetos (na página principal, em Content → Pages)
+ * e uma de um anfiteatro (na marca, em Branding). Nenhuma tem que ver com a
+ * Venue1Hub, e era a dos fetos que aparecia a quem recebia uma ligação do site.
+ *
+ * Identificam-se pelo seu ficheiro: o endereço do Sharetribe traz o resumo do
+ * conteúdo. Ignorar por conteúdo, e não desligar a Console inteira, é o que
+ * permite que uma imagem escolhida de propósito continue a mandar — no dia em
+ * que lá for posta uma, isto deixa de ter efeito sozinho.
+ */
+const FICHEIROS_DE_DEMONSTRACAO = [
+  'f5d3ed6a44c89c6ccc440e11a273d108f98eac',
+  'f565a06609d9132ad4d8e0046a99dcd3d8b325',
+];
+
+/**
+ * @param {string} url
+ * @returns {boolean} true se for uma das imagens de exemplo da Sharetribe
+ */
+export const isDemoSharingImage = url =>
+  typeof url === 'string' && FICHEIROS_DE_DEMONSTRACAO.some(f => url.includes(f));

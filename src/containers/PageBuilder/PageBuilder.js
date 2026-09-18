@@ -10,6 +10,8 @@ import { validProps } from './Field';
 import SectionBuilder from './SectionBuilder/SectionBuilder.js';
 import StaticPage from './StaticPage.js';
 
+import { isDemoSharingImage } from '../../util/urlHelpers';
+
 import css from './PageBuilder.module.css';
 
 const getMetadata = (meta, schemaType, fieldOptions) => {
@@ -20,7 +22,26 @@ const getMetadata = (meta, schemaType, fieldOptions) => {
   // pageDescription is used for different <meta> tags in addition to page schema for SEO
   const description = validProps(pageDescription, fieldOptions)?.content;
   // Data used when the page is shared in social media services
-  const openGraph = validProps(socialSharing, fieldOptions);
+  //
+  // A imagem da página ganha a tudo o resto — e na página principal a que lá
+  // estava era a fotografia de fetos que veio com a demonstração da
+  // Sharetribe. Quem recebia a ligação do site via um canteiro de plantas.
+  //
+  // Quando é essa, deita-se fora para a página cair na imagem da marca, que é
+  // a nossa. Uma imagem escolhida de propósito para uma página continua a
+  // mandar, como deve ser.
+  const openGraphBruto = validProps(socialSharing, fieldOptions);
+  const semDemonstracao = imagens =>
+    Array.isArray(imagens) ? imagens.filter(i => !isDemoSharingImage(i?.url)) : imagens;
+  const imagens1200 = semDemonstracao(openGraphBruto?.images1200);
+  const imagens600 = semDemonstracao(openGraphBruto?.images600);
+  const openGraph = openGraphBruto
+    ? {
+        ...openGraphBruto,
+        images1200: imagens1200?.length ? imagens1200 : undefined,
+        images600: imagens600?.length ? imagens600 : undefined,
+      }
+    : openGraphBruto;
   // We add OpenGraph image as schema image if it exists.
   const schemaImage = openGraph?.images1200?.[0]?.url;
   const schemaImageMaybe = schemaImage ? { image: [schemaImage] } : {};

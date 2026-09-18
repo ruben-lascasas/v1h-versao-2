@@ -9,6 +9,7 @@ import {
   stringify,
   parse,
   toAbsoluteURL,
+  isDemoSharingImage,
 } from './urlHelpers';
 
 const { LatLng, LatLngBounds } = sdkTypes;
@@ -204,5 +205,44 @@ describe('toAbsoluteURL', () => {
   it('aguenta não receber endereço nenhum', () => {
     expect(toAbsoluteURL(null, 'https://venue1hub.eu')).toBeNull();
     expect(toAbsoluteURL(undefined, 'https://venue1hub.eu')).toBeUndefined();
+  });
+});
+
+/**
+ * O marketplace nasceu com conteúdo de demonstração da Sharetribe, e nele duas
+ * imagens de partilha: fetos na página principal e um anfiteatro na marca.
+ * Era a dos fetos que aparecia a quem recebia uma ligação do venue1hub.eu.
+ */
+describe('isDemoSharingImage', () => {
+  const fetos =
+    'https://sharetribe-assets.imgix.net/6a7c32f3/raw/db/f5d3ed6a44c89c6ccc440e11a273d108f98eac?auto=format&w=1200';
+  const anfiteatro =
+    'https://sharetribe-assets.imgix.net/6a7c32f3/raw/b3/f565a06609d9132ad4d8e0046a99dcd3d8b325?auto=format&w=600';
+
+  it('reconhece as duas que vieram com a demonstração', () => {
+    expect(isDemoSharingImage(fetos)).toBe(true);
+    expect(isDemoSharingImage(anfiteatro)).toBe(true);
+  });
+
+  /**
+   * É este o ponto de identificar por ficheiro em vez de desligar a Console:
+   * no dia em que lá for posta uma imagem escolhida, ela manda, e isto deixa
+   * de ter efeito sozinho.
+   */
+  it('uma imagem escolhida na Console continua a mandar', () => {
+    expect(
+      isDemoSharingImage('https://sharetribe-assets.imgix.net/6a7c32f3/raw/aa/outracoisa?w=1200')
+    ).toBe(false);
+  });
+
+  it('e a nossa, do repositório, também', () => {
+    expect(isDemoSharingImage('/static/media/venue1hub-facebook-sharing-1200x630.abc.jpg')).toBe(
+      false
+    );
+  });
+
+  it('aguenta não receber endereço nenhum', () => {
+    expect(isDemoSharingImage(null)).toBe(false);
+    expect(isDemoSharingImage(undefined)).toBe(false);
   });
 });
