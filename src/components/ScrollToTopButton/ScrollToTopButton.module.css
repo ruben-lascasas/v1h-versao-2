@@ -7,9 +7,9 @@
      continua a tapar o botão e o X de fechar continua clicável. */
 .button {
   position: fixed;
-  /* 108px, e não 32px: o balão de conversa do AnyChat ocupa o canto de baixo à
-     direita (70px de altura a 20px do fundo) e vem com z-index 1000000 — o
-     botão ficava debaixo dele, invisível e sem se conseguir carregar. */
+  /* No telemóvel o botão passa por cima do balão de conversa, que fica no canto
+     (ver styles/anychat.css). Sem isto ficava debaixo dele — invisível, e sem
+     se conseguir carregar. No computador é ao contrário: o balão é que sobe. */
   bottom: 108px;
   right: 24px;
   z-index: 50;
@@ -22,6 +22,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Em pixéis, e não com `--viewportMedium`: este ficheiro não importa as
+     customMediaQueries, e o nome ficava por substituir no CSS compilado —
+     `@media (--viewportMedium)`, que o browser ignora em silêncio. Foi o que
+     aconteceu à primeira, e só se viu medindo o botão no ecrã. */
+  @media (min-width: 768px) {
+    /* No computador o balão sobe e este volta ao canto. */
+    bottom: 32px;
+  }
 }
 
 /* círculo igual ao span do carrossel */

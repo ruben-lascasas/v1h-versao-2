@@ -27,15 +27,25 @@
 }
 
 /*
-  2. No telemóvel, o balão fica onde o AnyChat o põe — canto inferior direito, a
-     20px do fundo.
+  2. QUEM FICA EM BAIXO, E QUEM FICA EM CIMA
 
-     Cheguei a levantá-lo para 104px, para não ficar em cima da barra inferior
-     da página principal. Estava errado: a essa altura passava a tapar o
-     "VER RESULTADOS", que é o botão principal do site. E a barra que eu queria
-     poupar não tem botões nenhuns — é a faixa decorativa "Explore a V1HUB",
-     com o texto centrado.
+  No computador, o balão sobe e o botão de voltar ao topo fica no canto —
+  pedido do Rúben, e faz sentido: o voltar ao topo é um gesto de passagem, o
+  balão é um convite que fica.
 
-     Entre tapar um canto de uma faixa decorativa e tapar o botão que leva à
-     pesquisa, a escolha não tem dúvidas. Fica como estava.
+     voltar ao topo   32px do fundo, 48px de altura   (32 → 80)
+     balão            92px do fundo, 70px de altura   (92 → 162)
+
+  No telemóvel é ao contrário, e não por gosto: a página principal tem o botão
+  "VER RESULTADOS" a ocupar dos 108 aos 165px do fundo. Com o balão levantado,
+  ficava-lhe em cima — e esse é o botão que leva à pesquisa. Aí o balão fica no
+  canto (onde o AnyChat o põe) e o voltar ao topo passa-lhe por cima, a 108px.
+
+  Media query em pixéis e não em `--viewportMedium` porque esta folha é global
+  e não passa pelo PostCSS dos módulos; 768px é o mesmo valor.
 */
+@media (min-width: 768px) {
+  #arcontactus {
+    bottom: 92px !important;
+  }
+}
