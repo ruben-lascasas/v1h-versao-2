@@ -66,6 +66,10 @@ const defaultDirectives = {
     'sentry.io',
     '*.sentry.io',
     '*.stripe.com',
+
+    // Meta (Facebook) Pixel — os eventos vão para aqui.
+    'www.facebook.com',
+    'connect.facebook.net',
   ],
   fontSrc: [self, data, 'assets-sharetribecom.sharetribe.com', 'fonts.gstatic.com'],
   formAction: [self],
@@ -112,6 +116,9 @@ const defaultDirectives = {
 
     // Stripe
     '*.stripe.com',
+
+    // Meta (Facebook) Pixel — o pixel é, à letra, uma imagem de 1x1.
+    'www.facebook.com',
   ],
   scriptSrc: [
     self,
@@ -126,6 +133,8 @@ const defaultDirectives = {
     'js.stripe.com',
     // Plausible analytics
     'plausible.io',
+    // Meta (Facebook) Pixel — só carrega com consentimento de marketing.
+    'connect.facebook.net',
   ],
   styleSrc: [self, unsafeInline, 'fonts.googleapis.com', 'api.mapbox.com'],
 };

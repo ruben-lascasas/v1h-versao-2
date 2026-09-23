@@ -166,7 +166,11 @@ const mergeAnalyticsConfig = (hostedAnalyticsConfig, defaultAnalyticsConfig) => 
   const plausibleDomains = joinStrings(plausibleDomainsHosted, plausibleDomainsDefault);
   const plausibleDomainsMaybe = plausibleDomains ? { plausibleDomains } : {};
 
-  return { googleAnalyticsId, ...plausibleDomainsMaybe };
+  // O pixel da Meta não vem da configuração alojada: é nosso, e sem isto
+  // perdia-se aqui sem deixar rasto.
+  const { facebookPixelId } = defaultAnalyticsConfig;
+
+  return { googleAnalyticsId, facebookPixelId, ...plausibleDomainsMaybe };
 };
 
 ////////////////////

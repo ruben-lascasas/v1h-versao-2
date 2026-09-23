@@ -365,6 +365,7 @@ const TABELA_COOKIES = [
   ['__stripe_mid, __stripe_sid', 'Stripe', 'Processamento de pagamentos e prevenção de fraude', 'Essencial', '1 ano / 30 minutos'],
   ['mapbox.eventData, mapbox-gl', 'Mapbox', 'Mapa de pesquisa e geolocalização', 'Essencial', 'Sessão / até 1 ano'],
   ['_ga, _ga_*', 'Google Analytics', 'Estatísticas agregadas de utilização', 'Analítico', '2 anos'],
+  ['_fbp, _fbc', 'Meta (Facebook)', 'Medir campanhas e mostrar anúncios a quem já visitou o site', 'Marketing', '3 meses'],
 ];
 
 /** A tabela-modelo da Política de Cookies dá lugar aos cookies reais. */

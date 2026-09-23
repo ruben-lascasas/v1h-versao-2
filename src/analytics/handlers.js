@@ -24,3 +24,22 @@ export class GoogleAnalyticsHandler {
     }
   }
 }
+
+/**
+ * Meta (Facebook) Pixel. O script é incluído em util/includeScripts.js, e só
+ * depois de o visitante aceitar cookies de marketing.
+ *
+ * O código que a Meta dá dispara um PageView ao carregar a página e mais
+ * nenhum. Isto é uma aplicação de página única: a pessoa percorre a pesquisa,
+ * abre três anúncios e vai ao checkout sem nunca recarregar nada, e o pixel
+ * contava uma visita só. Daí este handler.
+ */
+export class FacebookPixelHandler {
+  trackPageView(canonicalPath, previousPath) {
+    // Sem previousPath é o carregamento inicial, e esse já foi contado pelo
+    // próprio código do pixel. Contá-lo aqui outra vez duplicava a visita.
+    if (previousPath && typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'PageView');
+    }
+  }
+}

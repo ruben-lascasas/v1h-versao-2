@@ -35,12 +35,17 @@ const writeConsent = consent => {
       JSON.stringify({ ...consent, version: CONSENT_VERSION, savedAt: Date.now() })
     );
     window.dispatchEvent(new CustomEvent('v1h:consentChanged', { detail: consent }));
-    // If user just granted analytics, the GA <script> needs the page reloaded
-    // (or to be injected dynamically) since includeScripts skipped it on initial render.
-    // Reload only when going from "no analytics" to "analytics granted" so the change is silent.
-    if (consent.analytics && typeof window !== 'undefined') {
-      const hadGA = !!window.gtag;
-      if (!hadGA) {
+    // If user just granted analytics or marketing, the tracking <script>s need
+    // the page reloaded (or to be injected dynamically) since includeScripts
+    // skipped them on initial render. Reload only when going from "not granted"
+    // to "granted" so the change is silent.
+    //
+    // O pixel da Meta entrou na mesma lógica: sem isto, quem aceitasse marketing
+    // ficava com a escolha guardada e sem pixel nenhum até à próxima visita.
+    if (typeof window !== 'undefined') {
+      const faltaGA = consent.analytics && !window.gtag;
+      const faltaPixel = consent.marketing && !window.fbq;
+      if (faltaGA || faltaPixel) {
         // Small delay so the modal animates out before reload.
         setTimeout(() => window.location.reload(), 250);
       }

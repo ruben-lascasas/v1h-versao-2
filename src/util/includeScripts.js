@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import { useRouteConfiguration } from '../context/routeConfigurationContext';
@@ -7,6 +7,7 @@ import { hasConsent } from '../components/CookieConsent/CookieConsent';
 
 const MAPBOX_SCRIPT_ID = 'mapbox_GL_JS';
 const GOOGLE_MAPS_SCRIPT_ID = 'GoogleMapsApi';
+const META_PIXEL_SCRIPT_ID = 'metaPixel';
 
 /**
  * Map library is shown on some of the pages, but ReusableMapContainer is used app wide.
@@ -40,7 +41,7 @@ const canDeferMapLibrary = (initialPathname, routeConfiguration) => {
  */
 export const IncludeScripts = props => {
   const { marketplaceRootURL: rootURL, maps, analytics } = props?.config || {};
-  const { googleAnalyticsId, plausibleDomains } = analytics;
+  const { googleAnalyticsId, plausibleDomains, facebookPixelId } = analytics;
 
   const routeConfiguration = useRouteConfiguration();
   // Note: Affects Mapbox only. Google Maps initialization is not yet ready to support asynchronous loading.
@@ -150,6 +151,56 @@ export const IncludeScripts = props => {
       ></script>
     );
   }
+
+  /**
+   * Meta (Facebook) Pixel.
+   *
+   * Vai na categoria de MARKETING, não na de analítica: serve para publicidade
+   * e remarketing, e a escolha do visitante entre uma coisa e outra tem de ser
+   * respeitada tal como ele a fez. Quem aceitar só estatísticas não leva pixel.
+   *
+   * Sem consentimento não se carrega nada — nem o script, nem a imagem do
+   * <noscript>, que é um pedido ao Facebook na mesma e conta como cookie.
+   *
+   * PORQUE É QUE ISTO NÃO VAI NO HELMET
+   *
+   * Foi a primeira tentativa, ao lado do gtag.js. A etiqueta simplesmente não
+   * chegava ao <head>: o pixel ficava com a fila cheia de eventos e o ficheiro
+   * da Meta nunca era pedido — ou seja, consentimento dado, nada medido. Aqui
+   * injecta-se à mão, que é o que o próprio código da Meta faz, e vê-se o
+   * pedido a sair.
+   */
+  const marketingConsentGranted = isClient ? hasConsent('marketing') : false;
+  const pixelAtivo = !!facebookPixelId && marketingConsentGranted;
+
+  useEffect(() => {
+    if (!pixelAtivo || typeof window === 'undefined') return;
+
+    if (!window.fbq) {
+      // A fila guarda os eventos disparados antes de o ficheiro da Meta chegar;
+      // quando chega, é ela que ele consome.
+      const fbq = function() {
+        fbq.callMethod ? fbq.callMethod.apply(fbq, arguments) : fbq.queue.push(arguments);
+      };
+      fbq.push = fbq;
+      fbq.loaded = true;
+      fbq.version = '2.0';
+      fbq.queue = [];
+      window.fbq = fbq;
+      window._fbq = window._fbq || fbq;
+
+      window.fbq('init', facebookPixelId);
+      window.fbq('track', 'PageView');
+    }
+
+    if (!document.getElementById(META_PIXEL_SCRIPT_ID)) {
+      const script = document.createElement('script');
+      script.id = META_PIXEL_SCRIPT_ID;
+      script.async = true;
+      script.src = 'https://connect.facebook.net/en_US/fbevents.js';
+      document.head.appendChild(script);
+    }
+  }, [pixelAtivo, facebookPixelId]);
 
   const isBrowser = typeof window !== 'undefined';
   const isMapboxLoaded = isBrowser && window.mapboxgl;

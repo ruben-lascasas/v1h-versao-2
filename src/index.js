@@ -25,7 +25,12 @@ import './styles/landingDark.css';
 // Configs and store setup
 import appSettings from './config/settings';
 import defaultConfig from './config/configDefault';
-import { LoggingAnalyticsHandler, GoogleAnalyticsHandler } from './analytics/handlers';
+import { facebookPixelId } from './config/configAnalytics';
+import {
+  LoggingAnalyticsHandler,
+  GoogleAnalyticsHandler,
+  FacebookPixelHandler,
+} from './analytics/handlers';
 import configureStore from './store';
 
 // Utils
@@ -125,7 +130,7 @@ const render = (store, shouldHydrate) => {
     });
 };
 
-const setupAnalyticsHandlers = googleAnalyticsId => {
+const setupAnalyticsHandlers = (googleAnalyticsId, facebookPixelId) => {
   let handlers = [];
 
   // Log analytics page views and events in dev mode
@@ -142,6 +147,13 @@ const setupAnalyticsHandlers = googleAnalyticsId => {
     } else {
       handlers.push(new GoogleAnalyticsHandler());
     }
+  }
+
+  // Meta Pixel: o handler é barato e não faz nada enquanto window.fbq não
+  // existir — e window.fbq só existe depois de haver consentimento de
+  // marketing. Não é preciso saber aqui se ele foi dado.
+  if (facebookPixelId) {
+    handlers.push(new FacebookPixelHandler());
   }
 
   return handlers;
@@ -210,7 +222,7 @@ if (typeof window !== 'undefined') {
   // Note: on localhost:3000, you need to use environment variable.
   const googleAnalyticsIdFromSSR = initialState?.hostedAssets?.googleAnalyticsId;
   const googleAnalyticsId = googleAnalyticsIdFromSSR || process.env.REACT_APP_GOOGLE_ANALYTICS_ID;
-  const analyticsHandlers = setupAnalyticsHandlers(googleAnalyticsId);
+  const analyticsHandlers = setupAnalyticsHandlers(googleAnalyticsId, facebookPixelId);
   const store = configureStore({ initialState, sdk, analyticsHandlers });
 
   require('./util/polyfills');
