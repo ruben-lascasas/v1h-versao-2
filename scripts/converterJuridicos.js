@@ -366,6 +366,7 @@ const TABELA_COOKIES = [
   ['mapbox.eventData, mapbox-gl', 'Mapbox', 'Mapa de pesquisa e geolocalização', 'Essencial', 'Sessão / até 1 ano'],
   ['_ga, _ga_*', 'Google Analytics', 'Estatísticas agregadas de utilização', 'Analítico', '2 anos'],
   ['_fbp, _fbc', 'Meta (Facebook)', 'Medir campanhas e mostrar anúncios a quem já visitou o site', 'Marketing', '3 meses'],
+  ['anw::*', 'AnyChat', 'Estado do botão de conversa (aberto/fechado, mensagens já vistas)', 'Preferências', 'Até ser limpo pelo utilizador'],
 ];
 
 /** A tabela-modelo da Política de Cookies dá lugar aos cookies reais. */

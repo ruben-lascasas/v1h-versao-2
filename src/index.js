@@ -21,6 +21,7 @@ import { loadableReady } from '@loadable/component';
 // as first ones in the final build CSS build file.
 import './styles/marketplaceDefaults.css';
 import './styles/landingDark.css';
+import './styles/anychat.css';
 
 // Configs and store setup
 import appSettings from './config/settings';

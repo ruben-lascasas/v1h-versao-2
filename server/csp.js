@@ -70,6 +70,9 @@ const defaultDirectives = {
     // Meta (Facebook) Pixel — os eventos vão para aqui.
     'www.facebook.com',
     'connect.facebook.net',
+
+    // AnyChat
+    '*.anychat.one',
   ],
   fontSrc: [self, data, 'assets-sharetribecom.sharetribe.com', 'fonts.gstatic.com'],
   formAction: [self],
@@ -119,6 +122,9 @@ const defaultDirectives = {
 
     // Meta (Facebook) Pixel — o pixel é, à letra, uma imagem de 1x1.
     'www.facebook.com',
+
+    // AnyChat — ícones dos canais de contacto.
+    '*.anychat.one',
   ],
   scriptSrc: [
     self,
@@ -135,8 +141,11 @@ const defaultDirectives = {
     'plausible.io',
     // Meta (Facebook) Pixel — só carrega com consentimento de marketing.
     'connect.facebook.net',
+    // AnyChat — botão flutuante de conversa.
+    '*.anychat.one',
   ],
-  styleSrc: [self, unsafeInline, 'fonts.googleapis.com', 'api.mapbox.com'],
+  // O AnyChat serve a folha de estilos do widget a partir de w.anychat.one.
+  styleSrc: [self, unsafeInline, 'fonts.googleapis.com', 'api.mapbox.com', '*.anychat.one'],
 };
 
 /**

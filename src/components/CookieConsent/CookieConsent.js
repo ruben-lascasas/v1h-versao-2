@@ -45,7 +45,12 @@ const writeConsent = consent => {
     if (typeof window !== 'undefined') {
       const faltaGA = consent.analytics && !window.gtag;
       const faltaPixel = consent.marketing && !window.fbq;
-      if (faltaGA || faltaPixel) {
+      // O botão de conversa segue a mesma regra: sem recarregar, quem aceitasse
+      // preferências ficava à espera de um botão que só apareceria na visita
+      // seguinte.
+      const faltaChat =
+        consent.preferences && !document.getElementById('contactus-jssdk');
+      if (faltaGA || faltaPixel || faltaChat) {
         // Small delay so the modal animates out before reload.
         setTimeout(() => window.location.reload(), 250);
       }

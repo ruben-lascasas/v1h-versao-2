@@ -1,0 +1,41 @@
+/*
+  Ajustes ao botão flutuante de conversa (AnyChat).
+
+  O widget é servido por eles e vem com decisões próprias sobre onde se põe e
+  sobre quem fica por cima. Duas dessas decisões não servem aqui, e são
+  corrigidas deste lado porque a consola do AnyChat não as expõe.
+
+  NOTA: isto depende do `id` e das classes que o widget deles usa
+  (#arcontactus). Se um dia o botão aparecer no sítio errado ou por cima de
+  uma janela, é aqui que se olha primeiro — pode ter mudado do lado deles.
+*/
+
+/*
+  1. O widget chega com z-index 1000000, ou seja, por cima de tudo o que existe
+     no site: do aviso de cookies, da campanha de fundador, de qualquer janela.
+     Um botão de conversa não se sobrepõe a uma decisão que está a ser pedida
+     ao visitante.
+
+     900 deixa-o acima da página (a barra inferior do telemóvel está em 9, o
+     botão de voltar ao topo em 50) e abaixo do que interrompe (aviso de
+     cookies em 1000, janelas em 10000).
+*/
+#arcontactus,
+.messangers-block,
+.arcu-forms-container {
+  z-index: 900 !important;
+}
+
+/*
+  2. No telemóvel, o balão fica onde o AnyChat o põe — canto inferior direito, a
+     20px do fundo.
+
+     Cheguei a levantá-lo para 104px, para não ficar em cima da barra inferior
+     da página principal. Estava errado: a essa altura passava a tapar o
+     "VER RESULTADOS", que é o botão principal do site. E a barra que eu queria
+     poupar não tem botões nenhuns — é a faixa decorativa "Explore a V1HUB",
+     com o texto centrado.
+
+     Entre tapar um canto de uma faixa decorativa e tapar o botão que leva à
+     pesquisa, a escolha não tem dúvidas. Fica como estava.
+*/

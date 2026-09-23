@@ -4,10 +4,18 @@ import { Helmet } from 'react-helmet-async';
 import { useRouteConfiguration } from '../context/routeConfigurationContext';
 import { matchPathname } from '../util/routes';
 import { hasConsent } from '../components/CookieConsent/CookieConsent';
+import {
+  anychatWidgetId,
+  anychatRequiresConsent,
+  anychatScriptSrc,
+} from '../config/configChat';
 
 const MAPBOX_SCRIPT_ID = 'mapbox_GL_JS';
 const GOOGLE_MAPS_SCRIPT_ID = 'GoogleMapsApi';
 const META_PIXEL_SCRIPT_ID = 'metaPixel';
+// O id que o próprio AnyChat usa no snippet deles; mantém-se para o script não
+// entrar duas vezes se algum dia o snippet for colado à mão noutro sítio.
+const ANYCHAT_SCRIPT_ID = 'contactus-jssdk';
 
 /**
  * Map library is shown on some of the pages, but ReusableMapContainer is used app wide.
@@ -201,6 +209,32 @@ export const IncludeScripts = props => {
       document.head.appendChild(script);
     }
   }, [pixelAtivo, facebookPixelId]);
+
+  /**
+   * Botão flutuante de conversa (AnyChat).
+   *
+   * É um terceiro: recebe o endereço da página onde o visitante está e guarda
+   * estado no browser dele. Não é essencial ao site — é uma comodidade — por
+   * isso entra nas cookies de preferências. Ver config/configChat.js, onde essa
+   * decisão está escrita e se muda numa linha.
+   *
+   * Injectado à mão, e não pelo Helmet, pela mesma razão do pixel: a etiqueta
+   * não chegava ao <head>.
+   */
+  const preferencesConsentGranted = isClient ? hasConsent('preferences') : false;
+  const chatAtivo =
+    !!anychatWidgetId && (!anychatRequiresConsent || preferencesConsentGranted);
+
+  useEffect(() => {
+    if (!chatAtivo || typeof window === 'undefined') return;
+    if (document.getElementById(ANYCHAT_SCRIPT_ID)) return;
+
+    const script = document.createElement('script');
+    script.id = ANYCHAT_SCRIPT_ID;
+    script.async = true;
+    script.src = anychatScriptSrc(anychatWidgetId, window.location.href);
+    document.head.appendChild(script);
+  }, [chatAtivo]);
 
   const isBrowser = typeof window !== 'undefined';
   const isMapboxLoaded = isBrowser && window.mapboxgl;
