@@ -1,0 +1,80 @@
+# Exported from Render on 2026-09-25T13:01:39Z
+version: "1"
+projects:
+- name: My project
+  environments:
+  - name: Production
+    services:
+    - type: web
+      name: v1h-versao-2
+      runtime: node
+      repo: https://github.com/ruben-lascasas/v1h-versao-2
+      plan: free
+      envVars:
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: DESTAQUE_APPROVAL_SECRET
+        sync: false
+      - key: SERVER_SHARETRIBE_TRUST_PROXY
+        sync: false
+      - key: REACT_APP_SHARETRIBE_USING_SSL
+        sync: false
+      - key: STRIPE_PRICE_DESTAQUE
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: VERIFICATION_EMAIL_FROM
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: REACT_APP_MARKETPLACE_ROOT_URL
+        sync: false
+      - key: POSTING_ALLOWED_USER_TYPES
+        sync: false
+      - key: VERIFICATION_USER_TYPES
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_JURISDICTION
+        sync: false
+      - key: R2_BUCKET
+        sync: false
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: REACT_APP_CSP
+        sync: false
+      - key: REACT_APP_ENV
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: REACT_APP_GOOGLE_CLIENT_ID
+        sync: false
+      - key: FACEBOOK_APP_SECRET
+        sync: false
+      - key: REACT_APP_FACEBOOK_APP_ID
+        sync: false
+      - key: REACT_APP_MARKETPLACE_NAME
+        sync: false
+      - key: SHARETRIBE_INTEGRATION_CLIENT_SECRET
+        sync: false
+      - key: SHARETRIBE_INTEGRATION_CLIENT_ID
+        sync: false
+      - key: SHARETRIBE_SDK_CLIENT_SECRET
+        sync: false
+      - key: REACT_APP_MAPBOX_ACCESS_TOKEN
+        sync: false
+      - key: REACT_APP_STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: REACT_APP_SHARETRIBE_SDK_CLIENT_ID
+        sync: false
+      region: oregon
+      buildCommand: yarn --frozen-lockfile install; npm run build
+      startCommand: npm run start
+      domains:
+      - venue1hub.eu
+      - www.venue1hub.eu
+      autoDeployTrigger: commit
