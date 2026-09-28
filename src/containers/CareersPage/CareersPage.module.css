@@ -34,16 +34,40 @@
 /* O iframe original vinha com height:100%, que colapsa para zero: uma
    percentagem só resolve contra um pai de altura definida, e aqui não há.
 
-   A altura é fixa e generosa em vez de proporcional ao ecrã. O careers-page.com
-   não comunica a altura do seu conteúdo — verifiquei, não emite postMessage
-   nenhum — por isso não há forma de a ajustar sozinha. Com uma altura curta o
-   resultado era uma caixa com barra de scroll própria dentro da página, que é
-   sempre desagradável de usar; mais vale sobrar espaço do que obrigar a
-   arrastar duas barras. */
+   A altura é fixa porque o BusinessHRM não comunica a altura do seu conteúdo
+   — não emite postMessage nenhum, tal como o serviço anterior — e por isso não
+   há forma de a ajustar sozinha.
+
+   Os valores vêm de medir a página embebida à largura que o iframe tem em cada
+   ecrã — e não à largura do ecrã, que é outra coisa: a coluna tem um máximo de
+   1200px e margens laterais.
+
+     iframe com  327px (telemóvel)   1397px de conteúdo
+     iframe com  689px (tablet)      cabe em 1140px
+     iframe com  960px               931px
+     iframe com 1136px (ecrã largo)  cabe em 900px
+
+   Às alturas junta-se uma folga de algumas dezenas de pixéis, porque o texto
+   das vagas é deles e pode crescer. A folga não deixa faixa em branco: a
+   página embebida estica-se para ocupar a altura que lhe derem — medido, o
+   conteúdo dá exactamente a altura da caixa sempre que lá cabe.
+
+   Quanto mais estreito, mais alto: o mesmo texto ocupa mais linhas. Uma altura
+   única servia mal todos — no ecrã largo sobrava um vazio enorme, no telemóvel
+   faltavam quase 100px e aparecia uma segunda barra de scroll dentro da
+   página, que é sempre desagradável de usar (e ainda prende a roda do rato). */
 .frameWrapper {
   position: relative;
   width: 100%;
-  height: 1250px;
+  height: 1440px;
+
+  @media (--viewportMedium) {
+    height: 1180px;
+  }
+
+  @media (--viewportLarge) {
+    height: 1000px;
+  }
 }
 
 .frame {

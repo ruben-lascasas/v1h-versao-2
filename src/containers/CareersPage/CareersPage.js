@@ -13,22 +13,27 @@ import css from './CareersPage.module.css';
 /**
  * Vagas de emprego.
  *
- * As vagas vivem no careers-page.com e entram por iframe. Não replicamos nada
- * do lado de cá: quem publica as vagas gere-as lá, e esta página só as mostra.
+ * As vagas vivem no BusinessHRM (o recrutamento do grupo EdgeHub) e entram por
+ * iframe. Não replicamos nada do lado de cá: quem publica as vagas gere-as lá,
+ * e esta página só as mostra.
  *
  * O iframe precisa de estar autorizado na CSP (server/csp.js, frameSrc). Sem
  * isso é bloqueado sem erro visível assim que a CSP passar de "report" a
  * "block" em produção.
+ *
+ * O QUE ESTE SERVIÇO NÃO DÁ
+ *
+ * Não tem modo de embed: procurei, e `?iframe=1`, `?embed=1`, `?embedded=1`,
+ * `?hide_header=1` e `?include_header=false` devolvem todos a mesma página,
+ * com o cabeçalho e o rodapé do BusinessHRM incluídos. Também não comunica a
+ * altura do conteúdo por postMessage, por isso a altura do iframe é fixa,
+ * medida em cada largura (ver CareersPage.module.css).
  */
-
-// Sem include_header: com ele, o embed trazia outra vez o logótipo Venue1Hub no
-// topo e uma faixa preta de redes sociais no fundo, a duplicar o cabeçalho e o
-// rodapé que a página já tem à volta.
-const CAREERS_SRC = 'https://venue1hub.careers-page.com/';
+const CAREERS_SRC = 'https://ehub.businesshrm.com/careers/619e01d883923f970938d80ef150f9a9';
 
 const t = (isEN, pt, en) => (isEN ? en : pt);
 
-const CareersPage = props => {
+export const CareersPageComponent = props => {
   const { scrollingDisabled } = props;
   const { locale } = useLocale();
   const isEN = locale === 'en';
@@ -79,4 +84,4 @@ const CareersPage = props => {
 
 const mapStateToProps = state => ({ scrollingDisabled: isScrollingDisabled(state) });
 
-export default compose(connect(mapStateToProps))(CareersPage);
+export default compose(connect(mapStateToProps))(CareersPageComponent);
