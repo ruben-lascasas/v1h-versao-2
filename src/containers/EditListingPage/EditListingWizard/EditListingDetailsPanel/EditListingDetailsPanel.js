@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 // Import util modules
 import { FormattedMessage } from '../../../../util/reactIntl';
+import { construirUsos } from '../../../../util/categorias';
 import {
   EXTENDED_DATA_SCHEMA_TYPES,
   LISTING_STATE_DRAFT,
@@ -445,6 +446,23 @@ const EditListingDetailsPanel = props => {
               nestedCategories,
               listingFields
             );
+            /**
+             * A categoria principal entra também nos usos do espaço.
+             *
+             * É isto que permite à pesquisa fazer uma pergunta só. A API da
+             * Sharetribe cruza condições com "E", nunca com "OU": com a
+             * verdade repartida entre `categoryLevel2` e `usos`, não havia
+             * forma de perguntar "é da categoria X ou também serve para X", e
+             * metade dos anúncios ficaria de fora sem dar erro nenhum.
+             *
+             * O anfitrião não tem de marcar a principal outra vez — ela é
+             * acrescentada aqui, e sem duplicar se ele a marcar à mesma.
+             */
+            const categoriaPrincipal = cleanedNestedCategories[`${categoryKey}2`];
+            const usosMaybe = categoriaPrincipal
+              ? { usos: construirUsos(categoriaPrincipal, publicListingFields?.usos) }
+              : {};
+
             // New values for listing attributes
             const updateValues = {
               title: title.trim(),
@@ -455,6 +473,7 @@ const EditListingDetailsPanel = props => {
                 unitType,
                 ...cleanedNestedCategories,
                 ...publicListingFields,
+                ...usosMaybe,
               },
               privateData: privateListingFields,
               ...setNoAvailabilityForUnbookableListings(transactionProcessAlias),

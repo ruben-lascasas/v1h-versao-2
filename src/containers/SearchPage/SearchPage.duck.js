@@ -13,6 +13,11 @@ import {
 import { constructQueryParamName, isOriginInUse } from '../../util/search';
 import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelpers';
 import { parse } from '../../util/urlHelpers';
+import {
+  campoUsosConfigurado,
+  usosParaFiltrar,
+  listaDeIds,
+} from '../../util/categorias';
 import { listingHighlightsEnabled } from '../../config/configFeatures';
 
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
@@ -400,6 +405,35 @@ const searchListingsPayloadCreator = ({ searchParams, config }, thunkAPI) => {
     });
   })();
 
+  /**
+   * O filtro de categoria passa a olhar para o campo `usos`, onde cabe mais do
+   * que uma categoria por anúncio (ver util/categorias.js).
+   *
+   * Com `usos`, uma pergunta só — "qualquer um destes" — faz o que antes
+   * obrigava a partir a pesquisa em duas e juntar os resultados à mão: a API
+   * da Sharetribe cruza condições com "E", nunca com "OU".
+   *
+   * Enquanto o campo não existir na Console, nada disto se aplica e vale o
+   * caminho antigo. E tem de ser assim: um filtro por um campo não indexado
+   * não dá erro — é ignorado, e a pesquisa devolveria o catálogo inteiro como
+   * se nada fosse.
+   */
+  const usosAtivo = campoUsosConfigurado(config?.listing?.listingFields);
+  const usosSelecionados = usosAtivo
+    ? usosParaFiltrar(
+        config?.categoryConfiguration?.categories,
+        listaDeIds(rawL1),
+        listaDeIds(rawL2)
+      )
+    : [];
+  const usosParams =
+    usosAtivo && usosSelecionados.length > 0
+      ? { pub_usos: `has_any:${usosSelecionados.join(',')}` }
+      : {};
+
+  // Com `usos` nunca é preciso partir a pesquisa em duas.
+  const precisaDuasQueries = isCrossBranchCase && !usosAtivo;
+
   // Params shared between any single-query OR cross-branch query.
   // We strip pub_categoryLevel1/2 here because they are added per-query below.
   const restWithoutCategoryParams = Object.fromEntries(
@@ -468,7 +502,7 @@ const searchListingsPayloadCreator = ({ searchParams, config }, thunkAPI) => {
   };
 
   // Single-query category params (legacy: validates L2 against L1 subtree).
-  const singleQueryCategoryParams = isCrossBranchCase
+  const singleQueryCategoryParams = precisaDuasQueries
     ? {}
     : prepareAPIParams(
         Object.fromEntries(
@@ -481,7 +515,7 @@ const searchListingsPayloadCreator = ({ searchParams, config }, thunkAPI) => {
 
   const params = {
     ...sharedParams,
-    ...singleQueryCategoryParams,
+    ...(usosAtivo ? usosParams : singleQueryCategoryParams),
   };
 
   // Retry on 429 (Sharetribe rate limit) with exponential backoff:
@@ -592,7 +626,7 @@ const searchListingsPayloadCreator = ({ searchParams, config }, thunkAPI) => {
   };
 
   const runQuery = () => {
-    if (!isCrossBranchCase) {
+    if (!precisaDuasQueries) {
       return needsFullResultSet
         ? fetchAllPagesWithRetry(params)
         : queryWithRetry(params);
