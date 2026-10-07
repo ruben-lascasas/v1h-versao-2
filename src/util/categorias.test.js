@@ -7,6 +7,8 @@ import {
   campoUsosConfigurado,
   usosParaFiltrar,
   listaDeIds,
+  idDeUso,
+  idDeCategoria,
 } from './categorias';
 
 const CATEGORIAS = [
@@ -147,5 +149,66 @@ describe('listaDeIds', () => {
   it('aguenta vazio', () => {
     expect(listaDeIds('')).toEqual([]);
     expect(listaDeIds(undefined)).toEqual([]);
+  });
+});
+
+/**
+ * A Sharetribe não aceita ids de opção com mais de 32 caracteres. Duas
+ * subcategorias passavam disso e ficaram encurtadas na Console — deixando de
+ * ser iguais às da árvore. Sem tradução, dois ramos ficavam partidos em
+ * silêncio: a pesquisa perguntaria por um id que nenhum anúncio tem, e não
+ * daria erro nenhum.
+ */
+describe('os dois ids que não couberam', () => {
+  const COWORKING_ARVORE = 'escritorios-partilhados-coworking';
+  const COWORKING_CAMPO = 'escritorios-partilhados-cowork';
+  const ACUPUNCTURA_ARVORE = 'sala-acunpuctura-terapidaholistica';
+  const ACUPUNCTURA_CAMPO = 'sala-acunpuctura-terapholistica';
+
+  it('traduz da árvore para o campo', () => {
+    expect(idDeUso(COWORKING_ARVORE)).toBe(COWORKING_CAMPO);
+    expect(idDeUso(ACUPUNCTURA_ARVORE)).toBe(ACUPUNCTURA_CAMPO);
+  });
+
+  it('traduz de volta', () => {
+    expect(idDeCategoria(COWORKING_CAMPO)).toBe(COWORKING_ARVORE);
+    expect(idDeCategoria(ACUPUNCTURA_CAMPO)).toBe(ACUPUNCTURA_ARVORE);
+  });
+
+  it('os outros 58 passam incólumes', () => {
+    expect(idDeUso('auditorios')).toBe('auditorios');
+    expect(idDeCategoria('auditorios')).toBe('auditorios');
+  });
+
+  // O limite é da API: um id com mais de 32 caracteres é recusado na Console.
+  it('o id traduzido cabe no limite da Sharetribe', () => {
+    expect(COWORKING_ARVORE.length).toBeGreaterThan(32);
+    expect(idDeUso(COWORKING_ARVORE).length).toBeLessThanOrEqual(32);
+    expect(ACUPUNCTURA_ARVORE.length).toBeGreaterThan(32);
+    expect(idDeUso(ACUPUNCTURA_ARVORE).length).toBeLessThanOrEqual(32);
+  });
+
+  it('a categoria principal é gravada com o id que o campo conhece', () => {
+    expect(construirUsos(COWORKING_ARVORE, ['auditorios'])).toEqual([
+      COWORKING_CAMPO,
+      'auditorios',
+    ]);
+  });
+
+  it('um anúncio antigo, sem usos, também é traduzido ao ser lido', () => {
+    expect(usosDoAnuncio({ categoryLevel2: COWORKING_ARVORE })).toEqual([COWORKING_CAMPO]);
+  });
+
+  it('e o filtro pergunta pelo id do campo, não pelo da árvore', () => {
+    const arvore = [
+      {
+        id: 'trabalho-reunioes',
+        subcategories: [{ id: COWORKING_ARVORE }, { id: 'salas-reuniao' }],
+      },
+    ];
+    expect(usosParaFiltrar(arvore, ['trabalho-reunioes'], [])).toEqual([
+      COWORKING_CAMPO,
+      'salas-reuniao',
+    ]);
   });
 });

@@ -25,6 +25,34 @@
  * gravado. O filtro passa a olhar só para aí, e a pergunta volta a ser uma só.
  */
 
+/**
+ * Os dois ids que não couberam.
+ *
+ * A Sharetribe não aceita ids de opção com mais de 32 caracteres, e duas
+ * subcategorias passavam disso. Na Console ficaram encurtados, e deixaram de
+ * ser iguais aos da árvore:
+ *
+ *   escritorios-partilhados-coworking  (33)  →  escritorios-partilhados-cowork
+ *   sala-acunpuctura-terapidaholistica (34)  →  sala-acunpuctura-terapholistica
+ *
+ * Sem esta tradução, dois ramos inteiros ficavam partidos em silêncio: quem
+ * procurasse "Trabalho & Reuniões" não veria os espaços de coworking, porque o
+ * filtro perguntaria por um id que nenhum anúncio tem. E, como sempre nesta
+ * API, não haveria erro nenhum — só menos resultados.
+ *
+ * A tabela vive num JSON porque é lida dos dois lados: aqui no browser e nos
+ * scripts do servidor, que são CommonJS.
+ */
+import ALIAS from '../config/usosAlias.json';
+
+const ALIAS_INVERSO = Object.fromEntries(Object.entries(ALIAS).map(([a, b]) => [b, a]));
+
+/** O id da árvore traduzido para o id da opção do campo `usos`. */
+export const idDeUso = categoriaId => ALIAS[categoriaId] || categoriaId;
+
+/** O caminho inverso: do id do campo para o id da árvore. */
+export const idDeCategoria = usoId => ALIAS_INVERSO[usoId] || usoId;
+
 /** Todas as subcategorias de um ramo. */
 export const subcategoriasDe = (categories, level1Id) => {
   const ramo = (categories || []).find(c => c.id === level1Id);
@@ -51,7 +79,7 @@ export const nomeDaSubcategoria = (categories, level2Id) => {
  * frente — é a que descreve o espaço antes de tudo o resto.
  */
 export const construirUsos = (categoriaPrincipal, usosExtra = []) => {
-  const todos = [categoriaPrincipal, ...(usosExtra || [])].filter(Boolean);
+  const todos = [categoriaPrincipal, ...(usosExtra || [])].filter(Boolean).map(idDeUso);
   return [...new Set(todos)];
 };
 
@@ -65,7 +93,7 @@ export const construirUsos = (categoriaPrincipal, usosExtra = []) => {
 export const usosDoAnuncio = publicData => {
   const usos = publicData?.usos;
   if (Array.isArray(usos) && usos.length > 0) return usos;
-  return [publicData?.categoryLevel2].filter(Boolean);
+  return [publicData?.categoryLevel2].filter(Boolean).map(idDeUso);
 };
 
 /**
@@ -89,7 +117,9 @@ export const campoUsosConfigurado = listingFields =>
  */
 export const usosParaFiltrar = (categories, level1Ids = [], level2Ids = []) => {
   const doRamo = (level1Ids || []).flatMap(id => subcategoriasDe(categories, id));
-  return [...new Set([...doRamo, ...(level2Ids || [])])].filter(Boolean);
+  // Traduzido no fim: a escolha chega em ids da árvore e a pergunta à API tem
+  // de ir em ids do campo.
+  return [...new Set([...doRamo, ...(level2Ids || [])])].filter(Boolean).map(idDeUso);
 };
 
 /** "a,b,c" → ['a','b','c'] */

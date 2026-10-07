@@ -22,7 +22,7 @@ O `option` tem de ser **exactamente** o id da subcategoria — é o que liga est
 |---|---|
 | `salas-reuniao` | Salas de Reunião |
 | `escritorios-privados` | Escritórios Privados |
-| `escritorios-partilhados-coworking` | Escritórios Partilhados / Coworking |
+| `escritorios-partilhados-cowork` | Escritórios Partilhados / Coworking |
 | `consultorios-medicos-psicologia` | Consultórios Médicos e de Psicologia |
 | `gab-terapias-coaching` | Gabinetes de Terapias e Coaching |
 | `sala-formacao` | Salas de Formação |
@@ -59,7 +59,7 @@ O `option` tem de ser **exactamente** o id da subcategoria — é o que liga est
 | `estudio-movimento-danca` | Estúdios de Movimento e Dança |
 | `ginasio-privados-boutiques` | Ginásios Privados ou Boutiques |
 | `spa-salamassagem` | SPAs e Salas de Massagem |
-| `sala-acunpuctura-terapidaholistica` | Salas de Acupunctura e Terapias Holísticas |
+| `sala-acunpuctura-terapholistica` | Salas de Acupunctura e Terapias Holísticas |
 | `pav-desportivos` | Pavilhões Desportivos |
 | `campofutebol-futsal` | Campos de Futebol / Futsal |
 | `campos-padel-tenis` | Campos de Padel / Ténis |
@@ -86,3 +86,22 @@ O `option` tem de ser **exactamente** o id da subcategoria — é o que liga est
 Se os ids divergirem da árvore, um anúncio marcado com "Salas de Formação" nos usos
 deixa de ser encontrado por quem filtra essa subcategoria — e ninguém dá por isso,
 porque a pesquisa não dá erro: devolve menos resultados, e pronto.
+
+## Dois ids tiveram de ser encurtados
+
+A Sharetribe recusa ids de opção com mais de 32 caracteres, e dois passavam disso:
+
+| na árvore de categorias | na opção do campo |
+|---|---|
+| `escritorios-partilhados-coworking` (33) | `escritorios-partilhados-cowork` |
+| `sala-acunpuctura-terapidaholistica` (34) | `sala-acunpuctura-terapholistica` |
+
+A tradução entre os dois está em `src/config/usosAlias.json` e é aplicada nos dois
+sentidos — ao gravar o anúncio e ao perguntar à pesquisa. Se um dia a árvore ganhar
+outra subcategoria comprida, acrescente-a lá.
+
+Para confirmar que as duas listas continuam a bater certo:
+
+```
+node scripts/verificarUsos.js
+```

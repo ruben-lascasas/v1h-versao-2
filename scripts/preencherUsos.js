@@ -20,6 +20,12 @@
 require('dotenv').config();
 
 const { getIntegrationSdk } = require('../server/api-util/sdk');
+// A mesma tabela que o browser usa (src/util/categorias.js): dois ids da
+// árvore passam dos 32 caracteres que a Sharetribe aceita numa opção, e na
+// Console ficaram encurtados.
+const ALIAS = require('../src/config/usosAlias.json');
+
+const idDeUso = id => ALIAS[id] || id;
 
 const aplicar = process.argv.includes('--aplicar');
 
@@ -61,13 +67,15 @@ const aplicar = process.argv.includes('--aplicar');
       continue;
     }
 
-    console.log(`  ${titulo.padEnd(34)} usos: [${pd.categoryLevel2}]`);
+    const uso = idDeUso(pd.categoryLevel2);
+    const nota = uso !== pd.categoryLevel2 ? `  (id encurtado, era ${pd.categoryLevel2})` : '';
+    console.log(`  ${titulo.padEnd(34)} usos: [${uso}]${nota}`);
     tratados++;
 
     if (aplicar) {
       await sdk.listings.update({
         id: l.id.uuid,
-        publicData: { usos: [pd.categoryLevel2] },
+        publicData: { usos: [uso] },
       });
     }
   }
