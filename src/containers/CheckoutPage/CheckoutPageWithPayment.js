@@ -108,7 +108,8 @@ const prefixPriceVariantProperties = priceVariant => {
  * @param {Object} config app-wide configs. This contains hosted configs too.
  * @returns orderParams.
  */
-const getOrderParams = (
+// Exportado para teste: e aqui que se decide o que a reserva leva consigo.
+export const getOrderParams = (
   pageData,
   shippingDetails,
   optionalPaymentParams,

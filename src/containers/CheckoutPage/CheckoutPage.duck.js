@@ -12,7 +12,7 @@ import { setCurrentUserHasOrders, fetchCurrentUser } from '../../ducks/user.duck
 ////////////////////
 // Initiate Order //
 ////////////////////
-const initiateOrderPayloadCreator = (
+export const initiateOrderPayloadCreator = (
   { orderParams, processAlias, transactionId, transitionName, isPrivilegedTransition },
   { dispatch, extra: sdk, rejectWithValue }
 ) => {
@@ -257,7 +257,7 @@ export const initiateInquiryWithoutPayment = (
  * the price with the chosen information.
  */
 
-const speculateTransactionPayloadCreator = (
+export const speculateTransactionPayloadCreator = (
   { orderParams, processAlias, transactionId, transitionName, isPrivilegedTransition },
   { dispatch, extra: sdk, rejectWithValue }
 ) => {
