@@ -10,6 +10,7 @@ import * as validators from '../../../../util/validators';
 import { formatMoney } from '../../../../util/currency';
 import { types as sdkTypes } from '../../../../util/sdkLoader';
 import { FIXED, isBookingProcess } from '../../../../transactions/transaction';
+import { aceitaDoisModos, outroModo } from '../../../../util/modosDePreco';
 
 // Import shared components
 import { Button, Form, FieldCurrencyInput } from '../../../../components';
@@ -58,6 +59,90 @@ const getPriceValidators = (
   return validatorsList.length === 1
     ? validatorsList[0]
     : validators.composeValidators(...validatorsList);
+};
+
+/**
+ * Validadores do segundo preço: os mesmos limites do preço principal, mas sem
+ * o "obrigatório". O campo é opcional — deixar em branco é a maneira de dizer
+ * "não alugo assim", e tem de continuar a ser possível gravar.
+ */
+const getSegundoPrecoValidators = (minimo, maximo, marketplaceCurrency, intl) => {
+  const lista = [];
+
+  if (minimo) {
+    const minPrice = formatMoney(intl, new Money(minimo, marketplaceCurrency));
+    lista.push(
+      validators.moneySubUnitAmountAtLeast(
+        intl.formatMessage({ id: 'EditListingPricingForm.priceTooLow' }, { minPrice }),
+        minimo
+      )
+    );
+  }
+  if (maximo) {
+    const maxPrice = formatMoney(intl, new Money(maximo, marketplaceCurrency));
+    lista.push(
+      validators.moneySubUnitAmountAtMost(
+        intl.formatMessage({ id: 'EditListingPricingForm.priceTooHigh' }, { maxPrice }),
+        maximo
+      )
+    );
+  }
+
+  const composto =
+    lista.length === 0
+      ? null
+      : lista.length === 1
+      ? lista[0]
+      : validators.composeValidators(...lista);
+
+  // Campo vazio passa sempre. Sem isto, um mínimo configurado tornava o campo
+  // opcional em obrigatório pela porta das traseiras.
+  return value =>
+    value == null || value === '' ? undefined : composto ? composto(value) : undefined;
+};
+
+/**
+ * O SEGUNDO PREÇO: "também aluga à hora?"
+ *
+ * O anúncio tem um modo principal, que lhe vem do tipo de anúncio e que não
+ * muda. Este campo acrescenta o outro. Enquanto estiver vazio, o anúncio
+ * comporta-se exatamente como sempre se comportou — é por isso que a pergunta
+ * está feita no negativo do obrigatório: ninguém tem de responder.
+ */
+const SegundoPreco = props => {
+  const { formId, modo, principal, marketplaceCurrency, minimo, maximo, intl } = props;
+
+  return (
+    <div className={css.segundoModo}>
+      <h3 className={css.segundoModoTitulo}>
+        <FormattedMessage id="EditListingPricingForm.segundoModo.titulo" values={{ modo }} />
+      </h3>
+      <p className={css.segundoModoExplicacao}>
+        <FormattedMessage
+          id="EditListingPricingForm.segundoModo.explicacao"
+          values={{ modo, principal }}
+        />
+      </p>
+
+      <FieldCurrencyInput
+        id={`${formId}precoSegundoModo`}
+        name="precoSegundoModo"
+        className={css.input}
+        label={intl.formatMessage({ id: 'EditListingPricingForm.segundoModo.label' }, { modo })}
+        placeholder={intl.formatMessage({
+          id: 'EditListingPricingForm.segundoModo.placeholder',
+        })}
+        currencyConfig={appSettings.getCurrencyFormatting(marketplaceCurrency)}
+        validate={getSegundoPrecoValidators(minimo, maximo, marketplaceCurrency, intl)}
+      />
+
+      {modo === 'day' ? (
+        <p className={css.segundoModoNota}>
+          <FormattedMessage id="EditListingPricingForm.segundoModo.diaExplicado" />
+        </p>
+      ) : null}
+    </div>
+  );
 };
 
 const ErrorMessages = props => {
@@ -157,6 +242,11 @@ export const EditListingPricingForm = props => (
       const isFixedLengthBooking = isBooking && unitType === FIXED;
       const isBookingPriceVariationsInUse = isBooking && isPriceVariationsInUse;
       const isUsingPriceVariants = isFixedLengthBooking || isBookingPriceVariationsInUse;
+      const mostraSegundoModo = aceitaDoisModos({
+        unitType,
+        isBooking,
+        isPriceVariationsInUse: isUsingPriceVariants,
+      });
 
       return (
         <Form onSubmit={handleSubmit} className={classes}>
@@ -191,6 +281,18 @@ export const EditListingPricingForm = props => (
               validate={priceValidators}
             />
           )}
+
+          {mostraSegundoModo ? (
+            <SegundoPreco
+              formId={formId}
+              modo={outroModo(unitType)}
+              principal={unitType}
+              marketplaceCurrency={marketplaceCurrency}
+              minimo={listingMinimumPriceSubUnits}
+              maximo={listingMaximumPriceSubUnits}
+              intl={intl}
+            />
+          ) : null}
 
           {isFixedLengthBooking ? (
             <StartTimeInterval

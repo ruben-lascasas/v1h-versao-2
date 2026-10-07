@@ -132,6 +132,20 @@ const getOrderParams = (
 
   const customerDefaultMessageMaybe = customerDefaultMessage ? { customerDefaultMessage } : {};
 
+  /**
+   * MODO DE ALUGUER (à hora ou ao dia)
+   *
+   * Isto tem de atravessar o checkout até ao servidor, senão a reserva é
+   * cobrada ao preço do modo principal sem dar erro nenhum — alguém reservava
+   * três horas e pagava três dias, ou ao contrário.
+   *
+   * Vai também para protectedData, para a transação guardar como foi reservada:
+   * é de lá que o contrato e os emails sabem dizer "à hora" ou "ao dia" depois
+   * de o anfitrião mudar os preços.
+   */
+  const modoDePreco = pageData.orderData?.modoDePreco;
+  const modoDePrecoMaybe = modoDePreco ? { modoDePreco } : {};
+
   // Multi-booking — store all slots in protectedData so the transaction page
   // (customer + provider) can display the full set later.
   const multipleBookings = pageData.orderData?.multipleBookings;
@@ -149,6 +163,7 @@ const getOrderParams = (
       ...transactionFieldProtectedData,
       ...customerDefaultMessageMaybe,
       ...multipleBookingsMaybe,
+      ...modoDePrecoMaybe,
     },
   };
 
@@ -168,6 +183,7 @@ const getOrderParams = (
     ...seatsMaybe,
     ...bookingDatesMaybe(pageData.orderData?.bookingDates),
     ...priceVariantNameMaybe,
+    ...modoDePrecoMaybe,
     ...protectedDataMaybe,
     ...optionalPaymentParams,
   };

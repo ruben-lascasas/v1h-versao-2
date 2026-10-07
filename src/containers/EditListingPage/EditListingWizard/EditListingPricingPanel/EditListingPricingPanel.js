@@ -8,6 +8,7 @@ import { types as sdkTypes } from '../../../../util/sdkLoader';
 import { isPriceVariationsEnabled } from '../../../../util/configHelpers';
 import { isValidCurrencyForTransactionProcess } from '../../../../util/fieldHelpers';
 import { FIXED, isBookingProcess } from '../../../../transactions/transaction';
+import { aceitaDoisModos, outroModo, precosDoAnuncio } from '../../../../util/modosDePreco';
 
 // Import shared components
 import { H3, ListingLink } from '../../../../components';
@@ -42,12 +43,22 @@ const getInitialValues = props => {
   // Note: publicData contains priceVariationsEnabled if listing is created with priceVariations enabled.
   const isPriceVariationsInUse = isPriceVariationsEnabled(publicData, listingTypeConfig);
 
-  return unitType === FIXED || isPriceVariationsInUse
-    ? {
-        ...getInitialValuesForPriceVariants(props, isPriceVariationsInUse),
-        ...getInitialValuesForStartTimeInterval(props),
-      }
-    : { price: listing?.attributes?.price };
+  if (unitType === FIXED || isPriceVariationsInUse) {
+    return {
+      ...getInitialValuesForPriceVariants(props, isPriceVariationsInUse),
+      ...getInitialValuesForStartTimeInterval(props),
+    };
+  }
+
+  // O segundo preço vive em publicData.precos; o principal continua em
+  // attributes.price, que é o que a Sharetribe indexa e o que o cartão mostra.
+  const outro = outroModo(unitType);
+  const guardado = outro ? precosDoAnuncio(listing)[outro] : null;
+  const moeda = listing?.attributes?.price?.currency;
+  const precoSegundoModoMaybe =
+    Number.isInteger(guardado) && moeda ? { precoSegundoModo: new Money(guardado, moeda) } : {};
+
+  return { price: listing?.attributes?.price, ...precoSegundoModoMaybe };
 };
 
 // This is needed to show the listing's price consistently over XHR calls.
@@ -197,14 +208,43 @@ const EditListingPricingPanel = props => {
                 },
               };
             } else {
-              const priceVariationsEnabledMaybe = isBooking
+              /**
+               * OS DOIS PREÇOS
+               *
+               * `attributes.price` continua a ser o do modo principal — é ele
+               * que a Sharetribe indexa para o filtro de preço e o que aparece
+               * no cartão. Mexer nisso mudava preços à vista em anúncios que
+               * já existem.
+               *
+               * `publicData.precos` guarda os dois, em cêntimos, e é de lá que o
+               * servidor cobra. Apagar o segundo preço escreve `null`: deixar a
+               * chave de fora não a remove em publicData, e o anúncio ficava a
+               * vender um modo que o anfitrião acabou de tirar.
+               */
+              const { precoSegundoModo } = values;
+              const outro = outroModo(unitType);
+              const guardaOsDois = aceitaDoisModos({
+                unitType,
+                isBooking,
+                isPriceVariationsInUse,
+              });
+
+              const precosMaybe = guardaOsDois
                 ? {
-                    publicData: {
-                      priceVariationsEnabled: false,
+                    precos: {
+                      [unitType]: price?.amount ?? null,
+                      [outro]: precoSegundoModo?.amount ?? null,
                     },
                   }
                 : {};
-              updateValues = { price, ...priceVariationsEnabledMaybe };
+
+              const publicDataMaybe = isBooking
+                ? { publicData: { priceVariationsEnabled: false, ...precosMaybe } }
+                : Object.keys(precosMaybe).length
+                ? { publicData: { ...precosMaybe } }
+                : {};
+
+              updateValues = { price, ...publicDataMaybe };
             }
 
             // Save the initialValues to state

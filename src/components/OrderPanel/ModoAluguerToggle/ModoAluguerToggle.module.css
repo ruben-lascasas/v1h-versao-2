@@ -1,0 +1,89 @@
+.root {
+  padding: 24px 24px 0;
+}
+
+@media (min-width: 768px) {
+  .root {
+    padding: 24px 0 0;
+  }
+}
+
+.titulo {
+  margin: 0 0 10px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2e2e2e;
+}
+
+/*
+  Dois cartões lado a lado em vez de separadores: a escolha do modo é uma
+  escolha de preço, e um cartão aguenta o preço por baixo do nome. No
+  telemóvel continuam lado a lado — são dois, e cabem.
+*/
+.opcoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.opcao {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 56px;
+  padding: 10px 12px;
+  border: 1px solid #e4dbce;
+  border-radius: 10px;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.opcao:hover {
+  border-color: #bda98f;
+}
+
+.opcaoAtiva {
+  border-color: #7c6350;
+  background: #faf7f3;
+  box-shadow: inset 0 0 0 1px #7c6350;
+}
+
+.nome {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2e2e2e;
+}
+
+.preco {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #7c6350;
+}
+
+:global(body[data-dark-mode]) .titulo,
+:global(body[data-dark-mode]) .nome {
+  color: #f0eae2;
+}
+
+:global(body[data-dark-mode]) .opcao {
+  background: #2b2724;
+  border-color: #4a443e;
+}
+
+:global(body[data-dark-mode]) .opcao:hover {
+  border-color: #7c6350;
+}
+
+:global(body[data-dark-mode]) .opcaoAtiva {
+  background: #332e2a;
+  border-color: #bda98f;
+  box-shadow: inset 0 0 0 1px #bda98f;
+}
+
+:global(body[data-dark-mode]) .preco {
+  color: #c7a98c;
+}

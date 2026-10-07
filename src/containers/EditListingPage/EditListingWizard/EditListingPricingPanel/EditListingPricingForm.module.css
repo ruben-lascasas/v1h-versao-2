@@ -38,3 +38,60 @@
     margin-top: 100px;
   }
 }
+
+/*
+  O segundo preco e uma pergunta a mais, nao um segundo campo obrigatorio: a
+  moldura separa-o do preco principal e diz, sem palavras, que se pode passar
+  a frente.
+*/
+.segundoModo {
+  margin: 8px 0 24px;
+  padding: 20px 20px 4px;
+  border: 1px dashed #d8cdbd;
+  border-radius: 10px;
+  background: #fbf9f6;
+
+  @media (--viewportMedium) {
+    margin-bottom: 32px;
+  }
+}
+
+.segundoModoTitulo {
+  composes: h4 from global;
+  margin: 0 0 6px;
+  padding: 0;
+  color: #4a443e;
+}
+
+.segundoModoExplicacao {
+  margin: 0 0 16px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b645c;
+}
+
+.segundoModoNota {
+  margin: -12px 0 16px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #8a8178;
+}
+
+:global(body[data-dark-mode]) .segundoModo {
+  border-color: #554d45;
+  background: #2b2724;
+}
+
+:global(body[data-dark-mode]) .segundoModoTitulo {
+  color: #f0eae2;
+}
+
+:global(body[data-dark-mode]) .segundoModoExplicacao {
+  color: #c7bcaf;
+}
+
+:global(body[data-dark-mode]) .segundoModoNota {
+  color: #a79b8d;
+}

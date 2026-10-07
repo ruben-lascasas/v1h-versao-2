@@ -19,12 +19,17 @@ const initiateOrderPayloadCreator = (
   // If we already have a transaction ID, we should transition, not initiate.
   const isTransition = !!transactionId;
 
-  const { deliveryMethod, quantity, bookingDates, ...otherOrderParams } = orderParams;
+  const { deliveryMethod, quantity, bookingDates, modoDePreco, ...otherOrderParams } = orderParams;
   const quantityMaybe = quantity ? { stockReservationQuantity: quantity } : {};
   const bookingParamsMaybe = bookingDates || {};
 
   // Parameters only for client app's server
-  const orderData = deliveryMethod ? { deliveryMethod } : {};
+  // O modo de aluguer sai daqui de propósito: é o nosso servidor que o usa para
+  // escolher o preço, e a API da Sharetribe não sabe o que fazer com ele.
+  const orderData = {
+    ...(deliveryMethod ? { deliveryMethod } : {}),
+    ...(modoDePreco ? { modoDePreco } : {}),
+  };
 
   // Parameters for Marketplace API
   const transitionParams = {
@@ -264,6 +269,7 @@ const speculateTransactionPayloadCreator = (
     priceVariantName,
     quantity,
     bookingDates,
+    modoDePreco,
     ...otherOrderParams
   } = orderParams;
   const quantityMaybe = quantity ? { stockReservationQuantity: quantity } : {};
@@ -273,6 +279,7 @@ const speculateTransactionPayloadCreator = (
   const orderData = {
     ...(deliveryMethod ? { deliveryMethod } : {}),
     ...(priceVariantName ? { priceVariantName } : {}),
+    ...(modoDePreco ? { modoDePreco } : {}),
   };
 
   // Parameters for Marketplace API

@@ -23,6 +23,8 @@ import {
   LISTING_STATE_PUBLISHED,
 } from '../../util/types';
 import { formatMoney } from '../../util/currency';
+import { modosDisponiveis, precosDoAnuncio, resolverModo } from '../../util/modosDePreco';
+import { types as sdkTypes } from '../../util/sdkLoader';
 import { createSlug, parse, stringify } from '../../util/urlHelpers';
 import { userDisplayNameAsString } from '../../util/data';
 import {
@@ -41,6 +43,7 @@ import TranslateButton from '../TranslateButton/TranslateButton';
 import PriceVariantPicker from './PriceVariantPicker/PriceVariantPicker';
 import SubmitFinePrint from './SubmitFinePrint/SubmitFinePrint';
 import BookingModeToggle from './BookingModeToggle/BookingModeToggle';
+import ModoAluguerToggle from './ModoAluguerToggle/ModoAluguerToggle';
 import MultipleBookingsManager from './MultipleBookingsManager/MultipleBookingsManager';
 
 import css from './OrderPanel.module.css';
@@ -78,6 +81,8 @@ const NegotiationRequestQuoteForm = loadable(() =>
 // This defines when ModalInMobile shows content as Modal.
 // Set to 0 so OrderPanel always renders inline on every viewport.
 const MODAL_BREAKPOINT = 0;
+const { Money } = sdkTypes;
+
 const TODAY = new Date();
 const ORDER_PANEL_SUBMIT_BUTTON_ID = 'orderPanelSubmitButton';
 
@@ -147,8 +152,19 @@ const PriceMaybe = props => {
     intl,
     marketplaceCurrency,
     showCurrencyMismatch = false,
+    unidade,
   } = props;
   const { listingType, unitType } = publicData || {};
+
+  /**
+   * A unidade mostrada é a do modo escolhido, não a do anúncio.
+   *
+   * Num anúncio com os dois preços, escolher "por hora" e continuar a ler
+   * "600,00 € por dia" é pior do que não ter a escolha: o preço já é o certo,
+   * mas a frase diz que não é. Quem só olhasse para o cabeçalho decidia com
+   * um número e uma unidade que nunca existiram juntos.
+   */
+  const unidadeMostrada = unidade || unitType;
 
   const foundListingTypeConfig = validListingTypes.find(conf => conf.listingType === listingType);
   const showPrice = displayPrice(foundListingTypeConfig);
@@ -166,7 +182,7 @@ const PriceMaybe = props => {
   );
   const pricePerUnit = (
     <span className={css.perUnit}>
-      <FormattedMessage id="OrderPanel.perUnit" values={{ unitType }} />
+      <FormattedMessage id="OrderPanel.perUnit" values={{ unitType: unidadeMostrada }} />
     </span>
   );
 
@@ -181,7 +197,7 @@ const PriceMaybe = props => {
         />
       </div>
       <div className={css.perUnitInCTA}>
-        <FormattedMessage id="OrderPanel.perUnit" values={{ unitType }} />
+        <FormattedMessage id="OrderPanel.perUnit" values={{ unitType: unidadeMostrada }} />
       </div>
     </div>
   ) : (
@@ -348,6 +364,9 @@ const OrderPanel = props => {
   const [mounted, setMounted] = useState(false);
   // Booking mode: 'single' (existing flow) or 'multiple'.
   const [bookingMode, setBookingMode] = useState('single');
+  // À hora ou ao dia, quando o anúncio vende os dois. `null` = ainda não
+  // escolhido, e vale o modo principal do anúncio.
+  const [modoAluguer, setModoAluguer] = useState(null);
   const [isHighlighted, setIsHighlighted] = useState(false);
   const panelRef = useRef(null);
   const intl = useIntl();
@@ -406,9 +425,33 @@ const OrderPanel = props => {
     publicData || {};
 
   const processName = resolveLatestProcessName(transactionProcessAlias.split('/')[0]);
-  const lineItemUnitType = lineItemUnitTypeMaybe || `line-item/${unitType}`;
 
-  const price = listing?.attributes?.price;
+  /**
+   * MODO DE ALUGUER
+   *
+   * Um anúncio com dois preços pode ser reservado à hora ou ao dia. É o modo
+   * escolhido que decide tudo o resto: qual o calendário (horas ou datas), que
+   * preço se mostra, e que linha de fatura se pede ao servidor.
+   *
+   * Abre sempre no modo principal do anúncio — um espaço que vive de alugueres
+   * diários não deve passar a abrir no horário só porque o anfitrião
+   * acrescentou um preço à hora.
+   */
+  const modosDeAluguer = modosDisponiveis(listing);
+  const precosPorModo = precosDoAnuncio(listing);
+  const modoEscolhido = resolverModo(listing, modoAluguer);
+  const temEscolhaDeModo = modosDeAluguer.length > 1;
+
+  const lineItemUnitType = lineItemUnitTypeMaybe || `line-item/${modoEscolhido}`;
+
+  const precoBase = listing?.attributes?.price;
+  const precoDoModo = precosPorModo[modoEscolhido];
+  // O preço mostrado é o do modo escolhido; `attributes.price` continua a ser o
+  // do modo principal, que é o que a Sharetribe indexa e o cartão mostra.
+  const price =
+    temEscolhaDeModo && Number.isInteger(precoDoModo) && precoBase?.currency
+      ? new Money(precoDoModo, precoBase.currency)
+      : precoBase;
   const isInquiry = isInquiryProcess(processName);
   const isBooking = isBookingProcess(processName);
   const isPurchase = isPurchaseProcess(processName);
@@ -518,16 +561,42 @@ const OrderPanel = props => {
 
   const listingTitle = listing?.attributes?.title || '';
 
+  /**
+   * O modo escolhido viaja com o pedido. Do outro lado, o servidor usa-o só
+   * como *nome*: o preço é sempre lido do anúncio (ver
+   * server/api-util/modosDePreco.js). Por isso isto pode vir do browser.
+   *
+   * Só se acrescenta quando há mesmo escolha, para não mudar o que vai no
+   * pedido de todos os anúncios de um modo só.
+   */
+  const submeterComModo = temEscolhaDeModo
+    ? values => onSubmit({ ...values, modoDePreco: modoEscolhido })
+    : onSubmit;
+
+  /**
+   * O mesmo para o cálculo do resumo de preços que aparece por baixo do
+   * calendário. Embrulha-se aqui, e não dentro de cada formulário, porque cada
+   * um monta o seu `orderData` à mão: um formulário novo que se esquecesse
+   * disto mostrava o preço do outro modo sem dar erro nenhum.
+   */
+  const pedirLinhasComModo = temEscolhaDeModo
+    ? params =>
+        onFetchTransactionLineItems({
+          ...params,
+          orderData: { ...(params?.orderData || {}), modoDePreco: modoEscolhido },
+        })
+    : onFetchTransactionLineItems;
+
   const sharedProps = {
     lineItemUnitType,
-    onSubmit,
+    onSubmit: submeterComModo,
     price,
     marketplaceCurrency,
     listingId: listing.id,
     listingTitle,
     isOwnListing,
     marketplaceName,
-    onFetchTransactionLineItems,
+    onFetchTransactionLineItems: pedirLinhasComModo,
     lineItems,
     fetchLineItemsInProgress,
     fetchLineItemsError,
@@ -577,6 +646,7 @@ const OrderPanel = props => {
           validListingTypes={validListingTypes}
           intl={intl}
           marketplaceCurrency={marketplaceCurrency}
+          unidade={modoEscolhido}
         />
 
         {amenityChips.length > 0 && (
@@ -633,6 +703,13 @@ const OrderPanel = props => {
           <InvalidPriceVariants />
         ) : showBookingFixedDurationForm || showBookingTimeForm || showBookingDatesForm ? (
           <div className={isHighlighted ? css.highlighted : null}>
+            <ModoAluguerToggle
+              modos={modosDeAluguer}
+              modo={modoEscolhido}
+              precos={precosPorModo}
+              currency={precoBase?.currency}
+              onChange={setModoAluguer}
+            />
             <BookingModeToggle mode={bookingMode} onChange={setBookingMode} />
             {bookingMode === 'multiple' ? (
               <MultipleBookingsManager
@@ -646,7 +723,7 @@ const OrderPanel = props => {
                 marketplaceCurrency={marketplaceCurrency}
                 lineItemUnitType={lineItemUnitType}
                 intl={intl}
-                onSubmitSlot={onSubmit}
+                onSubmitSlot={submeterComModo}
                 onContactUser={onContactUser}
               />
             ) : showBookingFixedDurationForm ? (
@@ -745,6 +822,7 @@ const OrderPanel = props => {
           validListingTypes={validListingTypes}
           intl={intl}
           marketplaceCurrency={marketplaceCurrency}
+          unidade={modoEscolhido}
           showCurrencyMismatch
         />
 
