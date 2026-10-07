@@ -43,6 +43,26 @@ describe('precosDoAnuncio', () => {
     expect(precosDoAnuncio(anuncio('hour', 2500))).toEqual({ hour: 2500 });
   });
 
+  /**
+   * O DIA EM QUE OS TIPOS FOREM FUNDIDOS
+   *
+   * Com um tipo único "Espaço", o `unitType` deixa de dizer o que o anúncio
+   * vende — passa a ser só o que o tipo traz. Um espaço alugado AO DIA, num
+   * tipo cujo unitType é "hour", cairia em `attributes.price` e passaria a
+   * vender à hora pelo preço do dia: 4 500 € por uma hora, sem erro nenhum.
+   *
+   * Por isso, a partir do momento em que `precos` existe, é ele a verdade toda.
+   */
+  it('com `precos` presente, um modo em falta não se vende — nem pelo preço do anúncio', () => {
+    const soAoDia = anuncio('hour', 450000, { day: 450000, hour: null });
+    expect(precosDoAnuncio(soAoDia)).toEqual({ day: 450000 });
+  });
+
+  it('o mesmo quando a chave do modo nem sequer lá está', () => {
+    const soAoDia = anuncio('hour', 450000, { day: 450000 });
+    expect(precosDoAnuncio(soAoDia)).toEqual({ day: 450000 });
+  });
+
   it('com os dois preços guardados, devolve os dois', () => {
     expect(precosDoAnuncio(anuncio('day', 450000, { day: 450000, hour: 60000 }))).toEqual({
       day: 450000,
@@ -51,9 +71,12 @@ describe('precosDoAnuncio', () => {
   });
 
   it('ignora preços a zero, negativos ou que não sejam números', () => {
-    expect(precosDoAnuncio(anuncio('day', 450000, { hour: 0 }))).toEqual({ day: 450000 });
-    expect(precosDoAnuncio(anuncio('day', 450000, { hour: -100 }))).toEqual({ day: 450000 });
-    expect(precosDoAnuncio(anuncio('day', 450000, { hour: '60000' }))).toEqual({ day: 450000 });
+    // O `day` vai explicito: com `precos` presente nao ha recurso ao preco do
+    // anuncio, nem para o modo principal.
+    const com = hour => anuncio('day', 450000, { day: 450000, hour });
+    expect(precosDoAnuncio(com(0))).toEqual({ day: 450000 });
+    expect(precosDoAnuncio(com(-100))).toEqual({ day: 450000 });
+    expect(precosDoAnuncio(com('60000'))).toEqual({ day: 450000 });
   });
 
   it('aguenta um anúncio a meio de ser criado, ainda sem preço', () => {

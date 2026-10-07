@@ -43,9 +43,20 @@ const moment = require('moment-timezone/builds/moment-timezone-with-data-10-year
 const MODOS = ['hour', 'day'];
 
 /**
- * Os preços de cada modo, em cêntimos. O modo principal (o `unitType` do
- * anúncio) vem de `attributes.price` quando `publicData.precos` ainda não
- * existe — é o caso de todos os anúncios anteriores a esta funcionalidade.
+ * Os preços de cada modo, em cêntimos.
+ *
+ * QUEM MANDA
+ *
+ * Se o anúncio tiver `precos`, é essa a verdade toda: um modo que lá não esteja
+ * (ou esteja a null) não se vende. Só um anúncio SEM `precos` — os anteriores a
+ * esta funcionalidade — é que lê o preço de `attributes.price`, no modo do seu
+ * `unitType`.
+ *
+ * A distinção parece fina e não é. No dia em que os tipos "Aluguer diário" e
+ * "Aluguer por hora" forem fundidos num só, o `unitType` deixa de dizer o que o
+ * anúncio vende — passa a ser só o que o tipo traz. Um espaço alugado ao dia,
+ * num tipo cujo `unitType` é "hour", cairia em `attributes.price` e passaria a
+ * vender à HORA pelo preço do DIA. 4 500 € por uma hora, sem erro nenhum.
  */
 const precosDoAnuncio = listing => {
   const publicData = listing?.attributes?.publicData || {};
@@ -53,13 +64,14 @@ const precosDoAnuncio = listing => {
   const principal = listing?.attributes?.price?.amount;
 
   const valido = v => Number.isInteger(v) && v > 0;
+  const temPrecos = precos != null && typeof precos === 'object';
 
   const resultado = {};
   for (const modo of MODOS) {
     const guardado = precos?.[modo];
     if (valido(guardado)) {
       resultado[modo] = guardado;
-    } else if (modo === unitType && valido(principal)) {
+    } else if (!temPrecos && modo === unitType && valido(principal)) {
       resultado[modo] = principal;
     }
   }

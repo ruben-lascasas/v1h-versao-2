@@ -27,20 +27,31 @@ const valido = v => Number.isInteger(v) && v > 0;
 /**
  * Os preços de cada modo, em cêntimos.
  *
- * Um anúncio sem `precos` — todos os anteriores a esta funcionalidade — tem o
- * preço do seu modo principal em `attributes.price`, e é de lá que se lê.
+ * QUEM MANDA
+ *
+ * Se o anúncio tiver `precos`, é essa a verdade toda: um modo que lá não esteja
+ * (ou esteja a null) não se vende. Só um anúncio SEM `precos` — os anteriores a
+ * esta funcionalidade — é que lê o preço de `attributes.price`, no modo do seu
+ * `unitType`.
+ *
+ * A distinção parece fina e não é. No dia em que os tipos "Aluguer diário" e
+ * "Aluguer por hora" forem fundidos num só, o `unitType` deixa de dizer o que o
+ * anúncio vende — passa a ser só o que o tipo traz. Um espaço alugado ao dia,
+ * num tipo cujo `unitType` é "hour", cairia em `attributes.price` e passaria a
+ * vender à HORA pelo preço do DIA. 4 500 € por uma hora, sem erro nenhum.
  */
 export const precosDoAnuncio = listing => {
   const publicData = listing?.attributes?.publicData || {};
   const { unitType, precos } = publicData;
   const principal = listing?.attributes?.price?.amount;
+  const temPrecos = precos != null && typeof precos === 'object';
 
   const resultado = {};
   for (const modo of MODOS) {
     const guardado = precos?.[modo];
     if (valido(guardado)) {
       resultado[modo] = guardado;
-    } else if (modo === unitType && valido(principal)) {
+    } else if (!temPrecos && modo === unitType && valido(principal)) {
       resultado[modo] = principal;
     }
   }
