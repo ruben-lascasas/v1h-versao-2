@@ -3,6 +3,8 @@ import { formatMoney } from '../../util/currency';
 import { richText } from '../../util/richText';
 import { isBookingProcessAlias } from '../../transactions/transaction';
 
+import { types as sdkTypes } from '../../util/sdkLoader';
+import { precosDoAnuncio, outroModo } from '../../util/modosDePreco';
 import css from './ListingCard.module.css';
 
 const MIN_LENGTH_FOR_LONG_WORDS = 10;
@@ -42,6 +44,8 @@ const priceData = (price, currency, intl) => {
  *   - cardAriaLabel: ready-to-use aria-label for the card link (listing title + price line when shown)
  *   - authorName: "ListingCard.author" string containing author's display name
  */
+const { Money } = sdkTypes;
+
 export const getListingCardTranslations = (listing, config, intl) => {
   const { title = '', price, publicData } = listing?.attributes || {};
 
@@ -78,6 +82,29 @@ export const getListingCardTranslations = (listing, config, intl) => {
       ? intl.formatMessage({ id: priceMessageId }, { priceValue, pricePerUnit })
       : '';
 
+  /**
+   * O SEGUNDO PREÇO NO CARTÃO
+   *
+   * Um espaço que se aluga à hora e ao dia só anunciava um dos preços na
+   * pesquisa, porque a Sharetribe indexa um preço por anúncio. Quem procurasse
+   * uma sala por duas horas via "4 500,00 € por dia" e passava à frente — o
+   * anúncio existe para os dois usos, mas só se apresentava para um.
+   *
+   * Uma linha, discreta, por baixo do preço principal. O filtro de preço
+   * continua a ser o do preço principal: isso é da Sharetribe e não se resolve
+   * aqui.
+   */
+  const precos = precosDoAnuncio(listing);
+  const outro = outroModo(publicData?.unitType);
+  const temOutroPreco =
+    showPrice && isBookable && outro && Number.isInteger(precos[outro]) && price?.currency;
+  const segundoPrecoMessage = temOutroPreco
+    ? intl.formatMessage(
+        { id: 'ListingCard.tambemAoOutroModo' },
+        { preco: formatMoney(intl, new Money(precos[outro], price.currency)), modo: outro }
+      )
+    : null;
+
   const cardAriaLabel =
     priceMessage.length > 0
       ? intl.formatMessage(
@@ -96,6 +123,7 @@ export const getListingCardTranslations = (listing, config, intl) => {
     showPrice,
     priceTooltip,
     priceMessage,
+    segundoPrecoMessage,
     cardAriaLabel,
   };
 };

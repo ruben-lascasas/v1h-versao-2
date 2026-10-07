@@ -710,6 +710,7 @@
   "ListingCard.review": "review",
   "ListingCard.reviews": "reviews",
   "ListingCard.screenreader.label": "{listingTitle}, {formattedPrice}",
+  "ListingCard.tambemAoOutroModo": "or {preco} {modo, select, day {per day} hour {per hour} other {}}",
   "ListingCard.unsupportedPrice": "({currency})",
   "ListingCard.unsupportedPriceTitle": "Unsupported currency ({currency})",
   "ListingImageGallery.closeModal": "CLOSE",

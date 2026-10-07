@@ -8,6 +8,7 @@ import { useIntl, FormattedMessage } from '../../util/reactIntl';
 import { createResourceLocatorString } from '../../util/routes';
 import { createSlug } from '../../util/urlHelpers';
 import { formatMoney } from '../../util/currency';
+import { precosDoAnuncio, resolverModo } from '../../util/modosDePreco';
 import { daysBetween, minutesBetween, timestampToDate } from '../../util/dates';
 import { types as sdkTypes } from '../../util/sdkLoader';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
@@ -176,13 +177,22 @@ const estimateQuantity = (unitType, range) => {
   return 1;
 };
 
-// Display-only estimate for the space itself (price × unit count). The real,
-// authoritative total is computed by the API on the CheckoutPage.
-const estimateSpaceTotal = (listing, range) => {
-  const price = listing?.attributes?.price;
-  if (!price) return null;
-  const unitType = listing?.attributes?.publicData?.unitType;
-  return new Money(price.amount * estimateQuantity(unitType, range), price.currency);
+/**
+ * Display-only estimate for the space itself (price × unit count). The real,
+ * authoritative total is computed by the API on the CheckoutPage.
+ *
+ * O mesmo espaço pode ser alugado à hora ou ao dia: a conta tem de usar o
+ * preço e a unidade do modo *escolhido*, não os do anúncio. Com a unidade do
+ * anúncio, uma reserva de três horas num espaço diário nem sequer casava com
+ * o intervalo e caia em "1" — o carrinho mostrava o preço de um dia inteiro.
+ */
+const estimateSpaceTotal = (listing, range, modoDePreco) => {
+  const modo = resolverModo(listing, modoDePreco);
+  const precos = precosDoAnuncio(listing);
+  const currency = listing?.attributes?.price?.currency;
+  const unitAmount = precos[modo];
+  if (!Number.isInteger(unitAmount) || !currency) return null;
+  return new Money(unitAmount * estimateQuantity(modo, range), currency);
 };
 
 // A service's estimate is driven entirely by the days (and, when priced by
@@ -607,10 +617,10 @@ const CartPage = () => {
     return items;
   }, [nearbyServices, scheduleByServiceId, days]);
 
-  const spaceTotal = useMemo(() => estimateSpaceTotal(listing, bookingRange), [
-    listing,
-    bookingRange,
-  ]);
+  const spaceTotal = useMemo(
+    () => estimateSpaceTotal(listing, bookingRange, orderData?.modoDePreco),
+    [listing, bookingRange, orderData]
+  );
 
   const currency = spaceTotal?.currency || config.currency;
   const totalAmount =

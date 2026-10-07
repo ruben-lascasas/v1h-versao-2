@@ -137,6 +137,44 @@ describe('os dados que vão no email', () => {
     expect(d.quando).toContain('13:00');
   });
 
+  /**
+   * MULTI-PRICING: a unidade é a da RESERVA, não a do anúncio.
+   *
+   * O anúncio é "aluguer diário" e esta reserva foi feita à hora. Ler a
+   * unidade do anúncio descrevia três horas de espaço como sendo dias — no
+   * email que o anfitrião recebe, e com o qual organiza o dia.
+   */
+  it('num anúncio diário, uma reserva à hora mostra horas', () => {
+    const porHora = {
+      ...RESERVA,
+      attributes: { start: '2026-09-28T11:00:00.000Z', end: '2026-09-28T14:00:00.000Z' },
+    };
+    const t = tx('transition/accept');
+    t.attributes.protectedData = { modoDePreco: 'hour', unitType: 'day' };
+
+    const d = reunir(t, [CLIENTE, ANFITRIAO, ANUNCIO, porHora]);
+
+    expect(d.quando).toContain('12:00');
+    expect(d.quando).toContain('15:00');
+  });
+
+  // Sem `modoDePreco` — reservas anteriores a esta funcionalidade — a linha de
+  // fatura diz a unidade, e di-la melhor do que o anúncio: ele pode ter mudado
+  // de preços desde então.
+  it('sem modo guardado, a linha de fatura decide', () => {
+    const porHora = {
+      ...RESERVA,
+      attributes: { start: '2026-09-28T11:00:00.000Z', end: '2026-09-28T14:00:00.000Z' },
+    };
+    const t = tx('transition/accept');
+    t.attributes.protectedData = { unitType: 'day' };
+    t.attributes.lineItems = [{ code: 'line-item/hour', quantity: 3 }];
+
+    const d = reunir(t, [CLIENTE, ANFITRIAO, ANUNCIO, porHora]);
+
+    expect(d.quando).toContain('12:00');
+  });
+
   it('aguenta uma transacção sem anúncio nem reserva incluídos', () => {
     const d = reunir(tx('transition/accept'), []);
     expect(d.txId).toBe('tx-1');
@@ -201,7 +239,9 @@ describe('a passagem', () => {
 
     expect(metadata.contrato).toEqual(contrato);
     expect(metadata.avisos['cliente-pedido']).toBeTruthy();
-    expect(mockSdk.transactions.updateMetadata.mock.calls[0][0].metadata.contrato).toEqual(contrato);
+    expect(mockSdk.transactions.updateMetadata.mock.calls[0][0].metadata.contrato).toEqual(
+      contrato
+    );
   });
 
   // Marcar um email que não saiu seria pior do que não marcar nada: ninguém

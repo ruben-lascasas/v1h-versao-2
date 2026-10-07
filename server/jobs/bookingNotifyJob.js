@@ -97,7 +97,23 @@ const reunir = (tx, incluidos) => {
   const booking = achar('booking', rel.booking?.data?.id?.uuid);
 
   const at = tx.attributes || {};
-  const unitType = at.protectedData?.unitType || listing?.attributes?.publicData?.unitType;
+  /**
+   * A unidade da RESERVA, não a do anúncio.
+   *
+   * O mesmo espaço pode ser alugado à hora ou ao dia. O modo escolhido fica em
+   * protectedData.modoDePreco; sem ele, a linha de fatura di-lo, e só em
+   * último recurso se olha para o anúncio — que entretanto pode até ter mudado
+   * de preços. Ler a do anúncio descrevia uma reserva de três horas como sendo
+   * de dias, no email que o anfitrião recebe.
+   */
+  const daLinhaDeFatura = (at.lineItems || [])
+    .map(l => l.code)
+    .find(c => ['line-item/hour', 'line-item/day', 'line-item/night'].includes(c));
+  const unitType =
+    at.protectedData?.modoDePreco ||
+    (daLinhaDeFatura ? daLinhaDeFatura.split('/')[1] : null) ||
+    at.protectedData?.unitType ||
+    listing?.attributes?.publicData?.unitType;
   const payin = at.payinTotal;
   const payout = at.payoutTotal;
   const comissao =

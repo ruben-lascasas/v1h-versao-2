@@ -126,6 +126,7 @@ export const ListingCard = props => {
     showPrice,
     priceTooltip,
     priceMessage,
+    segundoPrecoMessage,
     authorName,
   } = translations;
 
@@ -277,6 +278,14 @@ export const ListingCard = props => {
             <div className={css.price} title={priceTooltip}>
               {priceMessage}
             </div>
+          ) : null}
+          {/*
+            Um espaço que se aluga à hora E ao dia só anunciava um dos preços:
+            quem procurasse uma sala por duas horas via "4 500,00 € por dia" e
+            passava à frente. O anúncio existe para os dois usos.
+          */}
+          {showPrice && segundoPrecoMessage ? (
+            <div className={css.segundoPreco}>{segundoPrecoMessage}</div>
           ) : null}
           <div className={css.locationRow}>
             {cityLabel ? (

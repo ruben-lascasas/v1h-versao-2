@@ -710,6 +710,7 @@
   "ListingCard.review": "avaliação",
   "ListingCard.reviews": "avaliações",
   "ListingCard.screenreader.label": "{listingTitle}, {formattedPrice}",
+  "ListingCard.tambemAoOutroModo": "ou {preco} {modo, select, day {por dia} hour {por hora} other {}}",
   "ListingCard.unsupportedPrice": "({currency})",
   "ListingCard.unsupportedPriceTitle": "Moeda não suportada ({currency})",
   "ListingImageGallery.closeModal": "FECHAR",
