@@ -94,9 +94,6 @@ const FieldUsos = props => {
     }))
     .filter(g => g.opcoes.length > 0);
 
-  const [abertos, setAbertos] = useState({});
-  const alternar = id => setAbertos(a => ({ ...a, [id]: !a[id] }));
-
   return (
     <FieldArray name={name} validate={validate}>
       {({ fields, meta }) => {
@@ -104,51 +101,143 @@ const FieldUsos = props => {
         const total = selecionados.filter(v => v !== principalComoUso).length;
 
         return (
-          <fieldset className={classNames(css.root, className)}>
-            <legend className={css.titulo}>{label}</legend>
-
-            <p className={css.explicacao}>
-              {nomeDaPrincipal ? (
-                <>
-                  Este espaço está em <strong>{nomeDaPrincipal}</strong>, e isso já conta. Marque
-                  outros usos para ele aparecer também nessas pesquisas.
-                </>
-              ) : (
-                <>
-                  Marque tudo aquilo para que o espaço serve. Ele passa a aparecer nas pesquisas de
-                  cada um desses usos.
-                </>
-              )}
-            </p>
-
-            <ul className={css.grupos}>
-              {grupos.map(g => (
-                <Grupo
-                  key={g.categoria.id}
-                  categoria={g.categoria}
-                  opcoes={g.opcoes}
-                  name={fields.name}
-                  formId={formId}
-                  selecionados={selecionados}
-                  aberto={!!abertos[g.categoria.id]}
-                  onToggle={() => alternar(g.categoria.id)}
-                />
-              ))}
-            </ul>
-
-            <p className={css.resumo} aria-live="polite">
-              {total === 0
-                ? 'Nenhum uso adicional marcado.'
-                : total === 1
-                ? '1 uso adicional marcado.'
-                : `${total} usos adicionais marcados.`}
-            </p>
-
-            <ValidationError fieldMeta={{ ...meta }} />
-          </fieldset>
+          <Corpo
+            className={className}
+            label={label}
+            formId={formId}
+            nomeDaPrincipal={nomeDaPrincipal}
+            grupos={grupos}
+            nomeDoCampo={fields.name}
+            selecionados={selecionados}
+            total={total}
+            meta={meta}
+          />
         );
       }}
     </FieldArray>
+  );
+};
+
+/**
+ * Separado do FieldUsos por causa do estado "secção aberta": ele depende do
+ * número de usos já marcados, que só se conhece dentro do FieldArray.
+ */
+const Corpo = props => {
+  const {
+    className,
+    label,
+    formId,
+    nomeDaPrincipal,
+    grupos,
+    nomeDoCampo,
+    selecionados,
+    total,
+    meta,
+  } = props;
+
+  /**
+   * Os grupos onde já há escolhas começam abertos.
+   *
+   * Senão, abrir a secção de um anúncio já preenchido dava nove linhas fechadas
+   * e um número num cantinho: o anfitrião tinha de ir à caça do que ele próprio
+   * tinha marcado. Só o estado inicial é que se decide aqui — a partir daí
+   * manda quem clica, e marcar uma opção não anda com a lista por baixo do dedo.
+   */
+  const [abertos, setAbertos] = useState(() =>
+    grupos.reduce(
+      (acc, g) =>
+        g.opcoes.some(o => selecionados.includes(o.key)) ? { ...acc, [g.categoria.id]: true } : acc,
+      {}
+    )
+  );
+  const alternar = id => setAbertos(a => ({ ...a, [id]: !a[id] }));
+
+  /**
+   * FECHADO POR OMISSÃO, E PORQUÊ
+   *
+   * Uns campos acima o anfitrião escolheu a categoria numa árvore. Se logo a
+   * seguir aparecessem as nove categorias outra vez, em lista, ninguém lê isto
+   * como uma pergunta nova — lê como repetição, e repetição num formulário
+   * parece erro. Fechado, é uma linha só: uma pergunta de seguimento, que quem
+   * não quiser ignora.
+   *
+   * A editar um anúncio que já tem usos marcados abre sozinho: aí não é uma
+   * pergunta nova, é o que ele escolheu da última vez, e esconder isso obrigava
+   * a procurar.
+   */
+  const [aberto, setAberto] = useState(total > 0);
+  const idSeccao = `${formId || 'usos'}-usos-seccao`;
+
+  const resumo =
+    total === 0
+      ? 'Nenhum uso adicional marcado.'
+      : total === 1
+      ? '1 uso adicional marcado.'
+      : `${total} usos adicionais marcados.`;
+
+  return (
+    <fieldset className={classNames(css.root, className)}>
+      <legend className={css.titulo}>{label}</legend>
+
+      <button
+        type="button"
+        className={classNames(css.convite, { [css.conviteAberto]: aberto })}
+        aria-expanded={aberto}
+        aria-controls={idSeccao}
+        onClick={() => setAberto(a => !a)}
+      >
+        <span className={css.convitePergunta}>
+          {nomeDaPrincipal ? (
+            <>
+              Este espaço também serve para outra coisa além de <strong>{nomeDaPrincipal}</strong>?
+            </>
+          ) : (
+            <>Este espaço serve para mais do que uma coisa?</>
+          )}
+        </span>
+        <span className={css.conviteEstado}>
+          {total > 0 ? `${total} marcado${total === 1 ? '' : 's'}` : 'Opcional'}
+        </span>
+        <span className={css.seta} aria-hidden="true" />
+      </button>
+
+      <div id={idSeccao} className={css.seccao} hidden={!aberto}>
+        <p className={css.explicacao}>
+          {nomeDaPrincipal ? (
+            <>
+              Já aparece nas pesquisas de <strong>{nomeDaPrincipal}</strong> — isso está tratado.
+              Marque aqui os outros usos e ele passa a aparecer também nessas.
+            </>
+          ) : (
+            <>
+              Marque tudo aquilo para que o espaço serve. Ele passa a aparecer nas pesquisas de cada
+              um desses usos.
+            </>
+          )}
+        </p>
+
+        <ul className={css.grupos}>
+          {grupos.map(g => (
+            <Grupo
+              key={g.categoria.id}
+              categoria={g.categoria}
+              opcoes={g.opcoes}
+              name={nomeDoCampo}
+              formId={formId}
+              selecionados={selecionados}
+              aberto={!!abertos[g.categoria.id]}
+              onToggle={() => alternar(g.categoria.id)}
+            />
+          ))}
+        </ul>
+
+        <p className={css.resumo} aria-live="polite">
+          {resumo}
+        </p>
+      </div>
+
+      <ValidationError fieldMeta={{ ...meta }} />
+    </fieldset>
   );
 };
 

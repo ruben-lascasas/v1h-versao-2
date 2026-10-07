@@ -69,12 +69,51 @@ const montar = (initialValues = {}, extra = {}) => {
   return utils;
 };
 
+// A linha que abre a secção. Fechada, é tudo o que este campo mostra.
+const convite = () =>
+  screen.getByText(/serve para (outra coisa|mais do que uma coisa)/).closest('button');
+const abrirSeccao = () => userEvent.click(convite());
+
 describe('FieldUsos', () => {
-  it('mostra um grupo por categoria principal, e não os vazios', () => {
+  /**
+   * A RAZÃO DE SER DESTE PRIMEIRO TESTE
+   *
+   * Uns campos acima o anfitrião escolheu a categoria numa árvore. Quando as
+   * nove categorias apareciam outra vez logo a seguir, em lista aberta, isto
+   * não se lia como uma pergunta nova — lia-se como repetição, e repetição num
+   * formulário parece erro. Foi o que o primeiro anfitrião a ver isto disse.
+   * Fechado, é uma linha só.
+   */
+  it('começa fechado, para não parecer que repete a categoria de cima', () => {
     montar({ categoryLevel2: 'restaurantes-privados' });
 
-    expect(screen.getByText('Gastronomia & Convívio')).toBeInTheDocument();
-    expect(screen.getByText('Educação & Cultura')).toBeInTheDocument();
+    expect(convite()).toBeVisible();
+    expect(screen.getByText('Educação & Cultura')).not.toBeVisible();
+    expect(screen.getByLabelText('Salas para Showcooking')).not.toBeVisible();
+  });
+
+  it('a linha fechada nomeia a categoria que o anúncio já tem', () => {
+    montar({ categoryLevel2: 'restaurantes-privados' });
+    expect(convite()).toHaveTextContent('Restaurantes Privados');
+  });
+
+  /**
+   * A editar um anúncio que já tem usos, não é uma pergunta nova: é o que ele
+   * escolheu da última vez. Escondê-lo obrigava a procurar.
+   */
+  it('a editar, abre sozinho quando já há usos marcados', () => {
+    montar({ categoryLevel2: 'restaurantes-privados', usos: ['salas-showcooking'] });
+
+    expect(screen.getByLabelText('Salas para Showcooking')).toBeVisible();
+    expect(convite()).toHaveTextContent('1 marcado');
+  });
+
+  it('mostra um grupo por categoria principal, e não os vazios', async () => {
+    montar({ categoryLevel2: 'restaurantes-privados' });
+    await abrirSeccao();
+
+    expect(screen.getByText('Gastronomia & Convívio')).toBeVisible();
+    expect(screen.getByText('Educação & Cultura')).toBeVisible();
     // O ramo cujas subcategorias não existem como opção do campo não aparece:
     // um grupo vazio só serve para dar trabalho a abrir.
     expect(screen.queryByText('Ramo sem opções')).not.toBeInTheDocument();
@@ -87,6 +126,7 @@ describe('FieldUsos', () => {
    */
   it('não oferece a categoria principal como caixa', async () => {
     montar({ categoryLevel2: 'restaurantes-privados' });
+    await abrirSeccao();
 
     await userEvent.click(screen.getByText('Gastronomia & Convívio'));
 
@@ -94,9 +134,11 @@ describe('FieldUsos', () => {
     expect(screen.queryByLabelText('Restaurantes Privados')).not.toBeInTheDocument();
   });
 
-  it('diz em palavras que a categoria principal já conta', () => {
+  it('diz em palavras que a categoria principal já está tratada', async () => {
     montar({ categoryLevel2: 'restaurantes-privados' });
-    expect(screen.getByText(/já conta/)).toBeInTheDocument();
+    await abrirSeccao();
+
+    expect(screen.getByText(/isso está tratado/)).toBeVisible();
   });
 
   /**
@@ -108,6 +150,7 @@ describe('FieldUsos', () => {
    */
   it('os grupos começam fechados e abrem ao toque', async () => {
     montar({ categoryLevel2: 'auditorios' });
+    await abrirSeccao();
 
     expect(screen.getByLabelText('Salas de Formação')).not.toBeVisible();
 
@@ -118,6 +161,7 @@ describe('FieldUsos', () => {
 
   it('marcar uma opção guarda-a no formulário', async () => {
     montar({ categoryLevel2: 'restaurantes-privados' });
+    await abrirSeccao();
 
     await userEvent.click(screen.getByText('Gastronomia & Convívio'));
     await userEvent.click(screen.getByLabelText('Salas para Showcooking'));
@@ -125,17 +169,19 @@ describe('FieldUsos', () => {
     expect(screen.getByTestId('valores')).toHaveTextContent('salas-showcooking');
   });
 
-  it('conta os usos marcados, para não ser preciso abrir tudo à procura', async () => {
+  it('conta os usos marcados, para não ser preciso abrir tudo à procura', () => {
     montar({ categoryLevel2: 'restaurantes-privados', usos: ['salas-showcooking'] });
 
-    expect(screen.getByText('1 uso adicional marcado.')).toBeInTheDocument();
+    expect(screen.getByText('1 uso adicional marcado.')).toBeVisible();
     // O número aparece no cabeçalho do grupo onde a escolha está.
-    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeVisible();
   });
 
-  it('sem nada marcado, di-lo sem rodeios', () => {
+  it('sem nada marcado, di-lo sem rodeios', async () => {
     montar({ categoryLevel2: 'restaurantes-privados' });
-    expect(screen.getByText('Nenhum uso adicional marcado.')).toBeInTheDocument();
+    await abrirSeccao();
+
+    expect(screen.getByText('Nenhum uso adicional marcado.')).toBeVisible();
   });
 
   /**
@@ -149,6 +195,7 @@ describe('FieldUsos', () => {
     montar({ categoryLevel2: 'restaurantes-privados' }, { validate: exigeUm });
     expect(screen.getByTestId('invalido')).toHaveTextContent('sim');
 
+    await abrirSeccao();
     await userEvent.click(screen.getByText('Gastronomia & Convívio'));
     await userEvent.click(screen.getByLabelText('Salas para Showcooking'));
 
@@ -156,8 +203,11 @@ describe('FieldUsos', () => {
   });
 
   // Um anúncio a meio do assistente pode ainda não ter categoria escolhida.
-  it('aguenta não haver categoria principal ainda', () => {
+  it('aguenta não haver categoria principal ainda', async () => {
     montar({});
-    expect(screen.getByText(/Marque tudo aquilo para que o espaço serve/)).toBeInTheDocument();
+
+    expect(convite()).toBeVisible();
+    await abrirSeccao();
+    expect(screen.getByText(/Marque tudo aquilo para que o espaço serve/)).toBeVisible();
   });
 });
