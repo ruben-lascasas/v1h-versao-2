@@ -45,7 +45,7 @@ const PER_PAGE = 100;
 const MAX_PAGINAS = 10;
 
 const ROOT_URL = () =>
-  (process.env.REACT_APP_MARKETPLACE_ROOT_URL || 'https://venue1hub.eu').replace(/\/$/, '');
+  (process.env.REACT_APP_MARKETPLACE_ROOT_URL || 'https://venue1hub.com').replace(/\/$/, '');
 
 const destinatariosAdmin = () =>
   (process.env.ADMIN_EMAILS || '')

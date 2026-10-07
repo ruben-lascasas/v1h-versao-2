@@ -25,7 +25,7 @@ const { Resend } = require('resend');
 const { mailFrom, adminEmail, isEnglish, t } = require('./emailSender');
 
 const ROOT_URL = () =>
-  (process.env.REACT_APP_MARKETPLACE_ROOT_URL || 'https://venue1hub.eu').replace(/\/$/, '');
+  (process.env.REACT_APP_MARKETPLACE_ROOT_URL || 'https://venue1hub.com').replace(/\/$/, '');
 
 const escapeHtml = str =>
   String(str == null ? '' : str)

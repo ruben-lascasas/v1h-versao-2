@@ -842,7 +842,30 @@ const queryCountFor = (sdk, params, attempt = 0) =>
 //      pages quickly doesn't kick off 3 parallel "loop through every
 //      category" runs (which is what was triggering desporto-actividadefisica
 //      to fire 3× back-to-back in the user's logs).
-const CATEGORY_COUNTS_CACHE_KEY = 'v1h_category_counts_v2';
+/**
+ * Os números ao lado de cada categoria contam pelo mesmo campo que o filtro.
+ *
+ * Se o filtro já procura por `usos` e a contagem continuasse a contar por
+ * `categoryLevel`, um ramo podia anunciar "1" e devolver dois espaços — ou
+ * pior, anunciar "0" e ter resultados lá dentro. O número ao lado da
+ * categoria é uma promessa sobre o que está do outro lado do clique.
+ *
+ * Contar um ramo é contar as subcategorias dele, como no filtro.
+ */
+const paramsDeContagem = (config, { level1Id, level2Id }) => {
+  const categorias = config?.categoryConfiguration?.categories;
+  if (campoUsosConfigurado(config?.listing?.listingFields)) {
+    const ids = level1Id
+      ? usosParaFiltrar(categorias, [level1Id], [])
+      : usosParaFiltrar(categorias, [], [level2Id]);
+    return ids.length > 0 ? { pub_usos: `has_any:${ids.join(',')}` } : {};
+  }
+  return null; // sem o campo, quem chama mantém o parâmetro antigo
+};
+
+// v3: a chave mudou com a passagem para `usos`. Sem isso, os números guardados
+// no browser pela versão anterior ficavam até uma hora a contradizer o filtro.
+const CATEGORY_COUNTS_CACHE_KEY = 'v1h_category_counts_v3';
 const CATEGORY_COUNTS_TTL_MS = 60 * 60 * 1000; // 1 hour
 let _inFlightCategoryCounts = null; // shared promise — dedupes parallel dispatches
 
@@ -901,7 +924,10 @@ const fetchCategoryCountsPayloadCreator = async ({ categories, config }, thunkAP
       for (const cat of categories) {
         if (results[cat.id] != null) continue;
         // eslint-disable-next-line no-await-in-loop
-        const count = await queryCountFor(sdk, { [paramName]: cat.id });
+        const count = await queryCountFor(
+          sdk,
+          paramsDeContagem(config, { level1Id: cat.id }) || { [paramName]: cat.id }
+        );
         results[cat.id] = count;
       }
       writeCountsCache(results);
@@ -938,7 +964,10 @@ const fetchSubcategoryCountsPayloadCreator = async (
     const slice = targets.slice(i, i + BATCH);
     const counts = await Promise.all(
       slice.map(sub =>
-        queryCountFor(sdk, { [paramName]: sub.id }).then(count => ({ id: sub.id, count }))
+        queryCountFor(
+          sdk,
+          paramsDeContagem(config, { level2Id: sub.id }) || { [paramName]: sub.id }
+        ).then(count => ({ id: sub.id, count }))
       )
     );
     counts.forEach(({ id, count }) => {

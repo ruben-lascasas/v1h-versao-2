@@ -17,7 +17,7 @@ const { Resend } = require('resend');
 const { mailFrom, isEnglish, t } = require('./emailSender');
 const { TIPOS } = require('./resolutionCase');
 
-const ROOT = () => (process.env.REACT_APP_MARKETPLACE_ROOT_URL || 'https://venue1hub.eu').replace(/\/$/, '');
+const ROOT = () => (process.env.REACT_APP_MARKETPLACE_ROOT_URL || 'https://venue1hub.com').replace(/\/$/, '');
 
 const rotuloTipo = (chave, en) => {
   const tipo = TIPOS.find(x => x.chave === chave);
