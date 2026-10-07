@@ -1,0 +1,156 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  border: none;
+  padding: 0;
+  margin: 24px 0 0;
+}
+
+.titulo {
+  composes: p from global;
+  padding: 0;
+  margin: 0 0 4px;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorGrey700);
+}
+
+.explicacao {
+  margin: 0 0 14px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b645c;
+}
+
+.grupos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #e4dbce;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.grupo + .grupo {
+  border-top: 1px solid #e4dbce;
+}
+
+/*
+  O cabeçalho é a linha que se toca no telemóvel: 52px de altura garantem o
+  alvo confortável sem fazer da lista uma escadaria.
+*/
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  color: #2e2e2e;
+  transition: background-color 0.15s ease;
+}
+
+.cabecalho:hover {
+  background: #faf7f3;
+}
+
+.cabecalhoAberto {
+  background: #f9f6f2;
+}
+
+.nomeDoGrupo {
+  flex: 1;
+  min-width: 0;
+}
+
+/* O número de usos marcados dentro do grupo, para não ser preciso abrir
+   todos à procura do que já se escolheu. */
+.contador {
+  flex-shrink: 0;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 11px;
+  background: #baa38a;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+}
+
+.seta {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid #8a8178;
+  border-bottom: 2px solid #8a8178;
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform 0.2s ease;
+}
+
+.cabecalhoAberto .seta {
+  transform: rotate(-135deg) translate(-3px, -3px);
+}
+
+.painel {
+  padding: 4px 16px 14px;
+  background: #f9f6f2;
+}
+
+.opcoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  /* Duas colunas a partir do tablet: a lista de um grupo cabe num relance em
+     vez de obrigar a percorrer. No telemóvel fica uma, que é o que cabe. */
+  @media (--viewportMedium) {
+    columns: 2;
+    column-gap: 24px;
+  }
+}
+
+.opcao {
+  padding: 6px 0;
+  break-inside: avoid;
+}
+
+.resumo {
+  margin: 10px 0 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #8a8178;
+}
+
+:global(body[data-dark-mode]) .explicacao {
+  color: #c7bcaf;
+}
+
+:global(body[data-dark-mode]) .grupos {
+  border-color: #4a443e;
+}
+
+:global(body[data-dark-mode]) .grupo + .grupo {
+  border-top-color: #4a443e;
+}
+
+:global(body[data-dark-mode]) .cabecalho {
+  background: #2b2724;
+  color: #f0eae2;
+}
+
+:global(body[data-dark-mode]) .cabecalho:hover,
+:global(body[data-dark-mode]) .cabecalhoAberto {
+  background: #332e2a;
+}
+
+:global(body[data-dark-mode]) .painel {
+  background: #332e2a;
+}

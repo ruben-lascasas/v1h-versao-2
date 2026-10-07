@@ -4,6 +4,7 @@ import { useForm, useFormState } from 'react-final-form';
 
 // Import config and utils
 import { useIntl } from '../../util/reactIntl';
+import { useConfiguration } from '../../context/configurationContext';
 import {
   SCHEMA_TYPE_ENUM,
   SCHEMA_TYPE_MULTI_ENUM,
@@ -19,7 +20,13 @@ import {
   validateYoutubeURL,
 } from '../../util/validators';
 // Import shared components
-import { FieldCheckboxGroup, FieldSelect, FieldTextInput, FieldBoolean } from '../../components';
+import {
+  FieldCheckboxGroup,
+  FieldSelect,
+  FieldTextInput,
+  FieldBoolean,
+  FieldUsos,
+} from '../../components';
 // Import modules from this directory
 import css from './CustomExtendedDataField.module.css';
 
@@ -73,6 +80,29 @@ const CustomFieldMultiEnum = props => {
   const validateMaybe = isRequired
     ? { validate: nonEmptyArray(requiredMessage || defaultRequiredMessage) }
     : {};
+  const config = useConfiguration();
+
+  /**
+   * Os "usos do espaço" têm desenho próprio.
+   *
+   * A lista plana que serve para seis comodidades não serve para sessenta
+   * subcategorias: no telemóvel era um ecrã inteiro de caixas, sem dizer onde
+   * acaba um ramo e começa o outro. O FieldUsos agrupa-as pelas categorias
+   * principais e deixa cada grupo fechado até alguém lhe pegar.
+   */
+  if (fieldConfig?.key === 'usos') {
+    return (
+      <FieldUsos
+        className={css.customField}
+        name={name}
+        formId={formId}
+        label={label}
+        categories={config?.categoryConfiguration?.categories || []}
+        enumOptions={enumOptions}
+        {...validateMaybe}
+      />
+    );
+  }
 
   return enumOptions ? (
     <FieldCheckboxGroup
