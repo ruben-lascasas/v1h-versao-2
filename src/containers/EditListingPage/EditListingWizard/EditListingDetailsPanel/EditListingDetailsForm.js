@@ -270,9 +270,19 @@ const FieldSelectCategory = props => {
 //   directly via Detalhes would bypass that flow and the notification.
 const HIDDEN_FIELD_KEYS = ['averageRating', 'reviewCount', 'featured', 'featuredAt'];
 
+// Campos que se mostram logo a seguir à categoria, e não no monte lá em baixo.
+const CAMPOS_JUNTO_DA_CATEGORIA = ['usos'];
+
 // Add collect data for listing fields (both publicData and privateData) based on configuration
+/**
+ * `apenas` / `excepto` servem para tirar um campo do monte e pô-lo onde ele faz
+ * sentido — hoje, os "usos do espaço" logo a seguir à subcategoria. O que decide
+ * se um campo aparece (tipo de anúncio, categoria, âmbito) continua aqui, num
+ * sítio só: uma segunda cópia dessas regras acabaria por divergir desta.
+ */
 const AddListingFields = props => {
   const { listingType, listingFieldsConfig, selectedCategories, formId, intl } = props;
+  const { apenas, excepto } = props;
   const targetCategoryIds = Object.values(selectedCategories);
 
   const fields = listingFieldsConfig.reduce((pickedFields, fieldConfig) => {
@@ -280,6 +290,8 @@ const AddListingFields = props => {
     const namespacedKey = scope === 'public' ? `pub_${key}` : `priv_${key}`;
 
     if (HIDDEN_FIELD_KEYS.includes(key)) return pickedFields;
+    if (apenas && !apenas.includes(key)) return pickedFields;
+    if (excepto && excepto.includes(key)) return pickedFields;
 
     const isKnownSchemaType = EXTENDED_DATA_SCHEMA_TYPES.includes(schemaType);
     const isProviderScope = ['public', 'private'].includes(scope);
@@ -459,6 +471,23 @@ const EditListingDetailsForm = props => (
             />
           )}
 
+          {/*
+            Os "usos do espaço" ficam colados à subcategoria, que é a pergunta de
+            que eles são o seguimento: "está em Quintas para Eventos — também serve
+            para outra coisa?". Lá em baixo, no meio das comodidades, lia-se como
+            uma segunda árvore de categorias em vez de uma pergunta a mais.
+          */}
+          {showListingFields && isCompatibleCurrency && (
+            <AddListingFields
+              listingType={listingType}
+              listingFieldsConfig={listingFieldsConfig}
+              selectedCategories={pickSelectedCategories(values)}
+              formId={formId}
+              intl={intl}
+              apenas={CAMPOS_JUNTO_DA_CATEGORIA}
+            />
+          )}
+
           {showTitle && isCompatibleCurrency && (
             <FieldTextInput
               id={`${formId}title`}
@@ -504,6 +533,7 @@ const EditListingDetailsForm = props => (
               selectedCategories={pickSelectedCategories(values)}
               formId={formId}
               intl={intl}
+              excepto={CAMPOS_JUNTO_DA_CATEGORIA}
             />
           )}
 
