@@ -776,4 +776,144 @@ describe('transactionLineItems', () => {
       expect(result[0].unitPrice.currency).toBe('USD'); // Uses listing currency
     });
   });
+  /**
+   * MULTI-PRICING: o mesmo anúncio alugado à hora e ao dia.
+   *
+   * O espaço custa 450€/dia e 60€/hora. O que se prova aqui é que o preço vem
+   * sempre do anúncio e nunca do pedido, e que um anúncio sem segundo preço se
+   * comporta como antes desta funcionalidade.
+   */
+  describe('Modos de aluguer: hora e dia no mesmo anúncio', () => {
+    const doisModos = {
+      attributes: {
+        price: new Money(45000, 'EUR'),
+        availabilityPlan: { type: 'availability-plan/time', timezone: 'Europe/Lisbon' },
+        publicData: {
+          unitType: 'day',
+          priceVariationsEnabled: false,
+          precos: { day: 45000, hour: 6000 },
+        },
+      },
+    };
+
+    // 10 e 11 de Julho de 2026 em Lisboa (UTC+1), meia-noite a meia-noite.
+    const doisDias = {
+      bookingStart: '2026-07-09T23:00:00.000Z',
+      bookingEnd: '2026-07-11T23:00:00.000Z',
+    };
+
+    it('ao dia, cobra o preço do dia por cada dia', () => {
+      const r = transactionLineItems(doisModos, { ...doisDias, modoDePreco: 'day' }, null, null);
+      expect(r[0].code).toBe('line-item/day');
+      expect(r[0].unitPrice.amount).toBe(45000);
+      expect(r[0].quantity).toBe(2);
+    });
+
+    it('à hora, cobra o preço da hora por cada hora', () => {
+      const r = transactionLineItems(
+        doisModos,
+        {
+          bookingStart: '2026-07-10T08:00:00.000Z',
+          bookingEnd: '2026-07-10T11:00:00.000Z',
+          modoDePreco: 'hour',
+        },
+        null,
+        null
+      );
+      expect(r[0].code).toBe('line-item/hour');
+      expect(r[0].unitPrice.amount).toBe(6000);
+      expect(r[0].quantity).toBe(3);
+    });
+
+    /**
+     * O NOME DO MODO VEM DO BROWSER; O PREÇO NÃO.
+     *
+     * Se bastasse pedir um modo para ele ser cobrado, um anúncio que só vende
+     * ao dia podia ser reservado à hora por quem soubesse mexer no pedido — e
+     * sem segundo preço definido ficaria a cobrar 450€ à hora, ou nada.
+     */
+    it('um modo que o anúncio não vende cai no modo principal', () => {
+      const soAoDia = {
+        attributes: {
+          price: new Money(45000, 'EUR'),
+          availabilityPlan: { type: 'availability-plan/time', timezone: 'Europe/Lisbon' },
+          publicData: { unitType: 'day', priceVariationsEnabled: false },
+        },
+      };
+
+      const r = transactionLineItems(soAoDia, { ...doisDias, modoDePreco: 'hour' }, null, null);
+      expect(r[0].code).toBe('line-item/day');
+      expect(r[0].unitPrice.amount).toBe(45000);
+      expect(r[0].quantity).toBe(2);
+    });
+
+    it('sem modo pedido, mantém-se o de sempre', () => {
+      const r = transactionLineItems(doisModos, doisDias, null, null);
+      expect(r[0].code).toBe('line-item/day');
+      expect(r[0].unitPrice.amount).toBe(45000);
+    });
+
+    /**
+     * Um "dia" é o horário de abertura do espaço. Das 09:00 às 18:00 é um dia
+     * de espaço ocupado; com a contagem antiga dava zero e a reserva saía de
+     * graça.
+     */
+    it('um dia das 09:00 às 18:00 custa um dia, não zero', () => {
+      const r = transactionLineItems(
+        doisModos,
+        {
+          bookingStart: '2026-07-10T08:00:00.000Z',
+          bookingEnd: '2026-07-10T17:00:00.000Z',
+          modoDePreco: 'day',
+        },
+        null,
+        null
+      );
+      expect(r[0].quantity).toBe(1);
+      expect(r[0].unitPrice.amount).toBe(45000);
+    });
+
+    it('de 2.ª 09:00 a 4.ª 18:00 são três dias', () => {
+      const r = transactionLineItems(
+        doisModos,
+        {
+          bookingStart: '2026-07-06T08:00:00.000Z',
+          bookingEnd: '2026-07-08T17:00:00.000Z',
+          modoDePreco: 'day',
+        },
+        null,
+        null
+      );
+      expect(r[0].quantity).toBe(3);
+    });
+
+    /**
+     * As variantes de preço nativas e os modos são duas maneiras de dizer a
+     * mesma coisa. Se as duas valessem ao mesmo tempo, o preço final dependia
+     * da ordem do código — e ninguém o conseguia explicar a um anfitrião.
+     */
+    it('com variantes nativas ligadas, são elas que mandam', () => {
+      const comVariantes = {
+        attributes: {
+          price: new Money(45000, 'EUR'),
+          availabilityPlan: { type: 'availability-plan/time', timezone: 'Europe/Lisbon' },
+          publicData: {
+            unitType: 'day',
+            priceVariationsEnabled: true,
+            priceVariants: [{ name: 'Fim-de-semana', priceInSubunits: 70000 }],
+            precos: { day: 45000, hour: 6000 },
+          },
+        },
+      };
+
+      const r = transactionLineItems(
+        comVariantes,
+        { ...doisDias, priceVariantName: 'Fim-de-semana', modoDePreco: 'hour' },
+        null,
+        null
+      );
+      expect(r[0].code).toBe('line-item/day');
+      expect(r[0].unitPrice.amount).toBe(70000);
+    });
+  });
 });

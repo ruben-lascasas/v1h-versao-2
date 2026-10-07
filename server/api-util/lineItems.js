@@ -7,6 +7,9 @@ const {
 } = require('./lineItemHelpers');
 const { types } = require('sharetribe-flex-sdk');
 const { Money } = types;
+const { precosDoAnuncio, modoACobrar, diasCobertos } = require('./modosDePreco');
+
+const LINE_ITEM_DAY = 'line-item/day';
 
 /**
  * Get quantity and add extra line-items that are related to delivery method
@@ -106,19 +109,35 @@ const getHourQuantityAndLineItems = orderData => {
  * @param {number} [orderData.seats]
  * @param {'line-item/day' | 'line-item/night'} code
  */
-const getDateRangeQuantityAndLineItems = (orderData, code) => {
+const getDateRangeQuantityAndLineItems = (orderData, code, timeZone) => {
   const { bookingStart, bookingEnd, seats, protectedData } = orderData;
   const multipleBookings = orderData?.multipleBookings || protectedData?.multipleBookings;
   const hasSeats = !!seats;
-  const baseUnits =
-    bookingStart && bookingEnd ? calculateQuantityFromDates(bookingStart, bookingEnd, code) : null;
+
+  /**
+   * Com um "dia" a valer o horário de abertura do espaço, uma reserva deixa de
+   * começar e acabar à meia-noite, e a diferença entre as duas datas deixa de
+   * contar dias: das 09:00 às 18:00 dá zero, e sairia de graça. Conta-se, em
+   * vez disso, os dias de calendário tocados — que para as reservas de
+   * meia-noite a meia-noite dá exatamente o mesmo de sempre.
+   *
+   * Sem fuso conhecido fica o cálculo antigo: contar dias de calendário no fuso
+   * errado mudava preços, e um anúncio sem plano de disponibilidade também não
+   * tem horário de abertura para vender.
+   */
+  const contar = (ini, fim) =>
+    code === LINE_ITEM_DAY && timeZone
+      ? diasCobertos(ini, fim, timeZone)
+      : calculateQuantityFromDates(ini, fim, code);
+
+  const baseUnits = bookingStart && bookingEnd ? contar(bookingStart, bookingEnd) : null;
 
   // For multi-booking: sum days/nights across all additional slots and add
   // to the primary slot's units. The booking entity uses the first slot
   // only; the remaining slots are billed via this combined quantity.
   const additionalSlots = multipleBookings?.additionalBookings || [];
   const additionalUnits = additionalSlots.reduce((sum, s) => {
-    const u = calculateQuantityFromDates(s.bookingStart, s.bookingEnd, code);
+    const u = contar(s.bookingStart, s.bookingEnd);
     return sum + (Number.isInteger(u) ? u : 0);
   }, 0);
   const units = (baseUnits || 0) + additionalUnits;
@@ -168,19 +187,36 @@ exports.transactionLineItems = (listing, orderData, providerCommission, customer
   const priceAttribute = listing.attributes.price;
   const currency = priceAttribute?.currency || orderData.currency;
 
-  const { priceVariantName, offer } = orderData || {};
+  const { priceVariantName, offer, modoDePreco } = orderData || {};
   const priceVariantConfig = priceVariants
     ? priceVariants.find(pv => pv.name === priceVariantName)
     : null;
   const { priceInSubunits } = priceVariantConfig || {};
   const isPriceInSubunitsValid = Number.isInteger(priceInSubunits) && priceInSubunits >= 0;
 
-  const unitPrice =
-    isBookable && priceVariationsEnabled && isPriceInSubunitsValid
-      ? new Money(priceInSubunits, currency)
-      : offer instanceof Money && isNegotiationUnitType
-      ? offer
-      : priceAttribute;
+  /**
+   * MODO DE ALUGUER: à hora ou ao dia, no mesmo anúncio.
+   *
+   * `modoDePreco` vem do browser, mas só como *nome*: o valor é sempre lido do
+   * anúncio (ver api-util/modosDePreco.js). Um nome que este anúncio não venda
+   * cai no modo principal, que é o `unitType` de sempre — por isso um anúncio
+   * sem segundo preço comporta-se exatamente como antes desta funcionalidade.
+   *
+   * As variantes de preço nativas mandam sobre isto quando estão ligadas: são
+   * duas maneiras de dizer a mesma coisa, e misturar as duas no mesmo anúncio
+   * daria um preço que ninguém consegue explicar.
+   */
+  const usaVariantes = isBookable && priceVariationsEnabled && isPriceInSubunitsValid;
+  const modo = usaVariantes ? unitType : modoACobrar(listing, modoDePreco);
+  const precoDoModo = precosDoAnuncio(listing)[modo];
+
+  const unitPrice = usaVariantes
+    ? new Money(priceInSubunits, currency)
+    : offer instanceof Money && isNegotiationUnitType
+    ? offer
+    : Number.isInteger(precoDoModo)
+    ? new Money(precoDoModo, currency)
+    : priceAttribute;
 
   /**
    * Pricing starts with order's base price:
@@ -193,19 +229,20 @@ exports.transactionLineItems = (listing, orderData, providerCommission, customer
    * - includedFor
    */
 
-  const code = `line-item/${unitType}`;
+  const code = `line-item/${modo}`;
+  const timeZone = listing.attributes.availabilityPlan?.timezone;
 
   // Here "extra line-items" means line-items that are tied to unit type
   // E.g. by default, "shipping-fee" is tied to 'item' aka buying products.
   const quantityAndExtraLineItems =
-    unitType === 'item'
+    modo === 'item'
       ? getItemQuantityAndLineItems(orderData, publicData, currency)
-      : unitType === 'fixed'
+      : modo === 'fixed'
       ? getFixedQuantityAndLineItems(orderData)
-      : unitType === 'hour'
+      : modo === 'hour'
       ? getHourQuantityAndLineItems(orderData)
-      : ['day', 'night'].includes(unitType)
-      ? getDateRangeQuantityAndLineItems(orderData, code)
+      : ['day', 'night'].includes(modo)
+      ? getDateRangeQuantityAndLineItems(orderData, code, timeZone)
       : isNegotiationUnitType
       ? getOfferQuantityAndLineItems(orderData)
       : {};
