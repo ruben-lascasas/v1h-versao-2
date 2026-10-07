@@ -244,7 +244,16 @@ const EditListingPricingPanel = props => {
                 ? { publicData: { ...precosMaybe } }
                 : {};
 
-              updateValues = { price, ...publicDataMaybe };
+              /**
+               * A Sharetribe exige um preço no anúncio, e indexa esse para o
+               * filtro de pesquisa. Com os dois modos lado a lado, o anfitrião
+               * pode preencher só um — e se for o outro, é esse que vale.
+               * Sem isto, um espaço que só se alugue à hora ficava sem preço
+               * nenhum e a API recusava a gravação.
+               */
+              const precoDoAnuncio = price || precoSegundoModo || null;
+
+              updateValues = { price: precoDoAnuncio, ...publicDataMaybe };
             }
 
             // Save the initialValues to state

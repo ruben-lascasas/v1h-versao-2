@@ -23,6 +23,7 @@ import {
 
 // Import modules from this directory
 import css from './EditListingPricingAndStockForm.module.css';
+import { submeterRevelandoErros } from '../../../../util/submeter';
 
 const { Money } = sdkTypes;
 const MILLION = 1000000;
@@ -147,6 +148,7 @@ export const EditListingPricingAndStockForm = props => (
         rootClassName,
         disabled,
         ready,
+        form: formApi,
         handleSubmit,
         invalid,
         pristine,
@@ -182,7 +184,7 @@ export const EditListingPricingAndStockForm = props => (
       const classes = classNames(rootClassName || css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
-      const submitDisabled = invalid || disabled || submitInProgress;
+      const submitDisabled = disabled || submitInProgress;
       const { updateListingError, showListingsError, setStockError } = fetchErrors || {};
 
       const stockErrorMessage = isOldTotalMismatchStockError(setStockError)
@@ -190,7 +192,7 @@ export const EditListingPricingAndStockForm = props => (
         : intl.formatMessage({ id: 'EditListingPricingAndStockForm.stockUpdateFailed' });
 
       return (
-        <Form onSubmit={handleSubmit} className={classes}>
+        <Form onSubmit={submeterRevelandoErros(handleSubmit, formApi)} className={classes}>
           {updateListingError ? (
             <p className={css.error}>
               <FormattedMessage id="EditListingPricingAndStockForm.updateFailed" />

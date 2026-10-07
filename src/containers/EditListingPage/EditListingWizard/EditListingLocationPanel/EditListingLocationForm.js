@@ -33,6 +33,7 @@ import {
 
 // Import modules from this directory
 import css from './EditListingLocationForm.module.css';
+import { submeterRevelandoErros } from '../../../../util/submeter';
 
 const identity = v => v;
 
@@ -68,6 +69,7 @@ export const EditListingLocationForm = props => (
         rootClassName,
         disabled,
         ready,
+        form: formApi,
         handleSubmit,
         invalid,
         pristine,
@@ -95,13 +97,13 @@ export const EditListingLocationForm = props => (
       const classes = classNames(rootClassName || css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
-      const submitDisabled = invalid || disabled || submitInProgress;
+      const submitDisabled = disabled || submitInProgress;
       // A disabled button with no explanation is a dead end: the address field
       // is the only thing that can block this step, so say so.
       const showAddressHint = invalid && !disabled && !submitInProgress;
 
       return (
-        <Form className={classes} onSubmit={handleSubmit}>
+        <Form className={classes} onSubmit={submeterRevelandoErros(handleSubmit, formApi)}>
           {updateListingError ? (
             <p className={css.error}>
               <FormattedMessage id="EditListingLocationForm.updateFailed" />

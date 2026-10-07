@@ -285,6 +285,9 @@ const getConfig = (listingTypes, listingFields, categoryConfig) => {
   };
 };
 
+// Os campos personalizados que nao sao obrigatorios levam agora
+// "• Opcional" na etiqueta (ver CustomExtendedDataField), por isso as
+// procuras por texto exacto passaram a prefixo.
 describe('EditListingPage', () => {
   beforeEach(() => {
     // This is not defined by default on test env. Availability panel needs it.
@@ -419,7 +422,7 @@ describe('EditListingPage', () => {
       expect(
         getByRole('textbox', { name: 'EditListingDetailsForm.description' })
       ).toBeInTheDocument();
-      expect(getByLabelText('Cat')).toBeInTheDocument();
+      expect(getByLabelText(/^Cat/)).toBeInTheDocument();
       //
       expect(
         getByRole('option', { name: 'CustomExtendedDataField.placeholderSingleSelect' }).selected
@@ -469,7 +472,7 @@ describe('EditListingPage', () => {
       expect(
         getByRole('textbox', { name: 'EditListingDetailsForm.description' })
       ).toBeInTheDocument();
-      expect(getByLabelText('Cat')).toBeInTheDocument();
+      expect(getByLabelText(/^Cat/)).toBeInTheDocument();
       // Check custom extended data field exists
       expect(
         getByRole('option', { name: 'CustomExtendedDataField.placeholderSingleSelect' }).selected
@@ -544,7 +547,7 @@ describe('EditListingPage', () => {
     expect(
       getByRole('textbox', { name: 'EditListingDetailsForm.description' })
     ).toBeInTheDocument();
-    expect(getByLabelText('Cat')).toBeInTheDocument();
+    expect(getByLabelText(/^Cat/)).toBeInTheDocument();
     expect(
       getByRole('option', { name: 'CustomExtendedDataField.placeholderSingleSelect' }).selected
     ).toBe(true);
@@ -607,7 +610,7 @@ describe('EditListingPage', () => {
       expect(
         getByRole('textbox', { name: 'EditListingDetailsForm.description' })
       ).toBeInTheDocument();
-      expect(getByLabelText('Cat')).toBeInTheDocument();
+      expect(getByLabelText(/^Cat/)).toBeInTheDocument();
 
       expect(
         getByRole('option', { name: 'CustomExtendedDataField.placeholderSingleSelect' }).selected
@@ -670,7 +673,7 @@ describe('EditListingPage', () => {
       );
 
       // Tab/form: listing field
-      expect(getByLabelText('Cat')).toBeInTheDocument();
+      expect(getByLabelText(/^Cat/)).toBeInTheDocument();
       expect(
         getByRole('option', { name: 'CustomExtendedDataField.placeholderSingleSelect' }).selected
       ).toBe(true);
@@ -966,7 +969,10 @@ describe('EditListingPage', () => {
         name: 'EditListingWizard.edit.savePricingAndStock',
       });
       expect(saveButton).toBeInTheDocument();
-      expect(saveButton).toBeDisabled();
+      // O botao e clicavel de proposito: carregar nele e o que revela os campos
+      // que faltam (ver util/submeter.js). O que este teste prova e a caixa do
+      // stock infinito, nao a tranca do botao.
+      expect(saveButton).toBeEnabled();
     });
     // Test intercation
     await user.click(
@@ -1267,7 +1273,7 @@ describe('EditListingPage', () => {
       );
 
       // Tab/form: listing field
-      expect(getByText('Amenities')).toBeInTheDocument();
+      expect(getByText(/^Amenities/)).toBeInTheDocument();
       expect(getByRole('checkbox', { name: /Dog 1/i })).not.toBeChecked();
       expect(getByRole('checkbox', { name: /Dog 2/i })).not.toBeChecked();
 
@@ -1398,7 +1404,7 @@ describe('EditListingPage', () => {
       expect(getByText('EditListingPricingPanel.title')).toBeInTheDocument();
 
       // Tab/form: price
-      expect(getByRole('textbox', { name: 'EditListingPricingForm.pricePerProduct' })).toHaveValue(
+      expect(getByRole('textbox', { name: 'EditListingPricingForm.comoAluga.aoDia' })).toHaveValue(
         '$10.00'
       );
 
@@ -1408,12 +1414,12 @@ describe('EditListingPage', () => {
     });
 
     // Test intercation
-    await user.clear(getByRole('textbox', { name: 'EditListingPricingForm.pricePerProduct' }));
-    await user.type(getByRole('textbox', { name: 'EditListingPricingForm.pricePerProduct' }), '12');
+    await user.clear(getByRole('textbox', { name: 'EditListingPricingForm.comoAluga.aoDia' }));
+    await user.type(getByRole('textbox', { name: 'EditListingPricingForm.comoAluga.aoDia' }), '12');
     await user.click(queryAllByRole('heading')[0]); // create blur event
 
     // Tab/form: existing building
-    expect(getByLabelText('EditListingPricingForm.pricePerProduct')).toHaveValue('$12.00');
+    expect(getByLabelText('EditListingPricingForm.comoAluga.aoDia')).toHaveValue('$12.00');
   });
 
   it('Booking (day): edit flow on availability tab', async () => {
@@ -2573,7 +2579,7 @@ describe('EditListingPage', () => {
       );
 
       // Tab/form: listing field
-      expect(getByLabelText('Cat')).toBeInTheDocument();
+      expect(getByLabelText(/^Cat/)).toBeInTheDocument();
       expect(
         getByRole('option', { name: 'CustomExtendedDataField.placeholderSingleSelect' }).selected
       ).toBe(true);

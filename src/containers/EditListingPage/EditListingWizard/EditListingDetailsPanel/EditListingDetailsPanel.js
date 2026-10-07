@@ -33,7 +33,16 @@ import css from './EditListingDetailsPanel.module.css';
 // ever see "Serviço", and an Anunciante shouldn't see it at all. Since
 // Console can't express this, it's mapped here instead.
 const LISTING_TYPES_BY_USER_TYPE = {
-  anunciante: ['daily-rental', 'hourly-rental'],
+  // Era ['daily-rental', 'hourly-rental'] — duas opções que faziam a mesma
+  // pergunta que a etapa do preço volta a fazer, e que deixaram de ser uma
+  // decisão real desde que um anúncio pode ter os dois preços. Com um tipo só,
+  // o formulário nem chega a mostrar a pergunta: o próprio componente esconde a
+  // lista quando há uma opção única, e preenche-a sozinho.
+  //
+  // Os tipos antigos continuam a existir na Console de propósito: um anúncio
+  // que ainda os use continua a abrir e a editar-se, porque essa verificação é
+  // feita contra a lista completa, não contra esta.
+  anunciante: ['espaco'],
   prestador_de_servicos: ['servico'],
 };
 
@@ -496,10 +505,7 @@ const EditListingDetailsPanel = props => {
                   shouldReset = true;
                 }
                 if (!shouldReset) {
-                  const keys = new Set([
-                    ...Object.keys(prevPublic),
-                    ...Object.keys(newPublic),
-                  ]);
+                  const keys = new Set([...Object.keys(prevPublic), ...Object.keys(newPublic)]);
                   for (const k of keys) {
                     const a = prevPublic[k];
                     const b = newPublic[k];
@@ -518,10 +524,9 @@ const EditListingDetailsPanel = props => {
                 if (shouldReset && typeof fetch === 'function') {
                   // Fire-and-forget: the counter is non-critical, no need to
                   // block the save on it.
-                  fetch(
-                    `/api/listing-views/${encodeURIComponent(listingUuid)}/reset`,
-                    { method: 'POST' }
-                  ).catch(() => {});
+                  fetch(`/api/listing-views/${encodeURIComponent(listingUuid)}/reset`, {
+                    method: 'POST',
+                  }).catch(() => {});
                   // Drop the cached counts so the badge doesn't flash the
                   // stale number after the save returns.
                   try {

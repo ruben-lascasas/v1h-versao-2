@@ -32,7 +32,10 @@ describe('EditListingDeliveryForm', () => {
     );
 
     // Test that save button is disabled at first
-    expect(screen.getByRole('button', { name: saveActionMsg })).toBeDisabled();
+    // O botao e clicavel de proposito: carregar nele e o que revela os
+    // campos que faltam (ver util/submeter.js). O que importa provar aqui
+    // e que o passo se explica, nao que o botao esteja trancado.
+    expect(screen.getByRole('button', { name: saveActionMsg })).toBeEnabled();
 
     // Fill mandatory attributes
     const price = 'EditListingPricingAndStockForm.pricePerProduct';

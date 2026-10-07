@@ -40,30 +40,26 @@
 }
 
 /*
-  O segundo preco e uma pergunta a mais, nao um segundo campo obrigatorio: a
-  moldura separa-o do preco principal e diz, sem palavras, que se pode passar
-  a frente.
+  "Como aluga este espaco?": os dois precos lado a lado, nenhum deles
+  privilegiado. Era isso que faltava — um campo grande e outro numa caixa a
+  parte sugeriam que um contava mais do que o outro.
 */
-.segundoModo {
-  margin: 8px 0 24px;
-  padding: 20px 20px 4px;
-  border: 1px dashed #d8cdbd;
-  border-radius: 10px;
-  background: #fbf9f6;
+.comoAluga {
+  margin: 0 0 24px;
 
   @media (--viewportMedium) {
     margin-bottom: 32px;
   }
 }
 
-.segundoModoTitulo {
+.comoAlugaTitulo {
   composes: h4 from global;
   margin: 0 0 6px;
   padding: 0;
-  color: #4a443e;
+  color: #2e2e2e;
 }
 
-.segundoModoExplicacao {
+.comoAlugaExplicacao {
   margin: 0 0 16px;
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 14px;
@@ -71,27 +67,47 @@
   color: #6b645c;
 }
 
-.segundoModoNota {
-  margin: -12px 0 16px;
+/* No telemovel ficam um por baixo do outro: dois campos de moeda lado a lado
+   a 375px dao numeros cortados. */
+.comoAlugaCampos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (--viewportMedium) {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+}
+
+.campoModo {
+  width: 100%;
+}
+
+.comoAlugaNota {
+  margin: 12px 0 0;
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
   line-height: 1.5;
   color: #8a8178;
 }
 
-:global(body[data-dark-mode]) .segundoModo {
-  border-color: #554d45;
-  background: #2b2724;
+.comoAlugaErro {
+  margin: 10px 0 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--colorFail);
 }
 
-:global(body[data-dark-mode]) .segundoModoTitulo {
+:global(body[data-dark-mode]) .comoAlugaTitulo {
   color: #f0eae2;
 }
 
-:global(body[data-dark-mode]) .segundoModoExplicacao {
+:global(body[data-dark-mode]) .comoAlugaExplicacao {
   color: #c7bcaf;
 }
 
-:global(body[data-dark-mode]) .segundoModoNota {
+:global(body[data-dark-mode]) .comoAlugaNota {
   color: #a79b8d;
 }

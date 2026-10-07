@@ -52,7 +52,10 @@ describe('EditListingDeliveryForm', () => {
     expect(screen.getByText(building)).toBeInTheDocument();
 
     // Test that save button is disabled at first
-    expect(screen.getByRole('button', { name: saveActionMsg })).toBeDisabled();
+    // O botao e clicavel de proposito: carregar nele e o que revela os
+    // campos que faltam (ver util/submeter.js). O que importa provar aqui
+    // e que o passo se explica, nao que o botao esteja trancado.
+    expect(screen.getByRole('button', { name: saveActionMsg })).toBeEnabled();
 
     await user.type(screen.getByTestId('location-search'), 'Erottajankatu 19, Helsinki');
     await user.type(screen.getByRole('textbox', { name: building }), 'B');
@@ -87,14 +90,13 @@ describe('EditListingDeliveryForm', () => {
       fireEvent.blur(locationInput);
     });
 
-    expect(screen.getByRole('button', { name: saveActionMsg })).toBeDisabled();
+    // O botao e clicavel de proposito: carregar nele e o que revela os
+    // campos que faltam (ver util/submeter.js). O que importa provar aqui
+    // e que o passo se explica, nao que o botao esteja trancado.
+    expect(screen.getByRole('button', { name: saveActionMsg })).toBeEnabled();
     // The field-level error is now reachable, because the field is touched.
-    expect(
-      screen.getByText('EditListingLocationForm.addressNotRecognized')
-    ).toBeInTheDocument();
+    expect(screen.getByText('EditListingLocationForm.addressNotRecognized')).toBeInTheDocument();
     // And the button says why it is disabled.
-    expect(
-      screen.getByText('EditListingLocationForm.selectAddressHint')
-    ).toBeInTheDocument();
+    expect(screen.getByText('EditListingLocationForm.selectAddressHint')).toBeInTheDocument();
   });
 });

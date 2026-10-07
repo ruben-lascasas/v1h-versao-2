@@ -20,6 +20,7 @@ import StartTimeInterval from './StartTimeInverval';
 
 // Import modules from this directory
 import css from './EditListingPricingForm.module.css';
+import { submeterRevelandoErros } from '../../../../util/submeter';
 
 const { Money } = sdkTypes;
 
@@ -66,7 +67,7 @@ const getPriceValidators = (
  * o "obrigatório". O campo é opcional — deixar em branco é a maneira de dizer
  * "não alugo assim", e tem de continuar a ser possível gravar.
  */
-const getSegundoPrecoValidators = (minimo, maximo, marketplaceCurrency, intl) => {
+const getPrecoOpcionalValidators = (minimo, maximo, marketplaceCurrency, intl) => {
   const lista = [];
 
   if (minimo) {
@@ -102,45 +103,66 @@ const getSegundoPrecoValidators = (minimo, maximo, marketplaceCurrency, intl) =>
 };
 
 /**
- * O SEGUNDO PREÇO: "também aluga à hora?"
+ * "COMO ALUGA ESTE ESPAÇO?" — UMA PERGUNTA, NÃO DUAS
  *
- * O anúncio tem um modo principal, que lhe vem do tipo de anúncio e que não
- * muda. Este campo acrescenta o outro. Enquanto estiver vazio, o anúncio
- * comporta-se exatamente como sempre se comportou — é por isso que a pergunta
- * está feita no negativo do obrigatório: ninguém tem de responder.
+ * Antes, o tipo de anúncio já tinha perguntado "diário ou à hora?" na primeira
+ * etapa, e aqui a pergunta voltava, repartida entre um campo obrigatório e
+ * outro "também aluga à hora?". Duas perguntas para uma decisão, em etapas
+ * diferentes, e sem deixar escolher as duas de forma óbvia.
+ *
+ * Agora é uma pergunta só, aqui, com os dois preços lado a lado e nenhum deles
+ * privilegiado. Preencher um é vender só dessa maneira; preencher os dois dá a
+ * escolha a quem reserva. Pelo menos um — e isso diz-se por palavras, não com
+ * um asterisco.
+ *
+ * O `unitType` do tipo de anúncio continua a decidir qual dos dois vai para
+ * `attributes.price`, que é o que a Sharetribe indexa. Isso é maquinaria, e
+ * não tem de aparecer a quem publica.
  */
-const SegundoPreco = props => {
-  const { formId, modo, principal, marketplaceCurrency, minimo, maximo, intl } = props;
+const ComoAluga = props => {
+  const { formId, unitType, marketplaceCurrency, minimo, maximo, intl, erroDeAmbos } = props;
+  const outro = outroModo(unitType);
+  const validadores = getPrecoOpcionalValidators(minimo, maximo, marketplaceCurrency, intl);
+
+  const campo = (modo, name) => (
+    <FieldCurrencyInput
+      id={`${formId}${name}`}
+      name={name}
+      className={css.campoModo}
+      label={intl.formatMessage({
+        id:
+          modo === 'day'
+            ? 'EditListingPricingForm.comoAluga.aoDia'
+            : 'EditListingPricingForm.comoAluga.aHora',
+      })}
+      placeholder={intl.formatMessage({ id: 'EditListingPricingForm.comoAluga.vazio' })}
+      currencyConfig={appSettings.getCurrencyFormatting(marketplaceCurrency)}
+      validate={validadores}
+    />
+  );
 
   return (
-    <div className={css.segundoModo}>
-      <h3 className={css.segundoModoTitulo}>
-        <FormattedMessage id="EditListingPricingForm.segundoModo.titulo" values={{ modo }} />
+    <div className={css.comoAluga}>
+      <h3 className={css.comoAlugaTitulo}>
+        <FormattedMessage id="EditListingPricingForm.comoAluga.titulo" />
       </h3>
-      <p className={css.segundoModoExplicacao}>
-        <FormattedMessage
-          id="EditListingPricingForm.segundoModo.explicacao"
-          values={{ modo, principal }}
-        />
+      <p className={css.comoAlugaExplicacao}>
+        <FormattedMessage id="EditListingPricingForm.comoAluga.explicacao" />
       </p>
 
-      <FieldCurrencyInput
-        id={`${formId}precoSegundoModo`}
-        name="precoSegundoModo"
-        className={css.input}
-        label={intl.formatMessage({ id: 'EditListingPricingForm.segundoModo.label' }, { modo })}
-        placeholder={intl.formatMessage({
-          id: 'EditListingPricingForm.segundoModo.placeholder',
-        })}
-        currencyConfig={appSettings.getCurrencyFormatting(marketplaceCurrency)}
-        validate={getSegundoPrecoValidators(minimo, maximo, marketplaceCurrency, intl)}
-      />
+      <div className={css.comoAlugaCampos}>
+        {/* O modo principal primeiro, para a ordem não mudar sozinha. */}
+        {campo(unitType, 'price')}
+        {campo(outro, 'precoSegundoModo')}
+      </div>
 
-      {modo === 'day' ? (
-        <p className={css.segundoModoNota}>
-          <FormattedMessage id="EditListingPricingForm.segundoModo.diaExplicado" />
+      {unitType === 'day' || outro === 'day' ? (
+        <p className={css.comoAlugaNota}>
+          <FormattedMessage id="EditListingPricingForm.comoAluga.diaExplicado" />
         </p>
       ) : null}
+
+      {erroDeAmbos ? <p className={css.comoAlugaErro}>{erroDeAmbos}</p> : null}
     </div>
   );
 };
@@ -234,7 +256,7 @@ export const EditListingPricingForm = props => (
       const classes = classNames(rootClassName || css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
-      const submitDisabled = invalid || disabled || submitInProgress;
+      const submitDisabled = disabled || submitInProgress;
       const { transactionType } = listingTypeConfig || {};
       const { process } = transactionType || {};
       const isBooking = isBookingProcess(process);
@@ -248,8 +270,37 @@ export const EditListingPricingForm = props => (
         isPriceVariationsInUse: isUsingPriceVariants,
       });
 
+      /**
+       * PELO MENOS UM PREÇO
+       *
+       * Nenhum dos dois campos é obrigatório por si: obrigar o do dia num espaço
+       * que só se aluga à hora seria pedir um número inventado. O que é
+       * obrigatório é haver um. A regra vive aqui, e não nos campos, porque
+       * depende dos dois ao mesmo tempo.
+       */
+      const semNenhumPreco =
+        mostraSegundoModo && !formValues?.price && !formValues?.precoSegundoModo;
+      const erroDeAmbos =
+        semNenhumPreco && (formApi.getState().submitFailed || formApi.getState().touched?.price)
+          ? intl.formatMessage({ id: 'EditListingPricingForm.comoAluga.semNenhum' })
+          : null;
+
       return (
-        <Form onSubmit={handleSubmit} className={classes}>
+        <Form
+          onSubmit={e => {
+            // A regra dos dois campos não é de nenhum deles, por isso é aqui que
+            // se trava a gravacão — e o aviso aparece por baixo do par.
+            if (semNenhumPreco) {
+              e.preventDefault();
+              formApi.blur('price');
+              formApi.focus('price');
+              formApi.blur('price');
+              return;
+            }
+            return submeterRevelandoErros(handleSubmit, formApi)(e);
+          }}
+          className={classes}
+        >
           <ErrorMessages fetchErrors={fetchErrors} />
 
           {isUsingPriceVariants ? (
@@ -263,6 +314,16 @@ export const EditListingPricingForm = props => (
               isPriceVariationsInUse={isBookingPriceVariationsInUse}
               initialLengthOfPriceVariants={formInitialValues?.priceVariants?.length || 0}
               listingMinimumPriceSubUnits={listingMinimumPriceSubUnits}
+            />
+          ) : mostraSegundoModo ? (
+            <ComoAluga
+              formId={formId}
+              unitType={unitType}
+              marketplaceCurrency={marketplaceCurrency}
+              minimo={listingMinimumPriceSubUnits}
+              maximo={listingMaximumPriceSubUnits}
+              intl={intl}
+              erroDeAmbos={erroDeAmbos}
             />
           ) : (
             <FieldCurrencyInput
@@ -281,18 +342,6 @@ export const EditListingPricingForm = props => (
               validate={priceValidators}
             />
           )}
-
-          {mostraSegundoModo ? (
-            <SegundoPreco
-              formId={formId}
-              modo={outroModo(unitType)}
-              principal={unitType}
-              marketplaceCurrency={marketplaceCurrency}
-              minimo={listingMinimumPriceSubUnits}
-              maximo={listingMaximumPriceSubUnits}
-              intl={intl}
-            />
-          ) : null}
 
           {isFixedLengthBooking ? (
             <StartTimeInterval

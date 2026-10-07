@@ -26,6 +26,7 @@ import {
 } from '../../../../components';
 // Import modules from this directory
 import css from './EditListingDetailsForm.module.css';
+import { submeterRevelandoErros } from '../../../../util/submeter';
 
 const TITLE_MAX_LENGTH = 60;
 const DESCRIPTION_MAX_LENGTH = 3000;
@@ -456,37 +457,8 @@ const EditListingDetailsForm = props => (
        */
       const submitDisabled = disabled || submitInProgress || !isCompatibleCurrency;
 
-      /**
-       * Mostrar o erro não chega se ele estiver fora do ecrã: a lista de
-       * comodidades e os usos do espaço empurram os campos para baixo. Depois da
-       * validação, leva-se o cursor ao primeiro campo que falta — focar também
-       * faz o browser deslocar-se até lá.
-       */
-      const focarPrimeiroErro = () => {
-        const { errors } = formApi.getState();
-        const primeiro = Object.keys(errors || {})[0];
-        if (!primeiro) return;
-        const el = document.querySelector(
-          `[name="${primeiro}"], [name="${primeiro}"] input, input[name="${primeiro}"]`
-        );
-        if (el && typeof el.focus === 'function') {
-          el.focus({ preventScroll: false });
-          if (typeof el.scrollIntoView === 'function') {
-            el.scrollIntoView({ block: 'center', behavior: 'smooth' });
-          }
-        }
-      };
-
-      const submeter = e => {
-        const resultado = handleSubmit(e);
-        if (formApi.getState().invalid) {
-          focarPrimeiroErro();
-        }
-        return resultado;
-      };
-
       return (
-        <Form className={classes} onSubmit={submeter}>
+        <Form className={classes} onSubmit={submeterRevelandoErros(handleSubmit, formApi)}>
           <ErrorMessage fetchErrors={fetchErrors} />
 
           <FieldSelectListingType
