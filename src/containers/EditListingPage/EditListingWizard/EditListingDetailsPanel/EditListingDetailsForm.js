@@ -438,15 +438,55 @@ const EditListingDetailsForm = props => (
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
       const hasMandatoryListingTypeData = listingType && transactionProcessAlias && unitType;
-      const submitDisabled =
-        invalid ||
-        disabled ||
-        submitInProgress ||
-        !hasMandatoryListingTypeData ||
-        !isCompatibleCurrency;
+      /**
+       * O BOTÃO DEIXA DE SER UM BECO SEM SAÍDA
+       *
+       * Antes, bastava um campo obrigatório por preencher para o botão ficar
+       * desativado. E como a mensagem de erro de um campo só aparece depois de
+       * lhe tocarem ou de haver uma tentativa de submissão, quem não soubesse
+       * qual era o campo ficava preso: carregava, não acontecia nada, e nada no
+       * ecrã dizia porquê. Aconteceu mesmo — dois campos marcados como
+       * obrigatórios na Console ("Número de pessoas" e "Comodidades") não têm
+       * qualquer marca visual, e o anúncio nunca mais saiu da etapa 1.
+       *
+       * Agora o botão fica clicável: o clique corre a validação, que marca os
+       * campos como tocados e mostra os erros onde eles são. Só se desativa
+       * quando clicar não serviria de nada — a gravar, ou com moeda incompatível,
+       * que tem explicação própria no ecrã.
+       */
+      const submitDisabled = disabled || submitInProgress || !isCompatibleCurrency;
+
+      /**
+       * Mostrar o erro não chega se ele estiver fora do ecrã: a lista de
+       * comodidades e os usos do espaço empurram os campos para baixo. Depois da
+       * validação, leva-se o cursor ao primeiro campo que falta — focar também
+       * faz o browser deslocar-se até lá.
+       */
+      const focarPrimeiroErro = () => {
+        const { errors } = formApi.getState();
+        const primeiro = Object.keys(errors || {})[0];
+        if (!primeiro) return;
+        const el = document.querySelector(
+          `[name="${primeiro}"], [name="${primeiro}"] input, input[name="${primeiro}"]`
+        );
+        if (el && typeof el.focus === 'function') {
+          el.focus({ preventScroll: false });
+          if (typeof el.scrollIntoView === 'function') {
+            el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+          }
+        }
+      };
+
+      const submeter = e => {
+        const resultado = handleSubmit(e);
+        if (formApi.getState().invalid) {
+          focarPrimeiroErro();
+        }
+        return resultado;
+      };
 
       return (
-        <Form className={classes} onSubmit={handleSubmit}>
+        <Form className={classes} onSubmit={submeter}>
           <ErrorMessage fetchErrors={fetchErrors} />
 
           <FieldSelectListingType

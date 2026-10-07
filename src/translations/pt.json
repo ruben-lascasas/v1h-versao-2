@@ -193,6 +193,7 @@
   "CustomExtendedDataField.notValidYoutubeVideoURL": "O URL introduzido não é um URL válido do YouTube.",
   "CustomExtendedDataField.numberTooBig": "O número deve ser menor ou igual a {max}",
   "CustomExtendedDataField.numberTooSmall": "O número deve ser maior ou igual a {min}",
+  "CustomExtendedDataField.optionalText": "• Opcional",
   "CustomExtendedDataField.placeholderBoolean": "Selecionar…",
   "CustomExtendedDataField.placeholderLong": "Adicionar número",
   "CustomExtendedDataField.placeholderSingleSelect": "Selecionar…",

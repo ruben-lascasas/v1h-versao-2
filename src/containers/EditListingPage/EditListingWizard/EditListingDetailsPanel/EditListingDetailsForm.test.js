@@ -106,15 +106,17 @@ describe('EditListingDetailsForm', () => {
     const description = 'EditListingDetailsForm.description';
     expect(screen.getByText(description)).toBeInTheDocument();
 
-    // Test that save button is disabled at first
-    expect(screen.getByRole('button', { name: saveActionMsg })).toBeDisabled();
+    // O botao e clicavel desde o inicio, de proposito: carregar nele e o que
+    // revela os campos que faltam. Ver o teste do beco sem saida mais abaixo.
+    expect(screen.getByRole('button', { name: saveActionMsg })).toBeEnabled();
 
     // Fill mandatory attributes
     await user.type(screen.getByRole('textbox', { name: title }), 'My Listing');
     await user.type(screen.getByRole('textbox', { name: description }), 'Lorem ipsum');
 
     // Fill custom listing field
-    await user.selectOptions(screen.getByLabelText('Clothing'), 'kids');
+    // A etiqueta leva agora o marcador de opcional.
+    await user.selectOptions(screen.getByLabelText(/^Clothing/), 'kids');
 
     // Test that save button is enabled
     expect(screen.getByRole('button', { name: saveActionMsg })).toBeEnabled();
@@ -175,15 +177,140 @@ describe('EditListingDetailsForm', () => {
 
     // Uma vez só: hoje é renderizado por dois <AddListingFields> diferentes, e
     // um filtro mal posto dava o campo a dobrar sem partir nada mais.
-    expect(screen.getAllByText('Usos')).toHaveLength(1);
+    expect(screen.getAllByText(/^Usos/)).toHaveLength(1);
 
-    const usos = screen.getByText('Usos');
+    const usos = screen.getByText(/^Usos/);
     const titulo = screen.getByText('EditListingDetailsForm.title');
-    const comodidades = screen.getByText('Comodidades');
+    const comodidades = screen.getByText(/^Comodidades/);
 
     const vemAntes = (a, b) => !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
 
     expect(vemAntes(usos, titulo)).toBe(true);
     expect(vemAntes(usos, comodidades)).toBe(true);
+  });
+  /**
+   * O BECO SEM SAÍDA DA ETAPA 1
+   *
+   * Dois campos estão marcados como obrigatórios na Console — "Número de
+   * pessoas" e "Comodidades" — e nada no ecrã o diz. Com o botão desativado
+   * enquanto o formulário fosse inválido, quem não adivinhasse qual era o campo
+   * ficava preso: carregava, não acontecia nada, e nenhuma mensagem aparecia.
+   * Aconteceu em produção, e custou uma tarde.
+   *
+   * O botão passa a poder ser carregado. O clique corre a validação, que marca
+   * os campos como tocados e põe o erro onde ele é.
+   */
+  it('com um campo obrigatório por preencher, o botão deixa-se carregar e mostra o erro', async () => {
+    const user = userEvent.setup();
+    const saveActionMsg = 'Seguinte';
+
+    const selectableListingTypes = [
+      {
+        listingType: 'aluguer-diario',
+        transactionProcessAlias: 'default-booking/release-1',
+        unitType: 'day',
+      },
+    ];
+
+    const listingFieldsConfig = [
+      {
+        key: 'comodidades',
+        scope: 'public',
+        listingTypeConfig: { limitToListingTypeIds: false },
+        schemaType: 'multi-enum',
+        enumOptions: [{ option: 'wifi', label: 'Wi-Fi' }],
+        filterConfig: { indexForSearch: true, label: 'Comodidades' },
+        showConfig: { label: 'Comodidades' },
+        // É assim que a Console o entrega depois de normalizado.
+        saveConfig: { label: 'Comodidades', isRequired: true },
+      },
+    ];
+
+    render(
+      <EditListingDetailsForm
+        intl={fakeIntl}
+        dispatch={noop}
+        onListingTypeChange={noop}
+        onSubmit={v => v}
+        saveActionMsg={saveActionMsg}
+        updated={false}
+        updateInProgress={false}
+        disabled={false}
+        ready={false}
+        listingFieldsConfig={listingFieldsConfig}
+        categoryPrefix="categoryLevel"
+        selectableCategories={[]}
+        pickSelectedCategories={values => pickCategoryFields(values, 'categoryLevel', 1, [])}
+        selectableListingTypes={selectableListingTypes}
+        hasExistingListingType={true}
+        initialValues={selectableListingTypes[0]}
+        marketplaceCurrency="EUR"
+      />
+    );
+
+    const botao = screen.getByRole('button', { name: saveActionMsg });
+
+    const title = 'EditListingDetailsForm.title';
+    await user.type(screen.getByRole('textbox', { name: title }), 'Sala Teste');
+    const description = 'EditListingDetailsForm.description';
+    await user.type(screen.getByRole('textbox', { name: description }), 'Uma descrição.');
+
+    // Falta a comodidade obrigatória — e mesmo assim dá para carregar.
+    expect(botao).toBeEnabled();
+
+    await user.click(botao);
+
+    expect(await screen.findByText('CustomExtendedDataField.required')).toBeInTheDocument();
+  });
+
+  /**
+   * O template marca os campos nativos opcionais com "• Opcional". Os campos
+   * vindos da Console não levavam marca nenhuma, e por isso não havia maneira
+   * de distinguir um opcional de um obrigatório.
+   */
+  it('um campo não obrigatório diz que é opcional; um obrigatório não diz nada', () => {
+    const selectableListingTypes = [
+      {
+        listingType: 'aluguer-diario',
+        transactionProcessAlias: 'default-booking/release-1',
+        unitType: 'day',
+      },
+    ];
+
+    const campo = (key, label, obrigatorio) => ({
+      key,
+      scope: 'public',
+      listingTypeConfig: { limitToListingTypeIds: false },
+      schemaType: 'multi-enum',
+      enumOptions: [{ option: 'x', label: 'X' }],
+      filterConfig: { indexForSearch: true, label },
+      showConfig: { label },
+      saveConfig: { label, ...(obrigatorio ? { isRequired: true } : {}) },
+    });
+
+    render(
+      <EditListingDetailsForm
+        intl={fakeIntl}
+        dispatch={noop}
+        onListingTypeChange={noop}
+        onSubmit={v => v}
+        saveActionMsg="Seguinte"
+        updated={false}
+        updateInProgress={false}
+        disabled={false}
+        ready={false}
+        listingFieldsConfig={[campo('obrig', 'Comodidades', true), campo('opt', 'Extras', false)]}
+        categoryPrefix="categoryLevel"
+        selectableCategories={[]}
+        pickSelectedCategories={values => pickCategoryFields(values, 'categoryLevel', 1, [])}
+        selectableListingTypes={selectableListingTypes}
+        hasExistingListingType={true}
+        initialValues={selectableListingTypes[0]}
+        marketplaceCurrency="EUR"
+      />
+    );
+
+    expect(screen.getByText(/^Extras CustomExtendedDataField\.optionalText$/)).toBeInTheDocument();
+    expect(screen.getByText('Comodidades')).toBeInTheDocument();
   });
 });

@@ -32,7 +32,21 @@ import css from './CustomExtendedDataField.module.css';
 
 const createFilterOptions = options => options.map(o => ({ key: `${o.option}`, label: o.label }));
 
-const getLabel = fieldConfig => fieldConfig?.saveConfig?.label || fieldConfig?.label;
+/**
+ * A etiqueta do campo, com "• Opcional" quando ele não é obrigatório.
+ *
+ * O template já marca assim os campos nativos ("Apt, suite, edifício # •
+ * Opcional"), mas os campos vindos da Console não levavam marca nenhuma. Por
+ * omissão, um campo sem marca passa a querer dizer "obrigatório" em todo o
+ * formulário, e deixa de haver forma de confundir um com o outro.
+ */
+const getLabel = (fieldConfig, intl) => {
+  const base = fieldConfig?.saveConfig?.label || fieldConfig?.label;
+  if (!base || !intl || fieldConfig?.saveConfig?.isRequired) {
+    return base;
+  }
+  return `${base} ${intl.formatMessage({ id: 'CustomExtendedDataField.optionalText' })}`;
+};
 
 const CustomFieldEnum = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
@@ -46,7 +60,7 @@ const CustomFieldEnum = props => {
     intl.formatMessage({ id: 'CustomExtendedDataField.placeholderSingleSelect' });
   const filterOptions = createFilterOptions(enumOptions);
 
-  const label = getLabel(fieldConfig);
+  const label = getLabel(fieldConfig, intl);
 
   return filterOptions ? (
     <FieldSelect
@@ -73,10 +87,10 @@ const CustomFieldEnum = props => {
 };
 
 const CustomFieldMultiEnum = props => {
-  const { name, fieldConfig, defaultRequiredMessage, formId } = props;
+  const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
   const { enumOptions = [], saveConfig } = fieldConfig || {};
   const { isRequired, requiredMessage } = saveConfig || {};
-  const label = getLabel(fieldConfig);
+  const label = getLabel(fieldConfig, intl);
   const validateMaybe = isRequired
     ? { validate: nonEmptyArray(requiredMessage || defaultRequiredMessage) }
     : {};
@@ -120,7 +134,7 @@ const CustomFieldMultiEnum = props => {
 const CustomFieldText = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
   const { placeholderMessage, isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
-  const label = getLabel(fieldConfig);
+  const label = getLabel(fieldConfig, intl);
   const validateMaybe = isRequired
     ? { validate: required(requiredMessage || defaultRequiredMessage) }
     : {};
@@ -145,7 +159,7 @@ const CustomFieldLong = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
   const { minimum, maximum, saveConfig } = fieldConfig;
   const { placeholderMessage, isRequired, requiredMessage } = saveConfig || {};
-  const label = getLabel(fieldConfig);
+  const label = getLabel(fieldConfig, intl);
   const placeholder =
     placeholderMessage || intl.formatMessage({ id: 'CustomExtendedDataField.placeholderLong' });
   const numberTooSmallMessage = intl.formatMessage(
@@ -330,7 +344,7 @@ const NumberFieldWithSteppers = ({
 const CustomFieldBoolean = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
   const { placeholderMessage, isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
-  const label = getLabel(fieldConfig);
+  const label = getLabel(fieldConfig, intl);
   const validateMaybe = isRequired
     ? { validate: required(requiredMessage || defaultRequiredMessage) }
     : {};
@@ -353,7 +367,7 @@ const CustomFieldBoolean = props => {
 const CustomFieldYoutube = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
   const { placeholderMessage, isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
-  const label = getLabel(fieldConfig);
+  const label = getLabel(fieldConfig, intl);
   const placeholder =
     placeholderMessage ||
     intl.formatMessage({ id: 'CustomExtendedDataField.placeholderYoutubeVideoURL' });
