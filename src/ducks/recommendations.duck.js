@@ -249,6 +249,8 @@ export const fetchRecommendationCandidates = config => async (dispatch, getState
       'publicData.location',
       'publicData.favoritesCount',
       'publicData.featured',
+      // Os dois preços, para o cartão poder dizer "ou X por hora" também aqui.
+      'publicData.precos',
     ],
     'fields.image': [`variants.${variantPrefix}`, `variants.${variantPrefix}-2x`, `variants.${variantPrefix}-4x`],
     ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),

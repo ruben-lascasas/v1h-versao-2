@@ -1107,6 +1107,11 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
         // Needed by ListingCard to render the "Em destaque" badge with
         // priority over Popular / Novo.
         'publicData.featured',
+        // Os dois preços (ao dia e à hora). Sem isto o cartão não sabe que o
+        // espaço também se aluga de outra maneira, e a segunda linha — "ou
+        // 45,00 € por hora" — nunca aparece. A lista é fechada: o que não
+        // estiver aqui não chega ao browser, e não dá erro nenhum.
+        'publicData.precos',
       ],
       'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
       'fields.image': [
