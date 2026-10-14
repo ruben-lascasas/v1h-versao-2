@@ -12,6 +12,7 @@ import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { LISTING_STATE_PENDING_APPROVAL, LISTING_STATE_CLOSED, propTypes } from '../../util/types';
 import { types as sdkTypes } from '../../util/sdkLoader';
 import { formatMoney } from '../../util/currency';
+import { segundoPrecoMensagem } from '../../util/segundoPreco';
 import { parse, stringify } from '../../util/urlHelpers';
 import {
   LISTING_PAGE_DRAFT_VARIANT,
@@ -97,6 +98,7 @@ import {
 } from './ListingPage.shared';
 import ActionBarMaybe from './ActionBarMaybe';
 import ClosedListingNotice from './ClosedListingNotice';
+import PendingApprovalNotice from './PendingApprovalNotice';
 import SectionReviews from './SectionReviews';
 import TranslateButton from '../../components/TranslateButton/TranslateButton';
 import SimilarListingsSection from '../../components/SimilarListingsSection/SimilarListingsSection';
@@ -413,6 +415,11 @@ export const ListingPageComponent = props => {
     metadata = {},
   } = currentListing.attributes;
 
+  // O preço do outro modo, para a linha junto ao preço principal. Calculado
+  // exactamente como no cartão da pesquisa (ListingCard.helpers.js): os preços
+  // saem do anúncio, nunca de `attributes.price`, que só conhece um modo.
+  const segundoPrecoDoCabecalho = segundoPrecoMensagem(currentListing, intl);
+
   const richTitle = (
     <span>
       {richText(title, {
@@ -626,6 +633,9 @@ export const ListingPageComponent = props => {
             {currentListing.attributes?.state === LISTING_STATE_CLOSED ? (
               <ClosedListingNotice isOwnListing={isOwnListing} isEN={locale === 'en'} />
             ) : null}
+            {currentListing.attributes?.state === LISTING_STATE_PENDING_APPROVAL ? (
+              <PendingApprovalNotice isEN={locale === 'en'} />
+            ) : null}
             {showListingImage && (
               <div className={css.galleryWrapper}>
                 <SectionGallery
@@ -786,6 +796,22 @@ export const ListingPageComponent = props => {
                       </span>
                     ) : null}
                   </div>
+                ) : null}
+                {/*
+                  O SEGUNDO PREÇO, JUNTO AO PRIMEIRO
+
+                  Um espaço com os dois modos já mostrava ambos: no cartão da
+                  pesquisa, e no selector "Como quer alugar?". O problema é que
+                  no telemóvel esse selector fica mais de mil pixéis abaixo do
+                  título. Quem abria o anúncio lia "120,00 € por dia" e ficava
+                  a pensar que só se alugava ao dia — a informação existia, mas
+                  longe de onde a decisão é tomada.
+
+                  É a mesma linha do cartão da pesquisa, e de propósito: a
+                  mesma frase, a mesma chave de tradução, o mesmo cálculo.
+                */}
+                {segundoPrecoDoCabecalho ? (
+                  <div className={css.mobileListingSegundoPreco}>{segundoPrecoDoCabecalho}</div>
                 ) : null}
               </>
             )}

@@ -437,6 +437,21 @@
   }
 }
 
+/*
+  O mesmo aviso, para um anúncio que ainda está a ser revisto.
+
+  Partilha a forma com o `.avisoFechado` de propósito — é a mesma ideia e o
+  mesmo sítio na página — e muda a cor, porque as duas situações não são a
+  mesma: uma acabou, a outra está a decorrer. O bege diz "isto fechou"; o azul
+  acinzentado diz "isto está em curso".
+*/
+.avisoRevisao {
+  composes: avisoFechado;
+  background: #F3F6F9;
+  border-color: #D3DEE7;
+  border-left-color: #5B7C99;
+}
+
 .avisoFechadoTitulo {
   margin: 0 0 8px;
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
@@ -1267,6 +1282,32 @@
   font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
   font-size: 13px;
   color: #7C6350;
+}
+
+/*
+  A linha do segundo preço, logo por baixo do principal.
+
+  A margem de topo é negativa porque o bloco do preço já traz a sua margem de
+  baixo (16px, 20px a partir dos 480px): sem isto ficavam dois espaços e a
+  linha parecia solta, em vez de pertencer ao preço.
+
+  Esconde-se nos ecrãs grandes pela mesma razão que o preço: aí quem manda é o
+  OrderPanel, que mostra o selector dos dois modos já ao lado do título.
+*/
+.mobileListingSegundoPreco {
+  margin: -10px 24px 16px 24px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.3;
+  color: #7C6350;
+
+  @media (min-width: 480px) {
+    margin: -14px 24px 20px 24px;
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+  }
 }
 
 /* Mobile CTAs (Enviar mensagem + Reservar agora) displayed after the

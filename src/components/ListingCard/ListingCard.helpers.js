@@ -3,8 +3,7 @@ import { formatMoney } from '../../util/currency';
 import { richText } from '../../util/richText';
 import { isBookingProcessAlias } from '../../transactions/transaction';
 
-import { types as sdkTypes } from '../../util/sdkLoader';
-import { precosDoAnuncio, outroModo } from '../../util/modosDePreco';
+import { segundoPrecoMensagem } from '../../util/segundoPreco';
 import css from './ListingCard.module.css';
 
 const MIN_LENGTH_FOR_LONG_WORDS = 10;
@@ -44,7 +43,6 @@ const priceData = (price, currency, intl) => {
  *   - cardAriaLabel: ready-to-use aria-label for the card link (listing title + price line when shown)
  *   - authorName: "ListingCard.author" string containing author's display name
  */
-const { Money } = sdkTypes;
 
 export const getListingCardTranslations = (listing, config, intl) => {
   const { title = '', price, publicData } = listing?.attributes || {};
@@ -94,16 +92,7 @@ export const getListingCardTranslations = (listing, config, intl) => {
    * continua a ser o do preço principal: isso é da Sharetribe e não se resolve
    * aqui.
    */
-  const precos = precosDoAnuncio(listing);
-  const outro = outroModo(publicData?.unitType);
-  const temOutroPreco =
-    showPrice && isBookable && outro && Number.isInteger(precos[outro]) && price?.currency;
-  const segundoPrecoMessage = temOutroPreco
-    ? intl.formatMessage(
-        { id: 'ListingCard.tambemAoOutroModo' },
-        { preco: formatMoney(intl, new Money(precos[outro], price.currency)), modo: outro }
-      )
-    : null;
+  const segundoPrecoMessage = showPrice && isBookable ? segundoPrecoMensagem(listing, intl) : null;
 
   const cardAriaLabel =
     priceMessage.length > 0

@@ -132,6 +132,26 @@ const FAQ_PT = [
         ),
       },
       {
+        // A lista é a mesma de server/api-util/verification.js (REQUIRED_DOCS).
+        // Não se importa de lá porque isso arrastaria código de servidor para
+        // dentro do pacote do browser; fica copiada, e os dois ficheiros
+        // apontam um para o outro. Quem mexer num tem de mexer no outro.
+        q: 'Que documentos tenho de enviar para poder publicar?',
+        a: (
+          <>
+            <p>Quatro, todos na página <strong>Verificação</strong> da sua conta. Enquanto não estiverem aprovados, não é possível publicar anúncios.</p>
+            <ul>
+              <li><strong>Documento de identificação</strong> — cartão de cidadão, passaporte ou título de residência. Frente e verso, legíveis.</li>
+              <li><strong>Comprovativo de morada do anunciante</strong> — a morada de residência de quem publica. Serve uma fatura de água, luz ou telecomunicações emitida nos últimos 6 meses.</li>
+              <li><strong>Comprovativo de morada do espaço</strong> — um documento que confirme a morada do espaço anunciado, também dos últimos 6 meses.</li>
+              <li><strong>Comprovativo de titularidade do espaço</strong> — caderneta predial, contrato de arrendamento <em>ou</em> autorização escrita do proprietário. Não precisa de ser dono: precisa de poder alugá-lo.</li>
+            </ul>
+            <p>Aceitamos ficheiros <strong>PDF, JPG, PNG ou WEBP</strong>, até <strong>8 MB</strong> cada. Pode enviá-los por qualquer ordem e em alturas diferentes — cada um é analisado à parte e a página mostra-lhe o estado de cada um (em falta, pendente, aprovado ou recusado).</p>
+            <p>Os documentos são guardados de forma privada na União Europeia, usados apenas para esta verificação, e apagados quando deixam de ser necessários.</p>
+          </>
+        ),
+      },
+      {
         q: 'Sou obrigado a aceitar todas as reservas?',
         a: (
           <>
@@ -430,6 +450,25 @@ const FAQ_EN = [
         a: (
           <>
             <p>Create an account, click <strong>"Publish a new listing"</strong> and follow the steps: photos, description, rules, price, availability. The first review is manual to ensure quality and typically takes 24-48 working hours.</p>
+          </>
+        ),
+      },
+      {
+        // Mesma lista de server/api-util/verification.js (REQUIRED_DOCS), e a
+        // mesma resposta que está em português mais acima. Quem mexer numa
+        // tem de mexer nas duas.
+        q: 'Which documents do I need to submit before I can publish?',
+        a: (
+          <>
+            <p>Four, all on the <strong>Verification</strong> page of your account. Until they are approved you cannot publish listings.</p>
+            <ul>
+              <li><strong>Identity document</strong> — ID card, passport or residence permit. Both sides, clearly legible.</li>
+              <li><strong>Proof of the host's home address</strong> — the home address of whoever publishes the listing. A water, electricity or telecoms bill issued within the last 6 months works.</li>
+              <li><strong>Proof of the venue's address</strong> — a document confirming the address of the advertised venue, also from the last 6 months.</li>
+              <li><strong>Proof of venue ownership</strong> — property record, lease agreement <em>or</em> written authorisation from the owner. You do not have to own it: you have to be allowed to rent it out.</li>
+            </ul>
+            <p>We accept <strong>PDF, JPG, PNG or WEBP</strong> files, up to <strong>8 MB</strong> each. You can send them in any order and at different times — each one is reviewed separately and the page shows you the status of each (missing, pending, approved or rejected).</p>
+            <p>Documents are stored privately in the European Union, used only for this verification, and deleted once they are no longer needed.</p>
           </>
         ),
       },

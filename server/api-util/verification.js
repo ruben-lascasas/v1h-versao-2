@@ -91,6 +91,13 @@ const ACCOUNT_STATUS = {
  * The documents an anunciante must submit. Order here is the order shown.
  * `optionalIf` lets a document be waived — currently the company registration
  * only applies to businesses.
+ *
+ * Esta lista está também escrita por palavras nas Perguntas Frequentes
+ * (src/containers/ComoFuncionaPage/FAQContent.js, "Que documentos tenho de
+ * enviar para poder publicar?"). Não se importa de lá porque isso levaria
+ * código de servidor para dentro do pacote do browser. Quem acrescentar,
+ * tirar ou mudar um documento aqui tem de o fazer também lá — caso contrário
+ * prometemos uma coisa e exigimos outra.
  */
 const REQUIRED_DOCS = [
   {

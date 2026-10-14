@@ -31,6 +31,7 @@ import reducer, { showListing, loadData, setInitialValues } from './ListingPage.
 
 import ActionBarMaybe from './ActionBarMaybe';
 import ClosedListingNotice from './ClosedListingNotice';
+import PendingApprovalNotice from './PendingApprovalNotice';
 
 const { UUID } = sdkTypes;
 const { screen, waitFor, within } = testingLibrary;
@@ -824,5 +825,44 @@ describe('ClosedListingNotice', () => {
   it('fala inglês a quem tem o site em inglês', () => {
     render(<ClosedListingNotice isOwnListing={false} isEN />);
     expect(screen.getByText('This space is no longer available')).toBeInTheDocument();
+  });
+});
+
+/**
+ * Até aqui, quem submetia um anúncio ficava com uma linha fina por cima das
+ * fotografias a dizer que estava pendente — a mesma linha fina que, nos
+ * anúncios fechados, um tester percorreu a página inteira sem ver. Veio de um
+ * pedido da equipa: alguém olhou para um anúncio que julgava estar em revisão
+ * e não percebeu o que estava a ver.
+ */
+describe('PendingApprovalNotice', () => {
+  it('diz que o anúncio está em revisão, e não que acabou', () => {
+    render(<PendingApprovalNotice isEN={false} />);
+
+    expect(screen.getByText('Este anúncio está em revisão')).toBeInTheDocument();
+    expect(screen.queryByText(/já não está disponível/)).not.toBeInTheDocument();
+  });
+
+  // Sem prazo, "em revisão" é indistinguível de "esquecido".
+  it('diz quanto tempo costuma demorar', () => {
+    render(<PendingApprovalNotice isEN={false} />);
+    expect(screen.getByText(/24 a 48 horas úteis/)).toBeInTheDocument();
+  });
+
+  // O anfitrião está a ver a página dele como ela ficará, não como ela está
+  // para os outros — e isso explica porque não a encontra na pesquisa.
+  it('explica que ainda não aparece nas pesquisas', () => {
+    render(<PendingApprovalNotice isEN={false} />);
+    expect(screen.getByText(/não aparece nas pesquisas/)).toBeInTheDocument();
+  });
+
+  it('dá para onde ir a seguir', () => {
+    render(<PendingApprovalNotice isEN={false} />);
+    expect(screen.getByText('Gerir os meus anúncios')).toBeInTheDocument();
+  });
+
+  it('fala inglês a quem tem o site em inglês', () => {
+    render(<PendingApprovalNotice isEN />);
+    expect(screen.getByText('This listing is under review')).toBeInTheDocument();
   });
 });
