@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { NamedLink } from '../../../../components';
 
-import slide2Image from '../../../../assets/images/12.png';
+import slide2Image from '../../../../assets/images/12.webp';
 
 import css from './SectionMobilePromo.module.css';
 

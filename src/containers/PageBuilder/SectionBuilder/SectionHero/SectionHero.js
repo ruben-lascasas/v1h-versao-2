@@ -6,12 +6,12 @@ import Field from '../../Field';
 import { H1 } from '../../Primitives/Heading/Heading';
 import HeroSearchBar from './HeroSearchBar';
 
-import slide1Image from '../../../../assets/images/1.png';
-import slide2Image from '../../../../assets/images/12.png';
+import slide1Image from '../../../../assets/images/1.webp';
+import slide2Image from '../../../../assets/images/12.webp';
 import slide3Image from '../../../../assets/images/3.jpg';
 import slide4Image from '../../../../assets/images/4.jpg';
 import slide5Image from '../../../../assets/images/5.jpg';
-import heroDecoration from '../../../../assets/images/Carrosel.png';
+import heroDecoration from '../../../../assets/images/Carrosel.webp';
 
 import css from './SectionHero.module.css';
 

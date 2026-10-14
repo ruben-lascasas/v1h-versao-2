@@ -16,7 +16,7 @@ import SectionContainer from '../SectionContainer';
 
 import { translateEnumOptionLabel } from '../../../../util/translateConfig';
 import { createSlug } from '../../../../util/urlHelpers';
-import escritorioImage from '../../../../assets/escritorio.png';
+import escritorioImage from '../../../../assets/escritorio.webp';
 import css from './SectionHighlightedListing.module.css';
 
 // ── Distritos de Portugal ─────────────────────────────────────────────────────

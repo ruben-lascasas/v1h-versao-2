@@ -12,6 +12,24 @@
     <!-- Note: we don't use favicon.ico by default. However, favicon-48x48.png, favicon-32x32.png, favicon-16x16.png and apple-touch-icon come from hosted assets / Console -->
     <!-- End Favicons -->
 
+    <!--
+      LIGAR CEDO AOS SERVIDORES DE ONDE VEM O ESSENCIAL
+
+      O browser só começa a resolver DNS, abrir a ligação e negociar TLS quando
+      encontra o primeiro recurso de cada servidor — e isso só acontece depois
+      de ter o HTML e o JavaScript. Para um telemóvel numa rede lenta é quase
+      um terço de segundo por servidor, em fila.
+
+      `preconnect` manda-o fazer esse trabalho já, em paralelo com o resto.
+      Estão aqui só os servidores de que a primeira dobra depende mesmo: o das
+      imagens dos anúncios e o das letras. Preconnect a mais é contraproducente
+      — cada ligação aberta e não usada custa recursos ao telemóvel.
+    -->
+    <link rel="preconnect" href="https://sharetribe-assets.imgix.net" crossorigin>
+    <link rel="preconnect" href="https://assets-sharetribecom.sharetribe.com" crossorigin>
+    <link rel="dns-prefetch" href="https://api.mapbox.com">
+    <link rel="dns-prefetch" href="https://js.stripe.com">
+
     <!--!link-->
     <!--!ssrStyles-->
     <!--!ssrLinks-->
