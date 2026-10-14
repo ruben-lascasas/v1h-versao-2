@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useConfiguration } from '../../../../context/configurationContext';
 import { useLocale } from '../../../../context/localeContext';
+import { carregarMapboxGL } from '../../../../util/mapboxSobDemanda';
 import { fetchMapListings } from '../../../../ducks/mapListings.duck';
 import SectionContainer from '../SectionContainer';
 
@@ -125,42 +127,98 @@ const SectionLandingMap = props => {
   }, [dispatch]);
 
   /**
-   * A biblioteca da Mapbox chega quando chega.
+   * A biblioteca da Mapbox chega quando for pedida.
    *
-   * O `mapbox-gl.js` é carregado com `async defer` a partir do CDN da Mapbox,
-   * por isso não há garantia nenhuma de que já esteja disponível quando este
-   * componente monta. Antes verificava-se `window.mapboxgl` uma única vez: se
-   * ainda não tivesse chegado, o efeito desistia e nunca mais tentava — e a
-   * secção ficava uma caixa vazia, sem erro, sem spinner, sem explicação. Numa
-   * rede móvel é o que acontecia quase sempre.
+   * Houve aqui, por esta ordem, três feitios. Primeiro verificava-se
+   * `window.mapboxgl` uma única vez: se ainda não tivesse chegado, o efeito
+   * desistia e a secção ficava uma caixa vazia, sem erro nem explicação — numa
+   * rede móvel era quase sempre. Depois passou a sondar-se de 100 em 100 ms,
+   * durante dez segundos, o que resolvia isso.
    *
-   * Agora espera-se por ela. O intervalo pára assim que a encontra, ao fim de
-   * `TENTATIVAS_MAX` (~10s), ou quando o componente sai — nunca fica a correr.
+   * Agora nem uma coisa nem outra: a biblioteca já não vem com a página (ver
+   * `util/mapboxSobDemanda.js`), é este componente que a manda vir. Sabe-se
+   * quando chegou porque é a promessa do carregamento que o diz, e não há
+   * prazo nenhum a expirar — o visitante pode levar um minuto a descer até
+   * aqui que o mapa aparece na mesma.
    */
   const [libPronta, setLibPronta] = useState(
     typeof window !== 'undefined' && !!window.mapboxgl?.accessToken
   );
 
+  /**
+   * PEDIR A BIBLIOTECA SÓ QUANDO O MAPA SE APROXIMA
+   *
+   * Na página inicial o `mapbox-gl.js` já não vem com a página: são 301 KB e
+   * quase três segundos de CPU num telemóvel, para uma secção que está muito
+   * abaixo da primeira dobra. Pede-se aqui, quando o visitante está a 600px de
+   * a ver — tempo de sobra para chegar antes dele, sem tirar nada a quem nunca
+   * desce até cá.
+   *
+   * Em browsers sem IntersectionObserver pede-se logo: mais vale pagar o
+   * carregamento do que ficar sem mapa.
+   */
+  const config = useConfiguration();
+  const tokenDoMapa = config?.maps?.mapboxAccessToken;
+
   useEffect(() => {
     if (libPronta || typeof window === 'undefined') return undefined;
+    const alvo = mapContainerRef.current;
+    let vivo = true;
 
-    let tentativas = 0;
-    const TENTATIVAS_MAX = 100;
-    const id = setInterval(() => {
-      if (window.mapboxgl?.accessToken) {
-        clearInterval(id);
-        setLibPronta(true);
-      } else if (++tentativas >= TENTATIVAS_MAX) {
-        clearInterval(id);
-        // Dez segundos sem a biblioteca é bloqueio ou falha de rede. Fica
-        // registado para não se andar a adivinhar porque é que a caixa está
-        // vazia — que foi exactamente o que aconteceu antes.
-        console.warn('[mapa] mapbox-gl.js não carregou — a secção do mapa fica vazia');
+    /**
+     * Esperar que o browser esteja livre antes de ir buscar a biblioteca.
+     *
+     * No computador esta secção fica a pouco mais de 200px abaixo da dobra, e
+     * o observador dispara logo. Sem isto, os 301 KB e os quase três segundos
+     * de CPU voltavam a competir com a hidratação da página — que é
+     * exactamente o que esta alteração veio evitar. `requestIdleCallback`
+     * espera por uma pausa; o prazo de 3s garante que não espera para sempre
+     * numa página que nunca assenta.
+     */
+    const quandoHouverFolga = fn => {
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(fn, { timeout: 3000 });
+      } else {
+        window.setTimeout(fn, 1200);
       }
-    }, 100);
+    };
 
-    return () => clearInterval(id);
-  }, [libPronta]);
+    const pedir = () => quandoHouverFolga(() => {
+      if (!vivo) return;
+      carregarMapboxGL(tokenDoMapa)
+        .then(() => {
+          if (vivo) setLibPronta(true);
+        })
+        .catch(() => {
+          // Bloqueio ou falha de rede. Fica registado para não se andar a
+          // adivinhar porque é que a caixa está vazia — que foi exactamente o
+          // que aconteceu antes de haver este aviso.
+          console.warn('[mapa] mapbox-gl.js não carregou — a secção do mapa fica vazia');
+        });
+    });
+
+    if (!alvo || typeof IntersectionObserver === 'undefined') {
+      pedir();
+      return () => {
+        vivo = false;
+      };
+    }
+
+    const observador = new IntersectionObserver(
+      entradas => {
+        if (entradas.some(e => e.isIntersecting)) {
+          observador.disconnect();
+          pedir();
+        }
+      },
+      { rootMargin: '600px' }
+    );
+    observador.observe(alvo);
+    return () => {
+      vivo = false;
+      observador.disconnect();
+    };
+  }, [libPronta, tokenDoMapa]);
 
   // Inicializa o mapa Mapbox
   useEffect(() => {

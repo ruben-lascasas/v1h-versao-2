@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useRouteConfiguration } from '../context/routeConfigurationContext';
 import { matchPathname } from '../util/routes';
 import { hasConsent } from '../components/CookieConsent/CookieConsent';
+import { MAPBOX_GL_VERSAO } from './mapboxSobDemanda';
 import {
   anychatWidgetId,
   anychatRequiresConsent,
@@ -53,9 +54,17 @@ export const IncludeScripts = props => {
 
   const routeConfiguration = useRouteConfiguration();
   // Note: Affects Mapbox only. Google Maps initialization is not yet ready to support asynchronous loading.
-  const deferMapLibrary = canDeferMapLibrary(props?.initialPathname, routeConfiguration)
-    ? { defer: '' }
-    : {};
+  /**
+   * Nas rotas que mostram um mapa logo (pesquisa, página do anúncio) a
+   * biblioteca vem com a página, como sempre veio.
+   *
+   * Nas outras deixou de vir. Antes vinha com `defer`, o que não é a mesma
+   * coisa que não vir: `defer` adia a execução, não o download nem os três
+   * segundos de CPU que ela custa num telemóvel. Quem precisar dela nessas
+   * rotas — hoje só a secção do mapa da página inicial — pede-a a
+   * `util/mapboxSobDemanda.js`, que a vai buscar nessa altura.
+   */
+  const adiarBibliotecaDoMapa = canDeferMapLibrary(props?.initialPathname, routeConfiguration);
 
   const { mapProvider, googleMapsAPIKey, mapboxAccessToken } = maps || {};
   const isGoogleMapsInUse = mapProvider === 'googleMaps';
@@ -82,25 +91,27 @@ export const IncludeScripts = props => {
     // License information for v3.7.0 of the mapbox-gl-js library:
     // https://github.com/mapbox/mapbox-gl-js/blob/v3.7.0/LICENSE.txt
 
-    // Add CSS for Mapbox map
-    mapLibraries.push(
-      <link
-        key="mapbox_GL_CSS"
-        href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css"
-        rel="stylesheet"
-        crossOrigin="anonymous"
-      />
-    );
-    // Add Mapbox library
-    mapLibraries.push(
-      <script
-        id={MAPBOX_SCRIPT_ID}
-        key="mapbox_GL_JS"
-        src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"
-        crossOrigin="anonymous"
-        {...deferMapLibrary}
-      ></script>
-    );
+    // O mapa propriamente dito (CSS + biblioteca) só acompanha a página nas
+    // rotas que o mostram de imediato. Ver mapboxSobDemanda.js.
+    if (!adiarBibliotecaDoMapa) {
+      mapLibraries.push(
+        <link
+          key="mapbox_GL_CSS"
+          id="mapbox_GL_CSS"
+          href={`https://api.mapbox.com/mapbox-gl-js/${MAPBOX_GL_VERSAO}/mapbox-gl.css`}
+          rel="stylesheet"
+          crossOrigin="anonymous"
+        />
+      );
+      mapLibraries.push(
+        <script
+          id={MAPBOX_SCRIPT_ID}
+          key="mapbox_GL_JS"
+          src={`https://api.mapbox.com/mapbox-gl-js/${MAPBOX_GL_VERSAO}/mapbox-gl.js`}
+          crossOrigin="anonymous"
+        ></script>
+      );
+    }
   } else if (isGoogleMapsInUse) {
     // Add Google Maps library
     mapLibraries.push(

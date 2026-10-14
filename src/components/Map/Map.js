@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { useConfiguration } from '../../context/configurationContext';
+import { useMapboxGL } from '../../util/mapboxSobDemanda';
 import { getMapProviderApiAccess } from '../../util/maps';
 import * as mapboxMap from './MapboxMap';
 import * as googleMapsMap from './GoogleMap';
@@ -43,6 +44,9 @@ export const Map = props => {
   } = props;
   const mapsConfiguration = mapsConfig || config.maps;
   const hasApiAccessForMapProvider = !!getMapProviderApiAccess(mapsConfiguration);
+  // Pede a biblioteca do mapa se ela ainda não cá estiver, e volta a
+  // desenhar quando chegar. Ver util/mapboxSobDemanda.js.
+  useMapboxGL(mapsConfiguration);
   const isGoogleMapsInUse = mapsConfiguration.mapProvider === 'googleMaps';
   const StaticMap = isGoogleMapsInUse ? googleMapsMap.StaticMap : mapboxMap.StaticMap;
   const DynamicMap = isGoogleMapsInUse ? googleMapsMap.DynamicMap : mapboxMap.DynamicMap;

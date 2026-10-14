@@ -8,6 +8,7 @@ import { createResourceLocatorString } from '../../../util/routes';
 import { createSlug } from '../../../util/urlHelpers';
 import { propTypes } from '../../../util/types';
 import { obfuscatedCoordinates, getMapProviderApiAccess } from '../../../util/maps';
+import { useMapboxGL } from '../../../util/mapboxSobDemanda';
 
 import { hasParentWithClassName } from './SearchMap.helpers.js';
 import * as searchMapMapbox from './SearchMapWithMapbox';
@@ -227,6 +228,9 @@ const SearchMap = props => {
   const config = useConfiguration();
   const routeConfiguration = useRouteConfiguration();
   const history = useHistory();
+  // Idem: o mapa da pesquisa não depende de a rota estar marcada para o
+  // carregar à cabeça. Ver util/mapboxSobDemanda.js.
+  useMapboxGL(config.maps);
   return (
     <SearchMapComponent
       config={config}
