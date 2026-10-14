@@ -24,7 +24,7 @@ import { checkNewListingsFromFollowed } from '../../../../ducks/notifications.du
 import { fetchCurrentUserNotifications } from '../../../../ducks/user.duck';
 import { useIsAdmin } from '../../../../util/useIsAdmin';
 
-import logoBlack from '../../../../assets/images/V1H-LOGO-BLACK.png';
+import logoBlack from '../../../../assets/images/V1H-LOGO-BLACK.webp';
 import css from './TopbarDesktop.module.css';
 
 const LanguageSwitcher = () => {

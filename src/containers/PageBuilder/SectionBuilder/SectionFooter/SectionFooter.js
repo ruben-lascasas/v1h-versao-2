@@ -6,7 +6,7 @@ import { SOCIAL_PROFILES } from '../../../../config/socialLinks';
 import { OPERADOR } from '../../../../config/legalEntity';
 import css from './SectionFooter.module.css';
 
-import logoWhite from '../../../../assets/images/V1H-LOGO-WHITE.png';
+import logoWhite from '../../../../assets/images/V1H-LOGO-WHITE.webp';
 import iconFB from '../../../../assets/images/VH1-ICON_FB (WHITE).png';
 import iconFBHover from '../../../../assets/images/fb1.png';
 import iconInst from '../../../../assets/images/VH1-ICON_INST (WHITE).png';

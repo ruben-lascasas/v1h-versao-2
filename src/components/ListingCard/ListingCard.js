@@ -83,6 +83,19 @@ const ListingCardImage = props => {
         image={firstImage}
         variants={variants}
         sizes={renderSizes}
+        /*
+          O adiamento que o template já fazia era por relógio: passados 3
+          segundos, carregava as imagens de TODOS os cartões, estivessem ou não
+          à vista. Numa página inicial com várias filas de anúncios isso são
+          centenas de KB que ninguém chegou a ver — o Lighthouse contava 670 KB
+          assim.
+
+          `loading="lazy"` é a versão que o browser faz melhor do que nós: só
+          vai buscar a imagem quando ela se aproxima do ecrã. Um cartão que
+          esteja à vista continua a carregar de imediato, por isso não há risco
+          para o que está na primeira dobra.
+        */
+        loading="lazy"
       />
     </AspectRatioWrapper>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logoWhite from '../../../assets/images/V1H-LOGO-WHITE.png';
+import logoWhite from '../../../assets/images/V1H-LOGO-WHITE.webp';
 import css from './ShareBudgetButton.module.css';
 
 const ShareIcon = () => (
