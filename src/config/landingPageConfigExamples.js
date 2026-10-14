@@ -5,6 +5,8 @@
  * Use these as templates when configuring your landing page in Sharetribe Console.
  */
 
+import polaroidEscritorio from '../assets/images/polaroid-escritorio.webp';
+
 /**
  * EXAMPLE 1: Highlighted Listing Section (NEW)
  * 
@@ -173,10 +175,28 @@ export const whyUsConfig = {
     content:
       'A V1HUB é a plataforma de referência para encontrar e reservar espaços únicos em Portugal. Desde salas de reunião a estúdios criativos, temos o espaço certo para si.',
   },
-  // Adiciona URLs de imagens reais aqui (3 fotos para os polaroids)
+  /**
+   * As três fotografias dos polaroids.
+   *
+   * ESTAVAM TODAS EM SERVIDORES DE OUTRAS EMPRESAS
+   *
+   * Eram marcadores de posição que ficaram cá — ligações directas a imagens
+   * alojadas no casamentos.pt, no casamentos.com.br e no avilaspaces.com. Três
+   * problemas de uma vez: 496 KB vindos de servidores que não controlamos, que
+   * podem mudar ou desaparecer a qualquer momento, e fotografias que não são
+   * nossas.
+   *
+   * A do escritório passou a ser servida por nós, recortada ao quadrado (é
+   * assim que aparecem) e em WebP: 171 KB → 41 KB.
+   *
+   * As outras duas continuam externas porque os CDNs do casamentos.* estão
+   * atrás de protecção anti-robôs da Akamai e recusam qualquer pedido que não
+   * venha de um browser a sério. Ficam aqui à espera de serem substituídas por
+   * fotografias nossas — que é o que deviam ter sido desde o início.
+   */
   staticImages: [
     'https://cdn0.casamentos.pt/vendor/3004/3_2/960/jpg/0983-emilie-tiago_6_93004.jpeg',
-    'https://avilaspaces.com/wp-content/uploads/2025/09/Private-Office04-1024x681.jpg',
+    polaroidEscritorio,
     'https://cdn0.casamentos.com.br/article/1287/3_2/1280/jpg/57821-diseo-sin-ttulo-2023-04-26t173057-952.webp',
   ],
 };

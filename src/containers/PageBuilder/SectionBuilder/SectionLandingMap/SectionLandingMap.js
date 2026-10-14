@@ -149,10 +149,14 @@ const SectionLandingMap = props => {
    * PEDIR A BIBLIOTECA SÓ QUANDO O MAPA SE APROXIMA
    *
    * Na página inicial o `mapbox-gl.js` já não vem com a página: são 301 KB e
-   * quase três segundos de CPU num telemóvel, para uma secção que está muito
-   * abaixo da primeira dobra. Pede-se aqui, quando o visitante está a 600px de
-   * a ver — tempo de sobra para chegar antes dele, sem tirar nada a quem nunca
-   * desce até cá.
+   * quase três segundos de CPU num telemóvel.
+   *
+   * A margem é de 100px, e o número não é arbitrário. Num telemóvel a página
+   * tem ~4 970px e esta secção começa aos ~972px — a 160px da dobra. Com a
+   * margem de 600px que aqui esteve primeiro, o observador disparava no
+   * instante do carregamento e a biblioteca voltava a competir com a abertura
+   * da página: tinha-se tirado do HTML e ganho nada. Com 100px espera pelo
+   * primeiro gesto de quem lê, que é o que se queria.
    *
    * Em browsers sem IntersectionObserver pede-se logo: mais vale pagar o
    * carregamento do que ficar sem mapa.
@@ -211,7 +215,7 @@ const SectionLandingMap = props => {
           pedir();
         }
       },
-      { rootMargin: '600px' }
+      { rootMargin: '100px' }
     );
     observador.observe(alvo);
     return () => {
