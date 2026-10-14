@@ -8,9 +8,9 @@ import HeroSearchBar from './HeroSearchBar';
 
 import slide1Image from '../../../../assets/images/1.webp';
 import slide2Image from '../../../../assets/images/12.webp';
-import slide3Image from '../../../../assets/images/3.jpg';
+import slide3Image from '../../../../assets/images/3.webp';
 import slide4Image from '../../../../assets/images/4.jpg';
-import slide5Image from '../../../../assets/images/5.jpg';
+import slide5Image from '../../../../assets/images/5.webp';
 import heroDecoration from '../../../../assets/images/Carrosel.webp';
 
 import css from './SectionHero.module.css';

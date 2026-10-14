@@ -7,16 +7,16 @@ import { OPERADOR } from '../../../../config/legalEntity';
 import css from './SectionFooter.module.css';
 
 import logoWhite from '../../../../assets/images/V1H-LOGO-WHITE.webp';
-import iconFB from '../../../../assets/images/VH1-ICON_FB (WHITE).png';
-import iconFBHover from '../../../../assets/images/fb1.png';
-import iconInst from '../../../../assets/images/VH1-ICON_INST (WHITE).png';
-import iconInstHover from '../../../../assets/images/insta1.png';
-import iconLkin from '../../../../assets/images/VH1-ICON_LKIN (WHITE).png';
-import iconLkinHover from '../../../../assets/images/linkedin1.png';
-import iconTktk from '../../../../assets/images/VH1-ICON_TKTK (WHITE).png';
-import iconTktkHover from '../../../../assets/images/tiktok1.png';
-import iconYT from '../../../../assets/images/VH1-ICON_YT (WHITE).png';
-import iconYTHover from '../../../../assets/images/yt1.png';
+import iconFB from '../../../../assets/images/VH1-ICON_FB (WHITE).webp';
+import iconFBHover from '../../../../assets/images/fb1.webp';
+import iconInst from '../../../../assets/images/VH1-ICON_INST (WHITE).webp';
+import iconInstHover from '../../../../assets/images/insta1.webp';
+import iconLkin from '../../../../assets/images/VH1-ICON_LKIN (WHITE).webp';
+import iconLkinHover from '../../../../assets/images/linkedin1.webp';
+import iconTktk from '../../../../assets/images/VH1-ICON_TKTK (WHITE).webp';
+import iconTktkHover from '../../../../assets/images/tiktok1.webp';
+import iconYT from '../../../../assets/images/VH1-ICON_YT (WHITE).webp';
+import iconYTHover from '../../../../assets/images/yt1.webp';
 
 // Os endereços vivem em src/config/socialLinks.js; aqui só se lhes dá cara.
 // Uma rede declarada lá sem ícone conta para o SEO mas não aparece no rodapé,

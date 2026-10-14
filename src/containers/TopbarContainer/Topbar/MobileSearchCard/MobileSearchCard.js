@@ -6,9 +6,9 @@ import IconSearchDesktop from '../TopbarSearchForm/IconSearchDesktop';
 import { createSlug } from '../../../../util/urlHelpers';
 import slide1Image from '../../../../assets/images/1.webp';
 import slide2Image from '../../../../assets/images/12.webp';
-import slide3Image from '../../../../assets/images/3.jpg';
+import slide3Image from '../../../../assets/images/3.webp';
 import slide4Image from '../../../../assets/images/4.jpg';
-import slide5Image from '../../../../assets/images/5.jpg';
+import slide5Image from '../../../../assets/images/5.webp';
 import css from './MobileSearchCard.module.css';
 
 // Mirror of getImageUrl() in SectionHero — picks the largest variant URL from

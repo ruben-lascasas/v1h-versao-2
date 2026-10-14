@@ -4,17 +4,17 @@ import { useLocale } from '../../context/localeContext';
 import css from './SocialLinksField.module.css';
 
 // Dark monochrome V1H icons (the base versions in /src/assets/images).
-import iconInstagram from '../../assets/images/VH1-ICON_INST.png';
-import iconFacebook from '../../assets/images/VH1-ICON_FB.png';
-import iconLinkedin from '../../assets/images/VH1-ICON_LKIN.png';
-import iconTiktok from '../../assets/images/VH1-ICON_TKTK.png';
-import iconYoutube from '../../assets/images/VH1-ICON_YT.png';
+import iconInstagram from '../../assets/images/VH1-ICON_INST.webp';
+import iconFacebook from '../../assets/images/VH1-ICON_FB.webp';
+import iconLinkedin from '../../assets/images/VH1-ICON_LKIN.webp';
+import iconTiktok from '../../assets/images/VH1-ICON_TKTK.webp';
+import iconYoutube from '../../assets/images/VH1-ICON_YT.webp';
 // Beige V1H hover variants (same icons but with brand-brown background).
-import iconInstagramHover from '../../assets/images/VH1-ICON_INST-2.png';
-import iconFacebookHover from '../../assets/images/VH1-ICON_FB-2.png';
-import iconLinkedinHover from '../../assets/images/VH1-ICON_LKIN-2.png';
-import iconTiktokHover from '../../assets/images/VH1-ICON_TKTK-2.png';
-import iconYoutubeHover from '../../assets/images/VH1-ICON_YT-2.png';
+import iconInstagramHover from '../../assets/images/VH1-ICON_INST-2.webp';
+import iconFacebookHover from '../../assets/images/VH1-ICON_FB-2.webp';
+import iconLinkedinHover from '../../assets/images/VH1-ICON_LKIN-2.webp';
+import iconTiktokHover from '../../assets/images/VH1-ICON_TKTK-2.webp';
+import iconYoutubeHover from '../../assets/images/VH1-ICON_YT-2.webp';
 
 // Each platform has a key (used in publicData), label, placeholder URL pattern,
 // optional URL prefix appended automatically when the user enters just a
