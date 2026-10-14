@@ -1,4 +1,4 @@
-import { carregarMapboxGL } from './mapboxSobDemanda';
+import { carregarMapboxGL, pedirAoPrimeiroGesto } from './mapboxSobDemanda';
 
 /**
  * O QUE ESTE FICHEIRO PROTEGE
@@ -82,5 +82,113 @@ describe('carregarMapboxGL', () => {
     window.mapboxgl = {};
     scriptDoMapa().dispatchEvent(new Event('load'));
     await segunda;
+  });
+});
+
+/**
+ * O GATILHO: PRIMEIRO GESTO **E** PROXIMIDADE
+ *
+ * Isto existe porque me enganei duas vezes antes de chegar aqui. Primeiro
+ * carreguei o mapa quando estivesse a 600px de ser visto; depois a 100px. Nas
+ * duas o pedido saía no instante em que a página abria, porque num telemóvel a
+ * secção do mapa fica a ~160px da dobra — está praticamente lá. Media-se e via-
+ * se: 806ms, antes do primeiro pixel aparecer.
+ *
+ * Estes testes fixam as duas condições. Se alguém um dia tirar o gesto e
+ * deixar só a proximidade, voltamos ao ponto de partida sem dar por isso: o
+ * mapa continua a funcionar, só a página é que volta a ficar lenta — o pior
+ * tipo de regressão, a que não parte nada.
+ */
+describe('pedirAoPrimeiroGesto', () => {
+  let observados;
+  let dispararInterseccao;
+  // Cada chamada deixa ouvintes no `window`; se não se desligarem, o gesto de
+  // um teste acorda o observador do teste anterior. A própria função devolve o
+  // desligador — é para isto que ele serve.
+  let porDesligar;
+
+  beforeEach(() => {
+    observados = [];
+    dispararInterseccao = null;
+    porDesligar = [];
+    window.IntersectionObserver = class {
+      constructor(cb) {
+        dispararInterseccao = () => cb([{ isIntersecting: true }]);
+      }
+      observe(el) { observados.push(el); }
+      disconnect() {}
+    };
+  });
+
+  afterEach(() => {
+    porDesligar.forEach(d => d());
+    delete window.IntersectionObserver;
+  });
+
+  const alvo = () => document.createElement('div');
+  const vigiar = (el, fn, op) => {
+    const d = pedirAoPrimeiroGesto(el, fn, op);
+    porDesligar.push(d);
+    return d;
+  };
+
+  it('não vigia nada enquanto ninguém mexer na página', () => {
+    const aoAtingir = jest.fn();
+    vigiar(alvo(), aoAtingir);
+
+    expect(observados).toHaveLength(0);
+    expect(aoAtingir).not.toHaveBeenCalled();
+  });
+
+  it('ao primeiro gesto começa a vigiar — mas ainda não pede', () => {
+    const aoAtingir = jest.fn();
+    vigiar(alvo(), aoAtingir);
+
+    window.dispatchEvent(new Event('scroll'));
+
+    expect(observados).toHaveLength(1);
+    expect(aoAtingir).not.toHaveBeenCalled();
+  });
+
+  it('pede quando o elemento se aproxima, depois do gesto', () => {
+    const aoAtingir = jest.fn();
+    vigiar(alvo(), aoAtingir);
+
+    window.dispatchEvent(new Event('scroll'));
+    dispararInterseccao();
+
+    expect(aoAtingir).toHaveBeenCalledTimes(1);
+  });
+
+  it('vários gestos não põem o mesmo elemento a ser vigiado duas vezes', () => {
+    vigiar(alvo(), jest.fn());
+
+    window.dispatchEvent(new Event('scroll'));
+    window.dispatchEvent(new Event('wheel'));
+    window.dispatchEvent(new Event('touchstart'));
+
+    expect(observados).toHaveLength(1);
+  });
+
+  it('depois de desligar, um gesto já não faz nada', () => {
+    const aoAtingir = jest.fn();
+    const desligar = vigiar(alvo(), aoAtingir);
+
+    desligar();
+    window.dispatchEvent(new Event('scroll'));
+
+    expect(observados).toHaveLength(0);
+    expect(aoAtingir).not.toHaveBeenCalled();
+  });
+
+  // Um browser sem IntersectionObserver não tem como saber da proximidade.
+  // Entre não ter mapa e pagar o carregamento, paga-se.
+  it('sem IntersectionObserver, pede logo', () => {
+    delete window.IntersectionObserver;
+    const aoAtingir = jest.fn();
+
+    vigiar(alvo(), aoAtingir);
+
+    expect(aoAtingir).toHaveBeenCalledTimes(1);
   });
 });

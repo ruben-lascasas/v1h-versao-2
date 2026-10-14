@@ -144,3 +144,70 @@ export const useMapboxGL = mapsConfig => {
     };
   }, [ehMapbox, token]);
 };
+
+/**
+ * Pedir uma coisa pesada quando quem lê der o primeiro sinal de vida, e só
+ * quando o elemento estiver perto de ser visto.
+ *
+ * PORQUE É QUE SÃO DUAS CONDIÇÕES E NÃO UMA
+ *
+ * Por proximidade sozinha não serve: a secção do mapa da página inicial fica a
+ * ~160px da dobra num telemóvel, portanto qualquer margem razoável dispara no
+ * instante em que a página abre — foi o que aconteceu nas duas primeiras
+ * tentativas, com 600px e com 100px, e a biblioteca continuava a competir com
+ * a abertura da página (pedido aos 806ms, antes do primeiro pixel).
+ *
+ * Pelo gesto sozinho também não: quem toca no ecrã logo no cabeçalho não está
+ * necessariamente a caminho do mapa.
+ *
+ * As duas juntas dão o que se quer: nada acontece a quem abre a página e fica
+ * a ler; a quem começa a descer, a biblioteca vai a caminho desde o primeiro
+ * milímetro, muito antes de ele lá chegar.
+ *
+ * @param {Element} alvo o elemento a vigiar
+ * @param {Function} aoAtingir chamada uma só vez
+ * @param {Object} [opcoes]
+ * @param {string} [opcoes.margem] margem do observador
+ * @returns {Function} para desligar tudo
+ */
+export const pedirAoPrimeiroGesto = (alvo, aoAtingir, opcoes = {}) => {
+  const { margem = '400px' } = opcoes;
+  if (!alvo || typeof window === 'undefined') {
+    return () => {};
+  }
+
+  // Sem IntersectionObserver não há como saber da proximidade. Mais vale pagar
+  // o carregamento do que deixar alguém sem mapa.
+  if (typeof IntersectionObserver === 'undefined') {
+    aoAtingir();
+    return () => {};
+  }
+
+  let terminado = false;
+  const GESTOS = ['scroll', 'pointerdown', 'keydown', 'touchstart', 'wheel'];
+
+  const observador = new IntersectionObserver(entradas => {
+    if (!terminado && entradas.some(e => e.isIntersecting)) {
+      desligar();
+      aoAtingir();
+    }
+  }, { rootMargin: margem });
+
+  const desligar = () => {
+    if (terminado) return;
+    terminado = true;
+    GESTOS.forEach(g => window.removeEventListener(g, aoPrimeiroGesto));
+    observador.disconnect();
+  };
+
+  let jaObserva = false;
+  function aoPrimeiroGesto() {
+    if (terminado || jaObserva) return;
+    jaObserva = true;
+    GESTOS.forEach(g => window.removeEventListener(g, aoPrimeiroGesto));
+    observador.observe(alvo);
+  }
+
+  GESTOS.forEach(g => window.addEventListener(g, aoPrimeiroGesto, { passive: true }));
+  return desligar;
+};

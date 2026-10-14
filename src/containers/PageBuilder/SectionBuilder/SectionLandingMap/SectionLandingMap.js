@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useConfiguration } from '../../../../context/configurationContext';
 import { useLocale } from '../../../../context/localeContext';
-import { carregarMapboxGL } from '../../../../util/mapboxSobDemanda';
+import { carregarMapboxGL, pedirAoPrimeiroGesto } from '../../../../util/mapboxSobDemanda';
 import { fetchMapListings } from '../../../../ducks/mapListings.duck';
 import SectionContainer from '../SectionContainer';
 
@@ -146,17 +146,22 @@ const SectionLandingMap = props => {
   );
 
   /**
-   * PEDIR A BIBLIOTECA SÓ QUANDO O MAPA SE APROXIMA
+   * PEDIR A BIBLIOTECA AO PRIMEIRO GESTO, NÃO POR PROXIMIDADE
    *
    * Na página inicial o `mapbox-gl.js` já não vem com a página: são 301 KB e
-   * quase três segundos de CPU num telemóvel.
+   * ~2,4 segundos de CPU num telemóvel.
    *
-   * A margem é de 100px, e o número não é arbitrário. Num telemóvel a página
-   * tem ~4 970px e esta secção começa aos ~972px — a 160px da dobra. Com a
-   * margem de 600px que aqui esteve primeiro, o observador disparava no
-   * instante do carregamento e a biblioteca voltava a competir com a abertura
-   * da página: tinha-se tirado do HTML e ganho nada. Com 100px espera pelo
-   * primeiro gesto de quem lê, que é o que se queria.
+   * O critério tentei-o primeiro por distância — carregar quando a secção
+   * estivesse a 600px de ser vista, depois a 100px. Nenhuma das duas serviu, e
+   * a razão é simples: num telemóvel esta secção fica a ~160px da dobra, está
+   * praticamente lá. Qualquer margem razoável dispara no instante em que a
+   * página abre. Medido na segunda tentativa: o pedido saía aos 2 466ms,
+   * antes de aparecer o primeiro pixel (4 549ms).
+   *
+   * Por isso o gatilho é agora o primeiro gesto — roda do rato, toque, tecla.
+   * Quem abre a página e fica a ler o cabeçalho não paga um mapa que não
+   * pediu; quem desce tem o mapa a caminho desde o primeiro milímetro de
+   * scroll, muito antes de lá chegar.
    *
    * Em browsers sem IntersectionObserver pede-se logo: mais vale pagar o
    * carregamento do que ficar sem mapa.
@@ -166,7 +171,15 @@ const SectionLandingMap = props => {
 
   useEffect(() => {
     if (libPronta || typeof window === 'undefined') return undefined;
+
+    // Esta secção devolve `null` enquanto `mounted` for falso, por isso na
+    // primeira passagem o contentor ainda não existe. Sem esta saída, o código
+    // abaixo lia a ausência do contentor como "não dá para vigiar" e ia buscar
+    // a biblioteca de imediato — que é precisamente o que se quer evitar.
+    // Medido: pedido aos 806ms, sem ninguém ter tocado na página.
     const alvo = mapContainerRef.current;
+    if (!alvo) return undefined;
+
     let vivo = true;
 
     /**
@@ -201,28 +214,17 @@ const SectionLandingMap = props => {
         });
     });
 
-    if (!alvo || typeof IntersectionObserver === 'undefined') {
-      pedir();
-      return () => {
-        vivo = false;
-      };
-    }
-
-    const observador = new IntersectionObserver(
-      entradas => {
-        if (entradas.some(e => e.isIntersecting)) {
-          observador.disconnect();
-          pedir();
-        }
-      },
-      { rootMargin: '100px' }
-    );
-    observador.observe(alvo);
+    const desligar = pedirAoPrimeiroGesto(alvo, pedir);
     return () => {
+      // `vivo` trava o `setLibPronta` de uma promessa que chegue depois de a
+      // secção sair do ecrã; `desligar` tira os ouvintes e o observador.
       vivo = false;
-      observador.disconnect();
+      desligar();
     };
-  }, [libPronta, tokenDoMapa]);
+    // `mounted` está nas dependências para o efeito voltar a correr assim que a
+    // secção existir no DOM — sem isso, a saída acima seria definitiva e o mapa
+    // nunca chegaria a ser pedido.
+  }, [libPronta, tokenDoMapa, mounted]);
 
   // Inicializa o mapa Mapbox
   useEffect(() => {
