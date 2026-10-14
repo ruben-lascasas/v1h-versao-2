@@ -9,9 +9,22 @@
  * visitante vê no código da página — e pode ser trocado por ambiente com
  * REACT_APP_ANYCHAT_WIDGET_ID. Fica aqui com valor por omissão para não
  * depender de uma variável na Render, que é onde o site é construído.
+ *
+ * ONDE SE VAI BUSCAR, QUANDO O BOTÃO DESAPARECER
+ *
+ * Painel do AnyChat, workspace *Venue1Hub* (não o da VIVER, que é outro),
+ * Settings / Widgets, widget "Venue1Hub", botão do código `</>`.
+ *
+ * Um id apagado não dá erro visível: o script responde 404 vazio e o botão
+ * simplesmente não aparece. Foi o que aconteceu com o id anterior. Para
+ * confirmar se um id está vivo, sem fazer deploy:
+ *
+ *   curl -I https://api.anychat.one/widget/<id>
+ *
+ * 200 com JavaScript é bom sinal; 404 com 0 bytes é um id que já não existe.
  */
 export const anychatWidgetId =
-  process.env.REACT_APP_ANYCHAT_WIDGET_ID || '61f29447-d37d-300c-88e7-b7c20cf12161';
+  process.env.REACT_APP_ANYCHAT_WIDGET_ID || 'b7ac8a9f-b113-3b45-a6f8-3365d5c138d0';
 
 /**
  * Exigir consentimento de "preferências" antes de carregar o widget.
