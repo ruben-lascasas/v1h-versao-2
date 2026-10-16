@@ -22,7 +22,8 @@ const mockInitiate = jest.fn();
 jest.mock('../api-util/sdk', () => ({
   ...jest.requireActual('../api-util/sdk'),
   getSdk: () => ({ listings: { show: mockListingsShow } }),
-  getTrustedSdk: () => Promise.resolve({ transactions: { initiate: (...a) => mockInitiate(...a) } }),
+  getTrustedSdk: () =>
+    Promise.resolve({ transactions: { initiate: (...a) => mockInitiate(...a) } }),
   getIntegrationSdk: () => null,
   fetchCommission: () =>
     Promise.resolve({ data: { data: [{ type: 'jsonAsset', attributes: { data: {} } }] } }),
@@ -51,7 +52,13 @@ const anuncioDe = podeReceberReservas => ({
     included:
       podeReceberReservas === undefined
         ? []
-        : [{ id: new UUID(AUTOR), type: 'user', attributes: { profile: { metadata: { podeReceberReservas } } } }],
+        : [
+            {
+              id: new UUID(AUTOR),
+              type: 'user',
+              attributes: { profile: { metadata: { podeReceberReservas } } },
+            },
+          ],
   },
 });
 

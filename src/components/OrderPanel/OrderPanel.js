@@ -482,9 +482,6 @@ const OrderPanel = props => {
    * server/api/initiate-privileged.js.
    */
   const porVerificar = emPreVerificacao(listing);
-  // `isOwnListing` já é calculado por quem monta este painel; não vale a pena
-  // reconstruir a mesma resposta a partir do utilizador com sessão iniciada.
-  const souEuPorVerificar = porVerificar && isOwnListing;
   const naoRecebe = isClosed || porVerificar;
 
   const shouldHaveFixedBookingDuration = isBooking && [LINE_ITEM_FIXED].includes(lineItemUnitType);
@@ -630,12 +627,6 @@ const OrderPanel = props => {
 
   const subTitleText = showClosedListingHelpText
     ? intl.formatMessage({ id: 'OrderPanel.subTitleClosedListing' })
-    : listing.id && porVerificar
-    ? intl.formatMessage({
-        id: souEuPorVerificar
-          ? 'OrderPanel.preVerificacaoDono'
-          : 'OrderPanel.preVerificacaoVisitante',
-      })
     : null;
 
   const authorDisplayName = userDisplayNameAsString(author, '');
@@ -723,6 +714,20 @@ const OrderPanel = props => {
             </NamedLink>
             <SubmitFinePrint isOwnListing={true} />
           </>
+        ) : porVerificar ? (
+          /*
+            Publicado, mas ainda não aberto a reservas: o anfitrião não
+            concluiu a verificação.
+
+            Um botão apagado a dizer "Em breve" chega. Esteve aqui um aviso
+            com três linhas a explicar o processo de verificação — que é
+            assunto do anfitrião, não de quem está a ver o espaço. Para quem
+            procura, o que interessa saber é só que ainda não pode reservar e
+            que está para breve.
+          */
+          <button type="button" className={css.emBreveButton} disabled>
+            {intl.formatMessage({ id: 'OrderPanel.emBreve' })}
+          </button>
         ) : showPriceMissing ? (
           <PriceMissing />
         ) : showInvalidCurrency ? (

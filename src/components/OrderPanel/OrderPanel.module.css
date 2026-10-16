@@ -450,6 +450,22 @@
   }
 }
 
+/*
+  "Em breve": o espaço está publicado mas o anfitrião ainda não concluiu a
+  verificação, por isso ainda não se reserva.
+
+  Tem a forma do botão de reservar e o aspecto de estar desligado — é isso
+  que diz, sem uma palavra, que aqui vai haver um botão e que ainda não é
+  agora. `cursor: default` em vez de `not-allowed` de propósito: não é um
+  impedimento, é uma espera.
+*/
+.emBreveButton {
+  composes: editListingButton;
+  background-color: #EDE7DF;
+  color: #7C6350;
+  cursor: default;
+}
+
 .closedListingButton {
   border-left: 1px solid var(--colorGrey100);
   width: 100%;

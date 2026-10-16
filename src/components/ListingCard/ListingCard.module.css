@@ -74,16 +74,6 @@
 }
 
 /*
-  Ainda não reserva: o anúncio está publicado, o anfitrião é que ainda não
-  concluiu a verificação. Não é um aviso de problema — é um "ainda não" — por
-  isso usa o tom quente da marca e não o cinzento de "já não disponível".
-*/
-.cardBadgePorVerificar {
-  color: #7C6350;
-  border-color: #d8c7b4;
-}
-
-/*
   O cartão de um anúncio fechado continua clicável — quem tem uma reserva ou um
   contrato precisa de lá chegar — mas deixa de se parecer com uma oferta viva:
   a imagem esmorece e o preço deixa de ser uma promessa.

@@ -129,7 +129,14 @@ const emailDeAviso = ({ nome, anuncio, prazo, en }) => ({
        `Tem <strong>${prazo} dias</strong> para concluir a verificação. Se não o fizer, retiramos o anúncio da plataforma — não o apagamos, fica guardado como está e volta a aparecer assim que a verificação estiver feita.`,
        `You have <strong>${prazo} days</strong> to complete it. If you do not, we will take the listing down — we will not delete it: it stays as you left it and comes back as soon as you are verified.`
      )}</p>
-     <p style="margin:24px 0;"><a href="${ROOT_URL.replace(/\/$/, '')}/verificacao" style="background:#2E2E2E;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;display:inline-block;">${t(en, 'Concluir verificação', 'Complete verification')}</a></p>`
+     <p style="margin:24px 0;"><a href="${ROOT_URL.replace(
+       /\/$/,
+       ''
+     )}/verificacao" style="background:#2E2E2E;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;display:inline-block;">${t(
+      en,
+      'Concluir verificação',
+      'Complete verification'
+    )}</a></p>`
   ),
 });
 
@@ -152,7 +159,14 @@ const emailDeFecho = ({ nome, anuncio, en }) => ({
        'Não foi apagado. Está guardado exactamente como o deixou e volta a aparecer assim que a conta estiver verificada.',
        'It has not been deleted. It is saved exactly as you left it and comes back as soon as your account is verified.'
      )}</p>
-     <p style="margin:24px 0;"><a href="${ROOT_URL.replace(/\/$/, '')}/verificacao" style="background:#2E2E2E;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;display:inline-block;">${t(en, 'Concluir verificação', 'Complete verification')}</a></p>`
+     <p style="margin:24px 0;"><a href="${ROOT_URL.replace(
+       /\/$/,
+       ''
+     )}/verificacao" style="background:#2E2E2E;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;display:inline-block;">${t(
+      en,
+      'Concluir verificação',
+      'Complete verification'
+    )}</a></p>`
   ),
 });
 
@@ -235,7 +249,11 @@ const correr = async (sdk, agora = Date.now(), resend = null) => {
       // O carimbo é posto depois do envio, de propósito. Se o email falhar, o
       // anúncio não fica marcado como avisado — e volta a tentar amanhã, em
       // vez de ficar sete dias a correr para um fecho que ninguém soube.
-      const enviado = await enviar(resend, para, emailDeAviso({ nome, anuncio: titulo, prazo: diasDePrazo(), en }));
+      const enviado = await enviar(
+        resend,
+        para,
+        emailDeAviso({ nome, anuncio: titulo, prazo: diasDePrazo(), en })
+      );
       if (!enviado && resend) {
         console.error(`[pre-verificacao] aviso nao enviado para ${id}; nao se carimba`);
         continue;

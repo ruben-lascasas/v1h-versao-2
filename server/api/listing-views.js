@@ -162,6 +162,26 @@ exports.reset = (req, res) => {
 // ranking can factor in real audience size (popularity) without making N
 // individual round trips. Keyed by listing UUID:
 //   { "<listingId>": { todayCount, totalCount, allTimeCount }, ... }
+/**
+ * As contagens de um anúncio, para quem não está a responder a um pedido HTTP.
+ *
+ * O trabalho que avisa os anfitriões por verificar precisa destes números e
+ * corre numa madrugada, sem request nenhum. Ler o ficheiro directamente dali
+ * seria duplicar o formato de armazenamento em dois sítios — e é assim que um
+ * deles acaba por ficar para trás.
+ *
+ * @param {string} listingId
+ * @returns {{todayCount:number, totalCount:number, allTimeCount:number}}
+ */
+exports.contagemDe = listingId => {
+  try {
+    return countUnique(readData()[listingId]);
+  } catch (e) {
+    console.error('[listing-views] contagemDe falhou:', e?.message || e);
+    return { todayCount: 0, totalCount: 0, allTimeCount: 0 };
+  }
+};
+
 exports.getAll = (_req, res) => {
   try {
     const data = readData();

@@ -451,6 +451,14 @@ const server = app.listen(PORT, () => {
   } catch (e) {
     console.error('[pre-verificacao] failed to start:', e?.message || e);
   }
+  try {
+    // O outro lado da mesma moeda: antes do prazo, o empurrão. Quem souber
+    // que houve gente a ver o espaço dele volta ao formulário da verificação;
+    // um lembrete seco não traz ninguém de volta.
+    require('./jobs/interessePreVerificacaoJob').start();
+  } catch (e) {
+    console.error('[interesse] failed to start:', e?.message || e);
+  }
 });
 
 // Graceful shutdown:

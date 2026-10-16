@@ -31,22 +31,55 @@ const sdkFalso = anuncios => {
           included: [
             // Com email: sem ele o envio nem era tentado e os testes do aviso
             // passavam pela razão errada — descoberto por um deles a falhar.
-            { id: { uuid: AUTOR_POR_VERIFICAR }, type: 'user', attributes: { email: 'host@exemplo.pt', profile: { firstName: 'Rita', metadata: { podeReceberReservas: false } } } },
-            { id: { uuid: AUTOR_VERIFICADO }, type: 'user', attributes: { email: 'ok@exemplo.pt', profile: { firstName: 'Ana', metadata: { podeReceberReservas: true } } } },
-            { id: { uuid: AUTOR_ANTIGO }, type: 'user', attributes: { email: 'antigo@exemplo.pt', profile: { firstName: 'Luis', metadata: {} } } },
+            {
+              id: { uuid: AUTOR_POR_VERIFICAR },
+              type: 'user',
+              attributes: {
+                email: 'host@exemplo.pt',
+                profile: { firstName: 'Rita', metadata: { podeReceberReservas: false } },
+              },
+            },
+            {
+              id: { uuid: AUTOR_VERIFICADO },
+              type: 'user',
+              attributes: {
+                email: 'ok@exemplo.pt',
+                profile: { firstName: 'Ana', metadata: { podeReceberReservas: true } },
+              },
+            },
+            {
+              id: { uuid: AUTOR_ANTIGO },
+              type: 'user',
+              attributes: {
+                email: 'antigo@exemplo.pt',
+                profile: { firstName: 'Luis', metadata: {} },
+              },
+            },
           ],
           meta: { totalPages: 1 },
         },
       }),
-      update: async args => { chamadas.update.push(args); },
-      close: async args => { chamadas.close.push(args); },
+      update: async args => {
+        chamadas.update.push(args);
+      },
+      close: async args => {
+        chamadas.close.push(args);
+      },
     },
   };
 };
 
 const resendQueEnvia = () => {
   const enviados = [];
-  return { enviados, emails: { send: async m => { enviados.push(m); return { id: 'e-1' }; } } };
+  return {
+    enviados,
+    emails: {
+      send: async m => {
+        enviados.push(m);
+        return { id: 'e-1' };
+      },
+    },
+  };
 };
 
 const anuncio = (publicData, autor = AUTOR_POR_VERIFICAR, id = 'l-1') => ({
@@ -63,7 +96,9 @@ describe('o relógio começa quando o anúncio é visto, não quando foi criado'
     expect(r.carimbados).toBe(1);
     expect(r.avisados).toBe(0);
     expect(sdk.chamadas.close).toHaveLength(0);
-    expect(sdk.chamadas.update[0].publicData.preVerificacaoDesde).toBe(new Date(AGORA).toISOString());
+    expect(sdk.chamadas.update[0].publicData.preVerificacaoDesde).toBe(
+      new Date(AGORA).toISOString()
+    );
   });
 });
 
@@ -136,7 +171,13 @@ describe('o fecho', () => {
  * que a regra existe para fazer.
  */
 describe('quando o email do aviso falha', () => {
-  const resendPartido = { emails: { send: async () => { throw new Error('sem rede'); } } };
+  const resendPartido = {
+    emails: {
+      send: async () => {
+        throw new Error('sem rede');
+      },
+    },
+  };
 
   it('o anúncio não fica marcado como avisado', async () => {
     const sdk = sdkFalso([anuncio({ preVerificacaoDesde: haDias(60) })]);
