@@ -34,7 +34,7 @@
 
 const cron = require('node-cron');
 const { Resend } = require('resend');
-const { mailFrom, isEnglish, t } = require('../api-util/emailSender');
+const { enviarEmail, isEnglish, t } = require('../api-util/emailSender');
 const { getIntegrationSdk } = require('../api-util/sdk');
 const { contagemDe } = require('../api/listing-views');
 
@@ -137,16 +137,18 @@ const emailDeInteresse = ({ nome, anuncio, vistas, favoritos, en }) => ({
   </div>`,
 });
 
-const enviar = async (resend, para, { subject, html }) => {
-  if (!resend || !para) return false;
-  try {
-    await resend.emails.send({ from: mailFrom('Venue1Hub'), to: para, subject, html });
-    return true;
-  } catch (e) {
-    console.error('[interesse] email falhou para', para, e?.message || e);
-    return false;
-  }
-};
+/**
+ * Envia e diz se chegou a ser aceite.
+ *
+ * O valor de retorno não é decorativo: é ele que decide se os números ficam
+ * marcados como comunicados. Um falso "enviado" não se repara — aquele
+ * interesse nunca volta a ser contado, e o anfitrião nunca soube dele.
+ *
+ * Por isso isto vive em `enviarEmail`, que lê a resposta do Resend em vez de
+ * se fiar na ausência de exceção (o SDK recusa sem lançar nada).
+ */
+const enviar = (resend, para, { subject, html }) =>
+  enviarEmail(resend, { para, subject, html, contexto: '[interesse]' });
 
 /**
  * Uma passagem. Exportada à parte do agendamento para poder ser testada.

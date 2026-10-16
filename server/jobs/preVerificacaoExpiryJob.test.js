@@ -199,6 +199,74 @@ describe('quando o email do aviso falha', () => {
   });
 });
 
+/**
+ * A RECUSA QUE NÃO LANÇA EXCEÇÃO — era por aqui que o aviso se perdia.
+ *
+ * O SDK do Resend não atira quando a API recusa: devolve
+ * `{ data: null, error }` e a promessa resolve. O try/catch que estava aqui
+ * só via exceções, por isso um 403 (domínio não verificado) contava como
+ * entrega — e o anúncio ficava carimbado como avisado e fechava sete dias
+ * depois de um email que ninguém recebeu.
+ *
+ * Encontrado a 2026-10-16 ao tentar entregar um email a sério: a conta Resend
+ * não tinha nenhum domínio registado e TODAS as chamadas davam sucesso.
+ */
+describe('quando o Resend recusa sem lançar exceção', () => {
+  const resendQueRecusa = () => {
+    const tentativas = [];
+    return {
+      tentativas,
+      emails: {
+        send: async m => {
+          tentativas.push(m);
+          return {
+            data: null,
+            error: {
+              statusCode: 403,
+              name: 'validation_error',
+              message: 'The venue1hub.eu domain is not verified.',
+            },
+          };
+        },
+      },
+    };
+  };
+
+  it('não conta como avisado, e não carimba', async () => {
+    const sdk = sdkFalso([anuncio({ preVerificacaoDesde: haDias(60) })]);
+    const resend = resendQueRecusa();
+
+    const r = await correr(sdk, AGORA, resend);
+
+    // Tentou-se mesmo enviar — o que falhou foi a entrega, e é isso que
+    // distingue este caso de "ainda não chegou a hora de avisar".
+    expect(resend.tentativas).toHaveLength(1);
+    expect(r.avisados).toBe(0);
+    expect(sdk.chamadas.update).toHaveLength(0);
+    expect(sdk.chamadas.close).toHaveLength(0);
+  });
+
+  /**
+   * O estrago que isto evita: fechar o anúncio a quem nunca foi avisado.
+   *
+   * O `sdkFalso` não aplica os `update` ao anúncio que devolve, por isso correr
+   * duas vezes o mesmo não prova nada — a segunda passagem nunca veria o
+   * carimbo da primeira, e o teste passava com o código avariado. A segunda
+   * passagem tem de ser construída com o que a primeira gravou de facto.
+   */
+  it('e sete dias depois o anúncio continua aberto', async () => {
+    const primeira = sdkFalso([anuncio({ preVerificacaoDesde: haDias(60) })]);
+    await correr(primeira, AGORA, resendQueRecusa());
+
+    const gravado = primeira.chamadas.update.reduce((acc, u) => ({ ...acc, ...u.publicData }), {});
+    const segunda = sdkFalso([anuncio({ preVerificacaoDesde: haDias(67), ...gravado })]);
+    const r = await correr(segunda, AGORA + 7 * 24 * 60 * 60 * 1000, resendQueRecusa());
+
+    expect(segunda.chamadas.close).toHaveLength(0);
+    expect(r.fechados).toBe(0);
+  });
+});
+
 describe('quem se verifica entretanto', () => {
   it('fica com os carimbos apagados e não é fechado', async () => {
     const sdk = sdkFalso([

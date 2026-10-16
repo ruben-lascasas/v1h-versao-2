@@ -171,6 +171,64 @@ describe('quando o email falha', () => {
   });
 });
 
+/**
+ * A RECUSA SILENCIOSA — era por aqui que o interesse se perdia para sempre.
+ *
+ * O SDK do Resend não lança exceção quando a API recusa: devolve
+ * `{ data: null, error }` e a promessa resolve com sucesso. O try/catch que
+ * estava neste ficheiro só via exceções, por isso um 403 passava por entrega
+ * — e os números ficavam marcados como comunicados.
+ *
+ * Isso não se recupera: aquelas visitas e aqueles favoritos nunca voltam a
+ * entrar em resumo nenhum, e o anfitrião nunca soube que houve procura. É o
+ * oposto exacto do que o comentário do `correr` promete.
+ */
+describe('quando o Resend recusa sem lançar exceção', () => {
+  const resendQueRecusa = () => {
+    const tentativas = [];
+    return {
+      tentativas,
+      emails: {
+        send: async m => {
+          tentativas.push(m);
+          return {
+            data: null,
+            error: {
+              statusCode: 403,
+              name: 'validation_error',
+              message: 'The venue1hub.eu domain is not verified.',
+            },
+          };
+        },
+      },
+    };
+  };
+
+  it('os números não se dão por contados', async () => {
+    mockVistas.mockReturnValue({ allTimeCount: 4 });
+    const sdk = sdkFalso([anuncio({ favoritesCount: 2 })]);
+    const resend = resendQueRecusa();
+
+    const r = await correr(sdk, resend);
+
+    expect(resend.tentativas).toHaveLength(1);
+    expect(r.avisados).toBe(0);
+    expect(sdk.chamadas.update).toHaveLength(0);
+  });
+
+  it('e a procura entra no resumo seguinte, quando a entrega voltar', async () => {
+    mockVistas.mockReturnValue({ allTimeCount: 4 });
+    const recusado = sdkFalso([anuncio({ favoritesCount: 2 })]);
+    await correr(recusado, resendQueRecusa());
+
+    const bom = resendQueEnvia();
+    const r = await correr(sdkFalso([anuncio({ favoritesCount: 2 })]), bom);
+
+    expect(r.avisados).toBe(1);
+    expect(bom.enviados[0].html).toContain('4 pessoas viram o seu espaço');
+  });
+});
+
 describe('frasePro', () => {
   it('fala no singular quando é uma pessoa só', () => {
     expect(frasePro({ vistas: 1, favoritos: 0, en: false })).toBe('1 pessoa viu o seu espaço');

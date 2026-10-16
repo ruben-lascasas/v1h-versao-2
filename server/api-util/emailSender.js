@@ -82,4 +82,56 @@ const isEnglish = origem => {
 /** Escolhe entre duas variantes conforme a língua do destinatário. */
 const t = (emIngles, pt, en) => (emIngles ? en : pt);
 
-module.exports = { mailFrom, adminEmail, isEnglish, t };
+/**
+ * ENVIAR, E SABER SE CHEGOU.
+ *
+ * O SDK do Resend **não lança exceção** quando a API recusa o envio: devolve
+ * `{ data: null, error }` e a promessa resolve com sucesso. Todas as chamadas
+ * deste projeto faziam `await resend.emails.send(...)` dentro de um try/catch e
+ * davam o envio por feito — por isso um domínio não verificado (403) era
+ * indistinguível de uma entrega. Descoberto a 2026-10-16, com a conta Resend
+ * sem nenhum domínio registado: 26 chamadas a registar sucesso, zero emails
+ * entregues.
+ *
+ * E não é só um registo errado. Nos trabalhos da pré-verificação o valor de
+ * retorno decide se se carimba o anúncio: um falso "enviado" marcava o aviso
+ * como dado e fechava o anúncio sete dias depois de um email que ninguém
+ * recebeu. O comentário do `preVerificacaoExpiryJob` prometia precisamente o
+ * contrário do que o código fazia.
+ *
+ * Daqui em diante o resultado vem da resposta, não da ausência de exceção.
+ *
+ * @param {Object} resend instância do Resend, ou null/undefined
+ * @param {Object} args
+ * @param {string} args.para destinatário
+ * @param {string} args.subject
+ * @param {string} args.html
+ * @param {string} [args.etiqueta] sufixo do nome do remetente (ver mailFrom)
+ * @param {string} [args.contexto] prefixo dos registos, ex.: '[pre-verificacao]'
+ * @returns {Promise<boolean>} true só quando o Resend aceitou o envio
+ */
+const enviarEmail = async (resend, { para, subject, html, etiqueta, contexto = '[email]' }) => {
+  if (!resend || !para) return false;
+  try {
+    const resposta = await resend.emails.send({
+      from: mailFrom(etiqueta),
+      to: para,
+      subject,
+      html,
+    });
+    const erro = resposta?.error;
+    if (erro) {
+      console.error(
+        `${contexto} o Resend recusou o envio para ${para}:`,
+        erro.message || JSON.stringify(erro)
+      );
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error(`${contexto} email falhou para ${para}:`, e?.message || e);
+    return false;
+  }
+};
+
+module.exports = { mailFrom, adminEmail, isEnglish, t, enviarEmail };

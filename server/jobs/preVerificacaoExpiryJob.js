@@ -39,7 +39,7 @@
 
 const cron = require('node-cron');
 const { Resend } = require('resend');
-const { mailFrom, isEnglish, t } = require('../api-util/emailSender');
+const { enviarEmail, isEnglish, t } = require('../api-util/emailSender');
 const { getIntegrationSdk } = require('../api-util/sdk');
 
 const ROOT_URL = process.env.REACT_APP_MARKETPLACE_ROOT_URL || 'https://venue1hub.com';
@@ -176,17 +176,13 @@ const emailDeFecho = ({ nome, anuncio, en }) => ({
  * Um erro do Resend não pode impedir que o resto dos anúncios seja tratado —
  * mas também não pode passar despercebido, senão fecharíamos anúncios a quem
  * nunca chegou o aviso. Fica registado e devolve-se se foi ou não.
+ *
+ * Isto esteve a mentir: o try/catch daqui só via exceções, e o Resend recusa
+ * devolvendo `{ data: null, error }` sem lançar nada. Um 403 contava como
+ * entrega. Está agora em `enviarEmail`, que lê a resposta.
  */
-const enviar = async (resend, para, { subject, html }) => {
-  if (!resend || !para) return false;
-  try {
-    await resend.emails.send({ from: mailFrom('Venue1Hub'), to: para, subject, html });
-    return true;
-  } catch (e) {
-    console.error('[pre-verificacao] email falhou para', para, e?.message || e);
-    return false;
-  }
-};
+const enviar = (resend, para, { subject, html }) =>
+  enviarEmail(resend, { para, subject, html, contexto: '[pre-verificacao]' });
 
 /**
  * Uma passagem. Exportada à parte do agendamento para poder ser testada sem
