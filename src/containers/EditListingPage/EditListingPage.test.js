@@ -3094,6 +3094,63 @@ describe('EditListingPage', () => {
       queryByRole('textbox', { name: 'EditListingDetailsForm.description' })
     ).not.toBeInTheDocument();
   });
+
+  /**
+   * PRE-PUBLICACAO: QUEM AINDA NAO ENTREGOU DOCUMENTOS TEM DE CHEGAR AO FIM.
+   *
+   * Isto esteve partido sem ninguem dar por isso. O servidor passou a abrir a
+   * permissao de publicar, mas esta pagina tinha um segundo portao que lia o
+   * estado da verificacao e mandava para a NoAccessPage. Nenhum teste o
+   * apanhou porque nenhum deles enchia `state.verification` — e sem isso o
+   * portao ficava inerte, a dar sempre passagem nos testes e a fechar sempre
+   * em producao.
+   *
+   * Daqui em diante o estado e enchido como chega de facto a um anfitriao sem
+   * documentos: exigidos (`required`), status ja lido do servidor (`fetched`)
+   * e longe de aprovado. O que se exige e o contrario do que a pagina fazia.
+   */
+  it('Pre-publicacao: anfitriao sem documentos entra no formulario de criar anuncio', async () => {
+    const config = getConfig(listingTypesPurchase, listingFieldsPurchase);
+    const routeConfiguration = getRouteConfiguration(config.layout);
+
+    const props = {
+      ...commonProps,
+      params: {
+        id: '00000000-0000-0000-0000-000000000000',
+        slug: 'slug',
+        type: LISTING_PAGE_PARAM_TYPE_NEW,
+        tab: DETAILS,
+      },
+    };
+
+    const estado = initialState();
+    estado.verification = {
+      juridico: null,
+      declaracao: null,
+      campos: [],
+      fetched: true,
+      loading: false,
+      required: true,
+      status: 'nao_iniciado',
+      docs: [],
+      limits: null,
+      uploadingDocKey: null,
+      uploadError: null,
+    };
+
+    const { getByText } = render(<EditListingPage {...props} />, {
+      initialState: estado,
+      config,
+      routeConfiguration,
+    });
+
+    // Se houvesse redireccionamento, nada disto existiria na pagina.
+    await waitFor(() => {
+      expect(getByText('EditListingWizard.tabLabelDetails')).toBeInTheDocument();
+      expect(getByText('EditListingDetailsPanel.createListingTitle')).toBeInTheDocument();
+    });
+  });
+
 });
 
 describe('EditListingPageComponent', () => {

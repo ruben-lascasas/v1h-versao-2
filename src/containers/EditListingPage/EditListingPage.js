@@ -161,7 +161,6 @@ export const EditListingPageComponent = props => {
     stripeAccount,
     updateStripeAccountError,
     authScopes,
-    verification,
   } = props;
 
   const { id, type, returnURLType } = params;
@@ -173,18 +172,24 @@ export const EditListingPageComponent = props => {
   const currentListing = ensureOwnListing(getOwnListing(listingId));
   const { state: currentListingState } = currentListing.attributes;
 
-  // Verification gate. We can't rely on the postListings permission alone:
-  // users.updatePermissions stores the deny, but the *effective* permission set
-  // only honours it once the marketplace enables listing-posting access control
-  // in Console. Until then the API keeps answering "allow", so this reads the
-  // verification state instead — the same one the server computes.
+  // PUBLICAR SEM DOCUMENTOS — NÃO HÁ AQUI PORTÃO DE VERIFICAÇÃO.
   //
-  // Only blocks once the status has actually been fetched: redirecting on an
-  // unknown state would bounce every host out of the wizard on a cold load.
-  const blockedByVerification =
-    verification?.fetched && verification?.required && verification?.status !== 'aprovado';
-
-  const hasPostingRights = hasPermissionToPostListings(currentUser) && !blockedByVerification;
+  // Isto já teve um segundo portão: lia o estado da verificação e mandava para
+  // a NoAccessPage quem não tivesse os documentos aprovados. Existia porque
+  // `users.updatePermissions` guarda o `deny` mas a permissão efectiva só o
+  // respeita quando o marketplace liga o controlo de acesso na Console — sem
+  // isso a API responde sempre "allow", e o bloqueio tinha de ser feito aqui.
+  //
+  // Desde a pré-publicação, publicar deixou de ser o que se protege: o anúncio
+  // pode ir ao ar sem documentos, e o que fica fechado é **receber** — em
+  // `server/api/initiate-privileged.js`, que devolve 409 `anfitriao-por-verificar`
+  // antes de montar as linhas da reserva. Esse é o portão real, e esse não se
+  // contorna pelo browser.
+  //
+  // NÃO voltar a pôr aqui uma condição sobre a verificação: um anfitrião por
+  // verificar tem de conseguir percorrer o formulário até ao fim, ou a
+  // funcionalidade toda deixa de existir.
+  const hasPostingRights = hasPermissionToPostListings(currentUser);
   const hasPostingRightsError = isErrorNoPermissionToPostListings(page.publishListingError?.error);
   const shouldRedirectNoPostingRights =
     !!currentUser?.id && ((isNewListingFlow && !hasPostingRights) || hasPostingRightsError);
@@ -381,7 +386,6 @@ const mapStateToProps = state => {
   const { authScopes } = state.auth;
 
   return {
-    verification: state.verification,
     getAccountLinkInProgress,
     getAccountLinkError,
     createStripeAccountError,
