@@ -83,9 +83,6 @@ export const PROFESSIONS_BY_SEGMENT = [
 const SEGMENT_FIELD_KEY = 'segmento_de_negocio';
 export const SEGMENT_FORM_NAME = `pub_${SEGMENT_FIELD_KEY}`;
 
-// Sentinel option present in every dropdown segment. Picking it reveals a
-// free-text "Qual?" field (see mockup de UX) instead of saving the literal
-// string "Outra" with no further detail.
 const OTHER_OPTION = 'Outra';
 export const PROFESSAO_OUTRA_FIELD = 'profissaoOutra';
 
@@ -118,19 +115,37 @@ export const resolveProfessionValue = values => {
 };
 
 /**
- * Dropdown/free-text da Profissão, sempre visível. Enquanto o segmento de
- * negócio não estiver escolhido aparece desativado, com um blur suave e uma
- * dica a explicar o porquê ("Regra: Profissão dependente").
+ * Dropdown/free-text da Profissão.
+ *
+ * SÓ APARECE A QUEM O SEGMENTO SE APLICA
+ *
+ * A profissão depende do segmento de negócio, e o segmento só faz sentido para
+ * quem anuncia ou presta serviços. Um visitante — alguém que só quer reservar
+ * um espaço — não tem nada que declarar aqui.
+ *
+ * Antes isto era renderizado sempre, sem condição. Resultado: um visitante
+ * chegava ao último passo do registo e via uma caixa "Profissão" desativada a
+ * dizer "Escolha primeiro o segmento…", para um segmento que não lhe dizia
+ * respeito. Foi o Rafael que deu por isso ao escrever os tutoriais.
+ *
+ * Quem decide é a configuração da Console (que tipos de conta vêem o campo do
+ * segmento), não uma lista de tipos escrita aqui — para não voltarmos a ter
+ * duas fontes de verdade a divergir, que é o que esteve na origem disto.
+ *
+ * Enquanto o segmento não estiver escolhido aparece desativado, com uma dica a
+ * explicar porquê ("Regra: Profissão dependente").
  *
  * @component
  * @param {Object} props
  * @param {string} props.formId - The form id
  * @param {propTypes.listingFields} props.userFields - User field configs (Console)
+ * @param {boolean} props.segmentoAplicavel - o campo do segmento é mostrado a
+ *   este tipo de conta? Quando não for, isto não renderiza nada.
  * @param {string} props.className - Class extending the root
- * @returns {JSX.Element}
+ * @returns {JSX.Element|null}
  */
 const ProfessionField = props => {
-  const { formId, userFields, className } = props;
+  const { formId, userFields, className, segmentoAplicavel = true } = props;
   const intl = useIntl();
   const form = useForm();
   const { values } = useFormState({ subscription: { values: true } });
@@ -156,6 +171,14 @@ const ProfessionField = props => {
   if (!isOtherSelected && values?.[PROFESSAO_OUTRA_FIELD]) {
     // Left the "Outra" option (or the whole segment) — drop the leftover detail.
     form.change(PROFESSAO_OUTRA_FIELD, undefined);
+  }
+
+  // A quem o segmento não se aplica, isto não aparece de todo — e leva consigo
+  // qualquer valor que tenha ficado de uma escolha anterior de tipo de conta.
+  if (!segmentoAplicavel) {
+    if (values?.profissao) form.change('profissao', undefined);
+    if (values?.[PROFESSAO_OUTRA_FIELD]) form.change(PROFESSAO_OUTRA_FIELD, undefined);
+    return null;
   }
 
   const label = intl.formatMessage({ id: 'SignupForm.profissaoLabel' });

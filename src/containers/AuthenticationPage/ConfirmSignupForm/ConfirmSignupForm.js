@@ -13,7 +13,7 @@ import { Form, PrimaryButton, FieldTextInput, CustomExtendedDataField } from '..
 import FieldSelectUserType from '../FieldSelectUserType';
 import UserFieldDisplayName from '../UserFieldDisplayName';
 import UserFieldPhoneNumber from '../UserFieldPhoneNumber';
-import ProfessionField from '../ProfessionField';
+import ProfessionField, { SEGMENT_FORM_NAME } from '../ProfessionField';
 
 import css from './ConfirmSignupForm.module.css';
 
@@ -86,6 +86,9 @@ const ConfirmSignupFormComponent = props => (
       const userTypeConfig = userTypes.find(config => config.userType === userType);
       const showDefaultUserFields = userType || noUserTypes;
       const showCustomUserFields = (userType || noUserTypes) && userFieldProps?.length > 0;
+      // A profissão depende do segmento de negócio; se o segmento não se aplica
+      // a este tipo de conta, a profissão também não. Ver ProfessionField.js.
+      const hasSegmentField = userFieldProps.some(f => f.name === SEGMENT_FORM_NAME);
 
       const classes = classNames(rootClassName || css.root, className);
       const submitInProgress = inProgress;
@@ -199,7 +202,12 @@ const ConfirmSignupFormComponent = props => (
           ) : null}
 
           {showDefaultUserFields ? (
-            <ProfessionField className={css.row} formId={formId} userFields={userFields} />
+            <ProfessionField
+              className={css.row}
+              formId={formId}
+              userFields={userFields}
+              segmentoAplicavel={hasSegmentField}
+            />
           ) : null}
 
           <div className={css.bottomWrapper}>

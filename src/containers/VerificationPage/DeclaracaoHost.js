@@ -46,9 +46,9 @@ const opcao = (chave, isEN) => {
 const DeclaracaoHost = ({ isEN, campos, declaracao, juridico }) => {
   const dispatch = useDispatch();
   const [valores, setValores] = useState(() => ({ ...(declaracao || {}) }));
-  const [aGravar, setAGravar] = useState(false);
+  const [aEntregar, setAEntregar] = useState(false);
   const [erro, setErro] = useState(null);
-  const [gravada, setGravada] = useState(false);
+  const [entregue, setEntregue] = useState(false);
 
   if (!campos || campos.length === 0) return null;
 
@@ -59,7 +59,7 @@ const DeclaracaoHost = ({ isEN, campos, declaracao, juridico }) => {
 
   const submeter = async e => {
     e.preventDefault();
-    setAGravar(true);
+    setAEntregar(true);
     setErro(null);
     try {
       const r = await fetch('/api/verification/declaracao', {
@@ -70,7 +70,7 @@ const DeclaracaoHost = ({ isEN, campos, declaracao, juridico }) => {
       });
       const corpo = await r.json().catch(() => ({}));
       if (r.ok) {
-        setGravada(true);
+        setEntregue(true);
         // Recarregar o estado: quem acabou de declarar tem de ver o portão
         // abrir-se, e não ficar a olhar para o formulário que já preencheu.
         dispatch(fetchVerificationStatus());
@@ -80,13 +80,13 @@ const DeclaracaoHost = ({ isEN, campos, declaracao, juridico }) => {
     } catch (_) {
       setErro('rede');
     } finally {
-      setAGravar(false);
+      setAEntregar(false);
     }
   };
 
   /** Aceitação dos documentos que faltam — o resto do portão. */
   const aceitarDocumentos = async () => {
-    setAGravar(true);
+    setAEntregar(true);
     try {
       await fetch('/api/legal-acceptance', {
         method: 'POST',
@@ -96,7 +96,7 @@ const DeclaracaoHost = ({ isEN, campos, declaracao, juridico }) => {
       });
       dispatch(fetchVerificationStatus());
     } finally {
-      setAGravar(false);
+      setAEntregar(false);
     }
   };
 
@@ -134,13 +134,13 @@ const DeclaracaoHost = ({ isEN, campos, declaracao, juridico }) => {
               </li>
             ))}
           </ul>
-          <button type="button" className={css.botaoSecundario} onClick={aceitarDocumentos} disabled={aGravar}>
+          <button type="button" className={css.botaoSecundario} onClick={aceitarDocumentos} disabled={aEntregar}>
             {t(isEN, 'Li e aceito estes documentos', 'I have read and accept these documents')}
           </button>
         </div>
       ) : null}
 
-      {jaFeita && !gravada ? (
+      {jaFeita && !entregue ? (
         <p className={css.declaracaoFeita}>
           {t(isEN, 'Declaração entregue. Obrigado.', 'Declaration submitted. Thank you.')}
         </p>
@@ -197,17 +197,39 @@ const DeclaracaoHost = ({ isEN, campos, declaracao, juridico }) => {
           <p className={css.declaracaoErro}>
             {erro === 'declaracao-incompleta'
               ? t(isEN, 'Falta preencher ou confirmar algum campo.', 'Some field is missing or unconfirmed.')
-              : t(isEN, 'Não foi possível gravar. Tente novamente.', 'Could not save. Please try again.')}
+              : t(
+                  isEN,
+                  'Não foi possível entregar a declaração. Tente novamente.',
+                  'Could not submit the declaration. Please try again.'
+                )}
           </p>
         ) : null}
 
-        {gravada ? (
+        {/*
+          "GRAVADA" NÃO DIZ A QUEM DECLARA O QUE ELE PRECISA DE SABER
+
+          Uma cliente escreveu a perguntar se os documentos tinham chegado,
+          porque a mensagem dizia "declaração gravada" e não "submetida":
+          "suponho que tenha ficado gravada nos vossos registos e consigam
+          aceder a eles". Tinha razão em duvidar. Gravar é o que um formulário
+          faz aos dados que lá se escrevem; não diz que a declaração saiu dali
+          e chegou à Venue1Hub.
+
+          E chega: a declaração fica no perfil da conta e o portão legal é
+          reavaliado no mesmo pedido (ver server/api/verification.js). Por isso
+          a frase pode afirmá-lo sem rodeios.
+
+          O botão já dizia "Entregar declaração" e o estado seguinte já dizia
+          "Declaração entregue" — era só esta frase que destoava, e era a única
+          que a pessoa via no momento em que precisava de ser tranquilizada.
+        */}
+        {entregue ? (
           <p className={css.declaracaoFeita}>
-            {t(isEN, 'Declaração gravada.', 'Declaration saved.')}
+            {t(isEN, 'Declaração entregue. Já a recebemos.', 'Declaration submitted. We have received it.')}
           </p>
         ) : null}
 
-        <button type="submit" className={css.botaoPrimario} disabled={aGravar}>
+        <button type="submit" className={css.botaoPrimario} disabled={aEntregar}>
           {t(isEN, 'Entregar declaração', 'Submit declaration')}
         </button>
       </form>

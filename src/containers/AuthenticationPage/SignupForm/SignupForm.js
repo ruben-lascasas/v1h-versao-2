@@ -264,14 +264,27 @@ const SignupFormComponent = props => {
       const step3Invalid =
         STEP3_FIELDS.some(fieldName => errors[fieldName]) || passwordRepeatedElsewhere;
 
-      // O campo do segmento não está marcado como obrigatório na Console,
-      // por isso reforçamos aqui; a profissão é required quando é dropdown.
       const hasSegmentField = userFieldProps.some(f => f.name === SEGMENT_FORM_NAME);
-      const segmentMissing = hasSegmentField && !segmentValue;
       const professionMissing = !!professionOptions && !values?.profissao;
 
-      const submitDisabled =
-        submitInProgress || invalid || segmentMissing || professionMissing;
+      /*
+        NÃO VOLTAR A PÔR AQUI UM BLOQUEIO PARA O SEGMENTO
+
+        Esteve aqui um `segmentMissing` que impedia o submit, com este
+        comentário a explicá-lo: "o campo não está marcado como obrigatório na
+        Console, por isso reforçamos aqui". Era bem intencionado e produziu o
+        pior dos resultados — a Console dizia "opcional", o rótulo escrevia
+        "opcional", e o botão não deixava passar. Quem tentasse registar-se
+        lia que podia saltar o campo e ficava preso sem saber porquê.
+
+        O campo passou a estar marcado como obrigatório na Console, que é onde
+        essa decisão pertence. Daí vem o rótulo, daí vem a validação, e o
+        `invalid` abaixo já o cobre.
+
+        Se um dia isto voltar a bloquear sem explicação, o sítio para olhar é
+        a Console — não este ficheiro.
+      */
+      const submitDisabled = submitInProgress || invalid || professionMissing;
 
       // ── Cabeçalho do wizard ───────────────────────────────────────────
       const displayStep = hasUserTypeStep ? step : step - 1;
@@ -511,7 +524,12 @@ const SignupFormComponent = props => {
               </div>
             ) : null}
 
-            <ProfessionField className={css.row} formId={formId} userFields={userFields} />
+            <ProfessionField
+              className={css.row}
+              formId={formId}
+              userFields={userFields}
+              segmentoAplicavel={hasSegmentField}
+            />
 
             <div className={css.termsWrapper}>{termsAndConditions}</div>
           </div>
