@@ -212,38 +212,55 @@ const accountStatusFrom = docs => {
 const syncPermissions = async (userId, docs, appliedStatus = null, user = null) => {
   const status = accountStatusFrom(docs);
 
-  // O Legal Gate.
-  //
-  // Ter os documentos de identificação aprovados deixou de chegar para
-  // publicar: é também preciso ter feito a Declaração de Conformidade e ter
-  // aceite, na versão em vigor, os documentos que se aplicam a esta conta.
-  //
-  // É isto que sustenta a posição de intermediário. A Venue1Hub não visita os
-  // espaços; o que a protege é ter pedido e guardado a declaração de quem os
-  // publica. Ver server/api-util/hostDeclaration.js.
-  //
-  // `user` é opcional para não partir quem já chamava esta função com três
-  // argumentos — sem ele, o portão comporta-se como antes.
+  /**
+   * O PORTÃO MUDOU DE SÍTIO: DE "PUBLICAR" PARA "RECEBER".
+   *
+   * Até aqui, sem documentos aprovados e sem a parte jurídica feita, não se
+   * publicava nada. Era uma barreira à entrada no lado errado do mercado: o
+   * que falta a esta plataforma são espaços, e quem tem um espaço desiste de
+   * um formulário que lhe pede documentos digitalizados antes de lhe mostrar
+   * seja o que for.
+   *
+   * Agora qualquer anunciante pode publicar. O que a verificação passa a
+   * decidir não é se o anúncio existe — é se ele pode **receber**: reservas e
+   * contactos. Um anúncio por verificar é visível, pode ser visto e guardado
+   * nos favoritos, e é isso que dá ao anfitrião a razão para concluir o
+   * processo.
+   *
+   * O QUE ISTO NÃO DISPENSA
+   *
+   * `podeReceberReservas` é a única fonte de verdade desta regra, e vive nos
+   * metadados públicos da conta de propósito: assim o servidor pode confiar
+   * nela para recusar uma reserva, e os anúncios todos de um anfitrião passam
+   * a reservar-se no mesmo instante em que ele é aprovado — sem migrar nada.
+   *
+   * Esconder o botão de reservar no ecrã não é o portão. O portão está em
+   * server/api/initiate-privileged.js, que recusa a transação. Quem mexer
+   * aqui tem de olhar para lá.
+   */
   const juridicoOk = user ? podePublicar(user) : true;
-  const permitir = status === ACCOUNT_STATUS.APPROVED && juridicoOk;
+  const verificado = status === ACCOUNT_STATUS.APPROVED && juridicoOk;
+  const permitir = true;
 
   // A marca inclui a parte jurídica, senão uma declaração acabada de fazer não
   // desbloqueava nada: o estado dos documentos não tinha mudado e saía-se aqui.
-  const marca = `${status}:${juridicoOk ? 'juridico-ok' : 'juridico-em-falta'}`;
+  // O sufixo muda com a regra: sem ele, as contas que já existem ficariam com
+  // a marca antiga a bater certo e nunca receberiam `podeReceberReservas`.
+  const marca = `${status}:${juridicoOk ? 'juridico-ok' : 'juridico-em-falta'}:pre-publicacao`;
   if (appliedStatus === marca) {
-    return { status, changed: false, permitir };
+    return { status, changed: false, permitir, verificado };
   }
 
   const sdk = getIntegrationSdk();
   if (!sdk) throw new Error('integration-sdk-not-configured');
 
-  await sdk.users.updateProfile({ id: userId, metadata: { verificationStatus: status } });
-  await sdk.users.updatePermissions({
+  await sdk.users.updateProfile({
     id: userId,
-    postListings: permitir ? 'permission/allow' : 'permission/deny',
+    metadata: { verificationStatus: status, podeReceberReservas: verificado },
   });
+  await sdk.users.updatePermissions({ id: userId, postListings: 'permission/allow' });
 
-  return { status, changed: true, permitir, marca };
+  return { status, changed: true, permitir, verificado, marca };
 };
 
 /**
@@ -324,6 +341,50 @@ const publicShape = docs =>
     };
   });
 
+/**
+ * Este anfitrião pode receber reservas e contactos?
+ *
+ * PORQUE É QUE ISTO NÃO É SÓ LER UM CAMPO
+ *
+ * A resposta normal está em `metadata.podeReceberReservas`, escrita pelo
+ * `syncPermissions`. Mas há um instante em que ela ainda não existe: a conta
+ * acabou de ser criada e nunca passou por uma sincronização.
+ *
+ * Nesse caso não se pode adivinhar em nenhuma das direções. Assumir "sim"
+ * abria uma janela em que um anfitrião por verificar recebia reservas — que é
+ * exatamente o que esta regra existe para impedir. Assumir "não" partia os
+ * anúncios que já estão publicados e a funcionar, cujos donos foram
+ * verificados ao abrigo da regra antiga e nunca tiveram esta marca escrita.
+ *
+ * Por isso, quando a marca falta, vai-se à fonte: documentos e parte jurídica.
+ * Custa duas chamadas à API, acontece uma vez por conta, e devolve a verdade
+ * em vez de um palpite.
+ *
+ * @param {string} authorId
+ * @param {Object} [metadata] metadados públicos do autor, se já os tivermos
+ * @returns {Promise<boolean>}
+ */
+const anfitriaoPodeReceber = async (authorId, metadata = null) => {
+  const marca = metadata?.podeReceberReservas;
+  if (typeof marca === 'boolean') {
+    return marca;
+  }
+
+  const sdk = getIntegrationSdk();
+  if (!sdk) {
+    // Sem Integration SDK não há como confirmar. Recusar aqui deixaria a
+    // plataforma sem reservas por um problema de configuração nosso; o portão
+    // volta a fechar-se assim que o SDK estiver de pé.
+    console.error('[pre-publicacao] sem Integration SDK — nao foi possivel confirmar o anfitriao');
+    return true;
+  }
+
+  const resposta = await sdk.users.show({ id: authorId });
+  const utilizador = resposta?.data?.data;
+  const docs = readDocs(utilizador?.attributes?.profile?.privateData?.verification || {});
+  return accountStatusFrom(docs) === ACCOUNT_STATUS.APPROVED && podePublicar(utilizador);
+};
+
 module.exports = {
   ANUNCIANTE_USER_TYPE,
   verificationUserTypes,
@@ -344,6 +405,7 @@ module.exports = {
   accountStatusFrom,
   syncPermissions,
   podePublicar,
+  anfitriaoPodeReceber,
   buildObjectKey,
   publicShape,
 };

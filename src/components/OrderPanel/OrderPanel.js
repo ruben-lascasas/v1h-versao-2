@@ -44,6 +44,7 @@ import PriceVariantPicker from './PriceVariantPicker/PriceVariantPicker';
 import SubmitFinePrint from './SubmitFinePrint/SubmitFinePrint';
 import BookingModeToggle from './BookingModeToggle/BookingModeToggle';
 import ModoAluguerToggle from './ModoAluguerToggle/ModoAluguerToggle';
+import { emPreVerificacao } from '../../util/preVerificacao';
 import MultipleBookingsManager from './MultipleBookingsManager/MultipleBookingsManager';
 
 import css from './OrderPanel.module.css';
@@ -465,33 +466,54 @@ const OrderPanel = props => {
   const timeZone = listing?.attributes?.availabilityPlan?.timezone;
   const isClosed = listing?.attributes?.state === LISTING_STATE_CLOSED;
 
+  /**
+   * ANÚNCIO PUBLICADO, ANFITRIÃO POR VERIFICAR.
+   *
+   * Publicar deixou de exigir documentos; receber não. Este anúncio existe e
+   * aparece, mas ainda não aceita reservas nem contactos — e por isso não se
+   * mostra aqui nada que os peça.
+   *
+   * Fecha-se pelo mesmo caminho que um anúncio fechado, de propósito: a
+   * condição já estava desenhada e testada em todos os formulários deste
+   * ficheiro. Uma segunda forma de fechar o mesmo painel seria uma segunda
+   * forma de o deixar aberto por engano.
+   *
+   * Isto é o que se mostra, não o que se permite. A recusa está em
+   * server/api/initiate-privileged.js.
+   */
+  const porVerificar = emPreVerificacao(listing);
+  // `isOwnListing` já é calculado por quem monta este painel; não vale a pena
+  // reconstruir a mesma resposta a partir do utilizador com sessão iniciada.
+  const souEuPorVerificar = porVerificar && isOwnListing;
+  const naoRecebe = isClosed || porVerificar;
+
   const shouldHaveFixedBookingDuration = isBooking && [LINE_ITEM_FIXED].includes(lineItemUnitType);
   const showBookingFixedDurationForm =
-    mounted && shouldHaveFixedBookingDuration && !isClosed && timeZone && priceVariants?.length > 0;
+    mounted && shouldHaveFixedBookingDuration && !naoRecebe && timeZone && priceVariants?.length > 0;
 
   const shouldHaveBookingTime = isBooking && [LINE_ITEM_HOUR].includes(lineItemUnitType);
-  const showBookingTimeForm = mounted && shouldHaveBookingTime && !isClosed && timeZone;
+  const showBookingTimeForm = mounted && shouldHaveBookingTime && !naoRecebe && timeZone;
 
   const shouldHaveBookingDates =
     isBooking && [LINE_ITEM_DAY, LINE_ITEM_NIGHT].includes(lineItemUnitType);
-  const showBookingDatesForm = mounted && shouldHaveBookingDates && !isClosed && timeZone;
+  const showBookingDatesForm = mounted && shouldHaveBookingDates && !naoRecebe && timeZone;
 
   // The listing resource has a relationship: `currentStock`,
   // which you should include when making API calls.
   const shouldHavePurchase = isPurchase && lineItemUnitType === LINE_ITEM_ITEM;
   const currentStock = listing.currentStock?.attributes?.quantity;
-  const isOutOfStock = shouldHavePurchase && !isClosed && currentStock === 0;
+  const isOutOfStock = shouldHavePurchase && !naoRecebe && currentStock === 0;
 
   // Show form only when stock is fully loaded. This avoids "Out of stock" UI by
   // default before all data has been downloaded.
   const showProductOrderForm =
-    mounted && shouldHavePurchase && !isClosed && typeof currentStock === 'number';
+    mounted && shouldHavePurchase && !naoRecebe && typeof currentStock === 'number';
 
-  const showInquiryForm = mounted && !isClosed && isInquiry;
+  const showInquiryForm = mounted && !naoRecebe && isInquiry;
   // if listing is a request, we show the negotiation form (reverse negotiation). User (provider) needs to make an offer first.
-  const showNegotiationForm = mounted && !isClosed && isNegotiation && unitType === REQUEST;
+  const showNegotiationForm = mounted && !naoRecebe && isNegotiation && unitType === REQUEST;
   // if listing is an offer, we show the "request a quote" form as user needs to ask for a quote first from the provider.
-  const showRequestQuoteForm = mounted && !isClosed && isNegotiation && unitType === OFFER;
+  const showRequestQuoteForm = mounted && !naoRecebe && isNegotiation && unitType === OFFER;
 
   const supportedProcessesInfo = getSupportedProcessesInfo();
   const isKnownProcess = supportedProcessesInfo.map(info => info.name).includes(processName);
@@ -608,6 +630,12 @@ const OrderPanel = props => {
 
   const subTitleText = showClosedListingHelpText
     ? intl.formatMessage({ id: 'OrderPanel.subTitleClosedListing' })
+    : listing.id && porVerificar
+    ? intl.formatMessage({
+        id: souEuPorVerificar
+          ? 'OrderPanel.preVerificacaoDono'
+          : 'OrderPanel.preVerificacaoVisitante',
+      })
     : null;
 
   const authorDisplayName = userDisplayNameAsString(author, '');

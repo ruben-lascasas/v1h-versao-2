@@ -12,6 +12,7 @@ const {
 } = require('../api-util/sdk');
 const log = require('../log');
 const { resolveCommission, hostMetadataFrom } = require('../api-util/hostCommission');
+const { anfitriaoPodeReceber } = require('../api-util/verification');
 
 // Best-effort blocking of additional slots' dates via availability exceptions.
 const createMultiBookingExceptions = (listingId, multipleBookings) => {
@@ -85,9 +86,39 @@ module.exports = (req, res) => {
   let metadataMaybe = {};
 
   Promise.all([listingPromise(sdk, bodyParams?.params?.listingId), fetchCommission(sdk)])
-    .then(([showListingResponse, fetchAssetsResponse]) => {
+    .then(async ([showListingResponse, fetchAssetsResponse]) => {
       const listing = showListingResponse.data.data;
       const commissionAsset = fetchAssetsResponse.data.data[0];
+
+      /**
+       * O PORTÃO DA PRÉ-PUBLICAÇÃO ESTÁ AQUI, E SÓ AQUI.
+       *
+       * Um anúncio de um anfitrião por verificar é visível e pode ser guardado
+       * nos favoritos, mas não recebe reservas. Na página esse anúncio não
+       * mostra o painel de reserva — e isso não é o portão, é a cortesia de
+       * não oferecer o que não se pode dar.
+       *
+       * O portão é esta recusa. Quem montar o pedido à mão chega na mesma a
+       * este ponto, e é aqui que para.
+       */
+      const podeReceber = await anfitriaoPodeReceber(
+        listing.relationships?.author?.data?.id?.uuid,
+        hostMetadataFrom(showListingResponse)
+      );
+      if (!podeReceber) {
+        const erro = new Error('anfitriao-por-verificar');
+        erro.status = 409;
+        erro.statusText = 'Conflict';
+        erro.data = {
+          errors: [
+            {
+              code: 'anfitriao-por-verificar',
+              title: 'Este espaço ainda não aceita reservas.',
+            },
+          ],
+        };
+        throw erro;
+      }
 
       const currency = listing.attributes.price?.currency || orderData.currency;
       const { providerCommission, customerCommission } = resolveCommission(
