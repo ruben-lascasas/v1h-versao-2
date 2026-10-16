@@ -33,6 +33,18 @@ const NECESSARIOS = [
   'publicData.precos',
 ];
 
+/**
+ * A mesma armadilha existe em `fields.user`. O cartão precisa de saber se o
+ * anfitrião já pode receber reservas, para marcar os anúncios em
+ * pré-publicação — e isso vem de `profile.metadata`. Sem o pedir, todos os
+ * anúncios pareceriam disponíveis.
+ */
+describe('fields.user da pesquisa', () => {
+  it('pede profile.metadata, senão o cartão não distingue pré-publicação', () => {
+    expect(ler('../containers/SearchPage/SearchPage.duck.js')).toContain("'profile.metadata'");
+  });
+});
+
 describe('fields.listing das consultas que alimentam cartões', () => {
   FONTES.forEach(([nome, rel]) => {
     const codigo = ler(rel);

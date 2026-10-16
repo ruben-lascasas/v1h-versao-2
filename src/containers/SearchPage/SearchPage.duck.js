@@ -1113,7 +1113,12 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
         // estiver aqui não chega ao browser, e não dá erro nenhum.
         'publicData.precos',
       ],
-      'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
+      // `profile.metadata` traz `podeReceberReservas`, que o cartão usa para
+      // marcar os anúncios que ainda não aceitam reservas. Sem ele o campo
+      // chega `undefined` e o cartão conclui, em silêncio, que estão todos
+      // disponíveis — foi assim que os segundos preços ficaram invisíveis
+      // durante semanas. Ver ducks/camposDoCartao.test.js.
+      'fields.user': ['profile.displayName', 'profile.abbreviatedName', 'profile.metadata'],
       'fields.image': [
         'variants.scaled-small',
         'variants.scaled-medium',

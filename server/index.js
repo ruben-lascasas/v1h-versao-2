@@ -443,6 +443,14 @@ const server = app.listen(PORT, () => {
   } catch (e) {
     console.error('[resolução-prazo] failed to start:', e?.message || e);
   }
+  try {
+    // A pré-publicação tem de ter fim. Sem isto, publicar sem documentos
+    // enchia o catálogo de espaços que nunca poderiam ser reservados — e quem
+    // procura aprende depressa a desconfiar de uma plataforma assim.
+    require('./jobs/preVerificacaoExpiryJob').start();
+  } catch (e) {
+    console.error('[pre-verificacao] failed to start:', e?.message || e);
+  }
 });
 
 // Graceful shutdown:

@@ -14,6 +14,7 @@ import { requireListingImage } from '../../util/configHelpers';
 import { lazyLoadWithDimensions } from '../../util/uiHelpers';
 import { createSlug } from '../../util/urlHelpers';
 import { listingHighlightsEnabled } from '../../config/configFeatures';
+import { emPreVerificacao } from '../../util/preVerificacao';
 
 import {
   AspectRatioWrapper,
@@ -186,8 +187,21 @@ export const ListingCard = props => {
     !!createdAt &&
     Date.now() - new Date(createdAt).getTime() < 7 * 24 * 60 * 60 * 1000;
   const isPopular = todayCount >= 5;
+  /*
+    Um anúncio pode estar publicado e ainda não aceitar reservas: o anfitrião
+    publicou antes de concluir a verificação. Quem procura tem de saber isso
+    antes de clicar — descobri-lo só na página, depois de escolher datas, é o
+    tipo de surpresa que faz desistir de uma pesquisa inteira.
+
+    Vem logo a seguir a "fechado" na prioridade: tal como esse, é uma
+    informação sobre o que o anúncio **não** faz, e isso ganha a qualquer selo
+    que diga que ele é bom.
+  */
+  const porVerificar = emPreVerificacao(listing);
   const cardBadge = isClosed
     ? { kind: 'fechado', label: isEN ? 'No longer available' : 'Já não disponível' }
+    : porVerificar
+    ? { kind: 'porVerificar', label: isEN ? 'Not taking bookings yet' : 'Ainda não reserva' }
     : isFeatured
     ? { kind: 'featured', label: isEN ? 'Featured' : 'Em destaque' }
     : isPopular
@@ -252,6 +266,7 @@ export const ListingCard = props => {
             [css.cardBadgePopular]: cardBadge.kind === 'popular',
             [css.cardBadgeNovo]: cardBadge.kind === 'novo',
             [css.cardBadgeFechado]: cardBadge.kind === 'fechado',
+            [css.cardBadgePorVerificar]: cardBadge.kind === 'porVerificar',
           })}
           aria-label={cardBadge.label}
         >
