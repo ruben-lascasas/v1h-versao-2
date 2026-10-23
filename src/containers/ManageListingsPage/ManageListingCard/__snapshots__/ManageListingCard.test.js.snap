@@ -9,168 +9,169 @@ exports[`ManageListingCard matches snapshot (purchase) 1`] = `
     tabindex="0"
   >
     <div
-      class="root"
+      class="imageContainer"
     >
       <div
-        class="aspectPadding"
-        style="padding-bottom: 100%;"
+        class="root aspectRatioWrapper"
       >
         <div
-          class="aspectBox"
+          class="aspectPadding"
+          style="padding-bottom: 100%;"
         >
           <div
-            class="rootForImage noImageContainer"
+            class="aspectBox"
           >
             <div
-              class="noImageWrapper"
+              class="rootForImage noImageContainer"
             >
-              <svg
-                class="noImageIcon"
-                height="49"
-                role="none"
-                viewBox="0 -1 48 49"
-                width="48"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g
-                  fill="none"
-                  fill-rule="evenodd"
-                >
-                  <path
-                    d="M13.6 9.6L24 .8l10.4 8.8z"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M.8 46.4h46.4V9.6H.8z"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M5.6 41.6h36.8V14.4H5.6z"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M19.998 31.636l.835-.835a4.035 4.035 0 0 1 2.853-1.183h.693c1.07 0 2.097.426 2.853 1.183l.835.835"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M21.599 23.983a1.009 1.009 0 1 0 0 2.018 1.009 1.009 0 0 0 0-2.018M26.402 23.983a1.009 1.009 0 1 0 0 2.018 1.009 1.009 0 0 0 0-2.018"
-                  />
-                </g>
-              </svg>
               <div
-                class="noImageText"
+                class="noImageWrapper"
               >
-                <span>
-                  ResponsiveImage.noImage
-                </span>
+                <svg
+                  class="noImageIcon"
+                  height="49"
+                  role="none"
+                  viewBox="0 -1 48 49"
+                  width="48"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g
+                    fill="none"
+                    fill-rule="evenodd"
+                  >
+                    <path
+                      d="M13.6 9.6L24 .8l10.4 8.8z"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M.8 46.4h46.4V9.6H.8z"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M5.6 41.6h36.8V14.4H5.6z"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M19.998 31.636l.835-.835a4.035 4.035 0 0 1 2.853-1.183h.693c1.07 0 2.097.426 2.853 1.183l.835.835"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M21.599 23.983a1.009 1.009 0 1 0 0 2.018 1.009 1.009 0 0 0 0-2.018M26.402 23.983a1.009 1.009 0 1 0 0 2.018 1.009 1.009 0 0 0 0-2.018"
+                    />
+                  </g>
+                </svg>
+                <div
+                  class="noImageText"
+                >
+                  <span>
+                    ResponsiveImage.noImage
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      class="menuOverlayWrapper"
-    >
       <div
-        class="menuOverlay"
-      />
-    </div>
-    <div
-      class="menubarWrapper"
-    >
-      <div
-        class="menubarGradient"
-      />
-      <div
-        class="menubar"
+        class="menuOverlayWrapper"
       >
         <div
-          class="root menu cardIsOpen"
+          class="menuOverlay"
+        />
+      </div>
+      <div
+        class="menubarWrapper"
+      >
+        <div
+          class="menubar"
         >
           <button
-            class="root menuLabel"
+            aria-label="ManageListingCard.editListing"
+            class="iconWrapperEdit"
           >
-            <div
-              aria-label="ManageListingCard.screenreader.menu"
-              class="iconWrapper"
-              role="button"
+            <svg
+              fill="none"
+              height="22"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="22"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                class="menuIcon menuIcon"
-                height="12"
-                role="none"
-                viewBox="0 0 26 12"
-                width="26"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  <filter
-                    filterUnits="objectBoundingBox"
-                    height="450%"
-                    width="177.8%"
-                    x="-38.9%"
-                    y="-125%"
-                  >
-                    <feoffset
-                      dy="2"
-                      in="SourceAlpha"
-                      result="shadowOffsetOuter1"
-                    />
-                    <fegaussianblur
-                      in="shadowOffsetOuter1"
-                      result="shadowBlurOuter1"
-                      stdDeviation="2"
-                    />
-                    <fecolormatrix
-                      in="shadowBlurOuter1"
-                      values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0"
-                    />
-                  </filter>
-                </defs>
-                <g
-                  filter="url(#a)"
-                  transform="translate(-342 -18)"
-                >
-                  <path
-                    d="M348 24c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm7 0c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm7 0c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2z"
-                  />
-                </g>
-                <g
-                  transform="translate(-342 -18)"
-                >
-                  <path
-                    d="M348 24c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm7 0c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm7 0c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2z"
-                  />
-                </g>
-              </svg>
-            </div>
+              <path
+                d="M12 20h9"
+              />
+              <path
+                d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+              />
+            </svg>
           </button>
-          <div
-            class="menuContent isClosed"
-            style="left: -10000px;"
+          <button
+            aria-label="ManageListingCard.closeListing"
+            class="iconWrapperClose"
           >
-            <ul
-              class="content"
-              role="menu"
+            <svg
+              fill="none"
+              height="22"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-width="4"
+              viewBox="0 0 24 24"
+              width="22"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <li
-                class="root"
-                role="menuitem"
-              >
-                <button
-                  class="menuItem inlineTextButton"
-                >
-                  <span>
-                    ManageListingCard.closeListing
-                  </span>
-                </button>
-              </li>
-            </ul>
-          </div>
+              <line
+                x1="18"
+                x2="6"
+                y1="6"
+                y2="18"
+              />
+              <line
+                x1="6"
+                x2="18"
+                y1="6"
+                y2="18"
+              />
+            </svg>
+          </button>
+          <button
+            aria-label="ManageListingCard.deleteListing"
+            class="iconWrapperDelete"
+            type="button"
+          >
+            <svg
+              fill="none"
+              height="20"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4 7h16"
+              />
+              <path
+                d="M10 4h4a1 1 0 0 1 1 1v2H9V5a1 1 0 0 1 1-1z"
+              />
+              <path
+                d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"
+              />
+              <path
+                d="M10 11v6"
+              />
+              <path
+                d="M14 11v6"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -179,20 +180,15 @@ exports[`ManageListingCard matches snapshot (purchase) 1`] = `
     class="info"
   >
     <div
-      class="price"
-    >
-      <span>
-        ManageListingCard.price
-      </span>
-    </div>
-    <div
       class="mainInfo"
     >
       <div
         class="titleWrapper"
       >
-        <button
-          class="title inlineTextButton"
+        <span
+          class="title"
+          role="button"
+          tabindex="0"
         >
           <span
             style="word-break: break-all;"
@@ -200,22 +196,66 @@ exports[`ManageListingCard matches snapshot (purchase) 1`] = `
             listing1
           </span>
            title
-        </button>
+        </span>
       </div>
-    </div>
-    <div
-      class="manageLinks"
-    >
-      <a
-        aria-label="ManageListingCard.editListing: listing1 title"
-        class="manageLink"
-        href="/l/listing1-title/listing1/edit/details"
+      <div
+        class="price"
       >
         <span>
-          ManageListingCard.editListing
+          ManageListingCard.price
         </span>
-      </a>
+      </div>
+      <div
+        class="locationRow"
+      >
+        <svg
+          class="locationIcon"
+          height="12"
+          viewBox="0 0 24 24"
+          width="12"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+            fill="#bbb"
+          />
+        </svg>
+        <span
+          class="locationCityMissing"
+        >
+          ManageListingCard.noCity
+        </span>
+      </div>
+      <div
+        class="ratingRow"
+      >
+        <svg
+          class="root ratingStarEmpty"
+          height="23"
+          role="img"
+          viewBox="0 0 23 23"
+          width="23"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M22.938 8.008c-.15-.412-.544-.69-.985-.69H14.38L12.507.758C12.377.31 11.967 0 11.5 0c-.467 0-.88.31-1.006.76L8.618 7.317H1.046c-.442 0-.833.278-.983.69-.15.414-.025.876.314 1.16l5.7 4.75L3.2 21.59c-.16.43-.02.916.346 1.196.362.28.87.29 1.242.02l6.71-4.79 6.713 4.79c.375.27.88.26 1.245-.02.366-.28.504-.765.343-1.196l-2.875-7.67 5.7-4.75c.34-.284.463-.746.315-1.16"
+            fill-rule="evenodd"
+          />
+        </svg>
+        <span
+          class="ratingValue"
+        >
+          ListingCard.noReviews
+        </span>
+      </div>
     </div>
+    <button
+      class="destacarButton"
+    >
+      <span>
+        ManageListingCard.destacarAnuncio
+      </span>
+    </button>
   </div>
 </div>
 `;

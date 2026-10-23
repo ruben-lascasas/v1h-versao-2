@@ -843,6 +843,8 @@
   "ManageListingCard.finishListingDraft": "Acabar anúncio",
   "ManageListingCard.manageAvailability": "Gerir disponibilidade",
   "ManageListingCard.manageStock": "Gerir stock ({currentStock})",
+  "ManageListingCard.umaVisita": "1 visita",
+  "ManageListingCard.visitas": "{count} visitas",
   "ManageListingCard.noCity": "Sem cidade",
   "ManageListingCard.openListing": "Abrir anúncio",
   "ManageListingCard.outOfStockOverlayText": "{listingTitle} está sem stock.",

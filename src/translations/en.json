@@ -843,6 +843,8 @@
   "ManageListingCard.finishListingDraft": "Finish listing",
   "ManageListingCard.manageAvailability": "Manage availability",
   "ManageListingCard.manageStock": "Manage stock ({currentStock})",
+  "ManageListingCard.umaVisita": "1 view",
+  "ManageListingCard.visitas": "{count} views",
   "ManageListingCard.noCity": "No city",
   "ManageListingCard.openListing": "Open listing",
   "ManageListingCard.outOfStockOverlayText": "{listingTitle} is out of stock.",

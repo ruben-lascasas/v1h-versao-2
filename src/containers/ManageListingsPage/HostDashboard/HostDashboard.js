@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NamedLink } from '../../../components';
 import { listingHighlightsEnabled } from '../../../config/configFeatures';
 import { fetchListingRating, selectListingRating } from '../../../ducks/ratings.duck';
+import { fetchViewCounts, selectViewCounts } from '../../../ducks/recommendations.duck';
 import css from './HostDashboard.module.css';
 
 const MONTH_NAMES_PT = [
@@ -234,6 +235,22 @@ const HostDashboard = ({ listings, activeCount, currentUser }) => {
     });
   }, [listingIds.join(',')]);
 
+  // Total de visitas dos anúncios deste anfitrião. Os contadores vêm todos de
+  // uma vez em /api/listing-views, e aqui só se somam os ids dele — a resposta
+  // traz o marketplace inteiro, e mostrar isso seria um número de outra pessoa.
+  const viewCounts = useSelector(selectViewCounts);
+  useEffect(() => {
+    dispatch(fetchViewCounts());
+  }, [dispatch]);
+  const totalVisitas = listingIds.reduce(
+    (soma, lid) => soma + (viewCounts?.[lid]?.allTimeCount || 0),
+    0
+  );
+  // Só se mostra quando os contadores já chegaram: um zero antes disso leria-se
+  // como "ninguém viu o seu espaço", que é a mensagem errada para quem está à
+  // espera da verificação.
+  const visitasProntas = Object.keys(viewCounts || {}).length > 0;
+
   const ratings = ratingsPorAnuncio.filter(r => r != null && r > 0);
   const avgRating =
     ratings.length > 0
@@ -265,6 +282,11 @@ const HostDashboard = ({ listings, activeCount, currentUser }) => {
         <StatCard loading={loading} value={stats ? formatRevenue(stats.monthlyRevenue) : '—'} label="Rendimento este mês" />
         <StatCard loading={false} value={avgRating ? `★ ${avgRating}` : '—'} label="Avaliação média" />
         <StatCard loading={false} value={activeCount ?? '—'} label="Anúncios ativos" />
+        <StatCard
+          loading={!visitasProntas}
+          value={visitasProntas ? totalVisitas : '—'}
+          label="Visitas aos anúncios"
+        />
         <StatCard loading={loading} value={stats ? `${stats.currentOccupancy}%` : '—'} label="Ocupação este mês" />
         <StatCard
           loading={loading}

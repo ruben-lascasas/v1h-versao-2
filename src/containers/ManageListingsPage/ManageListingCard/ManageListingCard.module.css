@@ -478,3 +478,21 @@
     color: #ffffff;
   }
 }
+
+/* Visitas do anúncio — pedido do Rafael a 2026-10-23, para o anunciante ver a
+   procura sem sair da lista. Segue a linha da avaliação de propósito: é
+   informação do mesmo peso e fica logo por baixo. */
+.viewsRow {
+  composes: ratingRow;
+}
+
+.viewsIcon {
+  width: 12px;
+  height: 12px;
+  color: var(--colorGrey300);
+  flex-shrink: 0;
+}
+
+.viewsValue {
+  composes: ratingValue;
+}

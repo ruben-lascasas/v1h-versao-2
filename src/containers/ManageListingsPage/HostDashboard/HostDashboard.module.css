@@ -54,8 +54,10 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
+  /* Eram 6 mosaicos; com as "Visitas aos anúncios" passaram a 7, e numa
+     grelha de 6 o sétimo ficava sozinho numa linha. */
   @media (min-width: 1100px) {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(7, 1fr);
   }
 }
 

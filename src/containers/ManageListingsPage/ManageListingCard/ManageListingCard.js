@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { selectHighlightedListings } from '../../../ducks/highlightedListings.duck';
+import { fetchViewCounts, selectViewCounts } from '../../../ducks/recommendations.duck';
 import { listingHighlightsEnabled } from '../../../config/configFeatures';
 import {
   selectListingRating,
@@ -324,52 +325,15 @@ const ShowOutOfStockOverlayMaybe = props => {
   ) : null;
 };
 
-const LinkToStockOrAvailabilityTab = props => {
-  const {
-    id,
-    slug,
-    title,
-    editListingLinkType,
-    isBookable,
-    hasListingType,
-    hasStockManagementInUse,
-    currentStock,
-    intl,
-  } = props;
+// O cartão teve aqui um `LinkToStockOrAvailabilityTab` — os atalhos de texto
+// "Gerir disponibilidade" / "Gerir stock" que apareciam em baixo. O redesenho
+// para a barra de ícones (editar / fechar / apagar) deixou de o usar, mas o
+// componente ficou cá, morto, e os testes continuaram a exigir o que ele
+// produzia — era essa a razão de 14 deles estarem vermelhos.
+//
+// Removido a 2026-10-23. A disponibilidade e o stock continuam a chegar-se
+// pelo botão de editar, que abre o formulário nessas abas.
 
-  if (!hasListingType || !(isBookable || hasStockManagementInUse)) {
-    return null;
-  }
-
-  return (
-    <>
-      <span className={css.manageLinksSeparator}>{' • '}</span>
-
-      {isBookable ? (
-        <NamedLink
-          className={css.manageLink}
-          name="EditListingPage"
-          params={{ id, slug, type: editListingLinkType, tab: 'availability' }}
-          ariaLabel={`${intl.formatMessage({
-            id: 'ManageListingCard.manageAvailability',
-          })}: ${title}`}
-        >
-          <FormattedMessage id="ManageListingCard.manageAvailability" />
-        </NamedLink>
-      ) : (
-        <NamedLink
-          className={css.manageLink}
-          name="EditListingPage"
-          params={{ id, slug, type: editListingLinkType, tab: 'pricing-and-stock' }}
-        >
-          {currentStock == null
-            ? intl.formatMessage({ id: 'ManageListingCard.setPriceAndStock' })
-            : intl.formatMessage({ id: 'ManageListingCard.manageStock' }, { currentStock })}
-        </NamedLink>
-      )}
-    </>
-  );
-};
 
 const PriceMaybe = props => {
   const { price, publicData, config, intl, foundListingTypeConfig } = props;
@@ -468,6 +432,19 @@ export const ManageListingCard = props => {
   useEffect(() => {
     if (id && averageRating === undefined) dispatch(fetchListingRating(id));
   }, [id]);
+
+  // Visitas do anúncio. Vem tudo numa só chamada a /api/listing-views, com os
+  // contadores de todos os anúncios — o thunk sai logo à segunda vez, por isso
+  // ter um cartão por anúncio não multiplica pedidos.
+  //
+  // Mostra-se o `allTimeCount` (desde sempre) e não o `totalCount`, que são só
+  // os últimos 7 dias: num anúncio parado uma semana o segundo dá zero, e um
+  // zero diz ao anunciante que ninguém o viu, o que não é verdade.
+  const viewCounts = useSelector(selectViewCounts);
+  useEffect(() => {
+    dispatch(fetchViewCounts());
+  }, [dispatch]);
+  const visitas = viewCounts?.[id]?.allTimeCount ?? null;
   const { title = '', price, state, publicData } = currentListing.attributes;
   const slug = createSlug(title);
   const isPendingApproval = state === LISTING_STATE_PENDING_APPROVAL;
@@ -855,6 +832,30 @@ export const ManageListingCard = props => {
                 : intl.formatMessage({ id: 'ListingCard.noReviews' })}
             </span>
           </div>
+
+          {visitas == null ? null : (
+            <div className={css.viewsRow}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="12"
+                height="12"
+                className={css.viewsIcon}
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M12 5c-5 0-9 4.5-10 7 1 2.5 5 7 10 7s9-4.5 10-7c-1-2.5-5-7-10-7zm0 11.5A4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 0 1 0 9zm0-2a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"
+                />
+              </svg>
+              <span className={css.viewsValue}>
+                <FormattedMessage
+                  id={visitas === 1 ? 'ManageListingCard.umaVisita' : 'ManageListingCard.visitas'}
+                  values={{ count: visitas }}
+                />
+              </span>
+            </div>
+          )}
         </div>
 
         {!listingHighlightsEnabled ? null : highlightedListings.some(h => h.id === id) ? (
