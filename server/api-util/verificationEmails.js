@@ -179,14 +179,17 @@ const accountApproved = ({ to, displayName, en }) => {
             `Good news${nome}: your documents have been approved.`
           )
         ) +
+        // Não se diz "já pode publicar": com a pré-publicação ele já podia, e
+        // provavelmente já tem anúncios no ar à espera disto. O que muda hoje
+        // é poderem receber. Daí o botão ir aos anúncios dele e não ao /l/new.
         p(
           t(
             en,
-            'Já pode publicar anúncios na Venue1Hub.',
-            'You can now publish listings on Venue1Hub.'
+            'Os seus anúncios já podem receber reservas e mensagens.',
+            'Your listings can now receive bookings and messages.'
           )
         ) +
-        button(`${rootUrl()}/l/new`, t(en, 'Publicar um anúncio', 'Publish a listing')),
+        button(`${rootUrl()}/listings`, t(en, 'Ver os meus anúncios', 'View my listings')),
       en
     ),
   });

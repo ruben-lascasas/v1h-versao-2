@@ -200,13 +200,13 @@ const VerificationPage = props => {
     status === 'aprovado'
       ? t(
           isEN,
-          'A sua conta está verificada. Já pode publicar anúncios.',
-          'Your account is verified. You can publish listings.'
+          'A sua conta está verificada. Os seus anúncios já podem receber reservas e mensagens.',
+          'Your account is verified. Your listings can now receive bookings and messages.'
         )
       : t(
           isEN,
-          'Para publicar anúncios, precisamos de confirmar a sua identidade e a sua ligação ao espaço. A análise é feita por uma pessoa e demora até 48 horas.',
-          'Before you can publish listings we need to confirm your identity and your connection to the venue. Review is done by a person and takes up to 48 hours.'
+          'Pode publicar os seus anúncios desde já. Para que eles possam receber reservas e mensagens, precisamos de confirmar a sua identidade e a sua ligação ao espaço. A análise é feita por uma pessoa e demora até 48 horas.',
+          'You can publish your listings right away. Before they can receive bookings and messages we need to confirm your identity and your connection to the venue. Review is done by a person and takes up to 48 hours.'
         );
 
   return (

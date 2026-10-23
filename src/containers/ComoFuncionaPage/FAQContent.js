@@ -136,10 +136,10 @@ const FAQ_PT = [
         // Não se importa de lá porque isso arrastaria código de servidor para
         // dentro do pacote do browser; fica copiada, e os dois ficheiros
         // apontam um para o outro. Quem mexer num tem de mexer no outro.
-        q: 'Que documentos tenho de enviar para poder publicar?',
+        q: 'Que documentos tenho de enviar para poder receber reservas?',
         a: (
           <>
-            <p>Quatro, todos na página <strong>Verificação</strong> da sua conta. Enquanto não estiverem aprovados, não é possível publicar anúncios.</p>
+            <p>Quatro, todos na página <strong>Verificação</strong> da sua conta. <strong>Pode publicar o seu anúncio desde já</strong>, sem esperar por eles — enquanto não estiverem aprovados é que o anúncio não pode receber reservas nem mensagens.</p>
             <ul>
               <li><strong>Documento de identificação</strong> — cartão de cidadão, passaporte ou título de residência. Frente e verso, legíveis.</li>
               <li><strong>Comprovativo de morada do anunciante</strong> — a morada de residência de quem publica. Serve uma fatura de água, luz ou telecomunicações emitida nos últimos 6 meses.</li>
@@ -457,10 +457,10 @@ const FAQ_EN = [
         // Mesma lista de server/api-util/verification.js (REQUIRED_DOCS), e a
         // mesma resposta que está em português mais acima. Quem mexer numa
         // tem de mexer nas duas.
-        q: 'Which documents do I need to submit before I can publish?',
+        q: 'Which documents do I need to submit before I can receive bookings?',
         a: (
           <>
-            <p>Four, all on the <strong>Verification</strong> page of your account. Until they are approved you cannot publish listings.</p>
+            <p>Four, all on the <strong>Verification</strong> page of your account. <strong>You can publish your listing right away</strong>, without waiting for them — until they are approved, what the listing cannot do is receive bookings or messages.</p>
             <ul>
               <li><strong>Identity document</strong> — ID card, passport or residence permit. Both sides, clearly legible.</li>
               <li><strong>Proof of the host's home address</strong> — the home address of whoever publishes the listing. A water, electricity or telecoms bill issued within the last 6 months works.</li>

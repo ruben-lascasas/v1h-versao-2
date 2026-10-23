@@ -56,10 +56,15 @@ export const verificationCopy = ({ status, docs = [], isEN }) => {
   if (phase === 'nao_iniciado') {
     return {
       heading: t(isEN, 'Falta verificar a sua conta', 'Your account needs verifying'),
+      // Dizia "Para publicar anúncios". Deixou de ser verdade quando a
+      // pré-publicação abriu o formulário a quem não tem documentos: publicar
+      // já se pode, o que a verificação destranca é RECEBER. O texto antigo
+      // mandava a pessoa buscar documentos para uma coisa que ela já podia
+      // fazer, e calava aquilo que ela de facto não podia.
       body: t(
         isEN,
-        'Para publicar anúncios, submeta os documentos de verificação. A análise demora até 48 horas.',
-        'To publish listings, submit your verification documents. Review takes up to 48 hours.'
+        'Para poder começar a receber reservas, submeta os documentos de verificação. A análise demora até 48 horas.',
+        'To start receiving bookings, submit your verification documents. Review takes up to 48 hours.'
       ),
       action: t(isEN, 'Submeter documentos', 'Submit documents'),
     };
