@@ -8,6 +8,8 @@ import { Page, LayoutSingleColumn, H2 } from '../../components';
 import TopbarContainer from '../TopbarContainer/TopbarContainer';
 import FooterContainer from '../FooterContainer/FooterContainer';
 
+import ListingsPorAprovar from './ListingsPorAprovar';
+
 import css from './VerificationAdminPage.module.css';
 
 /**
@@ -283,6 +285,13 @@ const VerificationAdminPage = props => {
           <H2 as="h1" className={css.title}>
             Verificações de anunciantes
           </H2>
+
+          {/* A fila dos anúncios vem primeiro de propósito: um anúncio à espera
+              está invisível no site e a decisão leva um clique, enquanto rever
+              documentos demora. Antes disto a única forma de decidir eram os
+              links de um email — e os emails estiveram meses sem ser
+              entregues. */}
+          <ListingsPorAprovar />
 
           {!loading && !error && users.length > 0 ? (
             <>

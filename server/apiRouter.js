@@ -117,6 +117,8 @@ router.get('/verification-admin/me', verificationAdmin.me);
 router.get('/verification-admin/list', verificationAdmin.list);
 router.get('/verification-admin/doc', verificationAdmin.docUrl);
 router.post('/verification-admin/decision', verificationAdmin.decision);
+router.get('/verification-admin/listings', verificationAdmin.listings);
+router.post('/verification-admin/listing-decision', verificationAdmin.listingDecision);
 router.post('/newsletter', newsletter);
 router.post('/report-listing', reportListing);
 router.get('/report-listing-status', reportListingStatus);

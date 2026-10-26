@@ -19,6 +19,7 @@ const r2 = require('../api-util/r2');
 const emails = require('../api-util/verificationEmails');
 const { isEnglish } = require('../api-util/emailSender');
 const { collectVerificationRows } = require('../api-util/verificationList');
+const { aplicarDecisao } = require('../api-util/listingApproval');
 const {
   STATUS,
   DOC_KEYS,
@@ -210,4 +211,121 @@ const me = async (req, res) => {
   return res.json({ isAdmin: Boolean(admin) });
 };
 
-module.exports = { list, docUrl, decision, me };
+
+/**
+ * GET /api/verification-admin/listings
+ *
+ * Os anúncios à espera de decisão.
+ *
+ * PORQUE É QUE ISTO EXISTE
+ *
+ * Um anúncio novo é fechado à nascença e marcado com `listingPending`, e até
+ * aqui a única forma de o aprovar eram os links no email que o `notify-admin`
+ * manda. Ou seja: o processo inteiro dependia de um email chegar. Em Outubro de
+ * 2026 os emails deste marketplace não eram entregues de todo, e o resultado foi
+ * o anúncio de uma cliente invisível durante 13 dias — depois de lhe termos
+ * dito que a análise demora menos de 48 horas — sem ninguém dar por nada.
+ *
+ * Com a fila visível aqui, um email perdido deixa de ser um anúncio perdido.
+ *
+ * Devolve também os recusados: quem recusou precisa de poder voltar atrás, e um
+ * anúncio recusado que ninguém corrige fica de outra forma invisível para
+ * sempre.
+ */
+const listings = async (req, res) => {
+  const admin = await requireAdmin(req, res);
+  if (!admin) return deny(res);
+
+  const sdk = getIntegrationSdk();
+  if (!sdk) return res.status(500).json({ error: 'integration-sdk-not-configured' });
+
+  try {
+    const linhas = [];
+    let pagina = 1;
+    while (true) {
+      const r = await sdk.listings.query({
+        states: 'closed',
+        page: pagina,
+        perPage: 100,
+        include: ['author'],
+        'fields.listing': ['title', 'state', 'createdAt', 'publicData'],
+      });
+
+      const autores = {};
+      for (const x of r?.data?.included || []) if (x.type === 'user') autores[x.id.uuid] = x;
+
+      for (const l of r?.data?.data || []) {
+        const pd = l.attributes?.publicData || {};
+        const aEsperaDeDecisao = pd.listingPending === true;
+        const recusado = pd.listingRejected === true;
+        // Um anúncio simplesmente fechado pelo anfitrião não é assunto deste
+        // painel — ninguém tem nada para decidir sobre ele.
+        if (!aEsperaDeDecisao && !recusado) continue;
+
+        const a = autores[l.relationships?.author?.data?.id?.uuid];
+        linhas.push({
+          id: l.id.uuid,
+          title: l.attributes?.title || null,
+          createdAt: l.attributes?.createdAt || null,
+          estado: aEsperaDeDecisao ? 'a_espera' : 'recusado',
+          autor: a
+            ? {
+                id: a.id.uuid,
+                nome: a.attributes?.profile?.displayName || a.attributes?.profile?.firstName || null,
+                email: a.attributes?.email || null,
+              }
+            : null,
+        });
+      }
+
+      const meta = r?.data?.meta || {};
+      if (!meta.totalPages || pagina >= meta.totalPages) break;
+      pagina += 1;
+    }
+
+    // Os mais antigos primeiro: são os que estão à espera há mais tempo, e foi
+    // precisamente um desses que ficou esquecido.
+    linhas.sort((x, y) => String(x.createdAt).localeCompare(String(y.createdAt)));
+
+    return res.json({ listings: linhas });
+  } catch (e) {
+    console.error('[verification-admin] listings failed:', e?.message || e);
+    return res.status(500).json({ error: 'listings-failed' });
+  }
+};
+
+/**
+ * POST /api/verification-admin/listing-decision
+ * body: { listingId, action: 'approve'|'reject', reason? }
+ *
+ * A decisão em si vive em api-util/listingApproval, partilhada com os links do
+ * email, para os dois caminhos não poderem divergir.
+ */
+const listingDecision = async (req, res) => {
+  const admin = await requireAdmin(req, res);
+  if (!admin) return deny(res);
+
+  const { listingId, action, reason } = req.body || {};
+  if (!listingId || (action !== 'approve' && action !== 'reject')) {
+    return res.status(400).json({ error: 'invalid-params' });
+  }
+
+  const sdk = getIntegrationSdk();
+  if (!sdk) return res.status(500).json({ error: 'integration-sdk-not-configured' });
+
+  try {
+    await aplicarDecisao({
+      sdk,
+      listingId,
+      action,
+      reason: reason || null,
+      origem: `painel:${admin.email}`,
+    });
+    return res.json({ ok: true, action });
+  } catch (e) {
+    console.error('[verification-admin] listing-decision failed:', e?.message || e);
+    return res.status(500).json({ error: 'decision-failed' });
+  }
+};
+
+module.exports = { list, docUrl, decision, me, listings, listingDecision };

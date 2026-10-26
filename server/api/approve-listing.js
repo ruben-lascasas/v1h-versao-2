@@ -13,7 +13,7 @@
 
 const crypto = require('crypto');
 const { getIntegrationSdk } = require('../api-util/sdk');
-const { listingApproved, listingRejected } = require('../api-util/listingEmails');
+const { aplicarDecisao } = require('../api-util/listingApproval');
 
 const buildToken = (listingId, action, secret) =>
   crypto.createHmac('sha256', secret).update(`${listingId}:listing:${action}`).digest('hex');
@@ -77,24 +77,23 @@ module.exports = async (req, res) => {
   }
 
   try {
+    // A decisão em si vive em api-util/listingApproval, partilhada com o painel
+    // de administração. Aqui fica só o que é deste caminho: validar o token do
+    // link e desenhar a página de resposta.
+    await aplicarDecisao({
+      sdk,
+      listingId,
+      action,
+      reason: req.query.reason || null,
+      origem: 'email',
+    });
+
     if (action === 'approve') {
-      await sdk.listings.open({ id: listingId });
-      await sdk.listings.update({ id: listingId, publicData: { listingPending: null } });
-      console.log(`[approve-listing] approved → ${listingId}`);
-      // O anfitrião tem de saber que já está no ar; até aqui reabria em silêncio.
-      listingApproved({ sdk, listingId }).catch(e =>
-        console.error('[approve-listing] aviso ao anfitrião falhou:', e?.message || e)
-      );
       return res.send(html(
         'Anúncio aprovado ✓',
         `O anúncio <code>${listingId}</code> está agora publicado e visível na plataforma.`
       ));
     } else {
-      await sdk.listings.update({ id: listingId, publicData: { listingRejected: true, listingPending: null } });
-      console.log(`[approve-listing] rejected → ${listingId}`);
-      listingRejected({ sdk, listingId, reason: req.query.reason || null }).catch(e =>
-        console.error('[approve-listing] aviso ao anfitrião falhou:', e?.message || e)
-      );
       return res.send(html(
         'Anúncio rejeitado',
         `O anúncio <code>${listingId}</code> foi rejeitado e permanece fechado.`,

@@ -385,3 +385,225 @@
   border-left: 3px solid #C9982F;
   color: #6B5320;
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   ANÚNCIOS À ESPERA DE APROVAÇÃO
+
+   Compõe-se a partir do que a página já tinha (.userItem, .approveButton,
+   .rejectButton) em vez de desenhar outra coisa: é a mesma página, feita pela
+   mesma pessoa, no mesmo momento — e a fila dos anúncios não é um assunto
+   diferente das verificações, é a mesma revisão vista do outro lado.
+   ─────────────────────────────────────────────────────────────────────────── */
+.seccaoAnuncios {
+  margin: 0 0 36px;
+  padding: 0 0 28px;
+  border-bottom: 1px solid #E4D9CB;
+}
+
+.seccaoTitulo {
+  margin: 0 0 12px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+.anuncioLista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.anuncioItem {
+  composes: userItem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.anuncioTitulo {
+  margin: 0 0 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+.anuncioMeta {
+  margin: 0 0 2px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #6b645c;
+}
+
+.anuncioLink {
+  color: #5B7C99;
+  text-decoration: underline;
+}
+
+/*
+  O número que deu origem a esta página: um anúncio esquecido 13 dias. Passados
+  os 2 dias que prometemos ao anfitrião, a espera deixa de ser um detalhe da
+  linha e passa a ser a primeira coisa que se lê.
+*/
+.anuncioAtrasado {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background-color: #FBE9E7;
+  color: #8B2F1D;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.anuncioRecusado {
+  composes: anuncioAtrasado;
+  background-color: #EDE7DF;
+  color: #7C6350;
+}
+
+.anuncioAccoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.anuncioErro {
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #8B2F1D;
+}
+
+.anuncioMotivo {
+  padding: 6px 10px;
+  border: 1px solid #E4D9CB;
+  border-radius: 4px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  min-width: 220px;
+}
+
+.botaoAprovar {
+  composes: approveButton;
+}
+
+.botaoRecusar {
+  composes: rejectButton;
+}
+
+.botaoNeutro {
+  composes: approveButton;
+  background-color: #ffffff;
+  color: #6b645c;
+  border-color: #E4D9CB;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   MODO ESCURO
+
+   Esta página inteira estava por tratar, e não era inofensivo: o
+   landingDark.css tem uma regra geral —
+   `body[data-landing-dark] #main-content h1,h2,h3,h4,p,span,li,a { color: #f0ece6 }`
+   — que pinta de creme todo o texto dentro do conteúdo principal. Qualquer
+   cartão com fundo branco fica, no escuro, com texto creme sobre branco.
+
+   Foi exactamente este o bug que o Rafael reportou na página do anúncio
+   (2026-10-26), e esta página tem o mesmo, só que ninguém olhou: é usada por
+   duas ou três pessoas. Acrescentar aqui a fila dos anúncios sem isto era
+   enviar o mesmo defeito de propósito.
+
+   Trata-se o FUNDO, que é o que falta — o texto já vem claro de fora.
+   ─────────────────────────────────────────────────────────────────────────── */
+:global(body[data-dark-mode]) .userItem,
+:global(body[data-dark-mode]) .docCard {
+  background-color: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+:global(body[data-dark-mode]) .filtros {
+  background-color: #232323;
+  border-color: #3a3a3a;
+}
+
+:global(body[data-dark-mode]) .filtroChip,
+:global(body[data-dark-mode]) .botaoNeutro,
+:global(body[data-dark-mode]) .linkButton {
+  background-color: #3a3a3a;
+  border-color: #4a4a4a;
+}
+
+/* Os campos de texto: fundo claro com texto claro não se lê, e aqui o texto é
+   escrito por quem está a decidir — tem de se ver o que se escreveu. */
+:global(body[data-dark-mode]) .filtroCampo input,
+:global(body[data-dark-mode]) .filtroProcura,
+:global(body[data-dark-mode]) .reasonInput,
+:global(body[data-dark-mode]) .anuncioMotivo {
+  background-color: #1f1f1f;
+  border-color: #4a4a4a;
+  color: #f0ece6;
+}
+
+/*
+  AS ETIQUETAS DE ESTADO.
+
+  Escrevi aqui primeiro `filter: brightness(0.82)` e estava errado por uma
+  razão que vale a pena deixar escrita: o `filter` escurece o fundo E o texto
+  na mesma proporção, por isso PRESERVA o problema de contraste em vez de o
+  resolver. Medido no browser, a etiqueta "à espera há 13 dias" ficou com
+  contraste 1,00 — invisível, exactamente o bug que este bloco veio evitar.
+
+  A causa é a mesma de sempre: as etiquetas são <span>, e a regra geral
+  `#main-content span { color: #f0ece6 }` pinta-lhes o texto de creme por cima
+  da cor própria delas. Como essa regra tem um id no seletor, nada escrito
+  aqui lhe ganha.
+
+  Por isso inverte-se: em vez de lutar pelo texto, dá-se-lhes FUNDO ESCURO e
+  aproveita-se o creme que já vem forçado.
+*/
+:global(body[data-dark-mode]) .badgeApproved {
+  background-color: #1b3d24;
+}
+:global(body[data-dark-mode]) .badgePending {
+  background-color: #4a3a0f;
+}
+:global(body[data-dark-mode]) .badgeRejected {
+  background-color: #5c2318;
+}
+:global(body[data-dark-mode]) .badgeMissing {
+  background-color: #3a3630;
+}
+:global(body[data-dark-mode]) .anuncioAtrasado {
+  background-color: #5c1f12;
+}
+:global(body[data-dark-mode]) .anuncioRecusado {
+  background-color: #40352b;
+}
+:global(body[data-dark-mode]) .juridicoOk {
+  background: #1b3d24;
+  border-color: #2b5c38;
+}
+:global(body[data-dark-mode]) .juridicoFalta {
+  background: #40352b;
+  border-color: #5c4a2b;
+  border-left-color: #C9982F;
+}
+
+/* O botão neutro é um <button>, e esses a regra geral NÃO apanha — ficava
+   cinzento escuro sobre cinzento escuro, contraste 1,95. Aqui o texto defina-se
+   mesmo. */
+:global(body[data-dark-mode]) .botaoNeutro {
+  color: #f0ece6;
+}
+
+:global(body[data-dark-mode]) .seccaoAnuncios {
+  border-bottom-color: #3a3a3a;
+}
