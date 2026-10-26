@@ -466,6 +466,12 @@ const OrderPanel = props => {
   const timeZone = listing?.attributes?.availabilityPlan?.timezone;
   const isClosed = listing?.attributes?.state === LISTING_STATE_CLOSED;
 
+  // "Em análise" é, neste marketplace, um anúncio FECHADO: ao publicar, o
+  // servidor fecha-o e marca `listingPending` à espera da aprovação manual
+  // (server/api/notify-admin.js). Sem distinguir isto, o painel dizia "Este
+  // anúncio está fechado" a quem tinha acabado de o publicar.
+  const emAnalise = isClosed && listing?.attributes?.publicData?.listingPending === true;
+
   /**
    * ANÚNCIO PUBLICADO, ANFITRIÃO POR VERIFICAR.
    *
@@ -626,7 +632,9 @@ const OrderPanel = props => {
   const showClosedListingHelpText = listing.id && isClosed;
 
   const subTitleText = showClosedListingHelpText
-    ? intl.formatMessage({ id: 'OrderPanel.subTitleClosedListing' })
+    ? intl.formatMessage({
+        id: emAnalise ? 'OrderPanel.subTitlePendingListing' : 'OrderPanel.subTitleClosedListing',
+      })
     : null;
 
   const authorDisplayName = userDisplayNameAsString(author, '');
@@ -879,7 +887,13 @@ const OrderPanel = props => {
           </NamedLink>
         ) : isClosed ? (
           <div className={css.closedListingButton}>
-            <FormattedMessage id="OrderPanel.closedListingButtonText" />
+            <FormattedMessage
+              id={
+                emAnalise
+                  ? 'OrderPanel.pendingListingButtonText'
+                  : 'OrderPanel.closedListingButtonText'
+              }
+            />
           </div>
         ) : (
           <PrimaryButton

@@ -826,6 +826,60 @@ describe('ClosedListingNotice', () => {
     render(<ClosedListingNotice isOwnListing={false} isEN />);
     expect(screen.getByText('This space is no longer available')).toBeInTheDocument();
   });
+
+  /**
+   * FECHADO NÃO QUER DIZER ACABADO.
+   *
+   * Neste marketplace "em análise" É um anúncio fechado: ao publicar, o servidor
+   * fecha-o e marca `listingPending` à espera da aprovação manual. Este aviso
+   * dizia por isso, a quem tinha acabado de publicar, que o espaço "já não está
+   * disponível" e que o anúncio "está encerrado" — a leitura exactamente oposta
+   * à verdade. Foi o Rafael que deu por isso, com um anúncio de teste dele.
+   */
+  it('a quem publicou e espera aprovação não diz que acabou', () => {
+    render(<ClosedListingNotice isOwnListing isEN={false} publicData={{ listingPending: true }} />);
+
+    expect(screen.getByText('Este espaço está a ser confirmado')).toBeInTheDocument();
+    expect(screen.getByText(/ainda não aparece nas pesquisas/)).toBeInTheDocument();
+
+    // O que não pode aparecer de maneira nenhuma:
+    expect(screen.queryByText('Este espaço já não está disponível')).not.toBeInTheDocument();
+    expect(screen.queryByText(/encerrado/)).not.toBeInTheDocument();
+  });
+
+  it('a quem chega de fora a um anúncio em análise diz que falta confirmar', () => {
+    render(
+      <ClosedListingNotice isOwnListing={false} isEN={false} publicData={{ listingPending: true }} />
+    );
+
+    expect(screen.getByText('Este espaço está a ser confirmado')).toBeInTheDocument();
+    expect(screen.queryByText(/O anfitrião encerrou/)).not.toBeInTheDocument();
+  });
+
+  it('um anúncio recusado diz o que fazer, não que desapareceu', () => {
+    render(
+      <ClosedListingNotice isOwnListing isEN={false} publicData={{ listingRejected: true }} />
+    );
+
+    expect(screen.getByText('Este anúncio precisa de alterações')).toBeInTheDocument();
+    expect(screen.getByText(/Veja o email que lhe enviámos/)).toBeInTheDocument();
+  });
+
+  it('em análise também em inglês', () => {
+    render(<ClosedListingNotice isOwnListing isEN publicData={{ listingPending: true }} />);
+    expect(screen.getByText('This space is being confirmed')).toBeInTheDocument();
+  });
+
+  /**
+   * Um anúncio mesmo fechado continua a ter de dizer que fechou — a correção
+   * acima não pode ter apagado o caso original.
+   */
+  it('e um anúncio mesmo fechado continua a dizer que fechou', () => {
+    render(<ClosedListingNotice isOwnListing isEN={false} publicData={{}} />);
+
+    expect(screen.getByText('Este espaço já não está disponível')).toBeInTheDocument();
+    expect(screen.getByText(/está encerrado/)).toBeInTheDocument();
+  });
 });
 
 /**

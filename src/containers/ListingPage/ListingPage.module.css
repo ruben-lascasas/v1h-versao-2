@@ -1663,3 +1663,51 @@
   text-decoration-color: #c62828;
 }
 
+/*
+  MODO ESCURO DOS AVISOS DO ANÚNCIO
+
+  Isto estava ilegível e foi o Rafael que deu por isso (2026-10-26). A causa
+  não era óbvia pela imagem: a caixa mantinha o fundo creme (#F9F6F2, porque
+  esta folha não tinha regra nenhuma para o escuro) e uma regra global do
+  landingDark.css forçava o texto a quase branco. Creme com branco por cima —
+  medido no browser, não deduzido: fundo rgb(249,246,242), texto
+  rgb(240,236,230).
+
+  Por isso aqui define-se o FUNDO. O texto já vem claro de fora, mas fixa-se
+  à mesma para o aviso não depender de uma regra que vive noutro ficheiro.
+*/
+:global(body[data-dark-mode]) .avisoFechado {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  border-left-color: #BAA38A;
+}
+
+:global(body[data-dark-mode]) .avisoRevisao {
+  background: #232b32;
+  border-color: #33414c;
+  border-left-color: #5B7C99;
+}
+
+:global(body[data-dark-mode]) .avisoFechadoTitulo {
+  color: #F0ECE6;
+}
+
+:global(body[data-dark-mode]) .avisoFechadoTexto {
+  color: #b8b0a6;
+}
+
+/*
+  O botão era escuro sobre creme; numa caixa escura desaparecia.
+
+  Não se lhe mexe na cor do texto de propósito. O botão é um <a> dentro do
+  #main-content, e o landingDark.css já o pinta de claro com
+  `body[data-landing-dark] #main-content a` — um seletor com um id, que ganha
+  a qualquer coisa que se escreva aqui. Tentei bege com texto escuro e o
+  resultado foi bege com texto claro por cima: o mesmo erro que este bloco veio
+  corrigir. Por isso muda-se só o fundo, para escuro, e aproveita-se o texto
+  claro que já vem forçado de fora.
+*/
+:global(body[data-dark-mode]) .avisoFechadoBotao {
+  background: #3a3a3a;
+  border: 1px solid #4a4a4a;
+}

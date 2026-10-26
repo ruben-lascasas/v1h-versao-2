@@ -631,7 +631,11 @@ export const ListingPageComponent = props => {
               />
             ) : null}
             {currentListing.attributes?.state === LISTING_STATE_CLOSED ? (
-              <ClosedListingNotice isOwnListing={isOwnListing} isEN={locale === 'en'} />
+              <ClosedListingNotice
+                isOwnListing={isOwnListing}
+                isEN={locale === 'en'}
+                publicData={currentListing.attributes?.publicData}
+              />
             ) : null}
             {currentListing.attributes?.state === LISTING_STATE_PENDING_APPROVAL ? (
               <PendingApprovalNotice isEN={locale === 'en'} />
