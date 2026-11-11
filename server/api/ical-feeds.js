@@ -67,13 +67,21 @@ const acrescentar = async (req, res) => {
   const { listingId, url, nome } = req.body || {};
   if (!listingId || !url) return res.status(400).json({ error: 'listingId-e-url-obrigatorios' });
 
-  const validacao = await validarUrlCalendario(url);
-  if (!validacao.ok) return res.status(400).json({ error: 'url-invalido', motivo: validacao.motivo });
-
   try {
+    // PRIMEIRO saber quem fala, só DEPOIS olhar para o endereço.
+    //
+    // A ordem estava ao contrário e isso tinha consequência: `validarUrlCalendario`
+    // resolve o nome por DNS, e com a validação à frente qualquer pessoa sem
+    // sessão nenhuma conseguia pôr o nosso servidor a resolver nomes à escolha
+    // dela — e a distinguir, pela resposta, os que existem dos que não existem.
     const sdk = getSdk(req, res);
     const anuncio = await lerAnuncio(sdk, listingId);
     if (!anuncio) return res.status(404).json({ error: 'listing-not-found' });
+
+    const validacao = await validarUrlCalendario(url);
+    if (!validacao.ok) {
+      return res.status(400).json({ error: 'url-invalido', motivo: validacao.motivo });
+    }
 
     const feeds = feedsDe(anuncio);
     if (feeds.some(f => f.url === validacao.url)) {
