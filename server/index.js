@@ -459,6 +459,15 @@ const server = app.listen(PORT, () => {
   } catch (e) {
     console.error('[interesse] failed to start:', e?.message || e);
   }
+  try {
+    // Quem já gere a agenda do espaço noutro sistema não a vai manter em dois
+    // sítios — vai esquecer-se de um, e o esquecido é sempre este. Ler o iCal
+    // dele evita a reserva em cima de uma sala ocupada, que é o erro que uma
+    // plataforma de espaços não pode dar-se ao luxo de cometer.
+    require('./jobs/icalSyncJob').start();
+  } catch (e) {
+    console.error('[ical] failed to start:', e?.message || e);
+  }
 });
 
 // Graceful shutdown:

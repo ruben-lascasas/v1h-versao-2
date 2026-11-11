@@ -15,6 +15,8 @@ import EditListingAvailabilityPlanForm from './EditListingAvailabilityPlanForm';
 import EditListingAvailabilityExceptionForm from './EditListingAvailabilityExceptionForm';
 import WeeklyCalendar from './WeeklyCalendar/WeeklyCalendar';
 
+import CalendariosIcal from './CalendariosIcal';
+
 import css from './EditListingAvailabilityPanel.module.css';
 
 // This is the order of days as JavaScript understands them
@@ -349,6 +351,12 @@ const EditListingAvailabilityPanel = props => {
               <FormattedMessage id="EditListingAvailabilityPanel.addException" />
             </InlineTextButton>
           </section>
+
+          {/* Quem já gere a agenda noutro sistema não a mantém em dois sítios.
+              Fica aqui, ao lado das excepções feitas à mão, porque é a mesma
+              pergunta vista de outro ângulo: quando é que este espaço não
+              pode ser reservado. */}
+          <CalendariosIcal listingId={listing?.id?.uuid} />
         </>
       ) : null}
 

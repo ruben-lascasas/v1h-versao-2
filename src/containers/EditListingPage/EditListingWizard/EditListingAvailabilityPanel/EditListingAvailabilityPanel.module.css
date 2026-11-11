@@ -164,3 +164,141 @@
   font-size: 14px;
   color: var(--colorGrey500, #6B6B6B);
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   CALENDÁRIO EXTERNO (iCal)
+
+   Fica ao lado das excepções feitas à mão de propósito: é a mesma pergunta
+   vista de outro ângulo — quando é que este espaço não pode ser reservado.
+   ─────────────────────────────────────────────────────────────────────────── */
+.icalTitulo {
+  margin: 24px 0 6px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2E2E2E;
+}
+
+.icalIntro,
+.icalNota {
+  margin: 0 0 10px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6b645c;
+}
+
+.icalLista {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.icalItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #E4D9CB;
+  border-radius: 6px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #2E2E2E;
+}
+
+.icalUrl {
+  color: #6b645c;
+}
+
+.icalRemover {
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  cursor: pointer;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+  color: #8B2F1D;
+  text-decoration: underline;
+}
+
+.icalFormulario {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.icalCampo,
+.icalCampoNome {
+  padding: 9px 11px;
+  border: 1px solid #E4D9CB;
+  border-radius: 6px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  background-color: #ffffff;
+  color: #2E2E2E;
+}
+
+.icalCampo {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.icalCampoNome {
+  flex: 0 1 150px;
+  min-width: 0;
+}
+
+.icalBotao {
+  padding: 10px 18px;
+  min-height: 40px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2E2E2E;
+  color: #ffffff;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.icalBotao:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.icalErro {
+  margin: 8px 0 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  color: #8B2F1D;
+}
+
+/*
+  Modo escuro. A regra geral do landingDark.css pinta todo o texto dentro do
+  #main-content de creme, por isso qualquer caixa clara fica ilegível —
+  trata-se o FUNDO, nunca o texto. Ver [v1h-modo-escuro].
+*/
+:global(body[data-dark-mode]) .icalItem {
+  background-color: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+:global(body[data-dark-mode]) .icalCampo,
+:global(body[data-dark-mode]) .icalCampoNome {
+  background-color: #1f1f1f;
+  border-color: #4a4a4a;
+  color: #f0ece6;
+}
+
+/* Bege com texto branco daria 1,9:1 — o mesmo erro que custou um dia noutro
+   ecrã. Aqui é um <button>, que a regra geral não pinta, por isso a cor
+   define-se mesmo: #2E2E2E sobre #BAA38A dá 6,1:1. */
+:global(body[data-dark-mode]) .icalBotao {
+  background-color: #BAA38A;
+  color: #2E2E2E;
+}

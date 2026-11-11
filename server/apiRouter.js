@@ -119,6 +119,12 @@ router.get('/verification-admin/doc', verificationAdmin.docUrl);
 router.post('/verification-admin/decision', verificationAdmin.decision);
 router.get('/verification-admin/listings', verificationAdmin.listings);
 router.post('/verification-admin/listing-decision', verificationAdmin.listingDecision);
+
+// Calendarios iCal de um anuncio (o dono gere os seus).
+const icalFeeds = require('./api/ical-feeds');
+router.get('/ical-feeds', icalFeeds.listar);
+router.post('/ical-feeds', icalFeeds.acrescentar);
+router.delete('/ical-feeds', icalFeeds.remover);
 router.post('/newsletter', newsletter);
 router.post('/report-listing', reportListing);
 router.get('/report-listing-status', reportListingStatus);
