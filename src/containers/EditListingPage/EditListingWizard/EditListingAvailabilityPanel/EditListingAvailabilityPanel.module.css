@@ -188,6 +188,20 @@
   color: #6b645c;
 }
 
+/* A regra "um calendário por espaço": tem peso a mais para ser uma nota e
+   peso a menos para ser um aviso de erro. Fica entre as duas. */
+.icalRegra {
+  margin: 0 0 10px;
+  padding: 9px 12px;
+  border-left: 3px solid #BAA38A;
+  background-color: #F9F6F2;
+  border-radius: 0 4px 4px 0;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #2E2E2E;
+}
+
 .icalLista {
   list-style: none;
   margin: 0 0 12px;
@@ -283,6 +297,11 @@
   #main-content de creme, por isso qualquer caixa clara fica ilegível —
   trata-se o FUNDO, nunca o texto. Ver [v1h-modo-escuro].
 */
+:global(body[data-dark-mode]) .icalRegra {
+  background-color: #2a2a2a;
+  border-left-color: #BAA38A;
+}
+
 :global(body[data-dark-mode]) .icalItem {
   background-color: #2a2a2a;
   border-color: #3a3a3a;

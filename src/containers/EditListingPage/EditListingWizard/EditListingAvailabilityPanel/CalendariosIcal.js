@@ -142,6 +142,23 @@ const CalendariosIcal = ({ listingId }) => {
         endereço iCal. As horas ocupadas lá passam a ficar bloqueadas aqui, sem ter de as repetir.
       </p>
 
+      {/* A regra que decide se isto funciona ou estraga tudo.
+          Quem tem três salas e uma agenda só vai colá-la nos três anúncios —
+          nada lhe diz que não deve — e fica com as três bloqueadas sempre que
+          uma delas é usada. Só dá por isso ao perder reservas de salas que
+          estavam livres, e aí já não liga a causa ao efeito. */}
+      <p className={css.icalRegra}>
+        <strong>Um calendário por espaço.</strong> O endereço tem de ser o da agenda{' '}
+        <em>deste</em> espaço. Se colar aqui uma agenda que junta várias salas, qualquer reserva
+        dela bloqueia este anúncio.
+      </p>
+
+      <p className={css.icalNota}>
+        Onde o encontrar: nas definições de partilha do calendário dessa sala, procure a secção de
+        integração e o endereço em <strong>formato iCal</strong> (no Google pode ser preciso tornar
+        o calendário público; no Outlook, publicar o calendário).
+      </p>
+
       {loading ? (
         <p className={css.icalNota}>A carregar…</p>
       ) : (
@@ -201,11 +218,15 @@ const CalendariosIcal = ({ listingId }) => {
           ) : null}
 
           {/* Dito à frente, e não em letra pequena: prometer tempo real seria
-              mentir, e descobre-se da pior maneira — com uma reserva dupla. */}
+              mentir, e descobre-se da pior maneira — com uma reserva dupla.
+
+              O número vem do ICAL_SYNC_CRON do servidor, hoje a cada 15
+              minutos — quem mudar essa variável tem de mudar esta frase. */}
           {feeds.length > 0 ? (
             <p className={css.icalNota}>
-              O calendário é lido de tempos a tempos, não ao segundo. E a leitura é só num
-              sentido: as reservas feitas na Venue1Hub não aparecem no seu calendário.
+              O calendário é lido a cada 15 minutos, por isso uma reserva feita agora no seu
+              sistema pode demorar esse tempo a bloquear aqui. E a leitura é só num sentido: as
+              reservas feitas na Venue1Hub não aparecem no seu calendário.
             </p>
           ) : null}
         </>
