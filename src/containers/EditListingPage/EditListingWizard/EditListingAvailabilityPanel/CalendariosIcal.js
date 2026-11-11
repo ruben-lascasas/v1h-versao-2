@@ -220,11 +220,11 @@ const CalendariosIcal = ({ listingId }) => {
           {/* Dito à frente, e não em letra pequena: prometer tempo real seria
               mentir, e descobre-se da pior maneira — com uma reserva dupla.
 
-              O número vem do ICAL_SYNC_CRON do servidor, hoje a cada 15
+              O número vem do ICAL_SYNC_CRON do servidor, hoje a cada 5
               minutos — quem mudar essa variável tem de mudar esta frase. */}
           {feeds.length > 0 ? (
             <p className={css.icalNota}>
-              O calendário é lido a cada 15 minutos, por isso uma reserva feita agora no seu
+              O calendário é lido a cada 5 minutos, por isso uma reserva feita agora no seu
               sistema pode demorar esse tempo a bloquear aqui. E a leitura é só num sentido: as
               reservas feitas na Venue1Hub não aparecem no seu calendário.
             </p>

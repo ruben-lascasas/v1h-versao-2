@@ -8,14 +8,23 @@
  * caso, o intervalo entre passagens — e o que lá acontecer é uma reserva em
  * cima de uma sala ocupada.
  *
- * Quinze minutos é o compromisso: curto o suficiente para o risco ser pequeno
- * num espaço que se aluga por horas, longo o suficiente para não gastar a
- * quota de pedidos à API do Sharetribe nem bater nos limites de quem nos
- * serve os calendários. Quem quiser mais curto muda a variável; quem quiser
- * mesmo zero precisa de webhooks do outro lado, e isso não depende de nós.
+ * Cinco minutos é o compromisso actual: curto o suficiente para a janela ser
+ * pequena num espaço que se aluga à hora, e ainda barato — uma passagem só
+ * escreve quando alguma coisa mudou, por isso o custo normal é um pedido de
+ * listagem mais um pedido por calendário. Quem quiser mesmo zero precisa de
+ * webhooks do outro lado, e isso não depende de nós.
+ *
+ * NÃO CORRER DUAS PASSAGENS AO MESMO TEMPO
+ *
+ * A 15 minutos isto era quase teórico; a 5 deixa de o ser. Uma passagem é
+ * sequencial, e com calendários lentos ou muitos anúncios pode arrastar-se
+ * para lá do intervalo. O `node-cron` dispara na mesma, e duas passagens em
+ * paralelo veem ambas o mesmo estado "antes" — criariam os mesmos bloqueios
+ * duas vezes, e a segunda deixava órfãos que ninguém voltaria a apagar.
+ * Por isso uma passagem a decorrer faz a seguinte ser saltada.
  *
  * Variáveis de ambiente:
- *   ICAL_SYNC_CRON      (por omissão "*\/15 * * * *")
+ *   ICAL_SYNC_CRON      (por omissão "*\/5 * * * *")
  *   DISABLE_ICAL_SYNC=true  → não agenda
  */
 
@@ -99,14 +108,25 @@ const start = () => {
     console.log('[ical] desligado por variavel de ambiente');
     return;
   }
-  const expressao = process.env.ICAL_SYNC_CRON || '*/15 * * * *';
+  const expressao = process.env.ICAL_SYNC_CRON || '*/5 * * * *';
+  let aCorrer = false;
+
   cron.schedule(expressao, async () => {
-    const sdk = getIntegrationSdk();
-    if (!sdk) {
-      console.error('[ical] sem Integration SDK — passagem ignorada');
+    if (aCorrer) {
+      console.warn('[ical] passagem anterior ainda a decorrer — esta foi saltada');
       return;
     }
+    // O trinco e o try começam ANTES de ir buscar o SDK. Com a ordem
+    // inversa, uma excepção do `getIntegrationSdk` escapava do callback por
+    // cima do try — ficava uma rejeição sem dono, que no Node derruba o
+    // processo por omissão. Apanhado pelo teste do trinco.
+    aCorrer = true;
     try {
+      const sdk = getIntegrationSdk();
+      if (!sdk) {
+        console.error('[ical] sem Integration SDK — passagem ignorada');
+        return;
+      }
       const r = await correr(sdk);
       if (r.anuncios > 0) {
         console.log(
@@ -115,6 +135,11 @@ const start = () => {
       }
     } catch (e) {
       console.error('[ical] passagem falhou:', e?.message || e);
+    } finally {
+      // No `finally` de propósito: se uma passagem rebentar e o trinco ficar
+      // preso, a sincronização morre em silêncio até alguém reiniciar o
+      // servidor — e ninguém repara, porque não há erro nenhum a aparecer.
+      aCorrer = false;
     }
   });
   console.log(`[ical] agendado (${expressao})`);
