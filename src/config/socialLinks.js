@@ -16,16 +16,16 @@
  */
 
 export const SOCIAL_PROFILES = [
-  { nome: 'Facebook', icone: 'fb', url: 'https://www.facebook.com/venue1hub.eu/' },
-  { nome: 'Instagram', icone: 'inst', url: 'https://www.instagram.com/venue1hub.eu/' },
+  { nome: 'Facebook', icone: 'fb', url: 'https://www.facebook.com/venue1hubpartner/' },
+  { nome: 'Instagram', icone: 'inst', url: 'https://www.instagram.com/venue1hub/' },
   // Sem ícone ainda: só entra no SEO. Assim que houver a arte na linha dos
   // outros cinco, basta trocar o null por 'threads' e registá-la no rodapé.
-  { nome: 'Threads', icone: null, url: 'https://www.threads.com/@venue1hub.eu' },
-  // O LinkedIn não veio na lista de endereços novos (2026-09-11) e ficou como
-  // estava, por indicação do Rúben. Se um dia a conta mudar de nome, é aqui.
+  { nome: 'Threads', icone: null, url: 'https://www.threads.com/@venue1hub' },
+  // O LinkedIn não veio na lista de endereços novos (2026-09-11 e 2026-11-16)
+  // e ficou como estava, por indicação do Rúben. Se a conta mudar de nome, é aqui.
   { nome: 'LinkedIn', icone: 'lkin', url: 'https://linkedin.com/company/venue1hub' },
-  { nome: 'TikTok', icone: 'tktk', url: 'https://www.tiktok.com/@venue1hub.eu' },
-  { nome: 'YouTube', icone: 'yt', url: 'https://www.youtube.com/@Venue1Hub-Partner' },
+  { nome: 'TikTok', icone: 'tktk', url: 'https://www.tiktok.com/@venue1hub' },
+  { nome: 'YouTube', icone: 'yt', url: 'https://www.youtube.com/@Venue1Hub' },
   { nome: 'Pinterest', icone: null, url: 'https://pt.pinterest.com/venue1hubpartner/' },
 ];
 
