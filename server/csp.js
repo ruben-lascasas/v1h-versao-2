@@ -78,9 +78,6 @@ const defaultDirectives = {
   formAction: [self],
   frameSrc: [
     self,
-    // Vagas de emprego, embebidas em /carreiras. O recrutamento passou do
-    // careers-page.com para o BusinessHRM do grupo EdgeHub.
-    'ehub.businesshrm.com',
     '*.stripe.com',
     '*.youtube-nocookie.com',
     'https://bid.g.doubleclick.net',
