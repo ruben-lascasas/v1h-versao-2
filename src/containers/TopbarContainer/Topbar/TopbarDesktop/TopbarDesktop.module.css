@@ -31,7 +31,9 @@
 }
 
 .logoImage {
-  height: 56px;
+  /* O logo novo é largo (≈6:1) e vem aparado às margens: mais pequeno do que
+     a barra, para respirar em cima e em baixo. */
+  height: 34px;
   width: auto;
   object-fit: contain;
 }
