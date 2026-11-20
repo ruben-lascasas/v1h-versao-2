@@ -24,7 +24,9 @@ export const SOCIAL_PROFILES = [
   // O LinkedIn não veio na lista de endereços novos (2026-09-11 e 2026-11-16)
   // e ficou como estava, por indicação do Rúben. Se a conta mudar de nome, é aqui.
   { nome: 'LinkedIn', icone: 'lkin', url: 'https://linkedin.com/company/venue1hub' },
-  { nome: 'TikTok', icone: 'tktk', url: 'https://www.tiktok.com/@venue1hub' },
+  // O TikTok é o único com ".com" no nome de utilizador (corrigido pelo Rúben a
+  // 2026-11-20); o @venue1hub da lista da Anabela não é a conta da marca.
+  { nome: 'TikTok', icone: 'tktk', url: 'https://www.tiktok.com/@venue1hub.com' },
   { nome: 'YouTube', icone: 'yt', url: 'https://www.youtube.com/@Venue1Hub' },
   { nome: 'Pinterest', icone: null, url: 'https://pt.pinterest.com/venue1hubpartner/' },
 ];
