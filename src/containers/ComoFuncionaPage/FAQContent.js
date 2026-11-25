@@ -141,10 +141,10 @@ const FAQ_PT = [
           <>
             <p>Quatro, todos na página <strong>Verificação</strong> da sua conta. <strong>Pode publicar o seu anúncio desde já</strong>, sem esperar por eles — enquanto não estiverem aprovados é que o anúncio não pode receber reservas nem mensagens.</p>
             <ul>
-              <li><strong>Documento de identificação</strong> — cartão de cidadão, passaporte ou título de residência. Frente e verso, legíveis.</li>
+              <li><strong>Documento de identificação</strong> — cartão de cidadão, passaporte ou título de residência. Frente e verso, legíveis. Se anuncia em nome de uma empresa, pode enviar <strong>em alternativa</strong> a <strong>Certidão Permanente</strong>, que serve para a verificação e identificação da empresa.</li>
               <li><strong>Comprovativo de morada do anunciante</strong> — a morada de residência de quem publica. Serve uma fatura de água, luz ou telecomunicações emitida nos últimos 6 meses.</li>
               <li><strong>Comprovativo de morada do espaço</strong> — um documento que confirme a morada do espaço anunciado, também dos últimos 6 meses.</li>
-              <li><strong>Comprovativo de titularidade do espaço</strong> — caderneta predial, contrato de arrendamento <em>ou</em> autorização escrita do proprietário. Não precisa de ser dono: precisa de poder alugá-lo.</li>
+              <li><strong>Comprovativo de titularidade do espaço</strong> — caderneta predial, contrato de arrendamento <em>ou</em> autorização escrita do proprietário. Não precisa de ser dono: precisa de poder alugá-lo. Se anuncia vários espaços, pode enviar <strong>em alternativa</strong> um <strong>Contrato de Autorização de Gestão dos Espaços</strong>: um único documento valida todos os espaços a anunciar, sem ter de enviar um comprovativo por cada local.</li>
             </ul>
             <p>Aceitamos ficheiros <strong>PDF, JPG, PNG ou WEBP</strong>, até <strong>8 MB</strong> cada. Pode enviá-los por qualquer ordem e em alturas diferentes — cada um é analisado à parte e a página mostra-lhe o estado de cada um (em falta, pendente, aprovado ou recusado).</p>
             <p>Os documentos são guardados de forma privada na União Europeia, usados apenas para esta verificação, e apagados quando deixam de ser necessários.</p>
@@ -462,10 +462,10 @@ const FAQ_EN = [
           <>
             <p>Four, all on the <strong>Verification</strong> page of your account. <strong>You can publish your listing right away</strong>, without waiting for them — until they are approved, what the listing cannot do is receive bookings or messages.</p>
             <ul>
-              <li><strong>Identity document</strong> — ID card, passport or residence permit. Both sides, clearly legible.</li>
+              <li><strong>Identity document</strong> — ID card, passport or residence permit. Both sides, clearly legible. If you list on behalf of a company, you can send the <strong>company registration certificate</strong> (Certidão Permanente) <strong>instead</strong>; it is used to verify and identify the company.</li>
               <li><strong>Proof of the host's home address</strong> — the home address of whoever publishes the listing. A water, electricity or telecoms bill issued within the last 6 months works.</li>
               <li><strong>Proof of the venue's address</strong> — a document confirming the address of the advertised venue, also from the last 6 months.</li>
-              <li><strong>Proof of venue ownership</strong> — property record, lease agreement <em>or</em> written authorisation from the owner. You do not have to own it: you have to be allowed to rent it out.</li>
+              <li><strong>Proof of venue ownership</strong> — property record, lease agreement <em>or</em> written authorisation from the owner. You do not have to own it: you have to be allowed to rent it out. If you list several venues, you can send a <strong>venue management authorisation agreement</strong> (Contrato de Autorização de Gestão dos Espaços) <strong>instead</strong>: a single document validates all the venues you list, with no need to send proof for each one.</li>
             </ul>
             <p>We accept <strong>PDF, JPG, PNG or WEBP</strong> files, up to <strong>8 MB</strong> each. You can send them in any order and at different times — each one is reviewed separately and the page shows you the status of each (missing, pending, approved or rejected).</p>
             <p>Documents are stored privately in the European Union, used only for this verification, and deleted once they are no longer needed.</p>

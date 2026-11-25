@@ -104,8 +104,10 @@ const REQUIRED_DOCS = [
     key: 'identificacao',
     label: 'Documento de identificação',
     labelEN: 'Identity document',
-    hint: 'Cartão de cidadão, passaporte ou título de residência. Frente e verso legíveis.',
-    hintEN: 'ID card, passport or residence permit. Both sides, clearly legible.',
+    hint:
+      'Cartão de cidadão, passaporte ou título de residência. Frente e verso legíveis. Empresas: em alternativa, Certidão Permanente.',
+    hintEN:
+      'ID card, passport or residence permit. Both sides, clearly legible. Companies: company registration certificate (Certidão Permanente) instead.',
   },
   {
     key: 'morada_anunciante',
@@ -126,8 +128,10 @@ const REQUIRED_DOCS = [
     key: 'titularidade',
     label: 'Comprovativo de titularidade do espaço',
     labelEN: 'Proof of venue ownership',
-    hint: 'Caderneta predial, contrato de arrendamento ou autorização escrita do proprietário.',
-    hintEN: 'Property record, lease agreement or written authorisation from the owner.',
+    hint:
+      'Caderneta predial, contrato de arrendamento ou autorização escrita do proprietário. Vários espaços: em alternativa, um único Contrato de Autorização de Gestão dos Espaços.',
+    hintEN:
+      'Property record, lease agreement or written authorisation from the owner. Several venues: a single venue management authorisation agreement (Contrato de Autorização de Gestão dos Espaços) instead.',
   },
 ];
 
