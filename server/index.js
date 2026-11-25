@@ -184,6 +184,13 @@ app.use(
         // cache for one year
         res.setHeader('Cache-Control', 'public, max-age=31557600');
       }
+
+      // O logótipo dos emails é mostrado fora do nosso domínio. Com o
+      // `same-origin` que o helmet põe em tudo, os webmails que carregam a imagem
+      // diretamente ficam sem ela. A exceção é só para este ficheiro público.
+      if (path.endsWith('V1H-LOGO-WHITE.png')) {
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      }
     },
   })
 );
