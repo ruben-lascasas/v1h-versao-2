@@ -4,6 +4,7 @@ const { mailFrom, isEnglish, t, adminEmail: adminAddress } = require('../api-uti
 // O logótipo dos emails tem de ser um URL absoluto. Deriva do domínio
 // configurado em vez de estar escrito à mão: com o domínio novo, o valor fixo
 // devolvia uma imagem partida.
+// O ficheiro está em public/static/media, que o build copia sem lhe mudar o nome.
 const LOGO_URL = `${(process.env.REACT_APP_MARKETPLACE_ROOT_URL || '').replace(
   /\/$/,
   ''
@@ -88,7 +89,7 @@ module.exports = async (req, res) => {
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #2E2E2E;">
             <div style="background: #2E2E2E; padding: 32px 24px; text-align: center;">
-              <img src="${LOGO_URL}" alt="Venue1Hub" style="height: 48px;" />
+              <img src="${LOGO_URL}" alt="Venue1Hub" width="285" height="48" style="height: 48px;" />
             </div>
             <div style="padding: 40px 24px;">
               <h2 style="color: #2E2E2E; margin: 0 0 8px;">
