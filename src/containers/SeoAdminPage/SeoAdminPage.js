@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -16,6 +16,12 @@ import {
   nivelGeral,
   cortarParaGoogle,
 } from '../../util/seoAnalise';
+import {
+  VARIAVEIS_ANUNCIO,
+  ANUNCIO_EXEMPLO,
+  tituloDoModelo,
+  descricaoDoModelo,
+} from '../../util/seoAnuncios';
 
 import css from './SeoAdminPage.module.css';
 
@@ -60,9 +66,19 @@ const formulariosIniciais = gravadas =>
     {}
   );
 
+/** Num modelo, o que se analisa e mostra é o resultado num anúncio de exemplo. */
+const exemploDoModelo = valores => ({
+  title: tituloDoModelo(valores.title, ANUNCIO_EXEMPLO),
+  description: descricaoDoModelo(valores.description, ANUNCIO_EXEMPLO),
+});
+
 const analiseDe = (formularios, caminho, lingua) => {
   const f = formularios[caminho];
-  const outras = PAGINAS_SEO.filter(p => p.path !== caminho).map(p => ({
+  const pagina = PAGINAS_SEO.find(p => p.path === caminho);
+  if (pagina?.modelo) {
+    return analisarSeo(exemploDoModelo(f[lingua]), [], { semPalavraChave: true });
+  }
+  const outras = PAGINAS_SEO.filter(p => p.path !== caminho && !p.modelo).map(p => ({
     nome: p.nome,
     valores: formularios[p.path]?.[lingua] || {},
   }));
@@ -237,6 +253,22 @@ export const SeoAdminPageComponent = props => {
 
   const gravado = gravadas[caminho];
   const idCampo = nome => `seo-${nome}-${lingua}`;
+  const eModelo = Boolean(pagina.modelo);
+  const mostrado = eModelo ? exemploDoModelo(valores) : valores;
+
+  // Onde as variáveis entram: no último campo de texto em que se clicou.
+  const ultimoCampo = useRef({ campo: 'title', el: null });
+  const lembrarCampo = campo => e => {
+    ultimoCampo.current = { campo, el: e.target };
+  };
+  const inserirVariavel = nome => {
+    const { campo, el } = ultimoCampo.current;
+    const atual = String(valores[campo] || '');
+    const noCampo = el && el.id === idCampo(campo);
+    const inicio = noCampo ? el.selectionStart ?? atual.length : atual.length;
+    const fim = noCampo ? el.selectionEnd ?? atual.length : atual.length;
+    mudar(campo, `${atual.slice(0, inicio)}{${nome}}${atual.slice(fim)}`);
+  };
 
   return (
     <Page title="SEO | Venue1Hub" scrollingDisabled={scrollingDisabled} noIndex>
@@ -297,10 +329,14 @@ export const SeoAdminPageComponent = props => {
                   <div className={css.editorTopo}>
                     <div>
                       <h2 className={css.editorTitulo}>{pagina.nome}</h2>
-                      <a className={css.editorLink} href={pagina.path} target="_blank" rel="noopener noreferrer">
-                        {raiz}
-                        {pagina.path === '/' ? '' : pagina.path}
-                      </a>
+                      {eModelo ? (
+                        <span className={css.editorLink}>Vale para todos os anúncios</span>
+                      ) : (
+                        <a className={css.editorLink} href={pagina.path} target="_blank" rel="noopener noreferrer">
+                          {raiz}
+                          {pagina.path === '/' ? '' : pagina.path}
+                        </a>
+                      )}
                     </div>
                     <div className={css.linguas} role="tablist" aria-label="Língua">
                       {LINGUAS_SEO.map(l => (
@@ -318,13 +354,44 @@ export const SeoAdminPageComponent = props => {
                     </div>
                   </div>
 
+                  {eModelo ? (
+                    <div className={css.modelo}>
+                      <p className={css.ajuda}>
+                        Cada anúncio troca as variáveis pelos seus dados. Um bloco entre{' '}
+                        <code>[ ]</code> desaparece se o anúncio não tiver esse dado, e se o título
+                        passar dos {LIMITES_SEO.tituloMax} caracteres tiram-se os blocos{' '}
+                        <code>[ ]</code> antes de o Google o cortar. A descrição é cortada a{' '}
+                        {LIMITES_SEO.descricaoMax}.
+                      </p>
+                      <div className={css.variaveis}>
+                        {VARIAVEIS_ANUNCIO.map(v => (
+                          <button
+                            key={v.nome}
+                            type="button"
+                            className={css.variavel}
+                            title={v.descricao}
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => inserirVariavel(v.nome)}
+                          >
+                            {`{${v.nome}}`}
+                          </button>
+                        ))}
+                      </div>
+                      <p className={css.ajuda}>
+                        Clique numa variável para a pôr onde está o cursor. Pré-visualização com um
+                        anúncio de exemplo: “{ANUNCIO_EXEMPLO.titulo}”, em {ANUNCIO_EXEMPLO.cidade}.
+                      </p>
+                    </div>
+                  ) : null}
+
                   <PreviewGoogle
-                    url={`${raiz}${pagina.path === '/' ? '/' : pagina.path}`}
-                    titulo={valores.title}
-                    descricao={valores.description}
-                    noIndex={form.noIndex}
+                    url={eModelo ? `${raiz}/l/sala-de-eventos` : `${raiz}${pagina.path === '/' ? '/' : pagina.path}`}
+                    titulo={mostrado.title}
+                    descricao={mostrado.description}
+                    noIndex={!eModelo && form.noIndex}
                   />
 
+                  {eModelo ? null : (
                   <Campo
                     id={idCampo('focusKeyword')}
                     rotulo="Palavra-chave principal"
@@ -338,17 +405,20 @@ export const SeoAdminPageComponent = props => {
                       onChange={e => mudar('focusKeyword', e.target.value)}
                     />
                   </Campo>
+                  )}
 
                   <Campo
                     id={idCampo('title')}
                     rotulo="Título"
-                    contador={<Contador valor={valores.title} min={LIMITES_SEO.tituloMin} max={LIMITES_SEO.tituloMax} />}
+                    contador={<Contador valor={mostrado.title} min={LIMITES_SEO.tituloMin} max={LIMITES_SEO.tituloMax} />}
                   >
                     <input
                       id={idCampo('title')}
                       className={css.input}
                       value={valores.title}
                       maxLength={200}
+                      onFocus={lembrarCampo('title')}
+                      onSelect={lembrarCampo('title')}
                       onChange={e => mudar('title', e.target.value)}
                     />
                   </Campo>
@@ -358,7 +428,7 @@ export const SeoAdminPageComponent = props => {
                     rotulo="Meta description"
                     contador={
                       <Contador
-                        valor={valores.description}
+                        valor={mostrado.description}
                         min={LIMITES_SEO.descricaoMin}
                         max={LIMITES_SEO.descricaoMax}
                       />
@@ -370,10 +440,13 @@ export const SeoAdminPageComponent = props => {
                       rows={3}
                       value={valores.description}
                       maxLength={400}
+                      onFocus={lembrarCampo('description')}
+                      onSelect={lembrarCampo('description')}
                       onChange={e => mudar('description', e.target.value)}
                     />
                   </Campo>
 
+                  {eModelo ? null : (
                   <Campo
                     id={idCampo('keywords')}
                     rotulo="Outras palavras-chave"
@@ -388,6 +461,7 @@ export const SeoAdminPageComponent = props => {
                       onChange={e => mudar('keywords', e.target.value)}
                     />
                   </Campo>
+                  )}
 
                   <details className={css.social}>
                     <summary>Partilha em redes sociais (opcional)</summary>
@@ -418,12 +492,14 @@ export const SeoAdminPageComponent = props => {
                     </Campo>
                   </details>
 
+                  {eModelo ? null : (
                   <label className={css.noIndex}>
                     <input type="checkbox" checked={form.noIndex} onChange={e => mudarNoIndex(e.target.checked)} />
                     <span>
                       Esconder esta página do Google (noindex). Vale para as duas línguas.
                     </span>
                   </label>
+                  )}
 
                   <div className={css.analise}>
                     <p className={css.analiseTitulo}>Análise ({NOME_LINGUA[lingua]})</p>

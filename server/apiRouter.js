@@ -130,6 +130,11 @@ const icalFeeds = require('./api/ical-feeds');
 router.get('/ical-feeds', icalFeeds.listar);
 router.post('/ical-feeds', icalFeeds.acrescentar);
 router.delete('/ical-feeds', icalFeeds.remover);
+// E o sentido contrário: as reservas aceites, para o calendário do anfitrião.
+const icalExport = require('./api/ical-export');
+router.get('/ical-export', icalExport.obterLink);
+router.post('/ical-export/novo', icalExport.trocarLink);
+router.get('/ical/:listingId/:ficheiro', icalExport.calendario);
 router.post('/newsletter', newsletter);
 router.post('/report-listing', reportListing);
 router.get('/report-listing-status', reportListingStatus);

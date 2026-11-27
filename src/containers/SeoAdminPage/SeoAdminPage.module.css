@@ -193,6 +193,34 @@
   color: #ffffff;
 }
 
+/* Modelo dos anúncios */
+
+.modelo {
+  margin-bottom: 16px;
+}
+
+.variaveis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0 0;
+}
+
+.variavel {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  border: 1px solid #D9CEC0;
+  background-color: #FCFAF7;
+  color: #2E2E2E;
+  border-radius: 999px;
+  padding: 5px 10px;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #2E2E2E;
+  }
+}
+
 /* Pré-visualização */
 
 .preview {

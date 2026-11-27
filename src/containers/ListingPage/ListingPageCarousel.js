@@ -601,6 +601,7 @@ export const ListingPageComponent = props => {
       scrollingDisabled={scrollingDisabled}
       author={authorDisplayName}
       description={description}
+      seoAnuncio={{ listing: currentListing, precoFormatado: formattedPrice }}
       facebookImages={facebookImages}
       twitterImages={twitterImages}
       {...noIndexMaybe}

@@ -33,9 +33,11 @@ const igual = (a, b) => Boolean(normalizarTexto(a)) && normalizarTexto(a) === no
 /**
  * @param {Object} valores { focusKeyword, title, description, noIndex }
  * @param {Array<{nome: string, valores: Object}>} outras as outras páginas, na mesma língua
+ * @param {Object} [opcoes]
+ * @param {boolean} [opcoes.semPalavraChave] não avaliar a palavra-chave (modelos)
  * @returns {Array<{nivel: 'bom'|'aviso'|'mau', texto: string}>}
  */
-export const analisarSeo = (valores, outras = []) => {
+export const analisarSeo = (valores, outras = [], { semPalavraChave = false } = {}) => {
   const { focusKeyword, title, description, noIndex } = valores || {};
   const titulo = String(title || '').trim();
   const descricao = String(description || '').trim();
@@ -67,7 +69,9 @@ export const analisarSeo = (valores, outras = []) => {
     add('bom', `A descrição tem um bom comprimento (${descricao.length} caracteres).`);
   }
 
-  if (!chave) {
+  if (semPalavraChave) {
+    // Num modelo, a palavra-chave é a de cada anúncio: não há uma para verificar.
+  } else if (!chave) {
     add('aviso', 'Defina uma palavra-chave principal para a análise a poder verificar.');
   } else {
     add(

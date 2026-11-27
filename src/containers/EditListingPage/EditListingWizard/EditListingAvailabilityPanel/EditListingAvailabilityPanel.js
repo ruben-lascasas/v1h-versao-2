@@ -16,6 +16,7 @@ import EditListingAvailabilityExceptionForm from './EditListingAvailabilityExcep
 import WeeklyCalendar from './WeeklyCalendar/WeeklyCalendar';
 
 import CalendariosIcal from './CalendariosIcal';
+import CalendarioExportar from './CalendarioExportar';
 
 import css from './EditListingAvailabilityPanel.module.css';
 
@@ -357,6 +358,7 @@ const EditListingAvailabilityPanel = props => {
               pergunta vista de outro ângulo: quando é que este espaço não
               pode ser reservado. */}
           <CalendariosIcal listingId={listing?.id?.uuid} />
+          <CalendarioExportar listingId={listing?.id?.uuid} />
         </>
       ) : null}
 

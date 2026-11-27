@@ -38,6 +38,9 @@
  */
 
 const DIA_MS = 24 * 60 * 60 * 1000;
+// Igual a UID_SUFIXO de icalExport.js (não se importa para não criar um ciclo
+// entre os dois módulos). Quem mudar um tem de mudar o outro.
+const UID_RESERVA_VENUE1HUB = '-reserva@venue1hub.com';
 
 // Até onde se expandem as repetições. Um ano e pouco: o Sharetribe não aceita
 // consultar excepções para lá de 366 dias, por isso bloquear mais longe não
@@ -305,6 +308,9 @@ const lerCalendario = (texto, { agora = Date.now() } = {}) => {
     const { uid, dtstart, dtend, duracao, resumo, cancelado, transparente, rrule, exdate } = ev;
 
     if (cancelado || transparente) return;
+    // Reservas da própria Venue1Hub, vindas do nosso calendário de saída
+    // (icalExport.js). Bloqueá-las aqui era fechar horas que já são nossas.
+    if (uid && uid.toLowerCase().endsWith(UID_RESERVA_VENUE1HUB)) return;
     if (!dtstart) {
       avisos.push(`evento sem DTSTART${uid ? ` (${uid})` : ''} — ignorado`);
       return;

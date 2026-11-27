@@ -142,5 +142,20 @@
         "keywords": "register, create account, list your venue for free"
       }
     }
+  },
+  {
+    "path": "/l/:anuncio",
+    "nome": "Anúncios (modelo)",
+    "modelo": true,
+    "sugestao": {
+      "pt": {
+        "title": "{titulo}[ em {cidade}] | Venue1Hub",
+        "description": "Reserve {titulo}[ em {cidade}][, até {capacidade} pessoas][, desde {preco}]. {descricao}"
+      },
+      "en": {
+        "title": "{titulo}[ in {cidade}] | Venue1Hub",
+        "description": "Book {titulo}[ in {cidade}][, up to {capacidade} guests][, from {preco}]. {descricao}"
+      }
+    }
   }
 ]

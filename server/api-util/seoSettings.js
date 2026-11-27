@@ -3,9 +3,10 @@
  *
  * NO R2, NÃO EM FICHEIRO
  *
- * O Render corre no plano gratuito, sem disco permanente: o que se escreve em
- * server/data desaparece no deploy seguinte. Por isso grava-se no mesmo bucket
- * R2 dos documentos de verificação, num único objeto JSON. Sem R2 configurado
+ * No Render, sem um disco persistente acrescentado ao serviço, o que se
+ * escreve em server/data desaparece no deploy seguinte (o plano pago não muda
+ * isso). Por isso grava-se no mesmo bucket R2 dos documentos de verificação,
+ * num único objeto JSON. Sem R2 configurado
  * (em desenvolvimento) grava-se em server/data/seo.json, e o painel avisa que
  * esse armazenamento é temporário.
  *

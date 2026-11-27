@@ -22,8 +22,8 @@ import css from './EditListingAvailabilityPanel.module.css';
  *
  *   1. A leitura é periódica, não instantânea. Há sempre uma janela entre
  *      ocupar a sala lá fora e ela ficar bloqueada aqui.
- *   2. Só se lê. Uma reserva feita na Venue1Hub não aparece no calendário do
- *      anfitrião — isso exigiria integração à medida com cada sistema.
+ *   2. Este bloco só lê. O sentido contrário (as reservas da Venue1Hub no
+ *      calendário do anfitrião) é o CalendarioExportar, logo a seguir.
  */
 
 const mascarar = url => {
@@ -225,8 +225,8 @@ const CalendariosIcal = ({ listingId }) => {
           {feeds.length > 0 ? (
             <p className={css.icalNota}>
               O calendário é lido a cada 5 minutos, por isso uma reserva feita agora no seu
-              sistema pode demorar esse tempo a bloquear aqui. E a leitura é só num sentido: as
-              reservas feitas na Venue1Hub não aparecem no seu calendário.
+              sistema pode demorar esse tempo a bloquear aqui. Para as reservas feitas na
+              Venue1Hub aparecerem no seu calendário, use o endereço em baixo.
             </p>
           ) : null}
         </>

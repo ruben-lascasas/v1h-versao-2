@@ -47,7 +47,7 @@ describe('seoOverrides', () => {
   });
 
   it('todas as páginas têm sugestão completa nas duas línguas, dentro dos limites', () => {
-    PAGINAS_SEO.forEach(p => {
+    PAGINAS_SEO.filter(p => !p.modelo).forEach(p => {
       ['pt', 'en'].forEach(l => {
         const v = valoresEmVigor(p, null, l);
         expect(v.title).toBeTruthy();
@@ -61,8 +61,8 @@ describe('seoOverrides', () => {
 
   it('as sugestões passam a análise do próprio painel, sem avisos', () => {
     ['pt', 'en'].forEach(l => {
-      PAGINAS_SEO.forEach(p => {
-        const outras = PAGINAS_SEO.filter(o => o.path !== p.path).map(o => ({
+      PAGINAS_SEO.filter(p => !p.modelo).forEach(p => {
+        const outras = PAGINAS_SEO.filter(o => o.path !== p.path && !o.modelo).map(o => ({
           nome: o.nome,
           valores: o.sugestao[l],
         }));

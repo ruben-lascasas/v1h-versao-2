@@ -17,6 +17,7 @@ import { apiBaseUrl } from '../../util/api';
 import { socialProfileUrls } from '../../config/socialLinks';
 import { useLocale } from '../../context/localeContext';
 import { seoParaEndereco } from '../../util/seoOverrides';
+import { seoDoAnuncio } from '../../util/seoAnuncios';
 
 import css from './Page.module.css';
 
@@ -394,7 +395,19 @@ const Page = props => {
   // sobrepor.
   const redux = useContext(ReactReduxContext);
   const seoPaginas = redux?.store?.getState?.()?.seo?.paginas;
-  const seoDoPainel = seoParaEndereco(location.pathname, locale, seoPaginas);
+  // Os anúncios não têm entrada própria: usam o modelo "Anúncios" do painel,
+  // com os dados que a página do anúncio passa em `seoAnuncio`.
+  const { seoAnuncio } = props;
+  const seoDoPainel =
+    seoParaEndereco(location.pathname, locale, seoPaginas) ||
+    (seoAnuncio?.listing
+      ? seoDoAnuncio({
+          ...seoAnuncio,
+          lingua: locale,
+          paginasGravadas: seoPaginas,
+          categoryConfiguration: config?.categoryConfiguration,
+        })
+      : null);
 
   return (
     <PageComponent
