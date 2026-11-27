@@ -121,5 +121,8 @@ describe('seoAnalise', () => {
     const cortado = cortarParaGoogle('palavra '.repeat(20), 60);
     expect(cortado.endsWith(' …')).toBe(true);
     expect(cortado.length).toBeLessThanOrEqual(62);
+    expect(cortarParaGoogle('Uma frase curta. E depois outra frase mais comprida que passa do limite', 20)).toBe(
+      'Uma frase curta.'
+    );
   });
 });

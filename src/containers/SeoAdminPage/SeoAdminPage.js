@@ -279,7 +279,7 @@ export const SeoAdminPageComponent = props => {
           </H2>
           <p className={css.intro}>
             O título e a descrição que o Google mostra para cada página do site. Os anúncios usam
-            automaticamente o título e o texto do próprio anúncio.
+            o modelo da entrada “Anúncios (modelo)”, preenchido com os dados de cada um.
           </p>
 
           {estado.error === 'forbidden' ? (

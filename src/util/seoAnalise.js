@@ -120,6 +120,10 @@ export const cortarParaGoogle = (texto, maximo) => {
   const t = String(texto || '').trim();
   if (t.length <= maximo) return t;
   const corte = t.slice(0, maximo);
+  // Se uma frase acaba perto do limite, corta-se aí, sem reticências.
+  const fimDeFrase = Math.max(corte.lastIndexOf('. '), corte.lastIndexOf('! '), corte.lastIndexOf('? '));
+  if (fimDeFrase > maximo * 0.6) return corte.slice(0, fimDeFrase + 1).trim();
   const ultimoEspaco = corte.lastIndexOf(' ');
-  return `${(ultimoEspaco > maximo * 0.6 ? corte.slice(0, ultimoEspaco) : corte).trim()} …`;
+  const fim = (ultimoEspaco > maximo * 0.6 ? corte.slice(0, ultimoEspaco) : corte).trim();
+  return `${fim.replace(/[,;:]$/, '')} …`;
 };
