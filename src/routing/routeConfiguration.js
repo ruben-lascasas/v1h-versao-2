@@ -54,6 +54,7 @@ const AboutPage = loadable(() => import(/* webpackChunkName: "AboutPage" */ '../
 const ComoFuncionaPage = loadable(() => import(/* webpackChunkName: "ComoFuncionaPage" */ '../containers/ComoFuncionaPage/ComoFuncionaPage'));
 const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ '../containers/VerificationPage/VerificationPage'));
 const VerificationAdminPage = loadable(() => import(/* webpackChunkName: "VerificationAdminPage" */ '../containers/VerificationAdminPage/VerificationAdminPage'));
+const SeoAdminPage = loadable(() => import(/* webpackChunkName: "SeoAdminPage" */ '../containers/SeoAdminPage/SeoAdminPage'));
 const LegalPage = loadable(() => import(/* webpackChunkName: "LegalPage" */ '../containers/LegalPage/LegalPage'));
 const LegalCentrePage = loadable(() => import(/* webpackChunkName: "LegalCentrePage" */ '../containers/LegalCentrePage/LegalCentrePage'));
 const BookingContractPage = loadable(() => import(/* webpackChunkName: "BookingContractPage" */ '../containers/BookingContractPage/BookingContractPage'));
@@ -383,6 +384,14 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       auth: true,
       authPage: 'LoginPage',
       component: VerificationAdminPage,
+    },
+    // Painel SEO. Mesmo acesso que o das verificações.
+    {
+      path: '/seo',
+      name: 'SeoAdminPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: SeoAdminPage,
     },
     // The route stays registered even when highlights are switched off, so that
     // any NamedLink to it still resolves; it just sends the visitor home

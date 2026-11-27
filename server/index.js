@@ -389,6 +389,12 @@ if (cspEnabled) {
 }
 
 const server = app.listen(PORT, () => {
+  // Os títulos do painel SEO têm de estar em memória antes das primeiras visitas.
+  try {
+    require('./api-util/seoSettings').iniciar();
+  } catch (e) {
+    console.error('[seo] failed to start:', e?.message || e);
+  }
   const mode = dev ? 'development' : 'production';
   console.log(`Listening to port ${PORT} in ${mode} mode`);
   if (dev) {

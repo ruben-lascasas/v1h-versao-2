@@ -30,6 +30,7 @@ import serviceListings from './serviceListings.duck';
 import verification from './verification.duck';
 import mapListings from './mapListings.duck';
 import recommendations from './recommendations.duck';
+import seo from './seo.duck';
 
 export {
   auth,
@@ -58,4 +59,5 @@ export {
   verification,
   mapListings,
   recommendations,
+  seo,
 };

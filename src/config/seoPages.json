@@ -1,0 +1,146 @@
+[
+  {
+    "path": "/",
+    "nome": "Página inicial",
+    "sugestao": {
+      "pt": {
+        "focusKeyword": "aluguer de espaços",
+        "title": "Aluguer de espaços para reuniões e eventos | Venue1Hub",
+        "description": "Aluguer de espaços para reuniões e eventos em Portugal: salas de reunião, escritórios, auditórios e muito mais. Por hora ou por dia, com pagamento seguro.",
+        "keywords": "salas de reunião, espaços para eventos, aluguer de salas, escritórios por hora, auditórios, Venue1Hub"
+      },
+      "en": {
+        "focusKeyword": "venue hire",
+        "title": "Venue hire for meetings and events | Venue1Hub",
+        "description": "Venue hire in Portugal for meetings and events: meeting rooms, offices, auditoriums and more. By the hour or by the day, with secure payment.",
+        "keywords": "meeting rooms, event venues, room hire, offices by the hour, auditoriums, Venue1Hub"
+      }
+    }
+  },
+  {
+    "path": "/s",
+    "nome": "Pesquisa",
+    "sugestao": {
+      "pt": {
+        "focusKeyword": "espaços para alugar",
+        "title": "Espaços para alugar em Portugal | Venue1Hub",
+        "description": "Pesquise espaços para alugar por localização, categoria, data e número de pessoas: salas de reunião, estúdios, auditórios e muito mais.",
+        "keywords": "alugar sala, sala de reuniões para alugar, espaço para eventos, alugar espaço por hora, sala de formação"
+      },
+      "en": {
+        "focusKeyword": "venues to rent",
+        "title": "Venues to rent in Portugal | Venue1Hub",
+        "description": "Search venues to rent by location, category, date and number of guests: meeting rooms, studios, auditoriums and much more.",
+        "keywords": "room hire, meeting room to rent, event space, venue by the hour, training room"
+      }
+    }
+  },
+  {
+    "path": "/como-funciona",
+    "nome": "Como funciona",
+    "sugestao": {
+      "pt": {
+        "focusKeyword": "como funciona",
+        "title": "Como funciona: reservar e anunciar espaços | Venue1Hub",
+        "description": "Como funciona a Venue1Hub: reservar um espaço, anunciar o seu, pagamentos, comissões, documentos e respostas às perguntas frequentes.",
+        "keywords": "reservar espaço, anunciar espaço, comissões, pagamentos, perguntas frequentes"
+      },
+      "en": {
+        "focusKeyword": "how it works",
+        "title": "How it works: book or list a venue | Venue1Hub",
+        "description": "How it works on Venue1Hub: booking a venue, listing your own, payments, fees, documents and answers to frequently asked questions.",
+        "keywords": "book a venue, list a venue, fees, payments, frequently asked questions"
+      }
+    }
+  },
+  {
+    "path": "/sobre-nos",
+    "nome": "Sobre nós",
+    "sugestao": {
+      "pt": {
+        "focusKeyword": "Venue1Hub",
+        "title": "Sobre nós | Venue1Hub, espaços para reuniões e eventos",
+        "description": "Conheça a Venue1Hub, a plataforma que liga quem tem espaços comerciais em Portugal a quem precisa deles para reuniões, eventos e formações.",
+        "keywords": "quem somos, marketplace de espaços, aluguer de espaços comerciais"
+      },
+      "en": {
+        "focusKeyword": "Venue1Hub",
+        "title": "About us | Venue1Hub, venues for meetings and events",
+        "description": "Meet Venue1Hub, the platform connecting commercial venues in Portugal with people who need them for meetings, events and training.",
+        "keywords": "who we are, venue marketplace, commercial venue hire"
+      }
+    }
+  },
+  {
+    "path": "/contact",
+    "nome": "Contacto",
+    "sugestao": {
+      "pt": {
+        "focusKeyword": "contacto",
+        "title": "Contacto e apoio ao cliente | Venue1Hub",
+        "description": "Contacto da equipa Venue1Hub: ajudamos quem procura um espaço para reuniões ou eventos e quem quer anunciar o seu.",
+        "keywords": "apoio ao cliente, ajuda, falar connosco"
+      },
+      "en": {
+        "focusKeyword": "contact",
+        "title": "Contact and customer support | Venue1Hub",
+        "description": "Contact the Venue1Hub team: we help people looking for a venue for meetings or events and owners who want to list theirs.",
+        "keywords": "customer support, help, get in touch"
+      }
+    }
+  },
+  {
+    "path": "/legal",
+    "nome": "Centro jurídico",
+    "sugestao": {
+      "pt": {
+        "focusKeyword": "termos e políticas",
+        "title": "Termos e políticas: centro jurídico | Venue1Hub",
+        "description": "Termos e políticas da Venue1Hub num só lugar: termos de serviço, privacidade, cookies, cancelamentos, comissões e restante informação jurídica.",
+        "keywords": "termos de serviço, política de privacidade, política de cookies, cancelamento e reembolso, comissões"
+      },
+      "en": {
+        "focusKeyword": "terms and policies",
+        "title": "Terms and policies: legal centre | Venue1Hub",
+        "description": "Venue1Hub's terms and policies in one place: terms of service, privacy, cookies, cancellations, fees and other legal information.",
+        "keywords": "terms of service, privacy policy, cookie policy, cancellation and refunds, fees"
+      }
+    }
+  },
+  {
+    "path": "/login",
+    "nome": "Iniciar sessão",
+    "sugestao": {
+      "pt": {
+        "focusKeyword": "iniciar sessão",
+        "title": "Iniciar sessão na sua conta | Venue1Hub",
+        "description": "Iniciar sessão: entre na sua conta Venue1Hub para gerir as suas reservas, mensagens e anúncios.",
+        "keywords": "entrar, área de cliente, conta Venue1Hub"
+      },
+      "en": {
+        "focusKeyword": "log in",
+        "title": "Log in to your account | Venue1Hub",
+        "description": "Log in to your Venue1Hub account to manage your bookings, messages and listings.",
+        "keywords": "sign in, customer area, Venue1Hub account"
+      }
+    }
+  },
+  {
+    "path": "/signup",
+    "nome": "Criar conta",
+    "sugestao": {
+      "pt": {
+        "focusKeyword": "criar conta",
+        "title": "Criar conta grátis | Venue1Hub",
+        "description": "Criar conta na Venue1Hub é gratuito: reserve espaços para reuniões e eventos ou anuncie o seu e comece a receber reservas.",
+        "keywords": "registo, registar, anunciar espaço grátis"
+      },
+      "en": {
+        "focusKeyword": "sign up",
+        "title": "Sign up for a free account | Venue1Hub",
+        "description": "Sign up for free on Venue1Hub to book venues for meetings and events, or list your own and start receiving bookings.",
+        "keywords": "register, create account, list your venue for free"
+      }
+    }
+  }
+]

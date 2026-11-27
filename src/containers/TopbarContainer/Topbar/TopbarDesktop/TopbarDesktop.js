@@ -252,6 +252,17 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout, showManageListingsLin
             </NamedLink>
           </MenuItem>
         ) : null}
+        {isAdmin ? (
+          <MenuItem key="SeoAdminPage">
+            <NamedLink
+              className={classNames(css.menuLink, currentPageClass('SeoAdminPage'))}
+              name="SeoAdminPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.seoLink" />
+            </NamedLink>
+          </MenuItem>
+        ) : null}
         <MenuItem key="logout">
           <InlineTextButton rootClassName={css.logoutButton} onClick={onLogout}>
             <span className={css.menuItemBorder} />

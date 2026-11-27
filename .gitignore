@@ -22,3 +22,4 @@ yarn-error.log
 server/data/listing-views.json
 server/data/pwa-counter.json
 server/data/waitlist.json
+server/data/seo.json

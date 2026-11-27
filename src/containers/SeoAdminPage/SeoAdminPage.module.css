@@ -1,0 +1,436 @@
+@import '../../styles/customMediaQueries.css';
+
+/* Mesma família visual do painel de verificações. */
+
+.root {
+  width: 100%;
+  min-width: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 16px 64px;
+  font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+  color: #2E2E2E;
+
+  @media (--viewportMedium) {
+    padding: 48px 32px 80px;
+  }
+}
+
+.title {
+  margin: 0 0 8px 0;
+}
+
+.intro {
+  font-size: 14px;
+  color: #6B6B6B;
+  margin: 0 0 24px 0;
+  max-width: 720px;
+}
+
+.notice {
+  font-size: 14px;
+  color: #6B6B6B;
+}
+
+.alerta {
+  font-size: 13px;
+  background-color: #F7EEDA;
+  color: #7A5C13;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 0 0 20px 0;
+}
+
+.grelha {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 260px minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* Lista de páginas */
+
+.lista {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+
+  @media (min-width: 900px) {
+    flex-direction: column;
+    overflow: visible;
+    position: sticky;
+    top: 96px;
+  }
+}
+
+.itemLista {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 0 0 auto;
+  text-align: left;
+  border: 1px solid #E4D9CB;
+  border-radius: 8px;
+  background-color: #ffffff;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+
+  &:hover {
+    border-color: #BAA38A;
+  }
+}
+
+.itemListaAtivo {
+  border-color: #2E2E2E;
+  background-color: #FCFAF7;
+}
+
+.itemTexto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.itemNome {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.porGravar {
+  font-weight: 400;
+  color: #7A5C13;
+}
+
+.itemCaminho {
+  font-size: 12px;
+  color: #6B6B6B;
+}
+
+.ponto {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 4px;
+}
+
+.ponto_bom {
+  background-color: #2F8A4A;
+}
+
+.ponto_aviso {
+  background-color: #D9A21B;
+}
+
+.ponto_mau {
+  background-color: #C2412D;
+}
+
+/* Editor */
+
+.editor {
+  min-width: 0;
+  border: 1px solid #E4D9CB;
+  border-radius: 10px;
+  background-color: #ffffff;
+  padding: 20px 16px;
+
+  @media (--viewportMedium) {
+    padding: 24px;
+  }
+}
+
+.editorTopo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.editorTitulo {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 2px 0;
+  padding: 0;
+}
+
+.editorLink {
+  font-size: 12px;
+  color: #6B6B6B;
+  overflow-wrap: anywhere;
+}
+
+.linguas {
+  display: inline-flex;
+  border: 1px solid #D9CEC0;
+  border-radius: 999px;
+  padding: 2px;
+}
+
+.lingua {
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #2E2E2E;
+  cursor: pointer;
+}
+
+.linguaAtiva {
+  background-color: #2E2E2E;
+  color: #ffffff;
+}
+
+/* Pré-visualização */
+
+.preview {
+  margin-bottom: 24px;
+}
+
+.previewRotulo {
+  font-size: 12px;
+  color: #6B6B6B;
+  margin: 0 0 6px 0;
+}
+
+.previewCaixa {
+  border: 1px solid #EDE6DC;
+  border-radius: 8px;
+  padding: 14px 16px;
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+}
+
+.previewUrl {
+  font-size: 12px;
+  color: #202124;
+  margin: 0 0 4px 0;
+  overflow-wrap: anywhere;
+}
+
+.previewTitulo {
+  font-size: 19px;
+  line-height: 1.3;
+  color: #1A0DAB;
+  margin: 0 0 4px 0;
+}
+
+.previewDescricao {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #4D5156;
+  margin: 0;
+}
+
+.previewEscondida {
+  font-size: 13px;
+  color: #8E3220;
+  background-color: #F8E3DC;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 0;
+}
+
+/* Campos */
+
+.campo {
+  margin-bottom: 18px;
+}
+
+.campoTopo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.rotulo {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0;
+}
+
+.contador {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.nivel_bom {
+  color: #1F5730;
+}
+
+.nivel_aviso {
+  color: #7A5C13;
+}
+
+.nivel_mau {
+  color: #8E3220;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 14px;
+  color: #2E2E2E;
+  border: 1px solid #D9CEC0;
+  border-radius: 6px;
+  padding: 9px 11px;
+  background-color: #ffffff;
+
+  &:focus {
+    outline: none;
+    border-color: #2E2E2E;
+  }
+}
+
+.textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.ajuda {
+  font-size: 12px;
+  color: #6B6B6B;
+  margin: 6px 0 0 0;
+}
+
+.social {
+  border-top: 1px solid #EDE6DC;
+  padding-top: 14px;
+  margin: 4px 0 18px 0;
+
+  & summary {
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+
+  & > .ajuda {
+    margin: 0 0 14px 0;
+  }
+}
+
+.noIndex {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  margin: 0 0 20px 0;
+  cursor: pointer;
+
+  & input {
+    width: auto;
+    margin-top: 2px;
+  }
+}
+
+/* Análise */
+
+.analise {
+  background-color: #FCFAF7;
+  border: 1px solid #EDE6DC;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.analiseTitulo {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.analiseLista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.analiseItem {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 3px 0;
+}
+
+/* Ações */
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.botaoPrincipal,
+.botaoSecundario,
+.botaoLink {
+  font-family: inherit;
+  font-size: 14px;
+  border-radius: 6px;
+  padding: 10px 18px;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.botaoPrincipal {
+  background-color: #2E2E2E;
+  color: #ffffff;
+}
+
+.botaoSecundario {
+  background-color: #ffffff;
+  border-color: #D9CEC0;
+  color: #2E2E2E;
+}
+
+.botaoLink {
+  background: transparent;
+  color: #6B6B6B;
+  text-decoration: underline;
+  padding: 10px 4px;
+}
+
+.mensagemOk,
+.mensagemErro {
+  font-size: 13px;
+  margin: 12px 0 0 0;
+}
+
+.mensagemOk {
+  color: #1F5730;
+}
+
+.mensagemErro {
+  color: #8E3220;
+}
+
+.meta {
+  font-size: 12px;
+  color: #6B6B6B;
+  margin: 12px 0 0 0;
+  overflow-wrap: anywhere;
+}

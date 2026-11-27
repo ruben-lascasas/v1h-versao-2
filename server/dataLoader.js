@@ -1,6 +1,7 @@
 const { URL } = require('node:url');
 const log = require('./log');
 const { getRootURL } = require('./api-util/rootURL');
+const seoSettings = require('./api-util/seoSettings');
 
 const PREVENT_DATA_LOADING_IN_SSR = process.env.PREVENT_DATA_LOADING_IN_SSR === 'true';
 
@@ -26,6 +27,10 @@ exports.loadData = function(requestUrl, sdk, appInfo) {
   let hostedConfig = {};
 
   const store = configureStore({ initialState: {}, sdk });
+
+  // Os títulos e descrições do painel SEO entram já no estado inicial: é o
+  // HTML que sai daqui que o Google lê.
+  store.dispatch({ type: 'app/seo/SET_PAGINAS', payload: seoSettings.obterPaginas() });
 
   if (PREVENT_DATA_LOADING_IN_SSR) {
     // This might help certain temporary scenarios, where DDOS attack adds load to server.

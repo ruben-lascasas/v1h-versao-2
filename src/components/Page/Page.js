@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import { any, array, arrayOf, bool, number, object, oneOfType, shape, string } from 'prop-types';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
+import { ReactReduxContext } from 'react-redux';
 import classNames from 'classnames';
 
 import { useConfiguration } from '../../context/configurationContext';
@@ -14,6 +15,8 @@ import { toAbsoluteURL } from '../../util/urlHelpers';
 import { propTypes } from '../../util/types';
 import { apiBaseUrl } from '../../util/api';
 import { socialProfileUrls } from '../../config/socialLinks';
+import { useLocale } from '../../context/localeContext';
+import { seoParaEndereco } from '../../util/seoOverrides';
 
 import css from './Page.module.css';
 
@@ -132,6 +135,7 @@ class PageComponent extends Component {
       noIndex,
       config,
       routeConfiguration,
+      seoDoPainel,
     } = this.props;
 
     const classes = classNames(rootClassName || css.root, className, {
@@ -148,8 +152,10 @@ class PageComponent extends Component {
     const marketplaceName = config.marketplaceName;
     const schemaTitle = intl.formatMessage({ id: 'Page.schemaTitle' }, { marketplaceName });
     const schemaDescription = intl.formatMessage({ id: 'Page.schemaDescription' });
-    const pageTitle = title || schemaTitle;
-    const pageDescription = description || schemaDescription;
+    // O painel SEO (/seo), quando gere esta página, manda sobre o que a página
+    // trouxer. Ver src/util/seoOverrides.js.
+    const pageTitle = seoDoPainel?.title || title || schemaTitle;
+    const pageDescription = seoDoPainel?.description || description || schemaDescription;
     const {
       title: socialSharingTitle,
       description: socialSharingDescription,
@@ -191,8 +197,12 @@ class PageComponent extends Component {
       {
         author,
         openGraphType,
-        socialSharingTitle: socialSharingTitle || pageTitle,
-        socialSharingDescription: socialSharingDescription || pageDescription,
+        socialSharingTitle: seoDoPainel
+          ? seoDoPainel.socialTitle || pageTitle
+          : socialSharingTitle || pageTitle,
+        socialSharingDescription: seoDoPainel
+          ? seoDoPainel.socialDescription || pageDescription
+          : socialSharingDescription || pageDescription,
         description: pageDescription,
         facebookImages: facebookImgs,
         twitterImages: twitterImgs,
@@ -201,7 +211,7 @@ class PageComponent extends Component {
         updated,
         url: canonicalUrl,
         locale: intl.locale,
-        noIndex,
+        noIndex: noIndex || Boolean(seoDoPainel?.noIndex),
       },
       config
     );
@@ -289,6 +299,7 @@ class PageComponent extends Component {
           <title>{pageTitle}</title>
           {referrer ? <meta name="referrer" content={referrer} /> : null}
           <link rel="canonical" href={canonicalUrl} />
+          {seoDoPainel?.keywords ? <meta name="keywords" content={seoDoPainel.keywords} /> : null}
 
           {faviconVariants.map(variant => {
             return (
@@ -376,6 +387,14 @@ const Page = props => {
   const routeConfiguration = useRouteConfiguration();
   const location = useLocation();
   const intl = useIntl();
+  const { locale } = useLocale();
+
+  // Lido do store sem subscrever: a página de manutenção é desenhada fora do
+  // Provider do Redux, e aí `useSelector` rebentava. Sem store, não há nada a
+  // sobrepor.
+  const redux = useContext(ReactReduxContext);
+  const seoPaginas = redux?.store?.getState?.()?.seo?.paginas;
+  const seoDoPainel = seoParaEndereco(location.pathname, locale, seoPaginas);
 
   return (
     <PageComponent
@@ -383,6 +402,7 @@ const Page = props => {
       routeConfiguration={routeConfiguration}
       location={location}
       intl={intl}
+      seoDoPainel={seoDoPainel}
       {...props}
     />
   );

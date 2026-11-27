@@ -328,4 +328,4 @@ const listingDecision = async (req, res) => {
   }
 };
 
-module.exports = { list, docUrl, decision, me, listings, listingDecision };
+module.exports = { list, docUrl, decision, me, listings, listingDecision, requireAdmin };

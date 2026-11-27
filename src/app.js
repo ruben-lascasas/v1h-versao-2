@@ -392,11 +392,15 @@ export const ServerApp = props => {
     );
   }
 
+  // As mesmas mensagens que o browser usa para quem não escolheu língua (pt).
+  // Sem o pt.json, o HTML que o Google lê saía com parte do texto em inglês
+  // ("Skip to content", "Category", "Log in"…), e o browser trocava-o logo a
+  // seguir.
   return (
     <Configurations appConfig={appConfig}>
       <IntlProvider
         locale={appConfig.localization.locale}
-        messages={{ ...localeMessages, ...hostedTranslations }}
+        messages={{ ...localeMessages, ...hostedTranslations, ...ptMessages }}
         textComponent="span"
       >
         <Provider store={store}>

@@ -120,6 +120,11 @@ router.post('/verification-admin/decision', verificationAdmin.decision);
 router.get('/verification-admin/listings', verificationAdmin.listings);
 router.post('/verification-admin/listing-decision', verificationAdmin.listingDecision);
 
+// Painel SEO: títulos e descrições das páginas fixas. Mesmo acesso.
+const seoAdmin = require('./api/seo-admin');
+router.get('/seo-admin', seoAdmin.listar);
+router.post('/seo-admin/pagina', seoAdmin.gravar);
+
 // Calendarios iCal de um anuncio (o dono gere os seus).
 const icalFeeds = require('./api/ical-feeds');
 router.get('/ical-feeds', icalFeeds.listar);
